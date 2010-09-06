@@ -38,7 +38,7 @@ To register plugin descriptor we need to create a text file called _fi.pyramus.p
 
 *_Example:_*
 <br/><br/>
-_fi.pyramus.plugin.PluginDescriptor_: 
+_fi.pyramus.plugin.PluginDescriptor:_
 {{{
 fi.pyramus.plugin.simple.SimplePluginDescriptor # plugin descriptor class for Simple plugin
 }}}
@@ -73,8 +73,8 @@ included Freemarker template or URL is defined by calling either setIncludeFtl o
 
 *_Example:_*
 
-fi.pyramus.plugin.simple.views.LoggedUserInfoViewController:
-  
+_fi.pyramus.plugin.simple.views.LoggedUserInfoViewController:_
+{{{  
   @Override
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
@@ -88,9 +88,9 @@ fi.pyramus.plugin.simple.views.LoggedUserInfoViewController:
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
-
-fi.pyramus.plugin.simple.ftl.loggeduserinfo.ftl:
-
+}}}
+_fi.pyramus.plugin.simple.ftl.loggeduserinfo.ftl:_
+{{{
   <#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
   
   <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -112,33 +112,28 @@ fi.pyramus.plugin.simple.ftl.loggeduserinfo.ftl:
       <@include_page path="/templates/generic/footer.jsp"/> 
     </body>
   </html>
+}}}
 
+==Adding JSON controllers==
 
-Adding JSON controllers
+  * TODO: Adding JSON controllers
 
-  implements JSONRequestController
-  
-... TODO ...
-  
+==Adding binary controllers==
 
-Adding binary controllers
+  * TODO: Adding binary controllers
 
-  implements BinaryRequestController
+==Extending views==
 
-... TODO ...
+Plugin may also extend existing views via "extension hooks". All extension hooks are listed in [ExtensionHooks].  
 
-Extending views
-
-Plugin may also extend existing views via "extension hooks". All extension hooks are listed in [[extension_hooks|this document]].  
-
-Before extending views you should read [[element_cheatsheet]] to learn correct html syntax for Pyramus. 
+Before extending views you should read [[ElementCheatsheet]] to learn correct html syntax for Pyramus. 
 
 All hook providers must be introduced in plugin descriptor. 
 
-Example:
+_*Example:*_
 
-MySimplePlugin.java:
-
+_MySimplePlugin.java:_
+{{{
 public class MySimplePlugin implements PluginDescriptor {
   ...
   
@@ -151,9 +146,10 @@ public class MySimplePlugin implements PluginDescriptor {
     return viewControllers;
   }
 }
+}}}
 
-fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabLabelHook:
-
+_fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabLabelHook:_
+{{{
 public class EditCourseSimpleTabLabelHook implements PageHookController {
   
   @Override
@@ -161,9 +157,10 @@ public class EditCourseSimpleTabLabelHook implements PageHookController {
     pageHookContext.setIncludeFtl("/plugin/simple/ftl/editcoursesimpletablabelhook.ftl");
   }
 }
+}}}
 
-fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabHook:
-
+_fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabHook:_
+{{{
 public class EditCourseSimpleTabHook implements PageHookController {
   
   @Override
@@ -171,38 +168,30 @@ public class EditCourseSimpleTabHook implements PageHookController {
     pageHookContext.setIncludeFtl("/plugin/simple/ftl/editcoursesimpletabhook.ftl");
   }
 }
-
-fi.pyramus.plugin.simple.hooks.ftl.editcoursesimpletablabelhook.ftl:
-
+}}}
+_fi.pyramus.plugin.simple.hooks.ftl.editcoursesimpletablabelhook.ftl:_
+{{{
 <#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
 
 <a class="tabLabel" href="#simple"><fmt:message key="courses.editCourse.simpleTabTitle" /></a>
-
-fi.pyramus.plugin.simple.hooks.ftl.editcoursesimpletabhook.ftl:
-
+}}}
+_fi.pyramus.plugin.simple.hooks.ftl.editcoursesimpletabhook.ftl:_
+{{{
 <#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
 
 <div id="simple" class="tabContent">
   <div>Simple tab content...</div>
 </div>
+}}}
 
-Authrorization providers
-
---------
-
-create table SimpleAuth (id bigint not null, username varchar(255) unique not null, password varchar(255) not null, primary key (id));
-insert into SimpleAuth (id, username, password) values (1, 'testun', 'testpw');
-insert into hibernate_sequences (sequence_name, sequence_next_hi_value) values ('SimpleAuth', 2);
-
---------
-
+==Authrorization providers==
 
 Pyramus authorization providers are divided into two separate types: Internal and External. Internal authorization providers represent providers that handle the authorization within Pyramus (e.g. LDAP) and External providers handle their authorization in external webpage (e.g. OpenId) 
 
 All authrorization providers must be introduced in plugin descriptor. 
 
-Example:
-
+_*Example:*_
+{{{
 public class MySimplePlugin implements PluginDescriptor {
   ...
   
@@ -214,10 +203,11 @@ public class MySimplePlugin implements PluginDescriptor {
     return authenticationProviders;
   }
 }
+}}}
 
-Implementing '''internal''' authorization providers
+===Implementing _internal_ authorization providers===
 
-Internal authorization providers have to implement '''fi.pyramus.plugin.auth.InternalAuthorizationProvider''' interface. 
+Internal authorization providers have to implement _fi.pyramus.plugin.auth.InternalAuthorizationProvider_ interface. 
 
 The heart of any internal authorization provider is '''getUser''' method which simply returns fi.pyramus.domainmodel.users.User object by given username and password. 
 
@@ -259,3 +249,16 @@ public User (RequestContext requestContext) throws AuthorizationException {
   String externalId = getExtenalId(requestContext);	
   return externalId != null ? userDAO.getUser(externalId, getName()) : null;
 }
+
+
+
+
+
+
+--------
+{{{
+create table SimpleAuth (id bigint not null, username varchar(255) unique not null, password varchar(255) not null, primary key (id));
+insert into SimpleAuth (id, username, password) values (1, 'testun', 'testpw');
+insert into hibernate_sequences (sequence_name, sequence_next_hi_value) values ('SimpleAuth', 2);
+}}}
+--------
