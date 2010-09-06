@@ -209,10 +209,13 @@ public class MySimplePlugin implements PluginDescriptor {
 
 Internal authorization providers have to implement _fi.pyramus.plugin.auth.InternalAuthorizationProvider_ interface. 
 
-The heart of any internal authorization provider is '''getUser''' method which simply returns fi.pyramus.domainmodel.users.User object by given username and password. 
+The heart of any internal authorization provider is _getUser_ method which simply returns fi.pyramus.domainmodel.users.User object by given username and password. 
 
-For example if you'd have your users authorization data stored in ''SimpleAuth'' entity which contains id, username, password and user fields then the getUser method would look something like this:
 
+_*Example:*_
+
+If you'd have your users authorization data stored in _SimpleAuth_ entity which contains id, username, password and user fields then the _getUser_ method would look something like this:
+{{{
 public class SimpleAuthProvider implements InternalAuthorizationProvider {
   public User getUser(String username, String password) {
     SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
@@ -222,26 +225,32 @@ public class SimpleAuthProvider implements InternalAuthorizationProvider {
   }
   ...
 }    
+}}}
 
-In addition to that depending on whatever Pyramus should be able to update users credentials plugin should return true or false from canUpdateCredentials method. 
+In addition to that depending on whatever Pyramus should be able to update user credentials plugin should return true or false from canUpdateCredentials method. 
 
-If plugin declares that it can update credentials plugin developer should also implement updateCredentials method otherwise that method should be left blank.
+If plugin declares that it can update credentials, plugin developer should also implement updateCredentials method otherwise that method should be left blank.
 
-Implementing '''external''' authorization providers '''fi.pyramus.plugin.auth.ExternalAuthorizationProvider''' interface. Interface it self is quite simple because it contains only two methods: performDiscovery and processResponse.
+===Implementing *external* authorization providers=== 
 
-performDiscovery method's function is to prepare authorization request and redirect user to appropriate login page. 
-In normal situation external repository should be instructed to redirect browser back to users/externallogin.page beacuse it handles the response and calls authorization request's handleResponse method but it is also possible for plugin developer to implement it's own response handler.   
+Internal authorization providers have to implement  _fi.pyramus.plugin.auth.ExternalAuthorizationProvider_ interface. Interface it self is quite simple because it contains only two methods: performDiscovery and processResponse.
+
+_performDiscovery_ method's function is to prepare authorization request and redirect user to appropriate login page. 
+
+In normal situation external repository should be instructed to redirect browser back to users/externallogin.page beacuse it handles the response and calls for authorization request's handleResponse method but it is also possible for plugin developer to implement it's own response handler.   
    
-For example performDiscovery could look something like this:  
+_*Example:*_
 
+{{{
 public void performDiscovery(RequestContext requestContext) {
   String redirectUrl = getExternalLoginUrl(requestContext);
   requestContext.setRedirectURL(redirectUrl);
 }
+}}}
 
-ProcessResponse method handles the response from external repository and returns either '''fi.pyramus.domainmodel.users.User''' object or null depending on the result of the logging in.
+ProcessResponse method handles the response from external repository and returns either _fi.pyramus.domainmodel.users.User_ object or null depending on the result of the logging in.
 
-For example processResponse could look something like this: 
+_*Example:*_
 
 public User (RequestContext requestContext) throws AuthorizationException {
   HttpSession session = requestContext.getRequest().getSession();
@@ -250,15 +259,8 @@ public User (RequestContext requestContext) throws AuthorizationException {
   return externalId != null ? userDAO.getUser(externalId, getName()) : null;
 }
 
+_Note that you need to run following SQL script in order to use examples in this section:_
 
-
-
-
-
---------
 {{{
 create table SimpleAuth (id bigint not null, username varchar(255) unique not null, password varchar(255) not null, primary key (id));
-insert into SimpleAuth (id, username, password) values (1, 'testun', 'testpw');
-insert into hibernate_sequences (sequence_name, sequence_next_hi_value) values ('SimpleAuth', 2);
 }}}
---------
