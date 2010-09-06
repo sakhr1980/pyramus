@@ -1,0 +1,13 @@
+#summary Settings for OpenID plugin
+
+==Normal Google auth==
+
+_Set following setting to your System Settings:_<br/>
+
+`authentication.OpenID.identifier = https://www.google.com/accounts/o8/id`
+
+==Google Apps== 
+
+_Set following setting to your System Settings (replace mydomain.com with your real domain name):_<br/>
+
+`authentication.OpenID.identifier = https://www.google.com/accounts/o8/site-xrds?hd=mydomain.com`
