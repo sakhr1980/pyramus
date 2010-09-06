@@ -1,4 +1,4 @@
-#Settings for different LDAP servers
+##summary Settings for different LDAP servers
 
 *IBM Directory*<br/><br/>
 `authentication.ldap.uniqueIdAttr = ibm-entryUuid`<br/>
