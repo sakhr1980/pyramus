@@ -1,4 +1,6 @@
-#summary Settings for different LDAP servers
+#summary LDAP plugin configuration
+
+==Settings for different LDAP servers==
 
 *IBM Directory*<br/><br/>
 `authentication.ldap.uniqueIdAttr = ibm-entryUuid`<br/>
