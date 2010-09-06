@@ -6,14 +6,14 @@
   * courses.createCourse.tabs.costPlan
   * courses.createCourse.tabs.students
   * courses.createCourse.tabs 
-  *
+ 
   * courses.editCourse.tabLabels
   * courses.editCourse.tabs.basic
   * courses.editCourse.tabs.components
   * courses.editCourse.tabs.costPlan
   * courses.editCourse.tabs.students
   * courses.editCourse.tabs
-  *
+ 
   * generic.navigation.studentsMenu
   * generic.navigation.modulesMenu
   * generic.navigation.coursesMenu
