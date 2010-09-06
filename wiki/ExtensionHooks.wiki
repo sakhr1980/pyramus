@@ -1,6 +1,6 @@
 #summary list of extension hooks
 
-  *courses.createCourse.tabLabels
+  * courses.createCourse.tabLabels
   *courses.createCourse.tabs.basic
   *courses.createCourse.tabs.components
   *courses.createCourse.tabs.costPlan
