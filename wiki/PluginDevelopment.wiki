@@ -251,14 +251,14 @@ public void performDiscovery(RequestContext requestContext) {
 ProcessResponse method handles the response from external repository and returns either _fi.pyramus.domainmodel.users.User_ object or null depending on the result of the logging in.
 
 _*Example:*_
-
+{{{
 public User (RequestContext requestContext) throws AuthorizationException {
   HttpSession session = requestContext.getRequest().getSession();
   UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
   String externalId = getExtenalId(requestContext);	
   return externalId != null ? userDAO.getUser(externalId, getName()) : null;
 }
-
+}}}
 _Note that you need to run following SQL script in order to use examples in this section:_
 
 {{{
