@@ -27,28 +27,28 @@
 * modules.createModule.tabs.basic
 * modules.createModule.tabs.components
 * modules.createModule.tabs
-
-* modules.editModule.tabLabels
-* modules.editModule.tabs.basic
-* modules.editModule.tabs.components
-* modules.editModule.tabs
-
-* students.createStudent.tabLabels
-* students.createStudent.tabs.basic
-* students.createStudent.tabs.studyProgramme
-* students.createStudent.tabs
-
-* students.editStudent.tabLabels
-* students.editStudent.tabs.basic
-* students.editStudent.tabs.studyProgramme
-* students.editStudent.tabs
-
-* students.createStudentGroup.tabLabels
-* students.createStudentGroup.tabs.basic
-* students.createStudentGroup.tabs.students
-* students.createStudentGroup.tabs
-
-* students.editStudentGroup.tabLabels
-* students.editStudentGroup.tabs.basic
-* students.editStudentGroup.tabs.students
-* students.editStudentGroup.tabs
+*
+*modules.editModule.tabLabels
+*modules.editModule.tabs.basic
+*modules.editModule.tabs.components
+*modules.editModule.tabs
+*
+*students.createStudent.tabLabels
+*students.createStudent.tabs.basic
+*students.createStudent.tabs.studyProgramme
+*students.createStudent.tabs
+*
+*students.editStudent.tabLabels
+*students.editStudent.tabs.basic
+*students.editStudent.tabs.studyProgramme
+*students.editStudent.tabs
+*
+*students.createStudentGroup.tabLabels
+*students.createStudentGroup.tabs.basic
+*students.createStudentGroup.tabs.students
+*students.createStudentGroup.tabs
+*
+*students.editStudentGroup.tabLabels
+*students.editStudentGroup.tabs.basic
+*students.editStudentGroup.tabs.students
+*students.editStudentGroup.tabs
