@@ -1,0 +1,122 @@
+@CHARSET "UTF-8";
+
+.ixTable {
+  width: 100%; 
+  display: table;
+}
+
+.ixTableHeaderRow {
+  height: 24px;
+}
+
+.ixTableRowContent {
+  position: relative;
+}
+
+.ixTableClickableRow {
+  cursor: pointer;
+}
+
+.ixTableHeaderCell, .ixTableCell {
+  position: absolute;
+}
+
+.ixTableHeaderCell {
+  font-weight: bold;
+  
+}
+
+.ixTableRowContent {
+  height: 26px;
+}
+
+.ixTableCellEditorText {
+  width: 100%;
+}
+
+.ixTableCellEditorClickable {
+  cursor: pointer;
+}
+
+.ixTableCellEditorNumber {
+  width: 100%;
+  text-align: right; 
+}
+
+.ixTableCellViewerDate {
+  width: 100%;
+  padding-top:3px;
+}
+
+.ixTableCellViewerText {
+  width: 100%;
+  padding-top:3px;
+}
+
+.ixTableCellViewerNumber {
+  width: 100%;
+  text-align: right; 
+  padding-top:3px;
+}
+
+.ixTableCellEditorButton {
+  border: 1px solid #739de7;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  cursor:pointer;
+  width:16px;
+  height:16px;
+  padding:2px 2px 2px 2px;
+}
+
+.ixTableDelRowButton {
+  background-image: url(../gfx/list-remove.png);
+}
+
+.ixTableRowButton {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #739de7;
+  float: right;
+  margin-left: 2px; 
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  margin-top: 0px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:2px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+div.ixTableRowButton:hover{
+
+}
+
+.ixTableCellEditorSelect {
+  border:1px solid #739DE7;
+  -moz-border-radius:3px 3px 3px 3px;
+  -webkit-border-radius:3px 3px 3px 3px;
+  border-radius:3px 3px 3px 3px;
+  padding-top:1px;
+  padding-bottom:1px;
+  padding-left:1px;
+  padding-right:1px;
+  width:inherit;
+}
+
+.ixTableCellViewerDisabled, .ixTableButtonDisabled {
+  opacity: 0.33;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=33)";
+}
+
+.ixTableViewerCheckboxChecked {
+  width: 16px;
+  height: 16px;
+  background-image: url(../gfx/input-checked.png);
+}
