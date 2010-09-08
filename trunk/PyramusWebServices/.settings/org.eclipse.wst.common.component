@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="PyramusWebServices">
+        <wb-resource deploy-path="/" source-path="/WebContent"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <dependent-module archiveName="PyramusPersistence.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPersistence/PyramusPersistence">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/con/org.eclipse.jdt.USER_LIBRARY/Apache Commons Lang 2.5">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/con/org.eclipse.jdt.USER_LIBRARY/Hibernate Search 3.2.1">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/con/org.eclipse.jdt.USER_LIBRARY/EHCache 2.2.0">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/con/org.eclipse.jdt.USER_LIBRARY/Hibernate Validator 4.1.0">
+            <dependency-type>consumes</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="PyramusWebServices"/>
+        <property name="java-output-path" value="/PyramusWebServices/build/classes"/>
+    </wb-module>
+</project-modules>
