@@ -1,7 +1,11 @@
 package fi.pyramus.views.users;
 
+import java.util.Locale;
+
 import fi.pyramus.PageRequestContext;
 import fi.pyramus.UserRole;
+import fi.pyramus.I18N.Messages;
+import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.views.PyramusViewController;
@@ -11,7 +15,7 @@ import fi.pyramus.views.PyramusViewController;
  * 
  * @see fi.pyramus.json.users.CreateUserJSONRequestController
  */
-public class CreateUserViewController implements PyramusViewController {
+public class CreateUserViewController implements PyramusViewController, Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response. 
@@ -34,6 +38,17 @@ public class CreateUserViewController implements PyramusViewController {
    */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+  }
+
+  /**
+   * Returns the localized name of this page. Used e.g. for breadcrumb navigation.
+   * 
+   * @param locale The locale to be used for the name
+   * 
+   * @return The localized name of this page
+   */
+  public String getName(Locale locale) {
+    return Messages.getInstance().getText(locale, "users.createUser.pageTitle");
   }
 
 }
