@@ -90,7 +90,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
         existingEmails.add(emailId);
       }
       else if (emailId > 0 && email != null) {
-        existingAddresses.add(emailId);
+        existingEmails.add(emailId);
         baseDAO.updateEmail(baseDAO.getEmailById(emailId), contactType, defaultAddress, email);
       }
     }
