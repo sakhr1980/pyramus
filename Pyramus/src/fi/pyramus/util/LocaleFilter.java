@@ -39,21 +39,23 @@ public class LocaleFilter implements Filter {
           }
         }
 
-        if (!StringUtils.isBlank(localeCode)) {
-          if (!localeCode.equals(request.getLocale().toString())) {
-            Locale locale;
-            String[] localeCodeS = localeCode.split("_");
-            if (localeCodeS.length == 2)
-              locale = new Locale(localeCodeS[0], localeCodeS[1]);
-            else {
-              locale = new Locale(localeCodeS[0]);
-            }
+        if (StringUtils.isBlank(localeCode)) {
+          localeCode = servletRequest.getLocale().toString();
+        }
 
-            Config.set(request, Config.FMT_LOCALIZATION_CONTEXT, new fi.pyramus.I18N.LocalizationContext(locale));
-            servletRequest = new LocaleRequestWrapper((HttpServletRequest) request, locale);
-          } else {
-            Config.set(request, Config.FMT_LOCALIZATION_CONTEXT, new fi.pyramus.I18N.LocalizationContext(request.getLocale()));
+        if (!localeCode.equals(request.getLocale().toString())) {
+          Locale locale;
+          String[] localeCodeS = localeCode.split("_");
+          if (localeCodeS.length == 2)
+            locale = new Locale(localeCodeS[0], localeCodeS[1]);
+          else {
+            locale = new Locale(localeCodeS[0]);
           }
+
+          Config.set(request, Config.FMT_LOCALIZATION_CONTEXT, new fi.pyramus.I18N.LocalizationContext(locale));
+          servletRequest = new LocaleRequestWrapper((HttpServletRequest) request, locale);
+        } else {
+          Config.set(request, Config.FMT_LOCALIZATION_CONTEXT, new fi.pyramus.I18N.LocalizationContext(request.getLocale()));
         }
       }
     } finally {
