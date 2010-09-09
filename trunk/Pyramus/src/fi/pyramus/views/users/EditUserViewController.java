@@ -1,10 +1,13 @@
 package fi.pyramus.views.users;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.I18N.Messages;
+import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
@@ -19,7 +22,7 @@ import fi.pyramus.views.PyramusViewController;
  * 
  * @see fi.pyramus.json.users.EditUserJSONRequestController
  */
-public class EditUserViewController implements PyramusViewController {
+public class EditUserViewController implements PyramusViewController, Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response. 
@@ -57,6 +60,17 @@ public class EditUserViewController implements PyramusViewController {
    */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+  }
+
+  /**
+   * Returns the localized name of this page. Used e.g. for breadcrumb navigation.
+   * 
+   * @param locale The locale to be used for the name
+   * 
+   * @return The localized name of this page
+   */
+  public String getName(Locale locale) {
+    return Messages.getInstance().getText(locale, "users.editUser.pageTitle");
   }
 
 }
