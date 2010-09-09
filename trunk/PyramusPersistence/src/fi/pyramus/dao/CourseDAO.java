@@ -17,6 +17,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -943,7 +944,7 @@ public class CourseDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser("name", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "name", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
@@ -1077,7 +1078,7 @@ public class CourseDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser("", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 

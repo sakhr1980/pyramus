@@ -148,7 +148,7 @@ public class AbstractStudent {
   
   @Transient
   public Student getLatestStudent()  {
-  	// TODO: Tämä on viimeinen listassa, ei viimeisin student...
+  	// TODO: This is a last student in a list not a latest student
     return students.size() > 0 ? students.get(students.size() - 1) : null;  
   }
   

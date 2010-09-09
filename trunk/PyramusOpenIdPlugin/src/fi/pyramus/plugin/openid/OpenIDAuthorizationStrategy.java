@@ -110,7 +110,7 @@ public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvid
   
       // verify the response
       VerificationResult verification = consumerManager.verify(receivingURL.toString(), openidResp, discovered);
-    
+      
       // examine the verification result and extract the verified identifier
       Identifier verified = verification.getVerifiedId();
 
@@ -129,8 +129,8 @@ public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvid
           user = userDAO.getUserByEmail(emails.get(0));
           if (user != null) {
             String expectedLoginServer = userDAO.getUserVariable(user, "openid.expectedlogin");
-            if (!StringUtils.isBlank(expectedLoginServer)) {
-              // TODO: expectedLoginServer != login throwaa jotai kauhiata!!! 
+            String loginServer = verification.getAuthResponse().getParameterValue("openid.op_endpoint");
+            if (!StringUtils.isBlank(expectedLoginServer) && expectedLoginServer.equals(loginServer)) {
               userDAO.setUserVariable(user, "openid.expectedlogin", null);
               userDAO.updateExternalId(user, verified.getIdentifier());
             } else {

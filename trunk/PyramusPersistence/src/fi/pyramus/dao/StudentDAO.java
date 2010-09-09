@@ -18,6 +18,7 @@ import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -25,12 +26,9 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
-import fi.pyramus.domainmodel.base.Address;
-import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.Language;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
-import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
@@ -370,7 +368,7 @@ public class StudentDAO extends PyramusDAO {
     try {
       String queryString = queryBuilder.toString();
       Query luceneQuery;
-      QueryParser parser = new QueryParser("", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       if (StringUtils.isBlank(queryString)) {
         luceneQuery = new MatchAllDocsQuery();
       } else {
@@ -528,7 +526,7 @@ public class StudentDAO extends PyramusDAO {
     try {
       String queryString = queryBuilder.toString();
       Query luceneQuery;
-      QueryParser parser = new QueryParser("", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       if (StringUtils.isBlank(queryString)) {
         luceneQuery = new MatchAllDocsQuery();
       } else {
@@ -776,7 +774,7 @@ public class StudentDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser("name", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "name", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
@@ -868,7 +866,7 @@ public class StudentDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser("", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
