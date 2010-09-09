@@ -246,7 +246,7 @@ public class CoursesService extends PyramusService {
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
 
-    // TODO: student-parametri (?)
+    // TODO: student-parameter (?)
     courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging);
     validateEntity(courseStudent);
   }

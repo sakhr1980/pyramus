@@ -65,8 +65,6 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
         }
       }
     }
-
-    System.out.println("DownloadReportBinaryRequestController: " + urlBuilder);
     
     binaryRequestContext.setFileName(reportName + '.' + outputFormat.getExt());
     binaryRequestContext.setContentUrl(urlBuilder.toString());
@@ -77,18 +75,13 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
   }
   
   private enum ReportOutputFormat {
-    HTML ("html", "text/html"),
-    PDF  ("pdf", "application/pdf"),
-    RTF  ("rtf", "application/rtf"),
-    XLS  ("xml", "application/vnd.ms-excel");
+    HTML ("html"),
+    PDF  ("pdf"),
+    RTF  ("rtf"),
+    XLS  ("xml");
     
-    ReportOutputFormat (String ext, String mimeType) {
+    ReportOutputFormat (String ext) {
       this.ext = ext;
-      this.mimeType = mimeType;
-    }
-    
-    public String getMimeType() {
-      return mimeType;
     }
     
     public String getExt() {
@@ -96,7 +89,6 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
     }
     
     private String ext;
-    private String mimeType;
   }
   
 

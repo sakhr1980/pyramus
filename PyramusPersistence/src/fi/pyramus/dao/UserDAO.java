@@ -12,7 +12,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.MatchAllDocsQuery;
-import org.hibernate.Criteria;
+import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -303,7 +303,7 @@ public class UserDAO extends PyramusDAO {
     try {
       String queryString = queryBuilder.toString();
       org.apache.lucene.search.Query luceneQuery;
-      QueryParser parser = new QueryParser("", new StandardAnalyzer());
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       if (StringUtils.isBlank(queryString)) {
         luceneQuery = new MatchAllDocsQuery();
       }

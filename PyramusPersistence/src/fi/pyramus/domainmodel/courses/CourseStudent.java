@@ -80,8 +80,6 @@ public class CourseStudent {
   public Boolean getArchived() {
     return archived;
   }
-
-  // TODO: Linja (lukio, pk, vs, ..? )
   
   public void setLodging(Boolean lodging) {
     this.lodging = lodging;
