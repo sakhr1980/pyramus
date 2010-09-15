@@ -106,6 +106,7 @@ public class UpdaterViewController {
       statement.execute(SQL);
       databaseConnection.commit();
       statement.close();
+      logger.info("Runned SQL Query: " + SQL);
     } catch (SQLException e) {
       logger.error("Error occured while running SQL query: " + e.getMessage());
       
@@ -426,7 +427,7 @@ public class UpdaterViewController {
   private Column parseAddTableColumn(Table table, Element fieldElement) {
     String fieldName = fieldElement.getAttribute("name");
     String fieldType = fieldElement.getAttribute("type");
-    boolean fieldNullable = "true".equals(fieldElement.getAttribute("nullable"));
+    boolean fieldNullable = !"false".equals(fieldElement.getAttribute("nullable"));
     String defaultValue = fieldElement.getAttribute("defaultValue");
     Integer length = null;
     String lengthAttr = fieldElement.getAttribute("length");
