@@ -12,7 +12,7 @@ Extracted folder will contain a preference.properties file which contains settin
 
 In that file you need to specify Pyramus updates directory (usually under updates folder inside Pyramus installation directory) and optionally you can specify default database connection settings.  
 
-After that you need to copy jdbc driver inside pyramusupdater_lib folder. For example if you are using MySQL just download connector package from http://www.mysql.com/downloads/connector/j/ and extract mysql-connector-java-x.x.xx-bin.jar from the archive and copy it under pyramusupdater_lib folder.
+After that you need to copy jdbc driver inside drivers folder inside installation directory. For example if you are using MySQL just download connector package from http://www.mysql.com/downloads/connector/j/ and extract mysql-connector-java-x.x.xx-bin.jar from the archive and copy it under drivers folder.
 
 = Usage =
 
@@ -21,3 +21,5 @@ You can run PyramusUpdater simply by double clicking the pyramusupdater jar file
 note that you need to have java installed into your computer.
 
 = XML Syntax =
+
+TODO
