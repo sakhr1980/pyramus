@@ -1226,7 +1226,7 @@
                 <jsp:param name="helpLocale" value="courses.editCourse.localTeachingDaysHelp"/>
               </jsp:include>    
             
-              <input type="text" name="localTeachingDays" value="${fn:escapeXml(course.localTeachingDays)}" size="5">
+              <input type="text" class="float" name="localTeachingDays" value="${fn:escapeXml(course.localTeachingDays)}" size="5">
             </div>
 
             <div class="genericFormSection">  
@@ -1234,7 +1234,7 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.distanceTeachingDaysTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.distanceTeachingDaysHelp"/>
               </jsp:include>    
-              <input type="text" name="distanceTeachingDays" value="${fn:escapeXml(course.distanceTeachingDays)}" size="5">
+              <input type="text" class="float" name="distanceTeachingDays" value="${fn:escapeXml(course.distanceTeachingDays)}" size="5">
             </div>
 
             <div class="genericFormSection">  
@@ -1242,7 +1242,7 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.teachingHoursTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.teachingHoursHelp"/>
               </jsp:include>    
-              <input type="text" name="teachingHours" value="${fn:escapeXml(course.teachingHours)}" size="5">
+              <input type="text" class="float" name="teachingHours" value="${fn:escapeXml(course.teachingHours)}" size="5">
             </div>
 
 	          <div class="genericFormSection">
