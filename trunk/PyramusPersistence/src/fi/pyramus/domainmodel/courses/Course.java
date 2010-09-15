@@ -233,11 +233,11 @@ public class Course extends CourseBase {
     return state;
   }
 
-  public void setTeachingHours(Integer teachingHours) {
+  public void setTeachingHours(Double teachingHours) {
     this.teachingHours = teachingHours;
   }
 
-  public Integer getTeachingHours() {
+  public Double getTeachingHours() {
     return teachingHours;
   }
 
@@ -275,7 +275,7 @@ public class Course extends CourseBase {
   
   private Double localTeachingDays;
   
-  private Integer teachingHours;
+  private Double teachingHours;
   
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @IndexColumn (name = "indexColumn")

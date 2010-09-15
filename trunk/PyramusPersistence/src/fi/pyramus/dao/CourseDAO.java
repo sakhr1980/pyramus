@@ -76,7 +76,7 @@ public class CourseDAO extends PyramusDAO {
    */
   public Course createCourse(Module module, String name, String nameExtension, CourseState state, Subject subject,
       Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
-      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Integer teachingHours, String description,
+      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, String description,
       User creatingUser) {
     Session s = getHibernateSession();
 
@@ -124,7 +124,7 @@ public class CourseDAO extends PyramusDAO {
    */
   public void updateCourse(Course course, String name, String nameExtension, CourseState courseState, Subject subject,
       Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
-      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Integer teachingHours, String description,
+      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, String description,
       User user) {
     Session s = getHibernateSession();
     Date now = new Date(System.currentTimeMillis());
