@@ -16,6 +16,9 @@ After that you need to copy jdbc driver inside pyramusupdater_lib folder. For ex
 
 = Usage =
 
+You can run PyramusUpdater simply by double clicking the pyramusupdater jar file but if that somehow fails you can run the program from terminal with command: `java -jar pyramusupdater.jar`
 
+note that you need to have java installed into your computer.
 
 = XML Syntax =
+
