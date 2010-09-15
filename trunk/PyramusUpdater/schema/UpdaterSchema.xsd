@@ -27,9 +27,9 @@
                           <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:attribute name="length" type="xs:integer"/>
-                              <xs:attribute name="name" use="required" type="xs:NCName"/>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
                               <xs:attribute name="nullable" type="xs:boolean"/>
-                              <xs:attribute name="type" use="required" type="xs:NCName"/>
+                              <xs:attribute name="type" use="required" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -40,18 +40,18 @@
                         <xs:sequence>
                           <xs:element name="key" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
-                              <xs:attribute name="columns" use="required" type="xs:NCName"/>
-                              <xs:attribute name="name" type="xs:NCName"/>
-                              <xs:attribute name="referencedColumns" use="required" type="xs:NCName"/>
-                              <xs:attribute name="referencedTable" use="required" type="xs:NCName"/>
+                              <xs:attribute name="columns" use="required" type="xs:string"/>
+                              <xs:attribute name="name" type="xs:string"/>
+                              <xs:attribute name="referencedColumns" use="required" type="xs:string"/>
+                              <xs:attribute name="referencedTable" use="required" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="name" use="required" type="xs:NCName"/>
-                  <xs:attribute name="primaryKeys" use="required" type="xs:NCName"/>
+                  <xs:attribute name="name" use="required" type="xs:string"/>
+                  <xs:attribute name="primaryKeys" use="required" type="xs:string"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -68,7 +68,7 @@
             <xs:sequence>
               <xs:element name="table" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:attribute name="name" use="required" type="xs:NCName"/>
+                  <xs:attribute name="name" use="required" type="xs:string"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -81,58 +81,73 @@
               <xs:element name="table" minOccurs="1" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="addFields">
+                    <xs:element name="addFields" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:attribute name="length" type="xs:integer"/>
-                              <xs:attribute name="name" use="required" type="xs:NCName"/>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
                               <xs:attribute name="nullable" type="xs:boolean"/>
-                              <xs:attribute name="type" use="required" type="xs:NCName"/>
+                              <xs:attribute name="type" use="required" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="dropFields">
+                    <xs:element name="dropFields" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
-                              <xs:attribute name="name" use="required" type="xs:NCName"/>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="addForeignKeys">
+                    <xs:element name="changeFields" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="key" minOccurs="1" maxOccurs="unbounded">
+                          <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
-                              <xs:attribute name="columns" use="required" type="xs:NCName"/>
-                              <xs:attribute name="name" type="xs:NCName"/>
-                              <xs:attribute name="referencedColumns" use="required" type="xs:NCName"/>
-                              <xs:attribute name="referencedTable" use="required" type="xs:NCName"/>
+                              <xs:attribute name="length" type="xs:integer"/>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
+                              <xs:attribute name="nullable" type="xs:boolean"/>
+                              <xs:attribute name="type" use="required" type="xs:string"/>
+                              <xs:attribute name="newName" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="dropForeignKeys">
+                    <xs:element name="addForeignKeys" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element name="key" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
-                              <xs:attribute name="name" use="required" type="xs:NCName"/>
+                              <xs:attribute name="columns" use="required" type="xs:string"/>
+                              <xs:attribute name="name" type="xs:string"/>
+                              <xs:attribute name="referencedColumns" use="required" type="xs:string"/>
+                              <xs:attribute name="referencedTable" use="required" type="xs:string"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="dropForeignKeys" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="key" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="name" use="required" type="xs:string"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="name" use="required" type="xs:NCName"/>
+                  <xs:attribute name="name" use="required" type="xs:string"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
