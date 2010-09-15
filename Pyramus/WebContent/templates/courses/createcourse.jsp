@@ -926,7 +926,7 @@
                 <jsp:param name="helpLocale" value="courses.createCourse.localTeachingDaysHelp"/>
               </jsp:include>
 
-              <input type="text" name="localTeachingDays" size="5">
+              <input type="text" class="float" name="localTeachingDays" size="5">
             </div>
 
             <div class="genericFormSection">  
@@ -935,7 +935,7 @@
                 <jsp:param name="helpLocale" value="courses.createCourse.distanceTeachingDaysHelp"/>
               </jsp:include>
 
-              <input type="text" name="distanceTeachingDays" size="5">
+              <input type="text" class="float" name="distanceTeachingDays" size="5">
             </div>
   
             <div class="genericFormSection">  
@@ -944,7 +944,7 @@
                 <jsp:param name="helpLocale" value="courses.createCourse.teachingHoursHelp"/>
               </jsp:include>
 
-              <input type="text" name="teachingHours" size="5">
+              <input type="text" class="float" name="teachingHours" size="5">
             </div>
 
             <div class="genericFormSection">
