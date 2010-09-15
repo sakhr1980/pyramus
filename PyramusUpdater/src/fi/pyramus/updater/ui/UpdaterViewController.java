@@ -217,7 +217,8 @@ public class UpdaterViewController {
       PreparedStatement statement = databaseConnection.prepareStatement("update UpdaterProperties set value = ? where name = ?");
       statement.setString(1, newestVersion.toString());
       statement.setString(2, "databaseVersion");
-      if (!statement.execute()) {
+      
+      if (statement.executeUpdate() == 0) {
         statement = databaseConnection.prepareStatement("insert into UpdaterProperties (name, value) values (?, ?)");
         statement.setString(1, "databaseVersion");
         statement.setString(2, newestVersion.toString());
@@ -229,10 +230,10 @@ public class UpdaterViewController {
       try {
         databaseConnection.rollback();
         logger.error("Database version setting failed");
-        throw new UpdaterException("Database version setting failed");
+        throw new UpdaterException("Database version setting failed: " + e);
       } catch (SQLException e1) {
         logger.error("Database version setting failed");
-        throw new UpdaterException("Database version setting failed");
+        throw new UpdaterException("Database version setting failed" + e1);
       }
     }
   }
@@ -357,6 +358,48 @@ public class UpdaterViewController {
         throw new UpdaterException("Drop column: Column needs a name");
       removeTableColumn(table, columnName);
       upgradeBatch.addDropColumn(table, columnName);
+    }
+    
+    fieldIterator = XPathAPI.selectNodeIterator(tableElement, "changeFields/field");
+    while ((fieldElement = (Element) fieldIterator.nextNode()) != null) {
+      String oldFieldName = fieldElement.getAttribute("name");
+      String newFieldName = fieldElement.getAttribute("newName");
+      String fieldType = fieldElement.getAttribute("type");
+      boolean fieldNullable = !"false".equals(fieldElement.getAttribute("nullable"));
+      String defaultValue = fieldElement.getAttribute("defaultValue");
+      Integer length = null;
+      String lengthAttr = fieldElement.getAttribute("length");
+      if (NumberUtils.isNumber(lengthAttr))
+        length = NumberUtils.createInteger(lengthAttr);
+      Integer scale = null;
+      String scaleAttr = fieldElement.getAttribute("scale");
+      if (NumberUtils.isNumber(scaleAttr))
+        scale = NumberUtils.createInteger(scaleAttr);
+      boolean unique = "true".equals(fieldElement.getAttribute("unique"));
+
+      org.hibernate.type.Type type = TypeFactory.basic(fieldType);
+      
+      if (StringUtils.isBlank(newFieldName)) {
+        newFieldName = oldFieldName;
+      }
+
+      Column column = new Column(newFieldName);
+      column.setNullable(fieldNullable);
+      column.setUnique(unique);
+      column.setValue(new ValueAdapter(table, type));
+
+      if (!StringUtils.isBlank(defaultValue))
+        column.setDefaultValue(defaultValue);
+      if (length != null)
+        column.setLength(length);
+      if (scale != null)
+        column.setScale(scale);
+      
+      String columnName = fieldElement.getAttribute("name");
+      if (StringUtils.isBlank(columnName))
+        throw new UpdaterException("Drop column: Column needs a name");
+      removeTableColumn(table, columnName);
+      upgradeBatch.addChangeColumn(table, oldFieldName, column);
     }
 
     NodeIterator keyIterator = XPathAPI.selectNodeIterator(tableElement, "dropForeignKeys/key");

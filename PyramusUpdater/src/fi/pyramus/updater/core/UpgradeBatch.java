@@ -24,6 +24,10 @@ public class UpgradeBatch {
     operations.add(new AddColumnUpdateOperation(table, column));
   }
   
+  public void addChangeColumn(Table table, String oldName, Column column) {
+    operations.add(new ChangeColumnUpdateOperation(table, oldName, column));
+  }
+  
   public void addDropColumn(Table table, String columnName) {
     operations.add(new DropColumnUpdateOperation(table, columnName));
   }
