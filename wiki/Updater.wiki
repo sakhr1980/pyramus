@@ -21,4 +21,3 @@ You can run PyramusUpdater simply by double clicking the pyramusupdater jar file
 note that you need to have java installed into your computer.
 
 = XML Syntax =
-
