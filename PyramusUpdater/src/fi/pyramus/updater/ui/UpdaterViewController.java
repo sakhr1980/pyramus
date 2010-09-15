@@ -98,6 +98,7 @@ public class UpdaterViewController {
     }
     
     updateVersionInfo();
+    logger.info("Upgrade succesfull");
   }
     
   private void runSQL(String SQL) {
@@ -174,7 +175,7 @@ public class UpdaterViewController {
           if (versionFolder.isDirectory()) {
             UpdateVersion fileVersion = UpdateVersion.parseVersion(versionFolder.getName());
             
-            if (fileVersion.isNewerThan(getCurrentVersion())) {
+            if ((fileVersion != null) && (fileVersion.isNewerThan(getCurrentVersion()))) {
               File[] folderFiles = versionFolder.listFiles(xmlFileFilter);
               for (File folderFile : folderFiles) {
                 updateFiles.add(new UpdateFile(folderFile, fileVersion));
@@ -220,17 +221,17 @@ public class UpdaterViewController {
         statement = databaseConnection.prepareStatement("insert into UpdaterProperties (name, value) values (?, ?)");
         statement.setString(1, "databaseVersion");
         statement.setString(2, newestVersion.toString());
-        if (!statement.execute()) {
-          throw new UpdaterException("Database version setting failed");
-        }
+        statement.execute();
       }
       
       databaseConnection.commit();
     } catch (SQLException e) {
       try {
         databaseConnection.rollback();
+        logger.error("Database version setting failed");
         throw new UpdaterException("Database version setting failed");
       } catch (SQLException e1) {
+        logger.error("Database version setting failed");
         throw new UpdaterException("Database version setting failed");
       }
     }
