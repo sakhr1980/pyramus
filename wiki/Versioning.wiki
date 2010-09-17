@@ -4,7 +4,7 @@
 
 Pyramus's version is compound of date number, build number and revision number separated by dots (DATE.BUILD.REVISION).
 
-This is a real version number of Pyramus but there is also a "human readable" version of version number. This number does not have any real meaning in code wise but it is easier to remember than the real version.   
+This is a real version number of Pyramus but there is also a "human readable" version of version number. This number does not have any real meaning but it exists because it's easier to remember than the real version number.   
 
 For example Pyramus's version could be 1.2 (100920.28.1294), which means that it has build 10th of September from revision 1294 and was 28th build of Pyramus. 
 
