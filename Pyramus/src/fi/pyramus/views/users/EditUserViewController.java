@@ -54,7 +54,7 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
 
   /**
    * Returns the roles allowed to access this page. Available for only those
-   * with {@link Role#ADMINISTRATOR} privileges.
+   * with {@link Role#MANAGER} or {@link Role#ADMINISTRATOR} privileges.
    * 
    * @return The roles allowed to access this page
    */

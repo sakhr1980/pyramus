@@ -32,7 +32,7 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
 
   /**
    * Returns the roles allowed to access this page. Creating new users requires
-   * {@link Role#ADMINISTRATOR} privileges.
+   * {@link Role#MANAGER} or {@link Role#ADMINISTRATOR} privileges.
    * 
    * @return The roles allowed to access this page
    */

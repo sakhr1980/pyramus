@@ -98,6 +98,7 @@
             dataType : 'select',
             paramName: 'optionality',
             editable: true,
+            overwriteColumnValues : true,
             options: [
               {text: '<fmt:message key="projects.editProject.optionalityMandatory"/>', value: 0},
               {text: '<fmt:message key="projects.editProject.optionalityOptional"/>', value: 1}
