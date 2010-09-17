@@ -116,7 +116,7 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
     
     var tableId = element.getAttribute("ix:tableid");
     
-    if (tableId.blank())
+    if (!tableId || tableId.blank())
       return null;
     
     var table = getIxTableById(tableId);
