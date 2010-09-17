@@ -63,7 +63,8 @@ IxTable = Class.create({
       
       if (column.overwriteColumnValues) {
         var copyNode = Builder.node("div", {
-          className : "ixTableHeaderColumValueButton"
+          className : "ixTableHeaderColumValueButton",
+          title: getLocale().getText('generic.ixTable.overwriteColumnValues.tooltip')
         }, []);
         var _this = this;
         Event.observe(copyNode, "click", function (event) {
