@@ -12,6 +12,6 @@ Besides normal Pyramus version there is a database version. Database version con
 
 = Summary =
 
-Version number: MINOR.MAJOR (DATE.BUILD.REVISION) eg. 1.2 (100920.28.1294)
-Human readable version: 1.2 MINOR.MAJOR
+Version number: MINOR.MAJOR (DATE.BUILD.REVISION) eg. 1.2 (100920.28.1294)<br/>
+Human readable version: 1.2 MINOR.MAJOR<br/>
 Database version number: BUILD.SEQ 28.007
