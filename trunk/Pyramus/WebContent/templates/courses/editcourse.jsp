@@ -846,6 +846,7 @@
             right : 546,
             dataType : 'select',
             editable: true,
+            overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
               <c:forEach var="courseParticipationType" items="${courseParticipationTypes}" varStatus="vs">
@@ -859,6 +860,7 @@
             right : 338,
             dataType: 'date',
             editable: true,
+            overwriteColumnValues : true,
             paramName: 'enrolmentDate'
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
@@ -879,6 +881,7 @@
             right : 38,
             dataType: 'select', 
             editable: true,
+            overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
               {text: '<fmt:message key="courses.editCourse.studentsTableLodgingYes"/>', value: 'true'},

@@ -97,6 +97,7 @@
             dataType : 'select',
             paramName: 'studyTerm',
             editable: true,
+            overwriteColumnValues : true,
             options: [
               {text: "", value: -1}
               <c:if test="${not empty academicTerms}">,</c:if>
@@ -111,6 +112,7 @@
             dataType : 'select',
             paramName: 'optionality',
             editable: true,
+            overwriteColumnValues : true,
             options: [
               {text: '<fmt:message key="projects.editStudentProject.optionalityMandatory"/>', value: 0},
               {text: '<fmt:message key="projects.editStudentProject.optionalityOptional"/>', value: 1}

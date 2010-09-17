@@ -12,6 +12,10 @@ public class BreadcrumbHandler {
     breadcrumbs.clear();
   }
   
+  public boolean contains(HttpServletRequest request) {
+    return indexOf(getBreadcrumbUrl(request)) >= 0;
+  }
+  
   public void process(HttpServletRequest request, Breadcrumbable breadcrumbable) {
     if (request.getParameter("resetbreadcrumb") != null) {
       clear();
@@ -38,6 +42,12 @@ public class BreadcrumbHandler {
   
   private boolean isBreadcrumbParameter(String s) {
     return "resetbreadcrumb".equals(s);
+  }
+  
+  public void pop() {
+    if (getSize() > 0) {
+      breadcrumbs.remove(breadcrumbs.size() - 1);
+    }
   }
   
   private void prune(int index) {

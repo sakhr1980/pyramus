@@ -53,9 +53,32 @@ IxTable = Class.create({
       
       this._hasHeader = this._hasHeader || !((column.header == '') || (!column.header));
       
+      var headerTextNode = Builder.node("div", {
+        className : "ixTableHeaderCellText"
+      }, [ column.header ]);
+      
       var headerCell = Builder.node("div", {
         className : "ixTableHeaderCell"
-      }, [ column.header ]);
+      }, [ headerTextNode ]);
+      
+      if (column.overwriteColumnValues) {
+        var copyNode = Builder.node("div", {
+          className : "ixTableHeaderColumValueButton"
+        }, []);
+        var _this = this;
+        Event.observe(copyNode, "click", function (event) {
+          var columnNode = Event.element(event).parentNode;
+          var index = 0;
+          while (columnNode = columnNode.previousSibling) {
+            ++index;
+          }
+          if (_this.getRowCount() > 1) {
+            var value = _this.getCellValue(0, index);
+            _this.overwriteColumnValue(index, value);
+          }
+        });
+        headerCell.appendChild(copyNode);
+      }
 
       if ((column.left != undefined) && (column.left != NaN)) {
         headerCell.setStyle( {
@@ -240,6 +263,11 @@ IxTable = Class.create({
       column: column, 
       value: value
     });
+  },
+  overwriteColumnValue: function(column, value) {
+    for (var i = 0; i < this.getRowCount(); i++) {
+      this.setCellValue(i, column, value);
+    }
   },
   disableCellEditor: function (row, column) {
     var handlerInstance = this.getCellEditor(row, column);
