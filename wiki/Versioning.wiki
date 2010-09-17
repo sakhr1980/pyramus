@@ -1,0 +1,17 @@
+#summary Pyramus vesioning explained
+
+= Pyramus version =
+
+Pyramus's version is compound of date number, build number and revision number separated by dots (DATE.BUILD.REVISION).
+
+This is a real version number of Pyramus but there is also a "human readable" version of version number. This number does not have any real meaning in code wise but it is easier to remember than the real version.   
+
+For example Pyramus's version could be 1.2 (100920.28.1294), which means that it has build 10th of September from revision 1294 and was 28th build of Pyramus. 
+
+Besides normal Pyramus version there is a database version. Database version consists from build number and sequence number that is reset after every build.    
+
+= Summary =
+
+Version number: MINOR.MAJOR (DATE.BUILD.REVISION) eg. 1.2 (100920.28.1294)
+Human readable version: 1.2 MINOR.MAJOR
+Database version number: BUILD.SEQ 28.007
