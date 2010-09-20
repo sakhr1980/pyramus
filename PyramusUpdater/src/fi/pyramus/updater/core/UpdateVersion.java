@@ -5,12 +5,12 @@ import org.apache.commons.lang.math.NumberUtils;
 
 public class UpdateVersion {
 
-  public UpdateVersion(int major, int minor) {
+  public UpdateVersion(int major, float minor) {
     this.major = major;
     this.minor = minor;
   }
   
-  public int getMinor() {
+  public float getMinor() {
     return minor;
   }
   
@@ -24,7 +24,7 @@ public class UpdateVersion {
   
   @Override
   public String toString() {
-    return String.valueOf(getMajor()) + '.' + String.valueOf(getMinor());
+    return String.valueOf(getMajor() + getMinor());
   }
 
   public float toFloat() {
@@ -35,13 +35,15 @@ public class UpdateVersion {
     if (!StringUtils.isBlank(string)) {
       String[] tmp = string.split("\\.");
       if (tmp.length == 2 && StringUtils.isNumeric(tmp[0]) && StringUtils.isNumeric(tmp[1])) {
-        return new UpdateVersion(NumberUtils.createInteger(tmp[0]), NumberUtils.createInteger(tmp[1]));
+        String major = tmp[0];
+        String minor = "0." + tmp[1];
+        return new UpdateVersion(NumberUtils.createInteger(major), NumberUtils.createFloat(minor));
       }
     }
     
     return null;
   }
   
-  private int minor;
+  private float minor;
   private int major;
 }
