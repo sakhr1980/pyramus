@@ -1222,6 +1222,15 @@
 	              </td>
 	            </tr>
 	          </table>
+  
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.planningHoursTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.planningHoursHelp"/>
+              </jsp:include>    
+            
+              <input type="text" class="float" name="planningHours" value="${fn:escapeXml(course.planningHours)}" size="5">
+            </div>
 	
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -1246,6 +1255,15 @@
                 <jsp:param name="helpLocale" value="courses.editCourse.teachingHoursHelp"/>
               </jsp:include>    
               <input type="text" class="float" name="teachingHours" value="${fn:escapeXml(course.teachingHours)}" size="5">
+            </div>
+  
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.assessingHoursTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.assessingHoursHelp"/>
+              </jsp:include>    
+            
+              <input type="text" class="float" name="assessingHours" value="${fn:escapeXml(course.assessingHours)}" size="5">
             </div>
 
 	          <div class="genericFormSection">

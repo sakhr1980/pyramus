@@ -78,10 +78,13 @@ public class EditCourseJSONRequestController implements JSONRequestController {
     Double distanceTeachingDays = requestContext.getDouble("distanceTeachingDays");
     Double localTeachingDays = requestContext.getDouble("localTeachingDays");
     Double teachingHours = requestContext.getDouble("teachingHours");
+    Double planningHours = requestContext.getDouble("planningHours");
+    Double assessingHours = requestContext.getDouble("assessingHours");
     User user = userDAO.getUser(requestContext.getLoggedUserId());
 
     courseDAO.updateCourse(course, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
-        courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, description, user);
+        courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
+        description, user);
 
     // Education types and subtypes submitted from the web page
 
