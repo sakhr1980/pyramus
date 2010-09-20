@@ -20,7 +20,7 @@
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
-    
+
     <script type="text/javascript">
       // Course components
       
@@ -319,6 +319,30 @@
                   <jsp:param name="helpLocale" value="courses.viewCourse.lengthHelp" />
                 </jsp:include>
                 <div>${course.courseLength.units} ${course.courseLength.unit.name}</div>
+              </div>
+            </c:when>
+          </c:choose> 
+          
+          <c:choose>
+            <c:when test="${course.assessingHours gt 0}">
+              <div class="genericFormSection">
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                <jsp:param name="titleLocale" value="courses.viewCourse.assessingHoursTitle" />
+	                <jsp:param name="helpLocale" value="courses.viewCourse.assessingHoursHelp" />
+	              </jsp:include>
+                <div>${course.assessingHours}</div>
+              </div>
+	          </c:when>
+	        </c:choose> 
+	        
+	        <c:choose>
+            <c:when test="${course.planningHours gt 0}">
+              <div class="genericFormSection">
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="courses.viewCourse.planningHoursTitle" />
+                  <jsp:param name="helpLocale" value="courses.viewCourse.planningHoursHelp" />
+                </jsp:include>
+                <div>${course.planningHours}</div>
               </div>
             </c:when>
           </c:choose> 
