@@ -50,6 +50,4 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/fniprototypeext/fniprototypeext.js"></script>
 <!--[if IE]><style> img {behavior: url(${pageContext.request.contextPath}/scripts/fniprototypeext/fniprototypeext/fniprototypeext_imgfix.htc.htc)}</style><![endif]--> 
 <!--<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/validation/validation.js"></script>-->
-<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/fnieventsupport/fnieventsupport.js"></script>
-
 <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/cookie/ixcookies.js"></script>

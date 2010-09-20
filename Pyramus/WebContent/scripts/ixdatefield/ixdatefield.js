@@ -175,7 +175,7 @@ IxDateField = Class.create({
 
 var __ixDateFields = new Array(); 
 
-Object.extend(IxDateField.prototype, FNIEventSupport);
+Object.extend(IxDateField.prototype,fni.events.FNIEventSupport);
 
 function replaceDateField(field) {
   var dateField = new IxDateField({ element: field });

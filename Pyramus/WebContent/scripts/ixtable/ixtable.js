@@ -446,7 +446,7 @@ IxTable = Class.create({
   }
 });
 
-Object.extend(IxTable.prototype, FNIEventSupport);
+Object.extend(IxTable.prototype,fni.events.FNIEventSupport);
 
 function getIxTableById(id) {
   return _ixTables.get(id);
@@ -647,7 +647,7 @@ IxTableEditorController = Class.create({
   }
 });
 
-Object.extend(IxTableEditorController.prototype, FNIEventSupport);
+Object.extend(IxTableEditorController.prototype,fni.events.FNIEventSupport);
 
 IxNumberTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
