@@ -8,9 +8,9 @@ PyramusUpdater is a tool for updating database from version to another.
 
 Download a precompiled version of PyramusUpdater from http://code.google.com/p/pyramus/downloads/ and extract the package somewhere in your hard drive.
 
-Extracted folder will contain a preference.properties file which contains settings for the program.
+Extracted folder will contain a preference.sample which is the sample of preferences.properties file.
 
-In that file you need to specify Pyramus updates directory (usually under updates folder inside Pyramus installation directory) and optionally you can specify default database connection settings.  
+Rename preference.sample file to preferences.properties and specify Pyramus updates directory. If you want you can specify default database connection settings in that same file.  
 
 After that you need to copy jdbc driver inside drivers folder inside installation directory. For example if you are using MySQL just download connector package from http://www.mysql.com/downloads/connector/j/ and extract mysql-connector-java-x.x.xx-bin.jar from the archive and copy it under drivers folder.
 
