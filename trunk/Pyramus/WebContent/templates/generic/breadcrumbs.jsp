@@ -4,7 +4,7 @@
 
 <c:if test="${breadcrumbHandler.size>0}">
   <div>
-    <a href="${pageContext.request.contextPath}/index.page"><fmt:message key="generic.navigation.index" /></a>
+    <a href="${pageContext.request.contextPath}/index.page?resetbreadcrumb=1"><fmt:message key="generic.navigation.index" /></a>
     <c:forEach var="breadcrumb" items="${breadcrumbHandler.breadcrumbs}">
       &nbsp;&gt;&nbsp;
       <a href="${breadcrumb.url}">${breadcrumb.name}</a>

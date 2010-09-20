@@ -17,9 +17,6 @@ public class BreadcrumbHandler {
   }
   
   public void process(HttpServletRequest request, Breadcrumbable breadcrumbable) {
-    if (request.getParameter("resetbreadcrumb") != null) {
-      clear();
-    }
     String url = getBreadcrumbUrl(request);
     int index = indexOf(url);
     if (index == -1) {

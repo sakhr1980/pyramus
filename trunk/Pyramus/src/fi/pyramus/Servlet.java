@@ -106,16 +106,15 @@ public class Servlet extends HttpServlet {
             // Handle breadcrumbs for get requests
   
             BreadcrumbHandler breadcrumbHandler = getBreadcrumbHandler(request);
+            if (request.getParameter("resetbreadcrumb") != null) {
+              breadcrumbHandler.clear();
+            }
             if (requestController instanceof Breadcrumbable && "GET".equals(request.getMethod())) {
-              // TODO browser Back "fix" that causes side effects nearly as bad as what it's trying to fix...
               if (!breadcrumbHandler.contains(request) && request.getHeader("Referer") == null) {
                 breadcrumbHandler.clear();
               }
               Breadcrumbable breadcrumbable = (Breadcrumbable) requestController;
               breadcrumbHandler.process(request, breadcrumbable);
-            }
-            else {
-              breadcrumbHandler.clear();
             }
   
             ((PyramusViewController) requestController).process((PageRequestContext) requestContext);
