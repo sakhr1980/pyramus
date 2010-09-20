@@ -8,11 +8,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.StringUtils;
-
-import fi.pyramus.plugin.PluginDescriptor;
-import fi.pyramus.plugin.PluginVault;
-
 public class JavaScriptMessages {
 
   public static JavaScriptMessages getInstance() {
