@@ -76,8 +76,8 @@ public class CourseDAO extends PyramusDAO {
    */
   public Course createCourse(Module module, String name, String nameExtension, CourseState state, Subject subject,
       Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
-      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, String description,
-      User creatingUser) {
+      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, 
+      Double planningHours, Double assessingHours, String description, User creatingUser) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -96,8 +96,9 @@ public class CourseDAO extends PyramusDAO {
     course.getCourseLength().setUnits(courseLength);
     course.setLocalTeachingDays(localTeachingDays);
     course.setDistanceTeachingDays(distanceTeachingDays);
-    course.setTeachingHours(teachingHours);
-
+    course.setTeachingHours(teachingHours);    
+    course.setPlanningHours(planningHours);
+    course.setAssessingHours(assessingHours);
     course.setCreator(creatingUser);
     course.setCreated(now);
     course.setLastModifier(creatingUser);
@@ -124,8 +125,8 @@ public class CourseDAO extends PyramusDAO {
    */
   public void updateCourse(Course course, String name, String nameExtension, CourseState courseState, Subject subject,
       Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
-      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, String description,
-      User user) {
+      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, 
+      Double planningHours, Double assessingHours, String description, User user) {
     Session s = getHibernateSession();
     Date now = new Date(System.currentTimeMillis());
     course.setName(name);
@@ -141,8 +142,11 @@ public class CourseDAO extends PyramusDAO {
     course.setDistanceTeachingDays(distanceTeachingDays);
     course.setLocalTeachingDays(localTeachingDays);
     course.setTeachingHours(teachingHours);
+    course.setPlanningHours(planningHours);
+    course.setAssessingHours(assessingHours);
     course.setLastModifier(user);
     course.setLastModified(now);
+    
     s.saveOrUpdate(course);
   }
 

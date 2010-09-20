@@ -248,7 +248,23 @@ public class Course extends CourseBase {
   public Double getDistanceTeachingDays() {
     return distanceTeachingDays;
   }
-
+  
+  public Double getAssessingHours() {
+    return assessingHours;
+  }
+  
+  public void setAssessingHours(Double assessingHours) {
+    this.assessingHours = assessingHours;
+  }
+  
+  public Double getPlanningHours() {
+    return planningHours;
+  }
+  
+  public void setPlanningHours(Double planningHours) {
+    this.planningHours = planningHours;
+  }
+  
   @ManyToOne
   @JoinColumn(name="module")
   private Module module;
@@ -273,9 +289,13 @@ public class Course extends CourseBase {
   
   private Double distanceTeachingDays;
   
+  private Double planningHours; 
+  
   private Double localTeachingDays;
   
   private Double teachingHours;
+  
+  private Double assessingHours;
   
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @IndexColumn (name = "indexColumn")

@@ -922,6 +922,15 @@
 	              </td>
 	            </tr>
 	          </table>
+  
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.createCourse.planningHoursTitle"/>
+                <jsp:param name="helpLocale" value="courses.createCourse.planningHoursHelp"/>
+              </jsp:include>    
+            
+              <input type="text" class="float" name="planningHours" size="5">
+            </div>
 	
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -948,6 +957,15 @@
               </jsp:include>
 
               <input type="text" class="float" name="teachingHours" size="5">
+            </div>
+  
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.createCourse.assessingHoursTitle"/>
+                <jsp:param name="helpLocale" value="courses.createCourse.assessingHoursHelp"/>
+              </jsp:include>    
+            
+              <input type="text" class="float" name="assessingHours" size="5">
             </div>
 
             <div class="genericFormSection">
