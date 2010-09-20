@@ -183,7 +183,7 @@ IxSearchNavigationPage = Class.create({
   }
 });
 
-Object.extend(IxSearchNavigationPage.prototype, FNIEventSupport);
+Object.extend(IxSearchNavigationPage.prototype, fni.events.FNIEventSupport);
 
 function getSearchNavigationById(id) {
   return _ixSearchNavigations.get(id);
