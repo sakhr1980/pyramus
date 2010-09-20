@@ -1,0 +1,32 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
+  <persistence-unit name="pyramusManager" transaction-type="JTA">
+    <provider>fi.pyramus.persistence.PersistenceProviderWrapper</provider>
+    <jta-data-source>jdbc/pyramus</jta-data-source>
+    <properties>
+      <property name="hibernate.session_factory_name" value="pyramusSessionFactory" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+      <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+      <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" />
+      <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
+      <property name="hibernate.current_session_context_class" value="jta" />
+      <property name="hibernate.generate_statistics" value="true" />
+      <property name="hibernate.show_sql" value="true" />
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="pyramusNonJTAManager" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <non-jta-data-source>jdbc/pyramus</non-jta-data-source>
+    <properties>
+      <property name="hibernate.session_factory_name" value="pyramusSessionFactory" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+      <property name="hibernate.cache.use_second_level_cache" value="false" />
+      <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" />
+      <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
+      <property name="hibernate.current_session_context_class" value="thread" />
+      <property name="hibernate.generate_statistics" value="true" />
+    </properties>
+  </persistence-unit>
+
+</persistence>

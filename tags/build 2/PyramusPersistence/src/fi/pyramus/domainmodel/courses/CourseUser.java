@@ -1,0 +1,69 @@
+package fi.pyramus.domainmodel.courses;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.TableGenerator;
+
+import org.hibernate.search.annotations.IndexedEmbedded;
+
+import fi.pyramus.domainmodel.users.User;
+
+/**
+ * Representation of a Pyramus user within a course. Models, for example, the teachers and tutors of a course. 
+ */
+@Entity
+public class CourseUser {
+  
+  public Long getId() {
+    return id;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
+  public Course getCourse() {
+    return course;
+  }
+
+  public void setCourse(Course course) {
+    this.course = course;
+  }
+
+  public void setRole(CourseUserRole role) {
+    this.role = role;
+  }
+
+  public CourseUserRole getRole() {
+    return role;
+  }
+
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseUser")  
+  @TableGenerator(name="CourseUser", allocationSize=1)
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name="course")
+  private Course course;
+  
+  @ManyToOne 
+  @JoinColumn(name="pyramusUser")
+  @IndexedEmbedded
+  private User user;
+  
+  @ManyToOne 
+  @JoinColumn(name="userRole")
+  @IndexedEmbedded
+  private CourseUserRole role;
+
+}
