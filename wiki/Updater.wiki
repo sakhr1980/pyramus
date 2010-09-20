@@ -22,4 +22,4 @@ note that you need to have java installed into your computer.
 
 = XML Syntax =
 
-TODO
+If you need to make your own Pyramus updates you should use format from updater schema. Schema can be found from following url: http://www.ofw.fi/xml/2010/pyramus/UpdaterSchema.xsd
