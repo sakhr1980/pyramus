@@ -1,4 +1,15 @@
 #summary ChangeLog of Pyramus
 
+=Version 0.11 (100920.2)=
+  * JavaScript localization support via FNILocale version 0.1
+  * Support for overwriting column values in tables
+  * Planning and assessing hours for courses
+  * Changed the data type of local teaching days from integer to double
+  * Upgraded CKEditor to version 3.4
+  * Upgraded FNIEvents to version 0.1
+  * Fix issue 2 : Create user does not save emails
+  * Fix issue 3 : Missing locale until one has been set the first time
+  * Fix issue 4 : User-related views don't have breadcrumb navigation
+
 =Version 0.1 (100917.1)=
   * First official build
