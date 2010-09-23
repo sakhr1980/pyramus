@@ -181,6 +181,10 @@ public class DataImporter {
         
         if (!"storeVariable".equals(propertyName)) {
           String propertyValue = attribute.getNodeValue();
+          if (propertyValue.startsWith("{") && propertyValue.endsWith("}")) {
+            propertyValue = String.valueOf(getStoredValue(propertyValue.substring(1, propertyValue.length() - 1)));
+          }
+          
           System.out.println("    >> property: " + propertyName + " to " + propertyValue);
           setValue(pojo, propertyName, propertyValue);
         }
@@ -342,7 +346,7 @@ public class DataImporter {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     
     Long id;
-    if (identifier.startsWith("{")) {
+    if (identifier.startsWith("{") && identifier.endsWith("}")) {
       id = getStoredValue(identifier.substring(1, identifier.length() - 1));
       if (id == null)
         throw new PyramusRuntimeException(new Exception("Could not resolve: " + identifier));
