@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.StringWriter;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -38,12 +41,28 @@ public class UpdaterView extends VisualView {
         updaterController.performUpgrade();
       }
     });
+   
+    this.executeSqlsCheckBox.addItemListener(new ItemListener() {
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        if (!isExecuteSqlsChecked())
+          logger.info("Simulation mode enabled");
+        else
+          logger.info("Execution mode enabled");
+      }
+    });
   }
-  
+
   private void buildUi() {
+    JPanel topPanel = new JPanel(new BorderLayout());
+    topPanel.setBorder(BorderFactory.createEmptyBorder(0,5,0,0));
+    
+    executeSqlsCheckBox = new JCheckBox("Execute SQL scripts", true);
+    topPanel.add(executeSqlsCheckBox, BorderLayout.WEST);
+    
     // center panel
 
-    JPanel topPanel = new JPanel(new GridLayout(2, 0));
+    JPanel centerPanel = new JPanel(new GridLayout(2, 0));
     
     updatesList = new JList();
     updatesList.setEnabled(false);
@@ -51,14 +70,14 @@ public class UpdaterView extends VisualView {
     
     JPanel updatesListPanel = createLabeledComponent("Required updates", updatesListScrollPane);
     updatesListPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
-    topPanel.add(updatesListPanel);
+    centerPanel.add(updatesListPanel);
     
     logTextArea = new JTextArea();
     JScrollPane logTextAreaScrollPane = new JScrollPane(logTextArea);
     JPanel logPanel = createLabeledComponent("Log", logTextAreaScrollPane);
     logPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,10));
     logTextAreaScrollPane.setAutoscrolls(true);
-    topPanel.add(logPanel);  
+    centerPanel.add(logPanel);  
 
     Logger.getRootLogger().addAppender(new JTextAreaAppender(logTextArea));
     
@@ -70,7 +89,8 @@ public class UpdaterView extends VisualView {
     
     bottomPanel.add(upgradeButton, BorderLayout.CENTER);
     
-    getContentPane().add(topPanel, BorderLayout.CENTER);
+    getContentPane().add(topPanel, BorderLayout.NORTH);
+    getContentPane().add(centerPanel, BorderLayout.CENTER);
     getContentPane().add(bottomPanel, BorderLayout.SOUTH);
   }
   
@@ -78,10 +98,16 @@ public class UpdaterView extends VisualView {
     updatesList.setListData(items);  
   }
   
+  public boolean isExecuteSqlsChecked() {
+    return executeSqlsCheckBox.isSelected();
+  }
+  
+  private Logger logger = Logger.getRootLogger();
   private UpdaterViewController updaterController;
   private JButton upgradeButton;
   private JList updatesList; 
   private JTextArea logTextArea;
+  private JCheckBox executeSqlsCheckBox;
   
   private class JTextAreaAppender extends WriterAppender {
     
