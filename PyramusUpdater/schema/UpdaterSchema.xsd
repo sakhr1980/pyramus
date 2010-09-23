@@ -30,6 +30,7 @@
                               <xs:attribute name="name" use="required" type="xs:string"/>
                               <xs:attribute name="nullable" type="xs:boolean"/>
                               <xs:attribute name="type" use="required" type="xs:string"/>
+                              <xs:attribute name="unique" type="xs:boolean"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -90,6 +91,7 @@
                               <xs:attribute name="name" use="required" type="xs:string"/>
                               <xs:attribute name="nullable" type="xs:boolean"/>
                               <xs:attribute name="type" use="required" type="xs:string"/>
+                              <xs:attribute name="unique" type="xs:boolean"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -116,6 +118,7 @@
                               <xs:attribute name="nullable" type="xs:boolean"/>
                               <xs:attribute name="type" use="required" type="xs:string"/>
                               <xs:attribute name="newName" type="xs:string"/>
+                              <xs:attribute name="unique" type="xs:boolean"/>
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>

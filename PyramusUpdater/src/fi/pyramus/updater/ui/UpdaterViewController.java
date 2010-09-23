@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -92,31 +94,44 @@ public class UpdaterViewController {
     String defaultCatalog = null; // TODO: Resolve correct catalog
     String defaultSchema = null; // TODO: Resolve correct schema
     
+    if (view.isExecuteSqlsChecked()) {
+      logger.info("Executing SQLs");
+    } else {
+      logger.info("Simulating SQLs");
+    }
+    
     for (UpdateOperation operation : upgradeBatch.getOperations()) {
       String SQL = operation.toSQL(dialect, defaultCatalog, defaultSchema);
       runSQL(SQL);
     }
     
-    updateVersionInfo();
-    logger.info("Upgrade succesfull");
+    if (view.isExecuteSqlsChecked()) {
+      updateVersionInfo();
+      logger.info("Upgrade succesfull");
+    }
   }
     
   private void runSQL(String SQL) {
-    try {
-      Statement statement = databaseConnection.createStatement();
-      statement.execute(SQL);
-      databaseConnection.commit();
-      statement.close();
-      logger.info("Runned SQL Query: " + SQL);
-    } catch (SQLException e) {
-      logger.error("Error occured while running SQL query: " + e.getMessage());
-      
+    boolean executeSqls = view.isExecuteSqlsChecked();
+    if (executeSqls) {
       try {
-        databaseConnection.rollback();
-        throw new UpdaterException(e);
-      } catch (SQLException e1) {
-        throw new UpdaterException(e1);
+        Statement statement = databaseConnection.createStatement();
+        statement.execute(SQL);
+        databaseConnection.commit();
+        statement.close();
+        logger.info("Runned SQL Query: " + SQL);
+      } catch (SQLException e) {
+        logger.error("Error occured while running SQL query: " + e.getMessage());
+        
+        try {
+          databaseConnection.rollback();
+          throw new UpdaterException(e);
+        } catch (SQLException e1) {
+          throw new UpdaterException(e1);
+        }
       }
+    } else {
+      logger.info(SQL);
     }
   }
   
@@ -327,7 +342,7 @@ public class UpdaterViewController {
       if (column != null) {
         primaryKey.addColumn(column);
       } else {
-        throw new UpdaterException("Create table: Primary column " + primaryColumn + " not found from the table");
+        throw new UpdaterException("Create table: Primary column " + primaryColumn + " not found from the "  + tableName + " table");
       }
     }
     
@@ -441,6 +456,9 @@ public class UpdaterViewController {
     List<Column> columns = new ArrayList<Column>();
     for (String columnName : columnNames) {
       Column keyColumn = getTableColumn(table, columnName);
+      if (keyColumn == null) {
+        keyColumn = new Column(columnName);
+      }
       foreignKey.addColumn(keyColumn);
       columns.add(keyColumn);
     }
@@ -482,9 +500,29 @@ public class UpdaterViewController {
     if (NumberUtils.isNumber(scaleAttr))
       scale = NumberUtils.createInteger(scaleAttr);
     boolean unique = "true".equals(fieldElement.getAttribute("unique"));
-
-    org.hibernate.type.Type type = TypeFactory.basic(fieldType);
-
+    
+    org.hibernate.type.Type type = null;
+    if (fieldType.startsWith("Types.")) {
+      String typeName = fieldType.split("\\.")[1];
+      try {
+        Field field = Types.class.getField(typeName);
+        int sqlType = field.getInt(null);
+        String hibernateType = dialect.getHibernateTypeName(sqlType);
+        type = TypeFactory.basic(hibernateType);
+      } catch (SecurityException e) {
+        throw new UpdaterException(e);
+      } catch (NoSuchFieldException e) {
+        throw new UpdaterException(e);
+      } catch (IllegalArgumentException e) {
+        throw new UpdaterException(e);
+      } catch (IllegalAccessException e) {
+        throw new UpdaterException(e);
+      }
+      
+    } else {
+      type = TypeFactory.basic(fieldType);
+    }
+    
     Column column = new Column(fieldName);
     column.setNullable(fieldNullable);
     column.setUnique(unique);
