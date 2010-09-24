@@ -14,7 +14,8 @@
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonform_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
-
+    <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
+    
     <script type="text/javascript">
 
       function addAddressTableRow(addressTable) {
@@ -92,6 +93,8 @@
       
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+
+        setupRelatedCommandsBasic();
 
         var addressTable = new IxTable($('addressTable'), {
           id : "addressTable",
@@ -371,6 +374,20 @@
           </c:when>
         </c:choose>
       }
+
+      function setupRelatedCommandsBasic() {
+        var relatedActionsHoverMenu = new IxHoverMenu($('basicRelatedActionsHoverMenuContainer'), {
+          text: '<fmt:message key="users.editUser.basicTabRelatedActionsLabel"/>'
+        });
+    
+        relatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="users.editUser.basicTabRelatedActionCreateResourceLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/resources/createworkresource.page?name=' + encodeURIComponent('${user.lastName}, ${user.firstName}'));
+          }
+        }));
+      }
     </script>
   </head>
 
@@ -391,6 +408,8 @@
     
           <div id="basic" class="tabContent">    
             <input type="hidden" name="userId" value="${user.id}"/>
+            
+            <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

@@ -59,7 +59,14 @@
               </jsp:include>
               <select name="category">           
                 <c:forEach var="category" items="${categories}">
-                  <option value="${category.id}"> ${category.name}  </option> 
+                  <c:choose>
+                    <c:when test="${category.id eq resource.category.id}">
+                      <option value="${category.id}" selected="selected"> ${category.name}  </option> 
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${category.id}"> ${category.name}  </option> 
+                    </c:otherwise>
+                  </c:choose>
                 </c:forEach>
               </select>
             </div>

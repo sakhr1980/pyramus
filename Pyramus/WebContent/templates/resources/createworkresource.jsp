@@ -42,7 +42,7 @@
                 <jsp:param name="titleLocale" value="resources.createWorkResource.nameTitle"/>
                 <jsp:param name="helpLocale" value="resources.createWorkResource.nameHelp"/>
               </jsp:include>
-  		      <input type="text" class="required" name="name" size="40"/>
+  		      <input type="text" class="required" name="name" size="40" value="${name}"/>
 		  	</div>
 		        
             <div class="genericFormSection">

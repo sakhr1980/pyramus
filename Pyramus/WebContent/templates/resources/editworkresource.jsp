@@ -43,13 +43,13 @@
 	        </div>
 	      
 	        <div id="editWorkResource" class="tabContent">
-		      <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="resources.editWorkResource.nameTitle"/>
-                  <jsp:param name="helpLocale" value="resources.editWorkResource.nameHelp"/>
-                </jsp:include>          
-     		    <input type="text" class="required" name="name" value="${fn:escapeXml(resource.name)}" size="40"/>
-	 	      </div>
+			      <div class="genericFormSection">
+	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="resources.editWorkResource.nameTitle"/>
+	              <jsp:param name="helpLocale" value="resources.editWorkResource.nameHelp"/>
+	            </jsp:include>          
+	     		    <input type="text" class="required" name="name" value="${fn:escapeXml(resource.name)}" size="40"/>
+		 	      </div>
 		        
               <div class="genericFormSection">  
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -58,7 +58,14 @@
                 </jsp:include>          
                 <select name="category">           
                   <c:forEach var="category" items="${categories}">
-                    <option value="${category.id}"> ${category.name}  </option> 
+                    <c:choose>
+                      <c:when test="${category.id eq resource.category.id}">
+                        <option value="${category.id}" selected="selected">${category.name}</option> 
+                      </c:when>
+                      <c:otherwise>
+                        <option value="${category.id}">${category.name}</option> 
+                      </c:otherwise>
+                    </c:choose>
                   </c:forEach>
                 </select>
               </div>
@@ -79,7 +86,6 @@
                 <input type="text" name="costPerUse" value="${resource.costPerUse}" class="numberField" size="15"/>
               </div>
             </div>
-	  	    
   	    </div>
 	    </div>
 	    <div class="genericFormSubmitSectionOffTab">

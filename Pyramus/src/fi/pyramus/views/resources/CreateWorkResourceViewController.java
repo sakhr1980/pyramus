@@ -14,6 +14,10 @@ public class CreateWorkResourceViewController implements PyramusViewController, 
 
   public void process(PageRequestContext pageRequestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    
+    String name = pageRequestContext.getString("name");
+    
+    pageRequestContext.getRequest().setAttribute("name", name);
     pageRequestContext.getRequest().setAttribute("categories", resourceDAO.listResourceCategories());
     pageRequestContext.setIncludeJSP("/templates/resources/createworkresource.jsp");
   }
