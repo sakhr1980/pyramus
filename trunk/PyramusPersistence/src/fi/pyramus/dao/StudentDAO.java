@@ -277,15 +277,7 @@ public class StudentDAO extends PyramusDAO {
   public List<StudentContactLogEntry> listStudentContactEntries(Student student) {
     Session s = getHibernateSession();
 
-    List<StudentContactLogEntry> studentContactLogEntries = s.createCriteria(StudentContactLogEntry.class).add(Restrictions.eq("student", student)).list();
-
-    Collections.sort(studentContactLogEntries, new Comparator<StudentContactLogEntry>() {
-      public int compare(StudentContactLogEntry o1, StudentContactLogEntry o2) {
-        return o1.getEntryDate() == null ? -1 : o2.getEntryDate() == null ? 1 : o1.getEntryDate().compareTo(o2.getEntryDate());
-      }
-    });
-
-    return studentContactLogEntries;
+    return s.createCriteria(StudentContactLogEntry.class).add(Restrictions.eq("student", student)).list();
   }
 
   @SuppressWarnings("unchecked")
@@ -1004,7 +996,29 @@ public class StudentDAO extends PyramusDAO {
     return s.createCriteria(StudentGroupStudent.class).add(Restrictions.eq("student", student)).setProjection(Projections.property("studentGroup")).list();
   }
   
+  public StudentContactLogEntry findStudentContactLogEntry(Long entryId) {
+    Session s = getHibernateSession();
+    return (StudentContactLogEntry) s.load(StudentContactLogEntry.class, entryId);
+  }
+  
+  public void updateStudentContactLogEntry(StudentContactLogEntry entry, StudentContactLogEntryType type, 
+      String text, Date entryDate, String creator) {
+    Session s = getHibernateSession();
+
+    entry.setType(type);
+    entry.setText(text);
+    entry.setEntryDate(entryDate);
+    entry.setCreator(creator);
+    s.saveOrUpdate(entry);
+  }
+
+  public void deleteContactEntry(StudentContactLogEntry entry) {
+    Session s = getHibernateSession();
+
+    s.delete(entry);
+  }
+  
   private static final String DATERANGE_INFINITY_LOW = "00000000";
   private static final String DATERANGE_INFINITY_HIGH = "99999999";
-  private static final DateFormat STUDENTGROUP_SEARCH_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");  
+  private static final DateFormat STUDENTGROUP_SEARCH_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 }

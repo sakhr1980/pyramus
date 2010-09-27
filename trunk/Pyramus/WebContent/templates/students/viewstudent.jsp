@@ -32,6 +32,12 @@
           link: GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=' + abstractStudentId  
         }));
 
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsManageContactEntriesLabel"/>',
+          link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
+        }));
+        
         var gradesTabRelatedActionsHoverMenu = new IxHoverMenu($('gradesTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsLabel"/>'
         });
@@ -43,6 +49,19 @@
             alert("TODO");
           }
         }));
+
+
+        var contactLogTabRelatedActionsHoverMenu = new IxHoverMenu($('contactLogTabRelatedActionsHoverMenuContainer.' + studentId), {
+          text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsLabel"/>'
+        });
+    
+        contactLogTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsManageContactEntriesLabel"/>',
+          link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
+        }));
+        
+                
       }
 
       function setupCoursesTab(studentId) {
@@ -253,58 +272,11 @@
 
         <c:forEach var="student" items="${abstractStudent.students}">
           var tabControl = new IxProtoTabs($('tabs.${student.id}'));
-
-          resetEntryForm(${student.id});
         </c:forEach>
 
         <c:if test="${!empty param.activeTab}">
           tabControl.setActiveTab("${param.activeTab}");  
         </c:if>
-      }
-  
-      function resetEntryForm(studentId) {
-        var entryForm = $("newContactEntryForm." + studentId);
-        entryForm.entryType.value = '0';
-        entryForm.entryCreator.value = '${loggedUserName}';
-        var dField = getIxDateField("entryDate." + studentId);
-        if (dField != null)
-          dField.setTimestamp(new Date().getTime());
-        entryForm.entryText.value = '';
-      }
-
-      /**
-       * 
-       *
-       * @param event The submit event
-       */
-      function newContactEntryFormSubmit(event) {
-        Event.stop(event);
-
-        var entryForm = Event.element(event);
-        JSONRequest.request("students/createnewcontactentry.json", {
-          parameters: {
-            entryType: entryForm.entryType.value,
-            entryCreator: entryForm.entryCreator.value,
-            entryDate: entryForm.entryDate.value,
-            entryText: entryForm.entryText.value,
-            studentId: entryForm.studentId.value
-          },
-          onSuccess: function (jsonResponse) {
-            var studentId = jsonResponse.results.studentId;
-            var listDiv = $('studentContactEntryList.' + studentId);
-            var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem"}));
-
-            var results = jsonResponse.results;
-            var date = new Date(results.timestamp);
-            var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
-
-            // TODO: lokalisointi ja tyylittely
-            listDiv.appendChild(Builder.node("div", {id: ""}, ['<' + results.type + '> by ' + results.creator + ' at ' + dateStr]));
-            listDiv.appendChild(Builder.node("div", {id: ""}, [results.text]));
-                                    
-            resetEntryForm(studentId);
-          } 
-        });
       }
     </script>
   </head>
@@ -327,9 +299,14 @@
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:if test="${student.archived}">
+              <c:choose>
+                <c:when test="${student.archived}">
+                ***
+                </c:when>
+                <c:when test="${student.studyEndDate ne null}">
                 *
-              </c:if>
+                </c:when>
+              </c:choose>
             </a>
           </c:forEach>
         </div>
@@ -734,88 +711,46 @@
                     <div><div id="transferCreditsTableContainer.${student.id}"></div></div>
                   </div>
                 </div> 
-        
+
                 <div id="contactlog.${student.id}" class="tabContent">
-                  <form method="post" id="newContactEntryForm.${student.id}" onsubmit="newContactEntryFormSubmit(event);">
-                    <input type="hidden" name="studentId" value="${student.id}"/>
-        
-                    <div id="studentContactEntryList.${student.id}">
-                      <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-                        <div id="studentContactEntryItem">
-                          <div>
-                            <c:choose>
-                              <c:when test="${contactEntry.type eq 'OTHER'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.other"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'LETTER'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.letter"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'EMAIL'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.email"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'PHONE'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.phone"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'CHATLOG'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.chatlog"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'SKYPE'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.skype"/>&gt;
-                              </c:when>
-                              <c:when test="${contactEntry.type eq 'FACE2FACE'}">
-                                &lt;<fmt:message key="students.viewStudent.contactEntry.types.face2face"/>&gt;
-                              </c:when>
-                            </c:choose>
-                            by ${contactEntry.creator} 
-                            at <fmt:formatDate pattern="dd.MM.yyyy" value="${contactEntry.entryDate}" />
-                          </div>              
-                          <div>
-                            ${contactEntry.text}
-                          </div>
+                  <div id="contactLogTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
+
+                  <div id="studentContactEntryList.${student.id}">
+                    <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
+                      <div id="studentContactEntryItem">
+                        <div>
+                          <fmt:formatDate pattern="dd.MM.yyyy" value="${contactEntry.entryDate}" />
+                          <c:choose>
+                            <c:when test="${contactEntry.type eq 'OTHER'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.other"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'LETTER'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.letter"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'EMAIL'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.email"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'PHONE'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.phone"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'CHATLOG'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.chatlog"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'SKYPE'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.skype"/>&gt;
+                            </c:when>
+                            <c:when test="${contactEntry.type eq 'FACE2FACE'}">
+                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.face2face"/>&gt;
+                            </c:when>
+                          </c:choose>
+                          ${contactEntry.creator} 
+                        </div>              
+                        <div>
+                          ${contactEntry.text}
                         </div>
-                      </c:forEach>
-                    </div>
-        
-                    <div class="genericFormSection">                            
-                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.viewStudent.contactEntry.typeTitle"/>
-                        <jsp:param name="helpLocale" value="students.viewStudent.contactEntry.typeHelp"/>
-                      </jsp:include> 
-                      <select name="entryType">
-                        <option value="0"><fmt:message key="students.viewStudent.contactEntry.types.other"/></option>
-                        <option value="1"><fmt:message key="students.viewStudent.contactEntry.types.letter"/></option>
-                        <option value="2"><fmt:message key="students.viewStudent.contactEntry.types.email"/></option>
-                        <option value="3"><fmt:message key="students.viewStudent.contactEntry.types.phone"/></option>
-                        <option value="4"><fmt:message key="students.viewStudent.contactEntry.types.chatlog"/></option>
-                        <option value="5"><fmt:message key="students.viewStudent.contactEntry.types.skype"/></option>
-                        <option value="6"><fmt:message key="students.viewStudent.contactEntry.types.face2face"/></option>
-                      </select>
-                    </div>            
-                    <div class="genericFormSection">                            
-                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.viewStudent.contactEntry.fromTitle"/>
-                        <jsp:param name="helpLocale" value="students.viewStudent.contactEntry.fromHelp"/>
-                      </jsp:include> 
-                      <input type="text" name="entryCreator"/>
-                    </div> 
-                    <div class="genericFormSection">                            
-                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.viewStudent.contactEntry.dateTitle"/>
-                        <jsp:param name="helpLocale" value="students.viewStudent.contactEntry.dateHelp"/>
-                      </jsp:include> 
-                      <input type="text" name="entryDate" ix:datefieldid="entryDate.${student.id}" ix:datefield="true"/>
-                    </div>
-                    <div class="genericFormSection">                            
-                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.viewStudent.contactEntry.textTitle"/>
-                        <jsp:param name="helpLocale" value="students.viewStudent.contactEntry.textHelp"/>
-                      </jsp:include> 
-                      <textarea name="entryText" cols="60" rows="6"></textarea>
-                    </div>            
-                    <div>
-                      <input type="submit" name="newContactLogEntryButton" value="<fmt:message key="students.viewStudent.newContactLogEntry"/>">
-                    </div>            
-                  </form>
+                      </div>
+                    </c:forEach>
+                  </div>
                 </div>
               </div>
             </div>  
