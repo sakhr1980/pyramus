@@ -1,6 +1,8 @@
 package fi.pyramus.json.students;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,39 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
     Long abstractStudentId = NumberUtils.createLong(requestContext.getRequest().getParameter("abstractStudentId"));
     AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
     List<Student> students = abstractStudent.getStudents();
+    Collections.sort(students, new Comparator<Student>() {
+      @Override
+      public int compare(Student o1, Student o2) {
+        /**
+         * Ordering study programmes as follows
+         *  1. studies that have start date but no end date (ongoing)
+         *  2. studies that have no start nor end date
+         *  3. studies that have ended
+         *  4. studies that are archived
+         */
+        
+        int o1class =
+          (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
+            (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
+              (o1.getStudyEndDate() != null) ? 3:
+                (o1.getArchived()) ? 4:
+                  5;
+        int o2class =
+          (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
+            (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
+              (o2.getStudyEndDate() != null) ? 3:
+                (o2.getArchived()) ? 4:
+                  5;
 
+        if (o1class == o2class) {
+          // classes are the same, we try to do last comparison from the start dates
+          return ((o1.getStudyStartDate() != null) && (o2.getStudyStartDate() != null)) ? 
+              o1.getStudyStartDate().compareTo(o2.getStudyStartDate()) : 0; 
+        } else
+          return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
+      }
+    });
+    
     List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
     
     for (int i = 0; i < students.size(); i++) {

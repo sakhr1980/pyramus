@@ -2,31 +2,59 @@ package fi.pyramus.views.students;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.lang.math.NumberUtils;
+import java.util.Map;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.views.PyramusViewController;
 
-public class EditStudentViewController implements PyramusViewController, Breadcrumbable {
+/**
+ * ViewController for managing student contact log entries.
+ * 
+ * @author antti.viljakainen
+ */
+public class ManageStudentContactEntriesViewController implements PyramusViewController, Breadcrumbable {
 
+  /**
+   * Returns allowed roles for this page. Allowed are UserRole.MANAGER and UserRole.ADMINISTRATOR.
+   * 
+   * @return allowed roles
+   */
+  public UserRole[] getAllowedRoles() {
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+  }
+
+  /**
+   * Processes the page request.
+   * 
+   * In parameters
+   * - abstractStudent
+   * 
+   * Page parameters
+   * - abstractStudent - AbstractStudent object
+   * - contactEntries - List of StudentContactLogEntry objects
+   * 
+   * @param pageRequestContext pageRequestContext
+   */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
-    Long abstractStudentId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("abstractStudent"));
+    Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
+    
     AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
     
+    pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
+
     List<Student> students = abstractStudent.getStudents();
     Collections.sort(students, new Comparator<Student>() {
       @Override
@@ -60,27 +88,26 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
           return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
       }
     });
-    
-    pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
-    pageRequestContext.getRequest().setAttribute("students", students);
-    pageRequestContext.getRequest().setAttribute("activityTypes", studentDAO.listStudentActivityTypes());
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
-    pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
-    pageRequestContext.getRequest().setAttribute("examinationTypes", studentDAO.listStudentExaminationTypes());
-    pageRequestContext.getRequest().setAttribute("educationalLevels", studentDAO.listStudentEducationalLevels());
-    pageRequestContext.getRequest().setAttribute("nationalities", baseDAO.listNationalities());
-    pageRequestContext.getRequest().setAttribute("municipalities", baseDAO.listMunicipalities());
-    pageRequestContext.getRequest().setAttribute("languages", baseDAO.listLanguages());
-    pageRequestContext.getRequest().setAttribute("schools", baseDAO.listSchools());
-    pageRequestContext.getRequest().setAttribute("studyProgrammes", baseDAO.listStudyProgrammes());
-    pageRequestContext.getRequest().setAttribute("studyEndReasons", studentDAO.listTopLevelStudentStudyEndReasons());
-    pageRequestContext.getRequest().setAttribute("variableKeys", studentDAO.listUserEditableStudentVariableKeys());
-    
-    pageRequestContext.setIncludeJSP("/templates/students/editstudent.jsp");
-  }
 
-  public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+    Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
+    
+    for (int i = 0; i < students.size(); i++) {
+    	Student student = students.get(i);
+    	
+      List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+      Collections.sort(listStudentContactEntries, new Comparator<StudentContactLogEntry>() {
+        public int compare(StudentContactLogEntry o1, StudentContactLogEntry o2) {
+          return o1.getEntryDate() == null ? -1 : o2.getEntryDate() == null ? 1 : o2.getEntryDate().compareTo(o1.getEntryDate());
+        }
+      });
+
+      contactEntries.put(student.getId(), listStudentContactEntries);
+    }
+    
+    pageRequestContext.getRequest().setAttribute("students", students);
+    pageRequestContext.getRequest().setAttribute("contactEntries", contactEntries);
+
+    pageRequestContext.setIncludeJSP("/templates/students/managestudentcontactentries.jsp");
   }
 
   /**
@@ -91,7 +118,8 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "students.editStudent.pageTitle");
+    return Messages.getInstance().getText(locale, "students.manageStudentContactEntries.pageTitle");
   }
 
 }
+

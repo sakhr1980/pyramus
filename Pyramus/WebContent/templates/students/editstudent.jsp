@@ -315,7 +315,7 @@
         var variablesTable;
         var value;
         
-        <c:forEach var="student" items="${abstractStudent.students}">
+        <c:forEach var="student" items="${students}">
           setupRelatedCommands(${student.id}, '${student.fullName}', ${student.archived});
 
           // Addresses
@@ -428,6 +428,12 @@
             redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=${abstractStudent.id}');
           }
         }));
+
+        relatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.editStudent.basicTabRelatedActionsManageContactEntriesLabel"/>',
+          link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
+        }));
       }
 
       function setupRelatedCommands(studentId, studentFullName, studentArchived) {
@@ -524,7 +530,7 @@
               <fmt:message key="students.editStudent.studentBasicInfoTabLabel"/>
             </a>
 
-            <c:forEach var="student" items="${abstractStudent.students}">
+            <c:forEach var="student" items="${students}">
               <a class="tabLabel" href="#student.${student.id}">
                 <c:choose>
                   <c:when test="${student.studyProgramme == null}">
@@ -535,9 +541,14 @@
                   </c:otherwise>
                 </c:choose>
 
-                <c:if test="${student.archived}">
-                  *
-                </c:if>
+	              <c:choose>
+                  <c:when test="${student.archived}">
+                  ***
+                  </c:when>
+	                <c:when test="${student.studyEndDate != null}">
+	                *
+	                </c:when>
+	              </c:choose>
               </a>
             </c:forEach>
             <ix:extensionHook name="students.editStudent.tabLabels"/>
@@ -601,7 +612,7 @@
             <ix:extensionHook name="students.editStudent.tabs.basic"/>
           </div>
 
-          <c:forEach var="student" items="${abstractStudent.students}">
+          <c:forEach var="student" items="${students}">
             <div id="student.${student.id}" class="tabContent">    
               <div id="studentRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
 
