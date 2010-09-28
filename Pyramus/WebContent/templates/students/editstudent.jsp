@@ -432,7 +432,7 @@
         relatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
           text: '<fmt:message key="students.editStudent.basicTabRelatedActionsManageContactEntriesLabel"/>',
-          link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
+          link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=${abstractStudent.id}'  
         }));
       }
 

@@ -277,7 +277,10 @@ public class StudentDAO extends PyramusDAO {
   public List<StudentContactLogEntry> listStudentContactEntries(Student student) {
     Session s = getHibernateSession();
 
-    return s.createCriteria(StudentContactLogEntry.class).add(Restrictions.eq("student", student)).list();
+    return s.createCriteria(StudentContactLogEntry.class).
+      add(Restrictions.eq("student", student)).
+      add(Restrictions.eq("archived", Boolean.FALSE)).
+      list();
   }
 
   @SuppressWarnings("unchecked")
@@ -571,7 +574,7 @@ public class StudentDAO extends PyramusDAO {
 
     StudentContactLogEntry entry = new StudentContactLogEntry();
     entry.setStudent(student);
-    entry.setCreator(creator);
+    entry.setCreatorName(creator);
     entry.setEntryDate(entryDate);
     entry.setText(text);
     entry.setType(type);
@@ -783,7 +786,7 @@ public class StudentDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedStudentGroup");
+        query.enableFullTextFilter("ArchivedStudentGroup").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();
@@ -875,7 +878,7 @@ public class StudentDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived)
-        query.enableFullTextFilter("ArchivedStudentGroup");
+        query.enableFullTextFilter("ArchivedStudentGroup").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;
@@ -996,7 +999,7 @@ public class StudentDAO extends PyramusDAO {
     return s.createCriteria(StudentGroupStudent.class).add(Restrictions.eq("student", student)).setProjection(Projections.property("studentGroup")).list();
   }
   
-  public StudentContactLogEntry findStudentContactLogEntry(Long entryId) {
+  public StudentContactLogEntry findStudentContactLogEntryById(Long entryId) {
     Session s = getHibernateSession();
     return (StudentContactLogEntry) s.load(StudentContactLogEntry.class, entryId);
   }
@@ -1008,14 +1011,15 @@ public class StudentDAO extends PyramusDAO {
     entry.setType(type);
     entry.setText(text);
     entry.setEntryDate(entryDate);
-    entry.setCreator(creator);
+    entry.setCreatorName(creator);
     s.saveOrUpdate(entry);
   }
 
   public void deleteContactEntry(StudentContactLogEntry entry) {
     Session s = getHibernateSession();
 
-    s.delete(entry);
+    entry.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(entry);
   }
   
   private static final String DATERANGE_INFINITY_LOW = "00000000";

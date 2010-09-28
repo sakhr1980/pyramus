@@ -35,6 +35,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.Address;
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.Language;
@@ -43,7 +44,7 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
-import fi.pyramus.persistence.search.filters.ArchivedStudentFilterFactory;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 /**
  * Student
@@ -56,10 +57,10 @@ import fi.pyramus.persistence.search.filters.ArchivedStudentFilterFactory;
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedStudent",
-     impl=ArchivedStudentFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class Student {
+public class Student implements ArchivableEntity {
 
   /**
    * Returns internal unique id

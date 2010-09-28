@@ -27,7 +27,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.pyramus.persistence.search.filters.ArchivedResourceFilterFactory;
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
@@ -36,10 +37,10 @@ import fi.pyramus.persistence.search.filters.ArchivedResourceFilterFactory;
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedResource",
-     impl=ArchivedResourceFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class Resource {
+public class Resource implements ArchivableEntity {
 
   public Long getId() {
     return id;

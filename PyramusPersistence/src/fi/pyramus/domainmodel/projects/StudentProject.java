@@ -33,20 +33,21 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.persistence.search.filters.ArchivedProjectFilterFactory;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedStudentProject",
-     impl=ArchivedProjectFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class StudentProject {
+public class StudentProject implements ArchivableEntity {
 
   /**
    * Returns the unique identifier of this object.

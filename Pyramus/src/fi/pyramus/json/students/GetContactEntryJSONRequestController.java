@@ -1,8 +1,6 @@
 package fi.pyramus.json.students;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -31,7 +29,7 @@ public class GetContactEntryJSONRequestController implements JSONRequestControll
    * Page parameters
    * - results Map including
    * * id - Entry id
-   * * creator - Entry creator
+   * * creatorName - Entry creator name
    * * date - Entry date
    * * text - Entry message
    * * type - Entry type
@@ -44,18 +42,16 @@ public class GetContactEntryJSONRequestController implements JSONRequestControll
     try {
       Long entryId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("entryId"));
       
-      StudentContactLogEntry entry = studentDAO.findStudentContactLogEntry(entryId);
+      StudentContactLogEntry entry = studentDAO.findStudentContactLogEntryById(entryId);
       
-      List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
       Map<String, Object> info = new HashMap<String, Object>();
       info.put("id", entry.getId());
-      info.put("creator", entry.getCreator());
+      info.put("creatorName", entry.getCreatorName());
       info.put("timestamp", entry.getEntryDate().getTime());
       info.put("text", entry.getText());
       info.put("type", entry.getType());
       info.put("studentId", entry.getStudent().getId());
-      results.add(info);
-
+      
       jsonRequestContext.addResponseParameter("results", info);
     } catch (Exception e) {
       throw new PyramusRuntimeException(e);
@@ -63,7 +59,7 @@ public class GetContactEntryJSONRequestController implements JSONRequestControll
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
 
 }

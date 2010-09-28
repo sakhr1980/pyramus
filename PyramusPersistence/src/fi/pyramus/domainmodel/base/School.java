@@ -30,7 +30,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.pyramus.persistence.search.filters.ArchivedSchoolFilterFactory;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
@@ -38,10 +38,10 @@ import fi.pyramus.persistence.search.filters.ArchivedSchoolFilterFactory;
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedSchool",
-     impl=ArchivedSchoolFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class School {
+public class School implements ArchivableEntity {
   
   /**
    * Returns internal unique id.

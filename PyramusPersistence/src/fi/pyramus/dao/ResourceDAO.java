@@ -241,7 +241,7 @@ public class ResourceDAO extends PyramusDAO {
       query.setFirstResult(firstResult).setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedResource");
+        query.enableFullTextFilter("ArchivedResource").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();

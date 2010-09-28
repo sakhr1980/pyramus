@@ -1103,7 +1103,7 @@ public class BaseDAO extends PyramusDAO {
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class).setFirstResult(firstResult).setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedSchool");
+        query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();

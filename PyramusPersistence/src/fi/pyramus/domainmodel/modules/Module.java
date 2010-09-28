@@ -15,8 +15,9 @@ import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.CourseBase;
-import fi.pyramus.persistence.search.filters.ArchivedModuleFilterFactory;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
@@ -24,10 +25,10 @@ import fi.pyramus.persistence.search.filters.ArchivedModuleFilterFactory;
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedModule",
-     impl=ArchivedModuleFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class Module extends CourseBase {
+public class Module extends CourseBase implements ArchivableEntity {
 
   public List<ModuleComponent> getModuleComponents() {
     return moduleComponents;
