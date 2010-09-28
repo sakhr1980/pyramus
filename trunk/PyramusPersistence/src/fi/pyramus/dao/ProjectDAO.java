@@ -184,7 +184,7 @@ public class ProjectDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedProject");
+        query.enableFullTextFilter("ArchivedProject").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();
@@ -252,7 +252,7 @@ public class ProjectDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedStudentProject");
+        query.enableFullTextFilter("ArchivedStudentProject").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();

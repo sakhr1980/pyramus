@@ -743,7 +743,7 @@
                               &lt;<fmt:message key="students.viewStudent.contactEntry.types.face2face"/>&gt;
                             </c:when>
                           </c:choose>
-                          ${contactEntry.creator} 
+                          ${contactEntry.creatorName} 
                         </div>              
                         <div>
                           ${contactEntry.text}

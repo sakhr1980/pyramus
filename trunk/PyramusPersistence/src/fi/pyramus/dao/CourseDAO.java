@@ -965,7 +965,7 @@ public class CourseDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
-        query.enableFullTextFilter("ArchivedCourse");
+        query.enableFullTextFilter("ArchivedCourse").setParameter("archived", Boolean.FALSE);
       }
 
       int hits = query.getResultSize();
@@ -1099,7 +1099,7 @@ public class CourseDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived)
-        query.enableFullTextFilter("ArchivedCourse");
+        query.enableFullTextFilter("ArchivedCourse").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;

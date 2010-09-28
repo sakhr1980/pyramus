@@ -40,16 +40,16 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
          */
         
         int o1class =
-          (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
-            (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
-              (o1.getStudyEndDate() != null) ? 3:
-                (o1.getArchived()) ? 4:
+          (o1.getArchived()) ? 4:
+            (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
+              (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
+                (o1.getStudyEndDate() != null) ? 3:
                   5;
         int o2class =
-          (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
-            (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
-              (o2.getStudyEndDate() != null) ? 3:
-                (o2.getArchived()) ? 4:
+          (o2.getArchived()) ? 4:
+            (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
+              (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
+                (o2.getStudyEndDate() != null) ? 3:
                   5;
 
         if (o1class == o2class) {

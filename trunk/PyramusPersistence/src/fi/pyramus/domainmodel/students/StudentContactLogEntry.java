@@ -2,6 +2,7 @@ package fi.pyramus.domainmodel.students;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,10 +12,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.FullTextFilterDefs;
+import org.hibernate.search.annotations.Index;
+
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 import fi.pyramus.persistence.usertypes.StudentContactLogEntryUserType;
 
@@ -35,9 +44,18 @@ import fi.pyramus.persistence.usertypes.StudentContactLogEntryUserType;
 
 @Entity
 @TypeDefs ({
-  @TypeDef (name="StudentContactLogEntryType", typeClass=StudentContactLogEntryUserType.class)
+  @TypeDef (
+      name="StudentContactLogEntryType", 
+      typeClass=StudentContactLogEntryUserType.class
+  )
 })
-public class StudentContactLogEntry {
+@FullTextFilterDefs (
+  @FullTextFilterDef (
+     name="ArchivedContactLogEntry",
+     impl=ArchivedEntityFilterFactory.class
+  )
+)
+public class StudentContactLogEntry implements ArchivableEntity {
 
   /**
    * Returns internal unique id
@@ -125,8 +143,8 @@ public class StudentContactLogEntry {
    * 
    * @param creator New creator
    */
-  public void setCreator(String creator) {
-    this.creator = creator;
+  public void setCreatorName(String creator) {
+    this.creatorName = creator;
   }
 
   /**
@@ -134,8 +152,18 @@ public class StudentContactLogEntry {
    * 
    * @return The creator
    */
-  public String getCreator() {
-    return creator;
+  public String getCreatorName() {
+    return creatorName;
+  }
+
+  @Override
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  @Override
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
   }
 
   @Id 
@@ -149,11 +177,16 @@ public class StudentContactLogEntry {
   
   private String text;
   
-  private String creator;
+  private String creatorName;
 
   @Type (type="StudentContactLogEntryType")
   private StudentContactLogEntryType type;
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date entryDate;
+  
+  @NotNull
+  @Column (nullable = false)
+  @Field (index = Index.UN_TOKENIZED)
+  private Boolean archived = Boolean.FALSE;
 }

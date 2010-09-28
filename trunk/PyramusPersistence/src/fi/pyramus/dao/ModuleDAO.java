@@ -195,7 +195,7 @@ public class ModuleDAO extends PyramusDAO {
           .setMaxResults(resultsPerPage);
 
       if (filterArchived)
-        query.enableFullTextFilter("ArchivedModule");
+        query.enableFullTextFilter("ArchivedModule").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;

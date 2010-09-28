@@ -10,7 +10,7 @@ import org.hibernate.search.annotations.Key;
 import org.hibernate.search.filter.FilterKey;
 import org.hibernate.search.filter.StandardFilterKey;
 
-public class ArchivedStudentFilterFactory {
+public class ArchivedEntityFilterFactory {
 
   public void setArchived(Boolean archived) {
     this.archived = archived;

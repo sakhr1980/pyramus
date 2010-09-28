@@ -24,9 +24,10 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Resolution;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.CourseBase;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.persistence.search.filters.ArchivedCourseFilterFactory;
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
@@ -34,10 +35,10 @@ import fi.pyramus.persistence.search.filters.ArchivedCourseFilterFactory;
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedCourse",
-     impl=ArchivedCourseFilterFactory.class
+     impl=ArchivedEntityFilterFactory.class
   )
 )
-public class Course extends CourseBase {
+public class Course extends CourseBase implements ArchivableEntity {
 
   public void setModule(Module module) {
     this.module = module;

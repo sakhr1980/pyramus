@@ -13,7 +13,7 @@ public class DeleteContactEntryJSONRequestController implements JSONRequestContr
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     Long entryId = requestContext.getLong("entryId");
     
-    StudentContactLogEntry entry = studentDAO.findStudentContactLogEntry(entryId);
+    StudentContactLogEntry entry = studentDAO.findStudentContactLogEntryById(entryId);
     
     studentDAO.deleteContactEntry(entry);
   }

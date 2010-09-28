@@ -21,22 +21,28 @@
     <% pageContext.setAttribute("newLineChar", "\n"); %>
 
     <script type="text/javascript">
-      function setupBasicTab(abstractStudentId, studentId, studentFullName, studentArchived) {
-/*        var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer.' + studentId), {
+      function setupTabRelatedActions(abstractStudentId, studentId) {
+        var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.manageStudentContactEntries.basicTabRelatedActionsLabel"/>'
         });
     
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="students.manageStudentContactEntries.basicTabRelatedActionsViewStudentLabel"/>',
+          link: GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=' + abstractStudentId  
+        }));
+
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
           text: '<fmt:message key="students.manageStudentContactEntries.basicTabRelatedActionsEditStudentLabel"/>',
           link: GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=' + abstractStudentId  
-        }));*/
+        }));
       }
 
       function onLoad(event) {
-        <c:forEach var="student" items="${abstractStudent.students}">
+        <c:forEach var="student" items="${students}">
           // Setup basics
-          setupBasicTab(${abstractStudent.id}, ${student.id}, '${student.fullName}', ${student.archived}); 
+          setupTabRelatedActions(${abstractStudent.id}, ${student.id}); 
         </c:forEach>
         
         var tabControl2 = new IxProtoTabs($('studentTabs'));
@@ -53,7 +59,7 @@
       function resetEntryForm(studentId) {
         var entryForm = $("newContactEntryForm." + studentId);
         entryForm.entryType.value = 'OTHER';
-        entryForm.entryCreator.value = '${loggedUserName}';
+        entryForm.entryCreatorName.value = '${loggedUserName}';
         var dField = getIxDateField("entryDate." + studentId);
         if (dField != null)
           dField.setTimestamp(new Date().getTime());
@@ -77,13 +83,13 @@
             var entryId = results.id;
             var studentId = results.studentId;
             var entryDate = new Date(results.timestamp);
-            var creator = results.creator;
+            var creatorName = results.creatorName;
             var entryType = results.type;
             var entryText = results.text;
 
             var entryForm = $("newContactEntryForm." + studentId);
             entryForm.entryType.value = entryType;
-            entryForm.entryCreator.value = creator;
+            entryForm.entryCreatorName.value = creatorName;
             var dField = getIxDateField("entryDate." + studentId);
             if (dField != null) {
               if (entryDate != null)
@@ -173,7 +179,7 @@
         dialog.open();
       }
       
-      function addEntryRow(studentId, entryId, entryDate, entryType, entryCreator, entryText) {
+      function addEntryRow(studentId, entryId, entryDate, entryType, entryCreatorName, entryText) {
         var listDiv = $('studentContactEntryList.' + studentId);
         var date = new Date(entryDate);
         var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
@@ -181,7 +187,7 @@
         var entryTypeName = getEntryTypeName(entryType);
 
         var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId}));
-        newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption"}, [dateStr + ' <' + entryTypeName + '> ' + entryCreator]));
+        newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption"}, [dateStr + ' <' + entryTypeName + '> ' + entryCreatorName]));
         newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
@@ -203,7 +209,7 @@
         JSONRequest.request("students/createnewcontactentry.json", {
           parameters: {
             entryType: entryForm.entryType.value,
-            entryCreator: entryForm.entryCreator.value,
+            entryCreatorName: entryForm.entryCreatorName.value,
             entryDate: entryForm["entryDate." + studentId].value,
             entryText: entryForm.entryText.value,
             studentId: entryForm.studentId.value
@@ -214,7 +220,7 @@
             var entryDate = new Date(results.timestamp);
             var entryId = results.id;
 
-            addEntryRow(studentId, entryId, entryDate, results.type, results.creator, results.text);
+            addEntryRow(studentId, entryId, entryDate, results.type, results.creatorName, results.text);
                                     
             resetEntryForm(studentId);
           } 
@@ -228,7 +234,7 @@
         JSONRequest.request("students/editcontactentry.json", {
           parameters: {
             entryType: entryForm.entryType.value,
-            entryCreator: entryForm.entryCreator.value,
+            entryCreatorName: entryForm.entryCreatorName.value,
             entryId: entryForm.entryId.value,
             entryDate: entryForm["entryDate." + studentId].value,
             entryText: entryForm.entryText.value
@@ -238,14 +244,14 @@
             var entryId = results.id;
             var studentId = results.studentId;
             var entryDate = new Date(results.timestamp);
-            var creator = results.creator;
+            var creatorName = results.creatorName;
             var entryType = results.type;
             var entryText = results.text;
 
             var date = new Date(entryDate);
             var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
             var entryTypeName = getEntryTypeName(entryType);
-            var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creator;
+            var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creatorName;
 
             $("entry." + entryId + ".caption").innerHTML = entryCaption;
             $("entry." + entryId + ".text").innerHTML = entryText;
@@ -260,7 +266,7 @@
   <body onload="onLoad(event);">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
   
-    <h1 class="genericPageHeader"><fmt:message key="students.manageStudentContactEntries.pageTitle" /></h1>
+    <h1 class="genericPageHeader"><fmt:message key="students.manageStudentContactEntries.pageTitle" /> (${abstractStudent.latestStudent.fullName})</h1>
   
     <div id="viewStudentViewContainer"> 
       <div class="genericFormContainer"> 
@@ -288,7 +294,8 @@
         </div>
     
         <c:forEach var="student" items="${students}">
-          <div id="student.${student.id}" class="tabContent">    
+          <div id="student.${student.id}" class="tabContent">
+            <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
   
             <div id="viewStudentViewContainer"> 
               <div class="genericFormContainer"> 
@@ -299,7 +306,7 @@
                   <div id="studentContactEntryList.${student.id}">
                     <script type="text/javascript">
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-                      addEntryRow(${student.id}, ${contactEntry.id}, ${contactEntry.entryDate.time}, '${contactEntry.type}', '${contactEntry.creator}', '${contactEntry.text}');
+                      addEntryRow(${student.id}, ${contactEntry.id}, ${contactEntry.entryDate.time}, '${contactEntry.type}', '${contactEntry.creatorName}', '${contactEntry.text}');
                     </c:forEach>
                     </script>
                   </div>
@@ -324,7 +331,7 @@
                       <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.fromTitle"/>
                       <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.fromHelp"/>
                     </jsp:include> 
-                    <input type="text" name="entryCreator"/>
+                    <input type="text" name="entryCreatorName"/>
                   </div> 
                   <div class="genericFormSection">                            
                     <jsp:include page="/templates/generic/fragments/formtitle.jsp">
