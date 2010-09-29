@@ -52,8 +52,4 @@
   * students.editStudentGroup.tabs.basic
   * students.editStudentGroup.tabs.students
   * students.editStudentGroup.tabs
-
-  * help.createHelpFolder.tabLabels
-  * help.createHelpFolder.tabs.basic
-  * help.createHelpFolder.tabs
   
