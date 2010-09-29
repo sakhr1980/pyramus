@@ -278,30 +278,35 @@ public class UpdaterViewController {
   }
   
   private void readTableMappings(UpgradeBatch upgradeBatch, Document document) throws TransformerException {
-    NodeList childNodes = document.getDocumentElement().getChildNodes();
-    for (int i = 0, l = childNodes.getLength(); i < l; i++) {
-      if (childNodes.item(i) instanceof Element) {
-        Element childElement = (Element) childNodes.item(i);
-        if ("createTables".equals(childElement.getTagName())) {
-          NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
-          Element tableElement;
-          while ((tableElement = (Element) tableIterator.nextNode()) != null) {
-            handleCreateTableMapping(upgradeBatch, tableElement);
-          }
-        } else if ("dropTables".equals(childElement.getTagName())) {
-          NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
-          Element tableElement;
-          while ((tableElement = (Element) tableIterator.nextNode()) != null) {
-            handleDropTableMapping(upgradeBatch, tableElement);
-          }
-        } else if ("alterTables".equals(childElement.getTagName())) {
-          NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
-          Element tableElement;
-          while ((tableElement = (Element) tableIterator.nextNode()) != null) {
-            handleAlterTableMapping(upgradeBatch, tableElement);
+    try {
+      NodeList childNodes = document.getDocumentElement().getChildNodes();
+      for (int i = 0, l = childNodes.getLength(); i < l; i++) {
+        if (childNodes.item(i) instanceof Element) {
+          Element childElement = (Element) childNodes.item(i);
+          if ("createTables".equals(childElement.getTagName())) {
+            NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
+            Element tableElement;
+            while ((tableElement = (Element) tableIterator.nextNode()) != null) {
+              handleCreateTableMapping(upgradeBatch, tableElement);
+            }
+          } else if ("dropTables".equals(childElement.getTagName())) {
+            NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
+            Element tableElement;
+            while ((tableElement = (Element) tableIterator.nextNode()) != null) {
+              handleDropTableMapping(upgradeBatch, tableElement);
+            }
+          } else if ("alterTables".equals(childElement.getTagName())) {
+            NodeIterator tableIterator = XPathAPI.selectNodeIterator(childElement, "table");
+            Element tableElement;
+            while ((tableElement = (Element) tableIterator.nextNode()) != null) {
+              handleAlterTableMapping(upgradeBatch, tableElement);
+            }
           }
         }
       }
+    } catch (UpdaterException e) {
+      logger.error(e);
+      throw e;
     }
   }
 
