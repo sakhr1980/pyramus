@@ -75,10 +75,22 @@ public class Report {
     this.lastModifier = lastModifier;
   }
   
+  public void setCategory(ReportCategory category) {
+    this.category = category;
+  }
+
+  public ReportCategory getCategory() {
+    return category;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Report")  
   @TableGenerator(name="Report", allocationSize=1)
   private Long id;
+  
+  @ManyToOne
+  @JoinColumn (name = "category")
+  private ReportCategory category;
 
   @NotNull
   @Column (nullable = false)

@@ -1201,9 +1201,24 @@
 
 	          <table>
 	            <tr>
-	              <td><b><fmt:message key="courses.editCourse.beginsTitle"/></b></td>
-	              <td><b><fmt:message key="courses.editCourse.endsTitle"/></b></td>
-	              <td><b><fmt:message key="courses.editCourse.lengthTitle"/></b></td>
+	              <td>
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="courses.editCourse.beginsTitle"/>
+                      <jsp:param name="helpLocale" value="courses.editCourse.beginsHelp"/>
+                    </jsp:include>    
+                  </td>
+	              <td>
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="courses.editCourse.endsTitle"/>
+                      <jsp:param name="helpLocale" value="courses.editCourse.endsHelp"/>
+                    </jsp:include>    
+                  </td>
+	              <td>
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="courses.editCourse.lengthTitle"/>
+                      <jsp:param name="helpLocale" value="courses.editCourse.lengthHelp"/>
+                    </jsp:include>    
+                  </td>
 	            </tr>
 	            <tr>
 	              <td>
@@ -1225,15 +1240,6 @@
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="courses.editCourse.planningHoursTitle"/>
-                <jsp:param name="helpLocale" value="courses.editCourse.planningHoursHelp"/>
-              </jsp:include>    
-            
-              <input type="text" class="float" name="planningHours" value="${fn:escapeXml(course.planningHours)}" size="5">
-            </div>
-	
-            <div class="genericFormSection">  
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.localTeachingDaysTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.localTeachingDaysHelp"/>
               </jsp:include>    
@@ -1249,6 +1255,15 @@
               <input type="text" class="float" name="distanceTeachingDays" value="${fn:escapeXml(course.distanceTeachingDays)}" size="5">
             </div>
 
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.planningHoursTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.planningHoursHelp"/>
+              </jsp:include>    
+            
+              <input type="text" class="float" name="planningHours" value="${fn:escapeXml(course.planningHours)}" size="5">
+            </div>
+  
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.teachingHoursTitle"/>

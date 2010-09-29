@@ -136,7 +136,6 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
    * Returns whether this authorization provider is capable of updating the credentials of a user.
    * This provider is capable of that, so <code>true</code> is always returned.
    * 
-   * 
    * @return Always <code>true</code>
    */
   public boolean canUpdateCredentials() {

@@ -32,25 +32,25 @@
         </div>
         
         <div id="login" class="tabContent">
-		      <form action="login.json" method="post" ix:jsonform="true">
-		        <div class="genericFormSection">  
-                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                    <jsp:param name="titleLocale" value="users.login.usernameTitle"/>
-                    <jsp:param name="helpLocale" value="users.login.usernameHelp"/>
-                  </jsp:include>     
-		          <input type="text" name="username" class="required" size="25"/>
-		        </div>
-		        <div class="genericFormSection">  
-                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                    <jsp:param name="titleLocale" value="users.login.passwordTitle"/>
-                    <jsp:param name="helpLocale" value="users.login.passwordHelp"/>
-                  </jsp:include>     
-		          <input type="password" name="password" class="required" size="20">
-		        </div>
-		        <div class="genericFormSubmitSection">
-		          <input type="submit" name="login" value="<fmt:message key="users.login.loginButton"/>">
-		        </div>
-		      </form>
+          <form action="login.json" method="post" ix:jsonform="true">
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.login.usernameTitle"/>
+                <jsp:param name="helpLocale" value="users.login.usernameHelp"/>
+              </jsp:include>     
+              <input type="text" name="username" class="required" size="25"/>
+            </div>
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.login.passwordTitle"/>
+                <jsp:param name="helpLocale" value="users.login.passwordHelp"/>
+              </jsp:include>     
+              <input type="password" name="password" class="required" size="20">
+            </div>
+            <div class="genericFormSubmitSection">
+              <input type="submit" name="login" value="<fmt:message key="users.login.loginButton"/>">
+            </div>
+          </form>
         </div>
       </div>
     </div>
