@@ -381,7 +381,7 @@
         });
     
         relatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
-          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/edit-work-resource.png',
           text: '<fmt:message key="users.editUser.basicTabRelatedActionCreateResourceLabel"/>',
           onclick: function (event) {
             redirectTo(GLOBAL_contextPath + '/resources/createworkresource.page?name=' + encodeURIComponent('${user.lastName}, ${user.firstName}'));
