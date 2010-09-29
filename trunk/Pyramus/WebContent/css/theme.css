@@ -375,6 +375,56 @@ h1.genericPageHeader{
   height:22px;
 }
 
+/* List Reports */
+
+.listReportsCategoryContainer {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.listReportsSpacer {
+  height: 8px;
+}
+
+.listReportsReportContainer {
+  margin-left: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
+
+.listReportsReportContainer:hover {
+ background:#D7E3F9;
+  color:#2351B1;
+}
+
+.listReportsNameContainer {
+  display: inline-block;
+  vertical-align: middle;
+  width: 400px;
+  cursor:pointer;
+}
+
+.listReportsEditReportContainer {
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid #739de7;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #fff;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  cursor:pointer;
+  width:16px;
+  height:16px;
+  padding:2px 2px 2px 2px;  
+  background-image:url(../gfx/accessories-text-editor.png);
+}
 
 /* Modules */
 

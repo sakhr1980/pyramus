@@ -15,31 +15,6 @@
     <script type="text/javascript">
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
-
-        var reportsTable = new IxTable($('listReportsTableContainer'), {
-          id : "reportsTable",
-          rowClasses: ['ixTableClickableRow'],
-          columns : [{
-            header : '<fmt:message key="reports.listReports.reportsTableNameHeader"/>',
-            left : 8,
-            right : 76,
-            dataType: 'text',
-            editable: false,
-            paramName: 'name'
-          }, {
-            dataType: 'hidden',
-            paramName: 'reportId'
-          }]
-        });
-        
-        reportsTable.addListener("rowClick", function (event) {
-          var reportId = event.tableObject.getCellValue(event.row, event.tableObject.getNamedColumnIndex('reportId'));
-          redirectTo(window.location.href = GLOBAL_contextPath + '/reports/viewreport.page?reportId=' + reportId);
-        });
-
-        <c:forEach var="report" items="${reports}">
-          reportsTable.addRow(['${report.name}', '${report.id}']);
-        </c:forEach>
       };
     </script>
     
@@ -61,9 +36,29 @@
         </a>
       </div>
       
-      <div id="listReports" class="tabContentixTableFormattedData">
-        <div id="listReportsTableContainer"></div>
+      <div id="listReports" class="tabContent">
+        <c:set var="category" value=""/>
+        <c:forEach var="report" items="${reports}">
+          <c:if test="${report.category.name != category}">
+            <c:if test="${not empty category}">
+              <div class="listReportsSpacer"></div>
+            </c:if>
+            <div class="listReportsCategoryContainer">
+              <c:choose>
+                <c:when test="${empty report.category}"><fmt:message key="reports.listReports.uncategorizedLabel"/></c:when>
+                <c:otherwise><c:out value="${report.category.name}"/></c:otherwise>
+              </c:choose>
+            </div>
+            <c:set var="category" value="${report.category.name}"/>
+          </c:if>
+          <div class="listReportsReportContainer">
+            <div class="listReportsNameContainer" title="<fmt:message key="reports.listReports.viewReportTooltip"/>" onclick="redirectTo(GLOBAL_contextPath + '/reports/viewreport.page?reportId=<c:out value="${report.id}"/>');"><c:out value="${report.name}"/></div>
+            <div class="listReportsEditReportContainer" title="<fmt:message key="reports.listReports.editReportTooltip"/>" onclick="redirectTo(GLOBAL_contextPath + '/reports/editreport.page?reportId=<c:out value="${report.id}"/>');"></div>
+          </div>
+        </c:forEach>
+        <div class="listReportsSpacer"></div>
       </div>
+      
     </div>
   </div>
     

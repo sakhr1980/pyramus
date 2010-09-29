@@ -5,12 +5,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
-	<head>
-	  <title><fmt:message key="system.importReport.pageTitle"/></title>
-	  <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
+  <head>
+    <title><fmt:message key="system.importReport.pageTitle"/></title>
+    <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
-
     <script type="text/javascript">
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
@@ -68,7 +67,7 @@
         </div>
       </div>
     </div>
-	 
+   
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>
 </html>

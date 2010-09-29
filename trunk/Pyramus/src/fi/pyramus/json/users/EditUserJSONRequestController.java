@@ -29,10 +29,6 @@ public class EditUserJSONRequestController implements JSONRequestController {
   /**
    * Processes the request to edit an user. Simply gathers the fields submitted from the
    * web page and updates the database.
-   * <p/>
-   * If the old password of the user is invalid, or the new passwords given by the user
-   * do not match, a <code>PyramusRuntimeException</code> is thrown with a localized
-   * message stating so.
    * 
    * @param jsonRequestContext The JSON request context
    */
