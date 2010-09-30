@@ -20,7 +20,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Subject {
+public class Subject implements ArchivableEntity {
 
   public Long getId() {
     return id;

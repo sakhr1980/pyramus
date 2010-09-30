@@ -21,6 +21,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.usertypes.CreditType;
@@ -31,7 +32,7 @@ import fi.pyramus.persistence.usertypes.CreditTypeUserType;
 @TypeDefs ({
   @TypeDef (name="CreditType", typeClass=CreditTypeUserType.class)
 })
-public class Credit {
+public class Credit implements ArchivableEntity {
 
   public Long getId() {
     return id;

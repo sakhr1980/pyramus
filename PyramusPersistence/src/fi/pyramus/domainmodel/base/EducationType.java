@@ -30,7 +30,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Entity
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class EducationType {
+public class EducationType implements ArchivableEntity {
 
   /**
    * Returns the unique identifier of this object.

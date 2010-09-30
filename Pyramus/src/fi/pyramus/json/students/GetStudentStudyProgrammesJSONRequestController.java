@@ -57,16 +57,16 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
          */
         
         int o1class =
-          (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
-            (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
-              (o1.getStudyEndDate() != null) ? 3:
-                (o1.getArchived()) ? 4:
+          (o1.getArchived()) ? 4:
+            (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
+              (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
+                (o1.getStudyEndDate() != null) ? 3:
                   5;
         int o2class =
-          (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
-            (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
-              (o2.getStudyEndDate() != null) ? 3:
-                (o2.getArchived()) ? 4:
+          (o2.getArchived()) ? 4:
+            (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
+              (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
+                (o2.getStudyEndDate() != null) ? 3:
                   5;
 
         if (o1class == o2class) {
@@ -87,10 +87,13 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
     		if (student.getStudyProgramme() != null) {
           Map<String, Object> studentInfo = new HashMap<String, Object>();
           studentInfo.put("studyProgrammeId", student.getStudyProgramme().getId());
-          if (!student.getArchived())
-          	studentInfo.put("studyProgrammeName", student.getStudyProgramme().getName());
-          else
-          	studentInfo.put("studyProgrammeName", student.getStudyProgramme().getName() + " *");
+
+          String studyProgrammeName = 
+            student.getArchived() ? student.getStudyProgramme().getName() + " ***" :
+              student.getStudyEndDate() != null ? student.getStudyProgramme().getName() + " *" :
+                student.getStudyProgramme().getName();
+
+          studentInfo.put("studyProgrammeName", studyProgrammeName);
           studentInfo.put("studentId", student.getId());
 
           result.add(studentInfo);

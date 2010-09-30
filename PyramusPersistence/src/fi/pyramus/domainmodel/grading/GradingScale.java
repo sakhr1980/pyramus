@@ -19,8 +19,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+
 @Entity
-public class GradingScale {
+public class GradingScale implements ArchivableEntity {
   
   public Long getId() {
     return id;

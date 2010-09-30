@@ -14,10 +14,12 @@ import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ResourceCategory {
+public class ResourceCategory implements ArchivableEntity {
 
   public Long getId() {
     return id;

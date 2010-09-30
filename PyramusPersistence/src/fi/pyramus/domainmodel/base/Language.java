@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Language {
+public class Language implements ArchivableEntity {
 
   /**
    * Returns internal unique id.
@@ -100,6 +100,6 @@ public class Language {
   
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.UN_TOKENIZED)
+  @Field (index = Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;  
 }

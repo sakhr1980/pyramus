@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class StudyProgramme {
+public class StudyProgramme implements ArchivableEntity {
 
   /**
    * Returns the unique identifier of this object.

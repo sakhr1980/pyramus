@@ -40,7 +40,7 @@ import fi.pyramus.domainmodel.users.User;
  */
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class CourseBase {
+public abstract class CourseBase implements ArchivableEntity {
 
   /**
    * Returns the identifier of this entity.
@@ -377,7 +377,7 @@ public abstract class CourseBase {
 
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.UN_TOKENIZED)
+  @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
   
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)

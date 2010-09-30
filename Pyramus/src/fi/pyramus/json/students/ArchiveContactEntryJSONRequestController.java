@@ -7,7 +7,7 @@ import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.json.JSONRequestController;
 
-public class DeleteContactEntryJSONRequestController implements JSONRequestController {
+public class ArchiveContactEntryJSONRequestController implements JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
@@ -15,7 +15,7 @@ public class DeleteContactEntryJSONRequestController implements JSONRequestContr
     
     StudentContactLogEntry entry = studentDAO.findStudentContactLogEntryById(entryId);
     
-    studentDAO.deleteContactEntry(entry);
+    studentDAO.archiveContactEntry(entry);
   }
 
   public UserRole[] getAllowedRoles() {

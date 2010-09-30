@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Entity
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class EducationSubtype {
+public class EducationSubtype implements ArchivableEntity {
   
   /**
    * Default constructor.

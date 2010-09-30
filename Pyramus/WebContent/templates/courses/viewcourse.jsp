@@ -164,6 +164,15 @@
               <c:set var="studyProgrammeName"><fmt:message key="courses.viewCourse.studentsTableNoStudyProgramme"/></c:set>
             </c:otherwise>
           </c:choose>
+
+          <c:choose>
+            <c:when test="${courseStudent.student.archived}">
+              <c:set var="studyProgrammeName">${studyProgrammeName} ***</c:set>
+            </c:when>
+            <c:when test="${courseStudent.student.studyEndDate ne null}">
+              <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+            </c:when>
+          </c:choose>
           
           studentsTable.addRow([
             "", 

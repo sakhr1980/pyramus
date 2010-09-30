@@ -32,6 +32,10 @@ var defaultDescriptionToolbar = [
   ['Maximize', 'ShowBlocks','-','About']
 ];
 
+var simpleToolbar = [
+  ['Bold','Italic','Underline']
+];
+
 
 CKEDITOR.config.toolbar_courseDescription = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_moduleDescription = defaultDescriptionToolbar;
@@ -40,3 +44,4 @@ CKEDITOR.config.toolbar_studentProjectDescription = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_gradingScaleDescription = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_studentAdditionalInformation = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_studentGroupDescription = defaultDescriptionToolbar;
+CKEDITOR.config.toolbar_studentContactEntryText = simpleToolbar;

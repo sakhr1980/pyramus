@@ -16,7 +16,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Indexed
-public class ContactType {
+public class ContactType implements ArchivableEntity {
 
   public Long getId() {
     return id;
@@ -52,7 +52,7 @@ public class ContactType {
 
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.UN_TOKENIZED)
+  @Field (index = Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
 }

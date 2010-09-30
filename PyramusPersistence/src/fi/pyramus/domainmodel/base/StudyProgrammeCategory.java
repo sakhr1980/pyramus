@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class StudyProgrammeCategory {
+public class StudyProgrammeCategory implements ArchivableEntity {
 
   public Long getId() {
     return id;
