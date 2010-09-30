@@ -14,13 +14,20 @@
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     
     <script type="text/javascript">
-
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
       }
-
     </script>
     
   </head>
@@ -50,6 +57,15 @@
                 <jsp:param name="helpLocale" value="resources.editMaterialResource.nameHelp"/>
               </jsp:include>
               <input type="text" class="required" name="name" value="${fn:escapeXml(resource.name)}" size="40"/>
+            </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.editMaterialResource.tagsTitle"/>
+                <jsp:param name="helpLocale" value="resources.editMaterialResource.tagsHelp"/>
+              </jsp:include>
+              <input type="text" class="required" id="tags" name="tags" value="${fn:escapeXml(tags)}" size="40"/>
+							<div id="tags_choices" class="autocomplete_choises"></div>
             </div>
             
             <div class="genericFormSection">  

@@ -1,5 +1,6 @@
 package fi.pyramus.views.resources;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -9,6 +10,7 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
@@ -19,9 +21,20 @@ public class EditWorkResourceViewController implements PyramusViewController, Br
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
 
     Long resourceId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("resource"));
-    Resource resource = resourceDAO.getResource(resourceId);
+    Resource resource = resourceDAO.findResourceById(resourceId);
+
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = resource.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("categories", resourceDAO.listResourceCategories());
-    pageRequestContext.getRequest().setAttribute("resource", resourceDAO.getWorkResource(resource.getId()));
+    pageRequestContext.getRequest().setAttribute("resource", resourceDAO.findWorkResourceById(resource.getId()));
     pageRequestContext.setIncludeJSP("/templates/resources/editworkresource.jsp");
   }
 

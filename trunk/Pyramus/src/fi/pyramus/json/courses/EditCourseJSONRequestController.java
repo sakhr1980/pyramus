@@ -207,7 +207,7 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       Integer units = requestContext.getInteger(colPrefix + ".units");
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = requestContext.getLong(colPrefix + ".resourceId");
-      Resource resource = resourceDAO.getResource(resourceId);
+      Resource resource = resourceDAO.findResourceById(resourceId);
       Long basicResourceId = requestContext.getLong(colPrefix + ".basicResourceId");
       if (basicResourceId == -1) {
         basicResourceId = courseDAO.createBasicCourseResource(course, resource, hours, hourlyCost, units, unitCost)
@@ -239,7 +239,7 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       MonetaryAmount hourlyCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".hourlyCost"));
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = requestContext.getLong(colPrefix + ".resourceId");
-      Resource resource = resourceDAO.getResource(resourceId);
+      Resource resource = resourceDAO.findResourceById(resourceId);
       Long studentResourceId = requestContext.getLong(colPrefix + ".studentResourceId");
       if (studentResourceId == -1) {
         studentResourceId = courseDAO.createStudentCourseResource(course, resource, hours, hourlyCost, unitCost)
@@ -271,7 +271,7 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       MonetaryAmount hourlyCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".hourlyCost"));
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = requestContext.getLong(colPrefix + ".resourceId");
-      Resource resource = resourceDAO.getResource(resourceId);
+      Resource resource = resourceDAO.findResourceById(resourceId);
       Long gradeResourceId = requestContext.getLong(colPrefix + ".gradeResourceId");
       if (gradeResourceId == -1) {
         gradeResourceId = courseDAO.createGradeCourseResource(course, resource, hours, hourlyCost, unitCost).getId();

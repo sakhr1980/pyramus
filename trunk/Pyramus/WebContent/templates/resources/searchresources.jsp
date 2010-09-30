@@ -22,7 +22,10 @@
 	      var searchForm = $("searchForm");
 	      JSONRequest.request("resources/searchresources.json", {
 	        parameters: {
+	          activeTab: searchForm.activeTab.value,
 	          name: searchForm.name.value,
+	          tags: searchForm.tags.value,
+	          simpleQuery: searchForm.simpleQuery.value,
 	          resourceType: searchForm.resourceType.value,
 	          resourceCategory: searchForm.resourceCategory.value,
 	          page: page
@@ -58,7 +61,14 @@
 
 	    function onLoad(event) {
 	      var tabControl = new IxProtoTabs($('tabs'));
-        new IxSearchNavigation($('searchResultsPagesContainer'), {
+	      $('searchForm').activeTab.value = tabControl.getActiveTab();
+        tabControl.addListener(function (event) {
+          if ((event.action == 'tabActivated')||(event.action == 'tabInitialized')) {
+            $('searchForm').activeTab.value = event.name;
+            $('activeTab').value = event.name;
+          } 
+        });
+	      new IxSearchNavigation($('searchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
           maxNavigationPages: 19,
           onclick: function(event) {
@@ -166,26 +176,52 @@
 	  <div id="searchResourcesSearchFormContainer"> 
       <div class="genericFormContainer"> 
         <div class="tabLabelsContainer" id="tabs">
-          <a class="tabLabel" href="#searchResources">
-            <fmt:message key="resources.searchResources.tabLabelSearchResources"/>
+          <a class="tabLabel" href="#basic">
+            <fmt:message key="resources.searchResources.tabLabelBasic"/>
+          </a>
+          <a class="tabLabel" href="#advanced">
+            <fmt:message key="resources.searchResources.tabLabelAdvanced"/>
           </a>
         </div>
         
-        <div id="searchResources" class="tabContent">
-          <form id="searchForm" method="post" onsubmit="onSearchResources(event);">
+        <form method="post" id="searchForm" onsubmit="onSearchResources(event);">
+          <input type="hidden" name="activeTab" id="activeTab" value="basic"/>
+        
+          <div id="basic" class="tabContent">
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.searchResources.basicQueryTitle"/>
+                <jsp:param name="helpLocale" value="resources.searchResources.basicQueryTitle"/>
+              </jsp:include>                
+              <input type="text" name="simpleQuery" class="basicSearchQueryField" size="40">
+            </div>
       
+            <div class="genericFormSubmitSection">
+              <input type="submit" name="query" value="<fmt:message key="resources.searchResources.searchButton"/>">
+            </div>
+          </div>
+
+          <div id="advanced" class="tabContent">
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="resources.searchResources.nameTitle"/>
-                <jsp:param name="helpLocale" value="resources.searchResources.nameHelp"/>
+                <jsp:param name="titleLocale" value="resources.searchResources.advancedSearchNameTitle"/>
+                <jsp:param name="helpLocale" value="resources.searchResources.advancedSearchNameHelp"/>
               </jsp:include>          
               <input type="text" name="name" size="40"/>
             </div>
             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="resources.searchResources.resourceTypeTitle"/>
-                <jsp:param name="helpLocale" value="resources.searchResources.resourceTypeHelp"/>
+                <jsp:param name="titleLocale" value="resources.searchResources.advancedSearchTagsTitle"/>
+                <jsp:param name="helpLocale" value="resources.searchResources.advancedSearchTagsHelp"/>
+              </jsp:include>          
+              <input type="text" name="tags" size="40"/>
+            </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.searchResources.advancedSearchTypeTitle"/>
+                <jsp:param name="helpLocale" value="resources.searchResources.advancedSearchTypeHelp"/>
               </jsp:include>          
               <div class="searchResourcesResourceTypeContainer">
                 <select name="resourceType">
@@ -199,8 +235,8 @@
       
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="resources.searchResources.resourceCategoryTitle"/>
-                <jsp:param name="helpLocale" value="resources.searchResources.resourceCategoryHelp"/>
+                <jsp:param name="titleLocale" value="resources.searchResources.advancedSearchCategoryTitle"/>
+                <jsp:param name="helpLocale" value="resources.searchResources.advancedSearchCategoryHelp"/>
               </jsp:include>          
               <div class="searchResourcesResourceCategoryContainer">
                 <select name="resourceCategory">
@@ -215,11 +251,10 @@
             <div class="genericFormSubmitSection">
               <input type="submit" value="<fmt:message key="resources.searchResources.searchButton"/>">
             </div>
-      
-          </form>
-		</div>
+		      </div>
+		    </form>
+	    </div>
 	  </div>
-	</div>
 	     
     <div id="searchResultsWrapper" style="display:none;">
       <div class="searchResultsTitle"><fmt:message key="resources.searchResources.resultsTitle"/></div>
