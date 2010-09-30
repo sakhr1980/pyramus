@@ -33,7 +33,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Municipality {
+public class Municipality implements ArchivableEntity {
 
   /**
    * Returns the unique identifier of this municipality.
@@ -108,6 +108,6 @@ public class Municipality {
 
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.UN_TOKENIZED)
+  @Field (index = Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 }

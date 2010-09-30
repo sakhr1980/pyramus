@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class ComponentBase {
+public abstract class ComponentBase implements ArchivableEntity {
 
   public Long getId() {
     return id;
@@ -88,7 +88,7 @@ public abstract class ComponentBase {
 
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.UN_TOKENIZED)
+  @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
 }

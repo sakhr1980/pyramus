@@ -12,9 +12,11 @@ import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+
 @Entity
 @Indexed
-public class CourseState {
+public class CourseState implements ArchivableEntity {
 
   public Long getId() {
     return id;

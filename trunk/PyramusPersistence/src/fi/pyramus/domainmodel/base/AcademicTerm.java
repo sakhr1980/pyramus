@@ -17,7 +17,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class AcademicTerm {
+public class AcademicTerm implements ArchivableEntity {
 
   public Long getId() {
     return id;
@@ -74,7 +74,7 @@ public class AcademicTerm {
   
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.UN_TOKENIZED)
+  @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
 }

@@ -114,7 +114,7 @@ public class Resource implements ArchivableEntity {
   
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.UN_TOKENIZED)
+  @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
   
   @Version

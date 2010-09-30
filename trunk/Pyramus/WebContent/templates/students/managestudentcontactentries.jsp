@@ -10,7 +10,7 @@
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/datefield_support.jsp"></jsp:include>
-    
+    <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -63,7 +63,8 @@
         var dField = getIxDateField("entryDate." + studentId);
         if (dField != null)
           dField.setTimestamp(new Date().getTime());
-        entryForm.entryText.value = '';
+        entryForm["entryText." + studentId].value = '';
+        CKEDITOR.instances["entryText." + studentId].setData('');
         entryForm.entryId.value = '-1';
         entryForm.submitContactLogEntryButton.value = "<fmt:message key="students.manageStudentContactEntries.newContactLogEntryBtn"/>";
       }
@@ -97,7 +98,8 @@
               else
                 dField.setTimestamp(new Date().getTime());
             }
-            entryForm.entryText.value = entryText;
+            entryForm["entryText." + studentId].value = entryText;
+            CKEDITOR.instances["entryText." + studentId].setData(entryText);
             entryForm.entryId.value = entryId;
             entryForm.submitContactLogEntryButton.value = "<fmt:message key="students.manageStudentContactEntries.editContactLogEntryBtn"/>";
           } 
@@ -141,11 +143,11 @@
         return entryTypeName;
       }
 
-      function deleteEntry(entryId, studentId) {
+      function archiveEntry(entryId, studentId) {
         var entryShort = $("entry." + entryId + ".text").textContent;
         if (entryShort.length > 20)
           entryShort = entryShort.substring(0, 19) + "...";
-        var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.deleteContactEntryConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
+        var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.archiveContactEntryConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
         var dialog = new IxDialog({
           id : 'confirmRemoval',
           contentURL : url,
@@ -153,15 +155,15 @@
           showOk : true,  
           showCancel : true,
           autoEvaluateSize: true,
-          title : '<fmt:message key="students.manageStudentContactEntries.deleteContactEntryConfirmDialogTitle"/>',
-          okLabel : '<fmt:message key="students.manageStudentContactEntries.deleteContactEntryConfirmDialogOkLabel"/>',
-          cancelLabel : '<fmt:message key="students.manageStudentContactEntries.deleteContactEntryConfirmDialogCancelLabel"/>'
+          title : '<fmt:message key="students.manageStudentContactEntries.archiveContactEntryConfirmDialogTitle"/>',
+          okLabel : '<fmt:message key="students.manageStudentContactEntries.archiveContactEntryConfirmDialogOkLabel"/>',
+          cancelLabel : '<fmt:message key="students.manageStudentContactEntries.archiveContactEntryConfirmDialogCancelLabel"/>'
         });
       
         dialog.addDialogListener(function(event) {
           switch (event.name) {
             case 'okClick':
-              JSONRequest.request("students/deletecontactentry.json", {
+              JSONRequest.request("students/archivecontactentry.json", {
                 parameters: {
                   entryId: entryId
                 },
@@ -191,10 +193,13 @@
         newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
-        newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".deletebnt", 
+        newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", 
           src: "${pageContext.request.contextPath}/gfx/list-remove.png", 
-          onClick: "deleteEntry(" + entryId + ", " + studentId + ")"}, []));
-        newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".text"}, [entryText]));
+          onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
+
+        var node = Builder.node("div", {id: "entry." + entryId + ".text"}, []);
+        node.innerHTML = entryText;
+        newEntryDiv.appendChild(node);
       }
       
       /**
@@ -211,7 +216,7 @@
             entryType: entryForm.entryType.value,
             entryCreatorName: entryForm.entryCreatorName.value,
             entryDate: entryForm["entryDate." + studentId].value,
-            entryText: entryForm.entryText.value,
+            entryText: CKEDITOR.instances["entryText." + studentId].getData(),
             studentId: entryForm.studentId.value
           },
           onSuccess: function (jsonResponse) {
@@ -237,7 +242,7 @@
             entryCreatorName: entryForm.entryCreatorName.value,
             entryId: entryForm.entryId.value,
             entryDate: entryForm["entryDate." + studentId].value,
-            entryText: entryForm.entryText.value
+            entryText: CKEDITOR.instances["entryText." + studentId].getData()
           },
           onSuccess: function (jsonResponse) {
             var results = jsonResponse.results;
@@ -306,7 +311,14 @@
                   <div id="studentContactEntryList.${student.id}">
                     <script type="text/javascript">
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-                      addEntryRow(${student.id}, ${contactEntry.id}, ${contactEntry.entryDate.time}, '${contactEntry.type}', '${contactEntry.creatorName}', '${contactEntry.text}');
+                      addEntryRow(
+                          ${student.id}, 
+                          ${contactEntry.id}, 
+                          ${contactEntry.entryDate.time}, 
+                          '${contactEntry.type}', 
+                          '${fn:replace(contactEntry.creatorName, "'", "\\'")}', 
+                          '${fn:replace(fn:replace(contactEntry.text, newLineChar, ""), "'", "\\'")}'
+                      );
                     </c:forEach>
                     </script>
                   </div>
@@ -345,11 +357,11 @@
                       <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.textTitle"/>
                       <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.textHelp"/>
                     </jsp:include> 
-                    <textarea name="entryText" cols="60" rows="6"></textarea>
+                    <textarea name="entryText.${student.id}" cols="60" rows="6" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
                   </div>            
                   <div>
                     <input type="submit" name="submitContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.newContactLogEntryBtn"/>">
-                    <input type="reset" name="clearContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.resetContactLogEntryFormBtn"/>" onClick="resetEntryForm2(event, ${student.id});">
+                    <input type="button" name="clearContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.resetContactLogEntryFormBtn"/>" onClick="resetEntryForm2(event, ${student.id});">
                   </div>            
                 </form>
               </div>

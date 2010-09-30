@@ -14,10 +14,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.students.Student;
 
 @Entity
-public class CourseStudent {
+public class CourseStudent implements ArchivableEntity {
   
   public Long getId() {
     return id;

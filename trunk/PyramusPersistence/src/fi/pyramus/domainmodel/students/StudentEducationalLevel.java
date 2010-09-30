@@ -10,8 +10,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+
 @Entity
-public class StudentEducationalLevel {
+public class StudentEducationalLevel implements ArchivableEntity {
 
   public Long getId() {
     return id;

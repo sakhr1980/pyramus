@@ -1015,7 +1015,7 @@ public class StudentDAO extends PyramusDAO {
     s.saveOrUpdate(entry);
   }
 
-  public void deleteContactEntry(StudentContactLogEntry entry) {
+  public void archiveContactEntry(StudentContactLogEntry entry) {
     Session s = getHibernateSession();
 
     entry.setArchived(Boolean.TRUE);
