@@ -22,7 +22,7 @@ public class ArchiveResourceCategoryJSONRequestController implements JSONRequest
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
 
     Long resourceCategoryId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("resourceCategoryId"));
-    resourceDAO.archiveResourceCategory(resourceDAO.getResourceCategory(resourceCategoryId));
+    resourceDAO.archiveResourceCategory(resourceDAO.findResourceCategoryById(resourceCategoryId));
   }
 
   public UserRole[] getAllowedRoles() {

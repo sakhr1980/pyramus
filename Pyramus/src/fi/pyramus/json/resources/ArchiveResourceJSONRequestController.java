@@ -15,7 +15,7 @@ public class ArchiveResourceJSONRequestController implements JSONRequestControll
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
 
     Long resourceId = NumberUtils.createLong(requestContext.getRequest().getParameter("resource"));
-    Resource resource = resourceDAO.getResource(resourceId);
+    Resource resource = resourceDAO.findResourceById(resourceId);
     resourceDAO.archiveResource(resource);
   }
 

@@ -24,7 +24,7 @@ public class SaveResourceCategoriesJSONRequestController implements JSONRequestC
         resourceDAO.createResourceCategory(name); 
       }
       else if (modified) {
-        ResourceCategory resourceCategory = resourceDAO.getResourceCategory(resourceCategoryId);
+        ResourceCategory resourceCategory = resourceDAO.findResourceCategoryById(resourceCategoryId);
         resourceDAO.updateResourceCategory(resourceCategory, name);
       }
     }

@@ -19,6 +19,14 @@
     <script type="text/javascript">
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
       };
     </script>
     
@@ -39,24 +47,33 @@
         <form action="createworkresource.json" method="post" ix:jsonform="true">
           <div id="createWorkResource" class="tabContent">
 	        <div class="genericFormSection">
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="resources.createWorkResource.nameTitle"/>
-                <jsp:param name="helpLocale" value="resources.createWorkResource.nameHelp"/>
-              </jsp:include>
+            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+              <jsp:param name="titleLocale" value="resources.createWorkResource.nameTitle"/>
+              <jsp:param name="helpLocale" value="resources.createWorkResource.nameHelp"/>
+            </jsp:include>
   		      <input type="text" class="required" name="name" size="40" value="${fn:escapeXml(name)}"/>
-		  	</div>
-		        
-            <div class="genericFormSection">
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="resources.createWorkResource.categoryTitle"/>
-                <jsp:param name="helpLocale" value="resources.createWorkResource.categoryHelp"/>
-              </jsp:include>
-              <select name="category">           
-                <c:forEach var="category" items="${categories}">
-                  <option value="${category.id}"> ${category.name}  </option> 
-                </c:forEach>
-              </select>
-            </div>
+		  	  </div>
+            
+          <div class="genericFormSection">
+            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+              <jsp:param name="titleLocale" value="resources.createWorkResource.tagsTitle"/>
+              <jsp:param name="helpLocale" value="resources.createWorkResource.tagsHelp"/>
+            </jsp:include>
+            <input type="text" class="required" id="tags" name="tags" size="40"/>
+            <div id="tags_choices" class="autocomplete_choises"></div>
+          </div>
+        
+          <div class="genericFormSection">
+            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+              <jsp:param name="titleLocale" value="resources.createWorkResource.categoryTitle"/>
+              <jsp:param name="helpLocale" value="resources.createWorkResource.categoryHelp"/>
+            </jsp:include>
+            <select name="category">           
+              <c:forEach var="category" items="${categories}">
+                <option value="${category.id}"> ${category.name}  </option> 
+              </c:forEach>
+            </select>
+          </div>
 		        
 	        <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

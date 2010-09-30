@@ -18,6 +18,14 @@
     <script type="text/javascript">
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
       };
     </script>
     
@@ -44,6 +52,15 @@
                   </jsp:include>
 		  		    <input type="text" class="required" name="name" size="40"/>
 		  	    </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.createMaterialResource.tagsTitle"/>
+                <jsp:param name="helpLocale" value="resources.createMaterialResource.tagsHelp"/>
+              </jsp:include>
+              <input type="text" class="required" id="tags" name="tags" size="40"/>
+              <div id="tags_choices" class="autocomplete_choises"></div>
+            </div>
 		        
 		        <div class="genericFormSection">  
                   <jsp:include page="/templates/generic/fragments/formtitle.jsp">

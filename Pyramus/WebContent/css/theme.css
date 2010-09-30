@@ -398,7 +398,7 @@ h1.genericPageHeader{
 }
 
 .listReportsReportContainer:hover {
- background:#D7E3F9;
+  background:#D7E3F9;
   color:#2351B1;
 }
 
@@ -1253,4 +1253,38 @@ a.modalSearchResultPageContainerActive{
   border:1px dashed #739de7;
   width:400px;
   font-size:11px;
+}
+
+/* Auto complete */
+
+div.autocomplete_choises {
+  position:absolute;
+  background-color:white;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  border:1px solid #739DE7;
+  margin:0px;
+  padding:0;
+}
+
+div.autocomplete_choises ul {
+  list-style-type:none;
+  margin:0;
+  padding:0;
+}
+
+div.autocomplete_choises ul li {
+  margin: 1px;
+  list-style-type:none;
+  padding: 4px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  cursor:pointer;
+}
+
+div.autocomplete_choises ul li.selected { 
+  background:#D7E3F9;
+  color:#2351B1;
 }

@@ -19,6 +19,15 @@
 
 	    function onLoad(event) {
 	      var tabControl = new IxProtoTabs($('tabs'));
+        
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' '],
+              partialChars: 1
+            });
+          }
+        });   
 	    }
 
     </script>
@@ -50,42 +59,51 @@
 	            </jsp:include>          
 	     		    <input type="text" class="required" name="name" value="${fn:escapeXml(resource.name)}" size="40"/>
 		 	      </div>
-		        
-              <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="resources.editWorkResource.categoryTitle"/>
-                  <jsp:param name="helpLocale" value="resources.editWorkResource.categoryHelp"/>
-                </jsp:include>          
-                <select name="category">           
-                  <c:forEach var="category" items="${categories}">
-                    <c:choose>
-                      <c:when test="${category.id eq resource.category.id}">
-                        <option value="${category.id}" selected="selected">${category.name}</option> 
-                      </c:when>
-                      <c:otherwise>
-                        <option value="${category.id}">${category.name}</option> 
-                      </c:otherwise>
-                    </c:choose>
-                  </c:forEach>
-                </select>
-              </div>
-              
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="resources.editWorkResource.hourlyCostTitle"/>
-                  <jsp:param name="helpLocale" value="resources.editWorkResource.hourlyCostHelp"/>
-                </jsp:include>          
-                <input type="text" name="hourlyCost" value="${resource.hourlyCost}" class="numberField" size="15"/>
-              </div>
-              
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="resources.editWorkResource.costPerUseTitle"/>
-                  <jsp:param name="helpLocale" value="resources.editWorkResource.costPerUseHelp"/>
-                </jsp:include>          
-                <input type="text" name="costPerUse" value="${resource.costPerUse}" class="numberField" size="15"/>
-              </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.editWorkResource.tagsTitle"/>
+                <jsp:param name="helpLocale" value="resources.editWorkResource.tagsHelp"/>
+              </jsp:include>
+              <input type="text" class="required" id="tags" name="tags" value="${fn:escapeXml(tags)}" size="40"/>
+              <div id="tags_choices" class="autocomplete_choises"></div>
             </div>
+		        
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.editWorkResource.categoryTitle"/>
+                <jsp:param name="helpLocale" value="resources.editWorkResource.categoryHelp"/>
+              </jsp:include>          
+              <select name="category">           
+                <c:forEach var="category" items="${categories}">
+                  <c:choose>
+                    <c:when test="${category.id eq resource.category.id}">
+                      <option value="${category.id}" selected="selected">${category.name}</option> 
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${category.id}">${category.name}</option> 
+                    </c:otherwise>
+                  </c:choose>
+                </c:forEach>
+              </select>
+            </div>
+              
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.editWorkResource.hourlyCostTitle"/>
+                <jsp:param name="helpLocale" value="resources.editWorkResource.hourlyCostHelp"/>
+              </jsp:include>          
+              <input type="text" name="hourlyCost" value="${resource.hourlyCost}" class="numberField" size="15"/>
+            </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="resources.editWorkResource.costPerUseTitle"/>
+                <jsp:param name="helpLocale" value="resources.editWorkResource.costPerUseHelp"/>
+              </jsp:include>          
+              <input type="text" name="costPerUse" value="${resource.costPerUse}" class="numberField" size="15"/>
+            </div>
+          </div>
   	    </div>
 	    </div>
 	    <div class="genericFormSubmitSectionOffTab">

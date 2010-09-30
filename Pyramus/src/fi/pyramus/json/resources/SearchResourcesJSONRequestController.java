@@ -36,23 +36,31 @@ public class SearchResourcesJSONRequestController implements JSONRequestControll
     if (page == null) {
       page = 0;
     }
+    
+    SearchResult<Resource> searchResult;
 
-    String name = requestContext.getRequest().getParameter("name");
+    if ("advanced".equals(requestContext.getString("activeTab"))) {
+      String name = requestContext.getRequest().getParameter("name");
+      String tags = requestContext.getRequest().getParameter("tags");
 
-    ResourceType resourceType = null;
-    String resourceTypeParam = requestContext.getRequest().getParameter("resourceType");
-    if (!StringUtils.isBlank(resourceTypeParam)) {
-      resourceType = Enum.valueOf(ResourceType.class, resourceTypeParam);
+      ResourceType resourceType = null;
+      String resourceTypeParam = requestContext.getRequest().getParameter("resourceType");
+      if (!StringUtils.isBlank(resourceTypeParam)) {
+        resourceType = Enum.valueOf(ResourceType.class, resourceTypeParam);
+      }
+      
+      ResourceCategory resourceCategory = null;
+      String resourceCategoryParam = requestContext.getRequest().getParameter("resourceCategory");
+      if (!StringUtils.isBlank(resourceCategoryParam)) {
+        resourceCategory = resourceDAO.findResourceCategoryById(NumberUtils.createLong(resourceCategoryParam));
+      }
+
+      searchResult = resourceDAO.searchResources(resultsPerPage, page, name, tags, resourceType, resourceCategory, true);
+    } else {
+      String simpleQuery = requestContext.getString("simpleQuery");
+      searchResult = resourceDAO.searchResourcesBasic(resultsPerPage, page, simpleQuery);
     }
-
-    ResourceCategory resourceCategory = null;
-    String resourceCategoryParam = requestContext.getRequest().getParameter("resourceCategory");
-    if (!StringUtils.isBlank(resourceCategoryParam)) {
-      resourceCategory = resourceDAO.getResourceCategory(NumberUtils.createLong(resourceCategoryParam));
-    }
-
-    SearchResult<Resource> searchResult = resourceDAO.searchResources(resultsPerPage, page, name, resourceType,
-        resourceCategory, true);
+    
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
 
@@ -94,6 +102,7 @@ public class SearchResourcesJSONRequestController implements JSONRequestControll
     else {
       statusMessage = Messages.getInstance().getText(locale, "resources.searchResources.searchStatusNoMatches");
     }
+    
     requestContext.addResponseParameter("results", results);
     requestContext.addResponseParameter("statusMessage", statusMessage);
     requestContext.addResponseParameter("pages", searchResult.getPages());

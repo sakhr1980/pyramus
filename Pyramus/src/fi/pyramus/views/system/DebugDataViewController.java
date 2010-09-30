@@ -58,7 +58,7 @@ public class DebugDataViewController implements PyramusViewController {
     }
     else if ("resource".equals(type)) {
       for (int i = start; i < (start + count); i++) {
-        ResourceCategory resourceCategory = resourceDAO.getResourceCategory(new Long(1));
+        ResourceCategory resourceCategory = resourceDAO.findResourceCategoryById(new Long(1));
         resourceDAO.createMaterialResource("Materiaaliresurssi " + i, resourceCategory, new Double(500));
       }
     }
