@@ -3,8 +3,10 @@ package fi.pyramus.domainmodel.students;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,9 +17,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,6 +49,7 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 /**
@@ -402,6 +408,30 @@ public class Student implements ArchivableEntity {
     return contactInfo;
   }
 
+  public Set<Tag> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Student")  
   @TableGenerator(name="Student", allocationSize=1)
@@ -499,4 +529,8 @@ public class Student implements ArchivableEntity {
   @JoinColumn (name="student")
   private List<StudentVariable> variables = new ArrayList<StudentVariable>();
 
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__StudentTags", joinColumns=@JoinColumn(name="student"), inverseJoinColumns=@JoinColumn(name="tag"))
+  @IndexedEmbedded 
+  private Set<Tag> tags = new HashSet<Tag>();
 }

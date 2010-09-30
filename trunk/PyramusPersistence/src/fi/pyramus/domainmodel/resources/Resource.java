@@ -1,14 +1,21 @@
 package fi.pyramus.domainmodel.resources;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -28,6 +35,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
@@ -83,6 +91,30 @@ public class Resource implements ArchivableEntity {
   public Long getVersion() {
     return version;
   }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
   
   @Field (index = Index.UN_TOKENIZED)
   public ResourceType getResourceType() {
@@ -116,6 +148,11 @@ public class Resource implements ArchivableEntity {
   @Column(nullable = false)
   @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
+
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__ResourceTags", joinColumns=@JoinColumn(name="resource"), inverseJoinColumns=@JoinColumn(name="tag"))
+  @IndexedEmbedded 
+  private Set<Tag> tags = new HashSet<Tag>();
   
   @Version
   private Long version;

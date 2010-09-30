@@ -45,6 +45,7 @@ import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -1407,5 +1408,50 @@ public class BaseDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(StudyProgrammeCategory.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
+  
+  /* Tag */
 
+  public Tag findTagById(Long id) {
+    EntityManager entityManager = getEntityManager();
+    
+    return entityManager.find(Tag.class, id);
+  }
+
+  public Tag findTagByText(String text) {
+    Session s = getHibernateSession();
+    
+    return (Tag) s.createCriteria(Tag.class)
+      .add(Restrictions.eq("text", text))
+      .uniqueResult();
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<Tag> listTags() {
+    Session s = getHibernateSession();
+    return s.createCriteria(Tag.class).list();
+  }
+  
+  public Tag createTag(String text) {
+    EntityManager entityManager = getEntityManager();
+    
+    Tag tag = new Tag();
+    tag.setText(text);
+    
+    entityManager.persist(tag);
+    
+    return tag;
+  }
+  
+  public void updateTagText(Tag tag, String text) {
+    EntityManager entityManager = getEntityManager();
+    
+    tag.setText(text);
+    
+    entityManager.persist(tag);
+  }
+  
+  public void deleteTag(Tag tag) {
+    EntityManager entityManager = getEntityManager();
+    entityManager.remove(tag);
+  }
 }

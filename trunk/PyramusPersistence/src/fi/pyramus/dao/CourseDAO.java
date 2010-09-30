@@ -1,7 +1,5 @@
 package fi.pyramus.dao;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -997,11 +995,11 @@ public class CourseDAO extends PyramusDAO {
 
     String timeframeS = null;
     if (timeframeStart != null)
-      timeframeS = COURSE_SEARCH_DATE_FORMAT.format(timeframeStart);
+      timeframeS = getSearchFormattedDate(timeframeStart);
 
     String timeframeE = null;
     if (timeframeEnd != null)
-      timeframeE = COURSE_SEARCH_DATE_FORMAT.format(timeframeEnd);
+      timeframeE = getSearchFormattedDate(timeframeEnd);
 
     StringBuilder queryBuilder = new StringBuilder();
 
@@ -1030,7 +1028,7 @@ public class CourseDAO extends PyramusDAO {
       case EXCLUSIVE:
         /** beginDate > timeframeStart and endDate < timeframeEnd **/
         queryBuilder.append(" +(").append("+beginDate:[").append(timeframeS).append(" TO ").append(
-            DATERANGE_INFINITY_HIGH).append("]").append("+endDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ")
+            getSearchDateInfinityHigh()).append("]").append("+endDate:[").append(getSearchDateInfinityLow()).append(" TO ")
             .append(timeframeE).append("]").append(")");
         break;
       case INCLUSIVE:
@@ -1041,9 +1039,9 @@ public class CourseDAO extends PyramusDAO {
          **/
         queryBuilder.append(" +(").append("(").append("beginDate:[").append(timeframeS).append(" TO ").append(
             timeframeE).append("] ").append("endDate:[").append(timeframeS).append(" TO ").append(timeframeE).append(
-            "]").append(") OR (").append("beginDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ").append(
+            "]").append(") OR (").append("beginDate:[").append(getSearchDateInfinityLow()).append(" TO ").append(
             timeframeS).append("] AND ").append("endDate:[").append(timeframeE).append(" TO ").append(
-            DATERANGE_INFINITY_HIGH).append("]").append(")").append(")");
+                getSearchDateInfinityHigh()).append("]").append(")").append(")");
         break;
       }
     }
@@ -1052,13 +1050,13 @@ public class CourseDAO extends PyramusDAO {
       case EXCLUSIVE:
         /** beginDate > timeframeStart **/
         queryBuilder.append(" +(").append("+beginDate:[").append(timeframeS).append(" TO ").append(
-            DATERANGE_INFINITY_HIGH).append("]").append(")");
+            getSearchDateInfinityHigh()).append("]").append(")");
         break;
       case INCLUSIVE:
         /** beginDate > timeframeStart or endDate > timeframeStart **/
         queryBuilder.append(" +(").append("beginDate:[").append(timeframeS).append(" TO ").append(
-            DATERANGE_INFINITY_HIGH).append("]").append("endDate:[").append(timeframeS).append(" TO ").append(
-            DATERANGE_INFINITY_HIGH).append("]").append(")");
+            getSearchDateInfinityHigh()).append("]").append("endDate:[").append(timeframeS).append(" TO ").append(
+                getSearchDateInfinityHigh()).append("]").append(")");
         break;
       }
     }
@@ -1066,13 +1064,13 @@ public class CourseDAO extends PyramusDAO {
       switch (timeFilterMode) {
       case EXCLUSIVE:
         /** endDate < timeframeEnd **/
-        queryBuilder.append(" +(").append("+endDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ").append(
+        queryBuilder.append(" +(").append("+endDate:[").append(getSearchDateInfinityLow()).append(" TO ").append(
             timeframeE).append("]").append(")");
         break;
       case INCLUSIVE:
         /** beginDate < timeframeEnd or endDate < timeframeEnd **/
-        queryBuilder.append(" +(").append("beginDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ").append(
-            timeframeE).append("] ").append("endDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ").append(
+        queryBuilder.append(" +(").append("beginDate:[").append(getSearchDateInfinityLow()).append(" TO ").append(
+            timeframeE).append("] ").append("endDate:[").append(getSearchDateInfinityLow()).append(" TO ").append(
             timeframeE).append("]").append(")");
         break;
       }
@@ -1181,20 +1179,4 @@ public class CourseDAO extends PyramusDAO {
       throw new PersistenceException("Unknown VariableKey");
     }
   }
-
-  private void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required, boolean escapeSpecialChars) {
-    String inputText = value.replaceAll(" +", " ");
-    String[] tokens = (escapeSpecialChars ? QueryParser.escape(inputText) : inputText).split("[ ,]");
-    for (String token : tokens) {
-      queryBuilder.append(' ');
-      if (required)
-        queryBuilder.append("+");
-      
-      queryBuilder.append(fieldName).append(':').append(token); 
-    }
-  }
-
-  private static final String DATERANGE_INFINITY_LOW = "00000000";
-  private static final String DATERANGE_INFINITY_HIGH = "99999999";
-  private static final DateFormat COURSE_SEARCH_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 }

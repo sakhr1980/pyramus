@@ -2,14 +2,20 @@ package fi.pyramus.domainmodel.courses;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PersistenceException;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,6 +32,7 @@ import org.hibernate.search.annotations.Resolution;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.CourseBase;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
@@ -265,6 +272,30 @@ public class Course extends CourseBase implements ArchivableEntity {
   public void setPlanningHours(Double planningHours) {
     this.planningHours = planningHours;
   }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
   
   @ManyToOne
   @JoinColumn(name="module")
@@ -329,4 +360,8 @@ public class Course extends CourseBase implements ArchivableEntity {
   @JoinColumn (name="course")
   private List<OtherCost> otherCosts = new Vector<OtherCost>();
 
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__CourseTags", joinColumns=@JoinColumn(name="course"), inverseJoinColumns=@JoinColumn(name="tag"))
+  @IndexedEmbedded 
+  private Set<Tag> tags = new HashSet<Tag>();
 }

@@ -1,7 +1,5 @@
 package fi.pyramus.dao;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -694,29 +692,6 @@ public class StudentDAO extends PyramusDAO {
     return studentVariableKeys;
   }
 
-  private void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required, boolean escapeSpecialChars) {
-    String inputText = value.replaceAll(" +", " ");
-    String[] tokens = (escapeSpecialChars ? QueryParser.escape(inputText) : inputText).split("[ ,]");
-    for (String token : tokens) {
-      queryBuilder.append(' ');
-      if (required)
-        queryBuilder.append("+");
-
-      queryBuilder.append(fieldName).append(':').append(token);
-    }
-  }
-  
-  private void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName1, String fieldName2, String value, boolean required, boolean escapeSpecialChars) {
-    String inputText = value.replaceAll(" +", " ");
-    String[] tokens = (escapeSpecialChars ? QueryParser.escape(inputText) : inputText).split("[ ,]");
-    for (String token : tokens) {
-      if (required)
-        queryBuilder.append("+");
-
-      queryBuilder.append('(').append(fieldName1).append(':').append(token).append(' ').append(fieldName2).append(':').append(token).append(')');
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public List<StudentStudyEndReason> listTopLevelStudentStudyEndReasons() {
     Session s = getHibernateSession();
@@ -817,11 +792,11 @@ public class StudentDAO extends PyramusDAO {
 
     String timeframeS = null;
     if (timeframeStart != null)
-      timeframeS = STUDENTGROUP_SEARCH_DATE_FORMAT.format(timeframeStart);
+      timeframeS = getSearchFormattedDate(timeframeStart);
 
     String timeframeE = null;
     if (timeframeEnd != null)
-      timeframeE = STUDENTGROUP_SEARCH_DATE_FORMAT.format(timeframeEnd);
+      timeframeE = getSearchFormattedDate(timeframeEnd);
 
     StringBuilder queryBuilder = new StringBuilder();
 
@@ -849,11 +824,11 @@ public class StudentDAO extends PyramusDAO {
     else if (timeframeS != null) {
       /** beginDate > timeframeStart **/
       queryBuilder.append(" +(").append("beginDate:[").append(timeframeS).append(" TO ").append(
-          DATERANGE_INFINITY_HIGH).append("]").append(")");
+          getSearchDateInfinityHigh()).append("]").append(")");
     }
     else if (timeframeE != null) {
       /** beginDate < timeframeEnd **/
-      queryBuilder.append(" +(").append("beginDate:[").append(DATERANGE_INFINITY_LOW).append(" TO ").append(
+      queryBuilder.append(" +(").append("beginDate:[").append(getSearchDateInfinityLow()).append(" TO ").append(
           timeframeE).append("]").append(")");
     }
 
@@ -1021,8 +996,4 @@ public class StudentDAO extends PyramusDAO {
     entry.setArchived(Boolean.TRUE);
     s.saveOrUpdate(entry);
   }
-  
-  private static final String DATERANGE_INFINITY_LOW = "00000000";
-  private static final String DATERANGE_INFINITY_HIGH = "99999999";
-  private static final DateFormat STUDENTGROUP_SEARCH_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 }

@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
 import fi.pyramus.domainmodel.users.User;
