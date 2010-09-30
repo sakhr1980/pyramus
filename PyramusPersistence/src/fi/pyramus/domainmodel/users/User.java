@@ -4,7 +4,9 @@ import java.util.List;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,8 +16,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -34,6 +39,7 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.ContactInfo;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.usertypes.RoleUserType;
 
 @Entity
@@ -99,6 +105,30 @@ public class User {
   public List<UserVariable> getVariables() {
     return variables;
   }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
   
   @Transient
   public Map<String, String> getVariablesAsStringMap() {
@@ -160,4 +190,8 @@ public class User {
   @JoinColumn (name="user")
   private List<UserVariable> variables = new ArrayList<UserVariable>();
 
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__UserTags", joinColumns=@JoinColumn(name="user"), inverseJoinColumns=@JoinColumn(name="tag"))
+  @IndexedEmbedded 
+  private Set<Tag> tags = new HashSet<Tag>();
 }

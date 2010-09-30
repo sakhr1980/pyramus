@@ -1,7 +1,9 @@
 package fi.pyramus.domainmodel.projects;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.Basic;
@@ -13,9 +15,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -35,6 +40,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.EducationalLength;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
@@ -222,6 +228,30 @@ public class StudentProject implements ArchivableEntity {
   public Student getStudent() {
     return student;
   }
+
+  public Set<Tag> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Tag> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Tag tag) {
+    if (tags.contains(tag)) {
+      tags.add(tag);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
   
   @Transient
   @Field (index = Index.UN_TOKENIZED, store = Store.YES)
@@ -283,4 +313,8 @@ public class StudentProject implements ArchivableEntity {
   @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__StudentProjectTags", joinColumns=@JoinColumn(name="studentProject"), inverseJoinColumns=@JoinColumn(name="tag"))
+  @IndexedEmbedded 
+  private Set<Tag> tags = new HashSet<Tag>();
 }
