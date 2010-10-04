@@ -1047,10 +1047,21 @@
       }
             
       // onLoad
+      
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         initializeDraftListener();
+        setupTags();
         setupRelatedCommands();
         setupPersonnelTable();
         setupComponentsTable();
@@ -1099,6 +1110,15 @@
                 </jsp:include>    
 	            <input type="text" class="required" name="name" value="${fn:escapeXml(course.name)}" size="40">
 	          </div>
+	           
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="courses.editCourse.tagsTitle"/>
+	              <jsp:param name="helpLocale" value="courses.editCourse.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+              <div id="tags_choices" class="autocomplete_choises"></div>
+            </div>
 	          
 	          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">

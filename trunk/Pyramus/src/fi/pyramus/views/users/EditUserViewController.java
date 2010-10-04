@@ -1,6 +1,7 @@
 package fi.pyramus.views.users;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
@@ -42,6 +44,16 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
       activeAuthorizationProviders.put(authorizationProvider.getName(), registeredAuthorizationProviders.contains(authorizationProvider.getName()));
     }
     
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = user.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("user", user);
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());

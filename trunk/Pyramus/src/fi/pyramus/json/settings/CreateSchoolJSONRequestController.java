@@ -1,11 +1,17 @@
 package fi.pyramus.json.settings;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
 
@@ -26,8 +32,24 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
 
     String schoolCode = requestContext.getString("code");
     String schoolName = requestContext.getString("name");
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
     
     School school = baseDAO.createSchool(schoolCode, schoolName);
+    
+    // Tags
+    
+    baseDAO.setSchoolTags(school, tagEntities);
 
     // Addresses
     

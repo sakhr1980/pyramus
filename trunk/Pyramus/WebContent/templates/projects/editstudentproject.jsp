@@ -18,55 +18,54 @@
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
 
     <script type="text/javascript">
-
-    function openSearchModulesDialog() {
-
-      var selectedModules = new Array();
-      var modulesTable = getIxTableById('modulesTable');
-      for (var i = 0; i < modulesTable.getRowCount() - 1; i++) {
-        var moduleName = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('name'));
-        var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
-        selectedModules.push({
-          name: moduleName,
-          id: moduleId});
-      }
-      // TODO selectedModules -> dialog
-
-      var dialog = new IxDialog({
-        id : 'searchModulesDialog',
-        contentURL : GLOBAL_contextPath + '/projects/searchmodulesdialog.page',
-        centered : true,
-        showOk : true,
-        showCancel : true,
-        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialogTitle"/>',
-        okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
-        cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
-      });
-      
-      dialog.setSize("800px", "600px");
-      dialog.addDialogListener(function(event) {
-        var dlg = event.dialog;
-        switch (event.name) {
-          case 'okClick':
-            for (var i = 0, len = event.results.modules.length; i < len; i++) {
-              var moduleId = event.results.modules[i].id;
-              var moduleName = event.results.modules[i].name;
-              var index = getModuleRowIndex('modulesTable', moduleId);
-              if (index == -1) {
-                var modulesTable = getIxTableById('modulesTable');
-                modulesTable.addRow([moduleName, -1, 0, '', moduleId, -1]);
-              }
-            }
-            if (getIxTableById('modulesTable').getRowCount() > 0) {
-              $('noModulesAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
-          break;
-        }
-      });
-      dialog.open();
-    }
+      function openSearchModulesDialog() {
+	
+	      var selectedModules = new Array();
+	      var modulesTable = getIxTableById('modulesTable');
+	      for (var i = 0; i < modulesTable.getRowCount() - 1; i++) {
+	        var moduleName = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('name'));
+	        var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
+	        selectedModules.push({
+	          name: moduleName,
+	          id: moduleId});
+	      }
+	      // TODO selectedModules -> dialog
+	
+	      var dialog = new IxDialog({
+	        id : 'searchModulesDialog',
+	        contentURL : GLOBAL_contextPath + '/projects/searchmodulesdialog.page',
+	        centered : true,
+	        showOk : true,
+	        showCancel : true,
+	        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialogTitle"/>',
+	        okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
+	        cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
+	      });
+	      
+	      dialog.setSize("800px", "600px");
+	      dialog.addDialogListener(function(event) {
+	        var dlg = event.dialog;
+	        switch (event.name) {
+	          case 'okClick':
+	            for (var i = 0, len = event.results.modules.length; i < len; i++) {
+	              var moduleId = event.results.modules[i].id;
+	              var moduleName = event.results.modules[i].name;
+	              var index = getModuleRowIndex('modulesTable', moduleId);
+	              if (index == -1) {
+	                var modulesTable = getIxTableById('modulesTable');
+	                modulesTable.addRow([moduleName, -1, 0, '', moduleId, -1]);
+	              }
+	            }
+	            if (getIxTableById('modulesTable').getRowCount() > 0) {
+	              $('noModulesAddedMessageContainer').setStyle({
+	                display: 'none'
+	              });
+	            }
+	          break;
+	        }
+	      });
+	      dialog.open();
+	    }
   
       function getModuleRowIndex(tableId, moduleId) {
         var table = getIxTableById(tableId);
@@ -80,9 +79,20 @@
         }
         return -1;
       }
+      
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        setupTags();
         var modulesTable = new IxTable($('modulesTableContainer'), {
           id : "modulesTable",
           columns : [ {
@@ -202,6 +212,15 @@
                 </jsp:include>
 	            <input type="text" class="required" name="name" value="${fn:escapeXml(studentProject.name)}" size="40"/>
 	          </div>
+             
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.tagsTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+              <div id="tags_choices" class="autocomplete_choises"></div>
+            </div>
 	      
 	          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">

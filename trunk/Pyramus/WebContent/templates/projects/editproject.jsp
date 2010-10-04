@@ -81,9 +81,20 @@
         }
         return -1;
       }
+          
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        setupTags();
         var modulesTable = new IxTable($('modulesTableContainer'), {
           id : "modulesTable",
           columns : [ {
@@ -179,6 +190,15 @@
                 </jsp:include>
 	            <input type="text" class="required" name="name" value="${fn:escapeXml(project.name)}" size="40"/>
 	          </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		            <jsp:param name="titleLocale" value="projects.editProject.tagsTitle"/>
+		            <jsp:param name="helpLocale" value="projects.editProject.tagsHelp"/>
+		          </jsp:include>
+		          <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+		          <div id="tags_choices" class="autocomplete_choises"></div>
+		        </div>
 	      
 	          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">

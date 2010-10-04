@@ -1,5 +1,6 @@
 package fi.pyramus.json.courses;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
+import org.apache.commons.lang.StringUtils;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
@@ -22,6 +25,7 @@ import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.BasicCourseResource;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
@@ -80,12 +84,29 @@ public class EditCourseJSONRequestController implements JSONRequestController {
     Double teachingHours = requestContext.getDouble("teachingHours");
     Double planningHours = requestContext.getDouble("planningHours");
     Double assessingHours = requestContext.getDouble("assessingHours");
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
+    
     User user = userDAO.getUser(requestContext.getLoggedUserId());
 
     courseDAO.updateCourse(course, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
         description, user);
+    
+    // Tags
 
+    courseDAO.setCourseTags(course, tagEntities);
+    
     // Education types and subtypes submitted from the web page
 
     Map<Long, Vector<Long>> chosenEducationTypes = new HashMap<Long, Vector<Long>>();

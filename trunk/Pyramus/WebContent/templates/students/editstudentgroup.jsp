@@ -297,10 +297,21 @@
       }
 
       // onLoad
+          
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         initializeDraftListener();
+        setupTags();
         setupUsersTable();
         setupStudentsTable();
       }
@@ -328,9 +339,17 @@
                   <jsp:param name="titleLocale" value="students.editStudentGroup.nameTitle"/>
                   <jsp:param name="helpLocale" value="students.editStudentGroup.nameHelp"/>
                 </jsp:include>
-
               <input type="text" class="required" name="name" value="${fn:escapeXml(studentGroup.name)}" size="40">
             </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="students.editStudentGroup.tagsTitle"/>
+	              <jsp:param name="helpLocale" value="students.editStudentGroup.tagsHelp"/>
+	            </jsp:include>
+	            <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+	            <div id="tags_choices" class="autocomplete_choises"></div>
+	          </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
