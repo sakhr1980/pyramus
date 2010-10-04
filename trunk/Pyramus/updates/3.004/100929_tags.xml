@@ -4,7 +4,7 @@
   <createTables>
     <table name="Tag" primaryKeys="id">
       <fields>
-        <field name="id" type="java.lang.Long" nullable="false"/>
+        <field name="id" type="java.lang.Long" nullable="false" unique="true"/>
         <field name="text" type="java.lang.String" length="255" nullable="false"/>
       </fields>
     </table>

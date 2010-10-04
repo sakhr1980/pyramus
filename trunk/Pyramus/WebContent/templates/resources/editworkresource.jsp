@@ -14,6 +14,7 @@
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     
     <script type="text/javascript">
 
@@ -23,8 +24,7 @@
         JSONRequest.request("tags/getalltags.json", {
           onSuccess: function (jsonResponse) {
             new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
-              tokens: [',', '\n', ' '],
-              partialChars: 1
+              tokens: [',', '\n', ' ']
             });
           }
         });   
