@@ -142,10 +142,24 @@
             <jsp:param name="titleLocale" value="students.viewStudentGroup.nameTitle" />
             <jsp:param name="helpLocale" value="students.viewStudentGroup.nameHelp" />
           </jsp:include> 
-          
           <div>${studentGroup.name}</div>
         </div>
         
+        <c:choose>
+          <c:when test="${not empty studentGroup.tags}">
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="students.viewStudentGroup.tagsTitle" />
+                <jsp:param name="helpLocale" value="students.viewStudentGroup.tagsHelp" />
+              </jsp:include>
+              <c:forEach var="tag" items="${studentGroup.tags}" varStatus="vs">
+                <c:out value="${tag.text}"/>
+                <c:if test="${not vs.last}"><c:out value=" "/></c:if>
+              </c:forEach>
+            </div>
+          </c:when>
+        </c:choose> 
+
         <div class="genericFormSection">
           <jsp:include page="/templates/generic/fragments/formtitle.jsp">
             <jsp:param name="titleLocale" value="students.viewStudentGroup.beginsTitle" />

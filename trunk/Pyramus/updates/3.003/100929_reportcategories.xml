@@ -4,7 +4,7 @@
   <createTables>  
     <table name="ReportCategory" primaryKeys="id">
       <fields>
-        <field name="id" type="java.lang.Long"/>
+        <field name="id" type="java.lang.Long" nullable="false"/>
         <field name="indexColumn" type="java.lang.Integer"/>
         <field name="name" type="java.lang.String" length="255" nullable="false"/>
       </fields>

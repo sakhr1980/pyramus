@@ -94,9 +94,13 @@ public class CreateStudentJSONRequestController implements JSONRequestController
     entityId = requestContext.getLong("studyEndReason");
     StudentStudyEndReason studyEndReason = entityId == null ? null : studentDAO.getStudentStudyEndReason(entityId);
 
-    // TODO: Find the abstract student by the bday+ssecid combination
-
-    AbstractStudent abstractStudent = studentDAO.createAbstractStudent(birthday, ssecId, sex, basicInfo);
+    AbstractStudent abstractStudent = studentDAO.getAbstractStudentBySSN(ssecId);
+    if (abstractStudent == null) {
+      abstractStudent = studentDAO.createAbstractStudent(birthday, ssecId, sex, basicInfo);
+    }
+    else {
+      studentDAO.updateAbstractStudent(abstractStudent, birthday, ssecId, sex, basicInfo);
+    }
     
     Student student = studentDAO.createStudent(abstractStudent, firstName, lastName, nickname, additionalInfo,
         studyTimeEnd, activityType, examinationType, educationalLevel, education, nationality, municipality,

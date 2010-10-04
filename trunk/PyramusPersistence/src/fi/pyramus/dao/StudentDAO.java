@@ -150,6 +150,16 @@ public class StudentDAO extends PyramusDAO {
     return student;
   }
 
+  public Student setStudentTags(Student student, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    student.setTags(tags);
+    
+    entityManager.persist(student);
+    
+    return student;
+  }
+
   /**
    * Retrieves AbstractStudent from database by id
    * 
