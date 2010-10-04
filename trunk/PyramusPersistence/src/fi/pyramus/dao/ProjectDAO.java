@@ -2,7 +2,9 @@ package fi.pyramus.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +24,7 @@ import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
@@ -89,6 +92,16 @@ public class ProjectDAO extends PyramusDAO {
 
     return project;
   }
+  
+  public Project setProjectTags(Project project, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    project.setTags(tags);
+    
+    entityManager.persist(project);
+    
+    return project;
+  }
 
   public StudentProject createStudentProject(Student student, String name, String description,
       Double optionalStudiesLength, EducationalTimeUnit optionalStudiesLengthTimeUnit, User user) {
@@ -109,6 +122,16 @@ public class ProjectDAO extends PyramusDAO {
 
     s.save(studentProject);
 
+    return studentProject;
+  }
+  
+  public StudentProject setStudentProjectTags(StudentProject studentProject, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    studentProject.setTags(tags);
+    
+    entityManager.persist(studentProject);
+    
     return studentProject;
   }
 
