@@ -415,6 +415,15 @@
               </jsp:include>                                           
               <input type="text" name="nickname" size="30">
             </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="students.createStudent.tagsTitle"/>
+                <jsp:param name="helpLocale" value="students.createStudent.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
       
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

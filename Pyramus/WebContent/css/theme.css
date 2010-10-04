@@ -1257,7 +1257,7 @@ a.modalSearchResultPageContainerActive{
 
 /* Auto complete */
 
-div.autocomplete_choises {
+div.autocomplete_choices {
   position:absolute;
   background-color:white;
   -moz-border-radius:3px;
@@ -1268,13 +1268,13 @@ div.autocomplete_choises {
   padding:0;
 }
 
-div.autocomplete_choises ul {
+div.autocomplete_choices ul {
   list-style-type:none;
   margin:0;
   padding:0;
 }
 
-div.autocomplete_choises ul li {
+div.autocomplete_choices ul li {
   margin: 1px;
   list-style-type:none;
   padding: 4px;
@@ -1284,7 +1284,7 @@ div.autocomplete_choises ul li {
   cursor:pointer;
 }
 
-div.autocomplete_choises ul li.selected { 
+div.autocomplete_choices ul li.selected { 
   background:#D7E3F9;
   color:#2351B1;
 }

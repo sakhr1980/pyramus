@@ -2,8 +2,11 @@ package fi.pyramus.views.students;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -13,6 +16,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
@@ -61,6 +65,22 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
       }
     });
     
+    Map<Long, String> studentTags = new HashMap<Long, String>();
+    
+    for (Student student : students) {
+      StringBuilder tagsBuilder = new StringBuilder();
+      Iterator<Tag> tagIterator = student.getTags().iterator();
+      while (tagIterator.hasNext()) {
+        Tag tag = tagIterator.next();
+        tagsBuilder.append(tag.getText());
+        if (tagIterator.hasNext())
+          tagsBuilder.append(' ');
+      }
+      
+      studentTags.put(student.getId(), tagsBuilder.toString());
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", studentTags);
     pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("activityTypes", studentDAO.listStudentActivityTypes());

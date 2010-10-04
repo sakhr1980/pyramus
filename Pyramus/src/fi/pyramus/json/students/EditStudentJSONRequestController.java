@@ -1,11 +1,13 @@
 package fi.pyramus.json.students;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.JSONRequestContext;
@@ -22,6 +24,7 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
@@ -67,6 +70,18 @@ public class EditStudentJSONRequestController implements JSONRequestController {
 	    Date studyEndDate = requestContext.getDate("studyEndDate." + student.getId());
 	    String studyEndText = requestContext.getString("studyEndText." + student.getId());
 	    Boolean lodging = "1".equals(requestContext.getString("lodging." + student.getId()));
+	    String tagsText = requestContext.getString("tags." + student.getId());
+	    
+	    Set<Tag> tagEntities = new HashSet<Tag>();
+	    if (!StringUtils.isBlank(tagsText)) {
+	      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+	      for (String tag : tags) {
+	        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+	        if (tagEntity == null)
+	          tagEntity = baseDAO.createTag(tag);
+	        tagEntities.add(tagEntity);
+	      }
+	    }
 	    
 	    Long entityId = requestContext.getLong("language." + student.getId());
 	    Language language = entityId == null ? null : baseDAO.getLanguage(entityId);
@@ -111,6 +126,10 @@ public class EditStudentJSONRequestController implements JSONRequestController {
 	    studentDAO.updateStudent(student, firstName, lastName, nickname, additionalInfo, studyTimeEnd,
 	        activityType, examinationType, educationalLevel, education, nationality, municipality, language, school, studyProgramme,
 	        previousStudies, studyStartDate, studyEndDate, studyEndReason, studyEndText, lodging);
+	   
+	    // Tags
+
+	    studentDAO.setStudentTags(student, tagEntities);
 	    
 	    // Contact info
 	    
