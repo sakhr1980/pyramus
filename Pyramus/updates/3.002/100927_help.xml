@@ -3,8 +3,8 @@
   <createTables>
     <table name="HelpItem" primaryKeys="id">
       <fields>
-        <field name="id" type="java.lang.Long"/>
-        <field name="indexColumn" type="java.lang.Integer"/>
+        <field name="id" type="java.lang.Long" nullable="false"/>
+        <field name="indexColumn" type="java.lang.Integer" nullable="false"/>
         <field name="parent" type="java.lang.Long"/>
         <field name="created" type="Types.TIMESTAMP" nullable="false" unique="false" />
         <field name="creator" type="java.lang.Long" nullable="true" unique="false" />

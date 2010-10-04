@@ -250,6 +250,21 @@
               </c:otherwise>
             </c:choose>
           </div>
+          
+          <c:choose>
+            <c:when test="${not empty course.tags}">
+              <div class="genericFormSection">
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="courses.viewCourse.tagsTitle" />
+                  <jsp:param name="helpLocale" value="courses.viewCourse.tagsHelp" />
+                </jsp:include>
+                <c:forEach var="tag" items="${course.tags}" varStatus="vs">
+                  <c:out value="${tag.text}"/>
+                  <c:if test="${not vs.last}"><c:out value=" "/></c:if>
+                </c:forEach>
+              </div>
+            </c:when>
+          </c:choose> 
   
           <div class="genericFormSection">
             <jsp:include page="/templates/generic/fragments/formtitle.jsp">

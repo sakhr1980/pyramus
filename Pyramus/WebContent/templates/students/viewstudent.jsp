@@ -401,6 +401,21 @@
                     </c:when>
                   </c:choose> 
         
+                  <c:choose>
+                    <c:when test="${not empty student.tags}">
+                      <div class="genericFormSection">
+                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale" value="students.viewStudent.tagsTitle" />
+                          <jsp:param name="helpLocale" value="students.viewStudent.tagsHelp" />
+                        </jsp:include>
+                        <c:forEach var="tag" items="${student.tags}" varStatus="vs">
+                          <c:out value="${tag.text}"/>
+                          <c:if test="${not vs.last}"><c:out value=" "/></c:if>
+                        </c:forEach>
+                      </div>
+                    </c:when>
+                  </c:choose> 
+
                   <c:if test="${!empty student.contactInfo.addresses}">
                     <div class="genericFormSection">  
                       <c:forEach var="address" items="${student.contactInfo.addresses}">
