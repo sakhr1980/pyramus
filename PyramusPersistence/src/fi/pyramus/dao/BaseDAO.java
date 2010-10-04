@@ -1428,6 +1428,29 @@ public class BaseDAO extends PyramusDAO {
     return entityManager.find(Tag.class, id);
   }
 
+  public void createMunicipality(String name, String code) {
+    EntityManager entityManager = getEntityManager();
+
+    Municipality municipality = new Municipality();
+    municipality.setName(name);
+    municipality.setCode(code);
+    
+    entityManager.persist(municipality);
+  }
+
+  public void updateMunicipality(Municipality municipality, String name, String code) {
+    Session s = getHibernateSession();
+    municipality.setName(name);
+    municipality.setCode(code);
+    s.saveOrUpdate(municipality);
+  }
+
+  public void archiveMunicipality(Municipality municipality) {
+    Session s = getHibernateSession();
+    municipality.setArchived(true);
+    s.saveOrUpdate(municipality);
+  }
+
   public Tag findTagByText(String text) {
     Session s = getHibernateSession();
     
