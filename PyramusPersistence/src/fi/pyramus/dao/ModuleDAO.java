@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.domainmodel.projects.Project;
@@ -61,6 +63,16 @@ public class ModuleDAO extends PyramusDAO {
 
     s.saveOrUpdate(module);
 
+    return module;
+  }
+  
+  public Module setModuleTags(Module module, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    module.setTags(tags);
+    
+    entityManager.persist(module);
+    
     return module;
   }
 

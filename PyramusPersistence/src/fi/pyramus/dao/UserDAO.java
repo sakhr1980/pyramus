@@ -3,6 +3,7 @@ package fi.pyramus.dao;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -21,6 +22,7 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.InternalAuth;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
@@ -71,6 +73,16 @@ public class UserDAO extends PyramusDAO {
     s.save(newUser);
 
     return newUser;
+  }
+  
+  public User setUserTags(User user, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    user.setTags(tags);
+    
+    entityManager.persist(user);
+    
+    return user;
   }
   
   public User updateUser(User user, String firstName, String lastName, Role role) {

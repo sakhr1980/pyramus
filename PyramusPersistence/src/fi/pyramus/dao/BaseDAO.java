@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -526,6 +527,16 @@ public class BaseDAO extends PyramusDAO {
     school.setCode(code);
     school.setName(name);
     s.saveOrUpdate(school);
+    return school;
+  }
+  
+  public School setSchoolTags(School school, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    school.setTags(tags);
+    
+    entityManager.persist(school);
+    
     return school;
   }
 

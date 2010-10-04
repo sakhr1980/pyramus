@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +34,7 @@ import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.BasicCourseResource;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
@@ -146,6 +149,16 @@ public class CourseDAO extends PyramusDAO {
     course.setLastModified(now);
     
     s.saveOrUpdate(course);
+  }
+  
+  public Course setCourseTags(Course course, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    course.setTags(tags);
+    
+    entityManager.persist(course);
+    
+    return course;
   }
 
   private void updateCourseBaseVariable(CourseBaseVariable courseBaseVariable, String value) {

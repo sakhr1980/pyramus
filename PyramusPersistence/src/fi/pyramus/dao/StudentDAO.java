@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -29,6 +30,7 @@ import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
@@ -719,6 +721,16 @@ public class StudentDAO extends PyramusDAO {
 
     entityManager.persist(studentGroup);
 
+    return studentGroup;
+  }
+  
+  public StudentGroup setStudentGroupTags(StudentGroup studentGroup, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
+    studentGroup.setTags(tags);
+    
+    entityManager.persist(studentGroup);
+    
     return studentGroup;
   }
 
