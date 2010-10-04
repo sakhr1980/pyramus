@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang.StringUtils;
@@ -185,7 +186,11 @@ public class ResourceDAO extends PyramusDAO {
   }
   
   public void setResourceTags(Resource resource, Set<Tag> tags) {
+    EntityManager entityManager = getEntityManager();
+    
     resource.setTags(tags);
+    
+    entityManager.persist(resource);
   }
 
   public void archiveResource(Resource resource) {
@@ -298,7 +303,7 @@ public class ResourceDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<WorkResource> listWorkResources() {
     Session s = getHibernateSession();
-    return s.createCriteria(MaterialResource.class).list();
+    return s.createCriteria(WorkResource.class).list();
   }
 
   public WorkResource createWorkResource(String name, ResourceCategory category, Double costPerUse, Double hourlyCost) {
