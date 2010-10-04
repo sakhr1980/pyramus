@@ -1,6 +1,9 @@
 package fi.pyramus.json.projects;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -13,6 +16,7 @@ import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProject;
@@ -33,9 +37,21 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
     User loggedUser = userDAO.getUser(jsonRequestContext.getLoggedUserId());
 
     Long studentId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("studentId"));
-    Student student = studentDAO.getStudent(studentId);
-
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("projectId"));
+    String tagsText = jsonRequestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
+    
+    Student student = studentDAO.getStudent(studentId);
     Project project = projectId == -1 ? null : projectDAO.getProject(projectId);
 
     String name;
@@ -58,8 +74,8 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       units = project.getOptionalStudiesLength().getUnits();
     }
 
-    StudentProject studentProject = projectDAO
-        .createStudentProject(student, name, description, units, unit, loggedUser);
+    StudentProject studentProject = projectDAO.createStudentProject(student, name, description, units, unit, loggedUser);
+    projectDAO.setStudentProjectTags(studentProject, tagEntities);
 
     if (project != null) {
       List<ProjectModule> projectModules = project.getProjectModules();

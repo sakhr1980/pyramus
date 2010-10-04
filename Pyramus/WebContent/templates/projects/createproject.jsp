@@ -80,9 +80,20 @@
         }
         return -1;
       }
+          
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        setupTags();
         var modulesTable = new IxTable($('modulesTableContainer'), {
           id : "modulesTable",
           columns : [ {
@@ -145,13 +156,22 @@
           <!--  Basic tab -->
 
           <div id="basic" class="tabContent">
-	        <div class="genericFormSection">
+		        <div class="genericFormSection">
+	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                <jsp:param name="titleLocale" value="projects.createProject.nameTitle"/>
+	                <jsp:param name="helpLocale" value="projects.createProject.nameHelp"/>
+	              </jsp:include>
+	              <input type="text" name="name" class="required" size="40"/>
+		        </div>
+		        
+		        <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.createProject.nameTitle"/>
-                <jsp:param name="helpLocale" value="projects.createProject.nameHelp"/>
+                <jsp:param name="titleLocale" value="projects.createProject.tagsTitle"/>
+                <jsp:param name="helpLocale" value="projects.createProject.tagsHelp"/>
               </jsp:include>
-              <input type="text" name="name" class="required" size="40"/>
-	        </div>
+              <input type="text" id="tags" name="tags" size="40"/>
+              <div id="tags_choices" class="autocomplete_choises"></div>
+            </div>
 	      
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

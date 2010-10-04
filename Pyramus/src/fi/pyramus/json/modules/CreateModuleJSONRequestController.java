@@ -1,8 +1,12 @@
 package fi.pyramus.json.modules;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +22,7 @@ import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
@@ -49,8 +54,25 @@ public class CreateModuleJSONRequestController implements JSONRequestController 
     Long moduleLengthTimeUnitId = requestContext.getLong("moduleLengthTimeUnit");
     EducationalTimeUnit moduleLengthTimeUnit = baseDAO.getEducationalTimeUnit(moduleLengthTimeUnitId);
     Double moduleLength = requestContext.getDouble("moduleLength");
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
+    
     Module module = moduleDAO.createModule(name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, loggedUser);
 
+    // Tags
+    
+    moduleDAO.setModuleTags(module, tagEntities);
+    
     // Module components
 
     int rowCount = requestContext.getInteger("componentsTable.rowCount");

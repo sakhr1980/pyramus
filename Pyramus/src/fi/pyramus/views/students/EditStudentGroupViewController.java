@@ -3,6 +3,7 @@ package fi.pyramus.views.students;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,6 +15,7 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.domainmodel.users.Role;
@@ -50,6 +52,16 @@ public class EditStudentGroupViewController implements PyramusViewController, Br
       }
     });
     
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = studentGroup.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentGroupStudents", studentGroupStudents);
     
     pageRequestContext.setIncludeJSP("/templates/students/editstudentgroup.jsp");

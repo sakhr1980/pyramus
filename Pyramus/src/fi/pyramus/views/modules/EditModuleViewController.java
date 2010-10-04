@@ -1,6 +1,7 @@
 package fi.pyramus.views.modules;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
@@ -45,6 +47,17 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
 
     Long moduleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("module"));
     Module module = moduleDAO.getModule(moduleId);
+    
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = module.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("module", module);
     pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
     pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", baseDAO.listEducationalTimeUnits());

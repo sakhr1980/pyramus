@@ -1,15 +1,22 @@
 package fi.pyramus.json.students;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.UserRole;
+import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
@@ -33,17 +40,34 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
 
     // StudentGroup basic information
 
     String name = requestContext.getString("name");
     String description = requestContext.getString("description");
     Date beginDate = requestContext.getDate("beginDate");
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
 
     StudentGroup studentGroup = studentDAO.findStudentGroupById(requestContext.getLong("studentGroupId"));
     User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
 
     studentDAO.updateStudentGroup(studentGroup, name, description, beginDate, loggedUser);
+
+    // Tags
+
+    studentDAO.setStudentGroupTags(studentGroup, tagEntities);
 
     // Personnel
 

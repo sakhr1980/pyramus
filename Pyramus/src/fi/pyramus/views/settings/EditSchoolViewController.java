@@ -1,5 +1,6 @@
 package fi.pyramus.views.settings;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -10,6 +11,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -30,7 +32,17 @@ public class EditSchoolViewController implements PyramusViewController, Breadcru
 
     Long schoolId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("school"));
     School school = baseDAO.getSchool(schoolId);
-
+    
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = school.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("school", school);
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());

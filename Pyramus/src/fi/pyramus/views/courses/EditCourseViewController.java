@@ -3,6 +3,7 @@ package fi.pyramus.views.courses;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -17,6 +18,7 @@ import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.UserRole;
@@ -68,6 +70,16 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
       }
     });
     
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = course.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
     pageRequestContext.getRequest().setAttribute("roles", courseDAO.listCourseUserRoles());
     pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());

@@ -1,9 +1,13 @@
 package fi.pyramus.json.courses;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +26,7 @@ import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
@@ -66,11 +71,27 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     Double planningHours = requestContext.getDouble("planningHours");
     Double assessingHours = requestContext.getDouble("assessingHours");
     User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
-
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
+    
     Course course = courseDAO.createCourse(module, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
         description, loggedUser);
 
+    // Tags
+    
+    courseDAO.setCourseTags(course, tagEntities);
+    
     // Personnel
 
     int rowCount = requestContext.getInteger("personnelTable.rowCount");

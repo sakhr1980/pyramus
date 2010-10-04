@@ -45,9 +45,20 @@
         }
         $('componentHoursTotalValueContainer').innerHTML = sum;
       }
+          
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
   
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        setupTags();
         var componentsTable = new IxTable($('componentsTable'), {
           id : "componentsTable",
           columns : [ { 
@@ -226,6 +237,15 @@
               </jsp:include>
     	    		<input type="text" name="name" class="required" value="${fn:escapeXml(module.name)}" size="40">
 	      	  </div>
+	      	   
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		            <jsp:param name="titleLocale" value="modules.editModule.tagsTitle"/>
+		            <jsp:param name="helpLocale" value="modules.editModule.tagsHelp"/>
+		          </jsp:include>
+		          <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+		          <div id="tags_choices" class="autocomplete_choises"></div>
+		        </div>
 	          
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

@@ -1,5 +1,6 @@
 package fi.pyramus.views.projects;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -11,6 +12,7 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
@@ -32,10 +34,19 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
 
     Long projectId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("project"));
     Project project = projectDAO.getProject(projectId);
+    
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = project.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("project", project);
-
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
-
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
 
     pageRequestContext.setIncludeJSP("/templates/projects/editproject.jsp");

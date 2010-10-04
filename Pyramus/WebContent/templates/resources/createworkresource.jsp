@@ -17,16 +17,20 @@
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
 
     <script type="text/javascript">
+    
+	    function setupTags() {
+	      JSONRequest.request("tags/getalltags.json", {
+	        onSuccess: function (jsonResponse) {
+	          new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+	            tokens: [',', '\n', ' ']
+	          });
+	        }
+	      });   
+	    }
+	    
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
-        
-        JSONRequest.request("tags/getalltags.json", {
-          onSuccess: function (jsonResponse) {
-            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
-              tokens: [',', '\n', ' ']
-            });
-          }
-        });   
+        setupTags();   
       };
     </script>
     
@@ -59,7 +63,7 @@
               <jsp:param name="titleLocale" value="resources.createWorkResource.tagsTitle"/>
               <jsp:param name="helpLocale" value="resources.createWorkResource.tagsHelp"/>
             </jsp:include>
-            <input type="text" class="required" id="tags" name="tags" size="40"/>
+            <input type="text" id="tags" name="tags" size="40"/>
             <div id="tags_choices" class="autocomplete_choises"></div>
           </div>
         

@@ -1,10 +1,13 @@
 package fi.pyramus.json.users;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
@@ -15,6 +18,7 @@ import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
@@ -43,8 +47,24 @@ public class EditUserJSONRequestController implements JSONRequestController {
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
     Role role = Role.getRole(requestContext.getInteger("role").intValue());
+    String tagsText = requestContext.getString("tags");
+    
+    Set<Tag> tagEntities = new HashSet<Tag>();
+    if (!StringUtils.isBlank(tagsText)) {
+      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
+      for (String tag : tags) {
+        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+        if (tagEntity == null)
+          tagEntity = baseDAO.createTag(tag);
+        tagEntities.add(tagEntity);
+      }
+    }
     
     userDAO.updateUser(user, firstName, lastName, role);
+
+    // Tags
+
+    userDAO.setUserTags(user, tagEntities);
     
     // Addresses
     

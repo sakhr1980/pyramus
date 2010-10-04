@@ -90,10 +90,20 @@
           variablesTable.setCellDataType(rowNumber, 3, dataType);
         </c:forEach>
       }
+          
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
       
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
-
+        setupTags();
         setupRelatedCommandsBasic();
 
         var addressTable = new IxTable($('addressTable'), {
@@ -426,6 +436,15 @@
               </jsp:include>                  
               <input type="text" name="lastName" value="${fn:escapeXml(user.lastName)}" size="30" class="required">
             </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		            <jsp:param name="titleLocale" value="users.editUser.tagsTitle"/>
+		            <jsp:param name="helpLocale" value="users.editUser.tagsHelp"/>
+		          </jsp:include>
+		          <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+		          <div id="tags_choices" class="autocomplete_choises"></div>
+		        </div> 
   
             <div class="genericFormSection">                
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
