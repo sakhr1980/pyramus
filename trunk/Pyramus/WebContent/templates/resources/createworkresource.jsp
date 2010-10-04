@@ -64,7 +64,7 @@
               <jsp:param name="helpLocale" value="resources.createWorkResource.tagsHelp"/>
             </jsp:include>
             <input type="text" id="tags" name="tags" size="40"/>
-            <div id="tags_choices" class="autocomplete_choises"></div>
+            <div id="tags_choices" class="autocomplete_choices"></div>
           </div>
         
           <div class="genericFormSection">
