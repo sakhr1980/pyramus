@@ -282,32 +282,33 @@ public class UserDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<User> searchUsers(int resultsPerPage, int page, String firstName, String lastName,
+  public SearchResult<User> searchUsers(int resultsPerPage, int page, String firstName, String lastName, String tags,
       String email, Role role, boolean escapeSpecialChars) {
 
     int firstResult = page * resultsPerPage;
     
     boolean hasFirstName = !StringUtils.isBlank(firstName);
     boolean hasLastName = !StringUtils.isBlank(lastName);
+    boolean hasTags = !StringUtils.isBlank(tags);
     boolean hasEmail = !StringUtils.isBlank(email);
 
     StringBuilder queryBuilder = new StringBuilder();
     if (hasFirstName || hasLastName || hasEmail) {
       queryBuilder.append("+(");
-      if (hasFirstName) {
-        queryBuilder.append(" firstName:").append(escapeSpecialChars ? QueryParser.escape(firstName) : firstName);
-      }
-      if (hasLastName) {
-        queryBuilder.append(" lastName:").append(escapeSpecialChars ? QueryParser.escape(lastName) : lastName);
-      }
-      if (hasEmail) {
-        queryBuilder.append(" contactInfo.emails.address:").append(escapeSpecialChars ? QueryParser.escape(email) : email);
-      }
+
+      if (hasFirstName) 
+        addTokenizedSearchCriteria(queryBuilder, "firstName", firstName, false, escapeSpecialChars);
+      if (hasLastName)
+        addTokenizedSearchCriteria(queryBuilder, "lastName", lastName, false, escapeSpecialChars);
+      if (hasTags)
+        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, escapeSpecialChars);
+      if (hasEmail)
+        addTokenizedSearchCriteria(queryBuilder, "contactInfo.emails.address", email, false, escapeSpecialChars);
       queryBuilder.append(")");
     }
-    if (role != null) {
-      queryBuilder.append(" +role:").append(role);
-    }
+  
+    if (role != null) 
+      addTokenizedSearchCriteria(queryBuilder, "role", role.toString(), false, escapeSpecialChars);
 
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
@@ -338,7 +339,7 @@ public class UserDAO extends PyramusDAO {
 
     } catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchUsers(resultsPerPage, page, firstName, lastName, email, role, true);
+        return searchUsers(resultsPerPage, page, firstName, lastName, tags, email, role, true);
       }
       else {
         throw new PersistenceException(e);
