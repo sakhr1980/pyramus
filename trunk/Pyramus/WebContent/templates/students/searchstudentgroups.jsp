@@ -25,6 +25,7 @@
           parameters: {
             text: searchForm.text.value,
             name: searchForm.name.value,
+            tags: searchForm.tags.value,
             user: searchForm.user.value,
             description: searchForm.description.value,
             timeframeStart: searchForm.timeframeStart.value,
@@ -64,6 +65,16 @@
        doSearch(0);
      }
 
+     function setupTags() {
+       JSONRequest.request("tags/getalltags.json", {
+         onSuccess: function (jsonResponse) {
+           new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+             tokens: [',', '\n', ' ']
+           });
+         }
+       });   
+     }
+
      function onLoad(event) {
        var tabControl = new IxProtoTabs($('tabs'));
        $('searchForm').activeTab.value = tabControl.getActiveTab();
@@ -79,6 +90,8 @@
           </c:when>
         </c:choose>
 
+        setupTags();
+        
         new IxSearchNavigation($('searchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
           maxNavigationPages: 19,
@@ -230,6 +243,15 @@
                   <jsp:param name="helpLocale" value="students.searchStudentGroups.descriptionHelp"/>
                 </jsp:include>
                 <input type="text" name="description" size="40">
+              </div>
+
+              <div class="genericFormSection">
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="students.searchStudentGroups.tagsTitle"/>
+                  <jsp:param name="helpLocale" value="students.searchStudentGroups.tagsHelp"/>
+                </jsp:include>
+                <input type="text" id="tags" name="tags" size="40"/>
+                <div id="tags_choices" class="autocomplete_choices"></div>
               </div>
 
               <div class="genericFormSection">
