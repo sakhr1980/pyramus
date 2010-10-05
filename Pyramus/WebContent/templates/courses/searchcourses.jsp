@@ -25,6 +25,7 @@
           parameters: {
             text: searchForm.text.value,
             name: searchForm.name.value,
+            tags: searchForm.tags.value,
             nameExtension: searchForm.nameExtension.value,
             state: searchForm.state.value,
             subject: searchForm.subject.value,
@@ -66,9 +67,21 @@
        Event.stop(event);
        doSearch(0);
      }
+     
+     function setupTags() {
+       JSONRequest.request("tags/getalltags.json", {
+         onSuccess: function (jsonResponse) {
+           new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+             tokens: [',', '\n', ' ']
+           });
+         }
+       });   
+     }
 
      function onLoad(event) {
        var tabControl = new IxProtoTabs($('tabs'));
+       setupTags();
+       
        $('searchForm').activeTab.value = tabControl.getActiveTab();
        tabControl.addListener(function (event) {
           if ((event.action == 'tabActivated')||(event.action == 'tabInitialized')) {
@@ -237,6 +250,15 @@
 
                 <div class="genericFormSection">
                   <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="courses.searchCourses.tagsTitle"/>
+                    <jsp:param name="helpLocale" value="courses.searchCourses.tagsHelp"/>
+                  </jsp:include>
+		              <input type="text" id="tags" name="tags" size="40"/>
+		              <div id="tags_choices" class="autocomplete_choices"></div>
+                </div>
+
+                <div class="genericFormSection">
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                     <jsp:param name="titleLocale" value="courses.searchCourses.nameExtensionTitle"/>
                     <jsp:param name="helpLocale" value="courses.searchCourses.nameExtensionHelp"/>
                   </jsp:include>
@@ -296,8 +318,8 @@
     
                   <div class="searchCoursesTimeFilterModeContainer">
                     <select name="timeframeMode">
-                      <option value="1"><fmt:message key="courses.searchCourses.timeframeModeInclusive"/></option>
-                      <option value="2"><fmt:message key="courses.searchCourses.timeframeModeExclusive"/></option>
+                      <option value="INCLUSIVE"><fmt:message key="courses.searchCourses.timeframeModeInclusive"/></option>
+                      <option value="EXCLUSIVE"><fmt:message key="courses.searchCourses.timeframeModeExclusive"/></option>
                     </select>
                   </div>
                 </div>

@@ -941,18 +941,18 @@ public class CourseDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<Course> searchCourses(int resultsPerPage, int page, String text,
+  public SearchResult<Course> searchCoursesBasic(int resultsPerPage, int page, String text,
       boolean filterArchived, boolean escapeSpecialChars) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
 
     if (!StringUtils.isBlank(text)) {
-      queryBuilder.append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" description: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" nameExtension: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" courseComponents.name: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" courseComponents.description: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "nameExtension", text, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "courseComponents.name", text, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "courseComponents.description", text, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, escapeSpecialChars);
     }
 
     Session s = getHibernateSession();
@@ -992,7 +992,7 @@ public class CourseDAO extends PyramusDAO {
     }
     catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchCourses(resultsPerPage, page, text, filterArchived, true);
+        return searchCoursesBasic(resultsPerPage, page, text, filterArchived, true);
       }
       else {
         throw new PersistenceException(e);
@@ -1001,7 +1001,7 @@ public class CourseDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<Course> searchCourses(int resultsPerPage, int page, String name, String nameExtension,
+  public SearchResult<Course> searchCourses(int resultsPerPage, int page, String name, String tags, String nameExtension,
       String description, CourseState courseState, Subject subject, SearchTimeFilterMode timeFilterMode,
       Date timeframeStart, Date timeframeEnd, boolean filterArchived, boolean escapeSpecialChars) {
     int firstResult = page * resultsPerPage;
@@ -1018,6 +1018,10 @@ public class CourseDAO extends PyramusDAO {
 
     if (!StringUtils.isBlank(name)) {
       addTokenizedSearchCriteria(queryBuilder, "name", name, true, escapeSpecialChars);
+    }
+
+    if (!StringUtils.isBlank(tags)) {
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true, escapeSpecialChars);
     }
 
     if (!StringUtils.isBlank(nameExtension)) {
@@ -1124,7 +1128,7 @@ public class CourseDAO extends PyramusDAO {
     }
     catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchCourses(resultsPerPage, page, name, nameExtension, description, courseState,
+        return searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState,
             subject, timeFilterMode, timeframeStart, timeframeEnd, filterArchived, true);
       }
       else {

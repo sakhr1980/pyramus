@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.JSONRequestContext;
@@ -54,9 +55,13 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
     SearchResult<Course> searchResult;
     if ("advanced".equals(requestContext.getRequest().getParameter("activeTab"))) {
       
-      String name = requestContext.getRequest().getParameter("name");
-      String nameExtension = requestContext.getRequest().getParameter("nameExtension");
-      String description = requestContext.getRequest().getParameter("description");
+      String name = requestContext.getString("name");
+      String tags = requestContext.getString("tags");
+      if (!StringUtils.isBlank(tags))
+        tags = tags.replace(',', ' ');
+        
+      String nameExtension = requestContext.getString("nameExtension");
+      String description = requestContext.getString("description");
 
       CourseState courseState = null;
       Long courseStateId = requestContext.getLong("state");
@@ -71,26 +76,25 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
       }
 
       Date timeframeStart = null;
-      String value = requestContext.getRequest().getParameter("timeframeStart");
+      String value = requestContext.getString("timeframeStart");
       if (NumberUtils.isNumber(value)) {
         timeframeStart = new Date(NumberUtils.createLong(value));
       }
 
       Date timeframeEnd = null;
-      value = requestContext.getRequest().getParameter("timeframeEnd");
+      value = requestContext.getString("timeframeEnd");
       if (NumberUtils.isNumber(value)) {
         timeframeEnd = new Date(NumberUtils.createLong(value));
       }
-
-      SearchTimeFilterMode timeFilterMode = SearchTimeFilterMode.getMode(NumberUtils.createInteger(requestContext
-          .getRequest().getParameter("timeframeMode")));
-
-      searchResult = courseDAO.searchCourses(resultsPerPage, page, name, nameExtension, description, courseState,
+      
+      SearchTimeFilterMode timeFilterMode = (SearchTimeFilterMode) requestContext.getEnum("timeframeMode", SearchTimeFilterMode.class);
+      
+      searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState,
           subject, timeFilterMode, timeframeStart, timeframeEnd, true, false);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");
-      searchResult = courseDAO.searchCourses(resultsPerPage, page, text, true, false);
+      searchResult = courseDAO.searchCoursesBasic(resultsPerPage, page, text, true, false);
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
