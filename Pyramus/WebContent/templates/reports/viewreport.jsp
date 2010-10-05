@@ -43,6 +43,7 @@
       function updateDownloadLinks(baseURL) {
         $('downloadPDFLink').href = baseURL + '&format=PDF';
         $('downloadXLSLink').href = baseURL + '&format=XLS';
+        $('downloadRTFLink').href = baseURL + '&format=DOC';
       }
     
       function showReportContent(reportId, urlParams) {
@@ -60,7 +61,7 @@
           contentURL : '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}',
           centered : true,
           showOk : true,
-          showCancel : false,
+          showCancel : true,
           hideOnly: true,
           appearDuration: 0,
           title : '<fmt:message key="reports.viewReport.parametersDialog.dialogTitle"/>',
@@ -122,7 +123,18 @@
                 }
               }
 
+              $('reportParametersCancelled').setStyle({
+                display: 'none'
+              });
               showReportContent('${report.id}', urlParams);
+            break;
+            case 'cancelClick':
+              var viewReportViewerFrame = $('viewReportViewerFrame');
+              if (viewReportViewerFrame.src == 'about:blank') {
+	              $('reportParametersCancelled').setStyle({
+	                display: ''
+	              });
+              }
             break;
           }
         });
@@ -158,9 +170,14 @@
       
       <div id="viewReport" class="tabContent">
         <div id="viewReportControlsContainer">
-          <a id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
-          <a id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
-          <a id="reportParameters" class="" href="javascript:showParameterDialog()">Raportin parametrit</a>
+          <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
+          <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
+          <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadRTFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
+          <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
+        </div>
+        <div id="reportParametersCancelled" style="display: none; text-align: center;">
+          <fmt:message key="reports.viewReport.viewReportCancelled"/>
+          <a href="javascript:showParameterDialog()"><fmt:message key="reports.viewReport.viewReportCancelledLink"/></a>
         </div>
         <div id="viewReportViewerContainer">
           <iframe id="viewReportViewerFrame" src="about:blank" frameborder="0" style="border: 0px; width: 100%; height: 800px;">
