@@ -28,6 +28,7 @@
             firstname: searchForm.firstname.value,
             lastname: searchForm.lastname.value,
             nickname: searchForm.nickname.value,
+            tags: searchForm.tags.value,
             education: searchForm.education.value,
             email: searchForm.email.value,
             phone: searchForm.phone.value,
@@ -76,11 +77,21 @@
         doSearch(0);
       }
 
-      function onLoad(event) {
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
+      function onLoad(event) {
         // Tabs
         
         var tabControl = new IxProtoTabs($('tabs'));
+        
         $('searchForm').activeTab.value = tabControl.getActiveTab();
         tabControl.addListener(function (event) {
           if ((event.action == 'tabActivated')||(event.action == 'tabInitialized')) {
@@ -93,6 +104,10 @@
             tabControl.setActiveTab("${param.activeTab}");  
           </c:when>
         </c:choose>
+        
+        // Tags
+        
+        setupTags();
 
         // Search navigation
         
@@ -227,10 +242,11 @@
                     </div>
                     <div class="searchStudentsAdvancedSearchPairField2">
                       <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.searchStudents.advancedSearchEducationTitle"/>
-                        <jsp:param name="helpLocale" value="students.searchStudents.advancedSearchEducationHelp"/>
-                      </jsp:include>                                    
-                      <input type="text" name="education" size="30">
+                        <jsp:param name="titleLocale" value="students.searchStudents.advancedSearchTagsTitle"/>
+                        <jsp:param name="helpLocale" value="students.searchStudents.advancedSearchTagsHelp"/>
+                      </jsp:include>
+                      <input type="text" id="tags" name="tags" size="30"/>
+                      <div id="tags_choices" class="autocomplete_choices"></div>
                     </div>
                   </div>
                 </div>
@@ -301,6 +317,18 @@
                     </div>  
                     <div class="searchStudentsAdvancedSearchPairField2">  
                       <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                        <jsp:param name="titleLocale" value="students.searchStudents.advancedSearchEducationTitle"/>
+                        <jsp:param name="helpLocale" value="students.searchStudents.advancedSearchEducationHelp"/>
+                      </jsp:include>                                    
+                      <input type="text" name="education" size="30">
+                    </div>  
+                  </div>    
+                </div>
+                
+                <div class="genericFormSection"> 
+                  <div class="searchStudentsAdvancedSearchPairFieldContainer">  
+                    <div class="searchStudentsAdvancedSearchPairField1">  
+                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                         <jsp:param name="titleLocale" value="students.searchStudents.advancedSearchSexTitle"/>
                         <jsp:param name="helpLocale" value="students.searchStudents.advancedSearchSexHelp"/>
                       </jsp:include>                                     
@@ -308,10 +336,12 @@
                         <option></option>
                         <option value="MALE"><fmt:message key="students.searchStudents.advancedSearchSexMaleOption"/></option>
                         <option value="FEMALE"><fmt:message key="students.searchStudents.advancedSearchSexFemaleOption"/></option>
-                      </select>
+                      </select>    
+                    </div>
+                    <div class="searchStudentsAdvancedSearchPairField2">  
                     </div>  
                   </div>    
-                </div>   
+                </div>
               </div>
               
               <div id="searchStudentsAdvancedSearchRight">

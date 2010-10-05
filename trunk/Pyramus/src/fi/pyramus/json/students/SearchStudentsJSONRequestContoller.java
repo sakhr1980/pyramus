@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.I18N.Messages;
@@ -51,6 +52,10 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       String firstName = jsonRequestContext.getString("firstname");
       String nickname = jsonRequestContext.getString("nickname");
       String lastName = jsonRequestContext.getString("lastname");
+      String tags = jsonRequestContext.getString("tags");
+      if (!StringUtils.isBlank(tags))
+        tags = tags.replace(',', ' ');
+      
       String education = jsonRequestContext.getString("education");
       String email = jsonRequestContext.getString("email");
       Sex sex = (Sex) jsonRequestContext.getEnum("sex", Sex.class);
@@ -89,7 +94,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       }
       
       searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
-          education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
+          tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
           phone, lodging, studyProgramme, language, nationality, municipality, archiveFilter, false);
     }
     else {
