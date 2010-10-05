@@ -61,7 +61,6 @@
           link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
         }));
         
-                
       }
 
       function setupCoursesTab(studentId) {
@@ -438,7 +437,14 @@
                       <jsp:param name="helpLocale" value="students.viewStudent.emailHelp"/>
                     </jsp:include>  
                     <c:forEach var="email" items="${student.contactInfo.emails}">
-                      <div>${email.address}</div>
+                      <c:choose>
+                        <c:when test="${not empty email.contactType}">
+                          <div><a href="mailto:${email.address}">${email.address}</a> (${fn:toLowerCase(email.contactType.name)})</div>
+                        </c:when>
+                        <c:otherwise>
+                          <div><a href="mailto:${email.address}">${email.address}</a></div>
+                        </c:otherwise>
+                      </c:choose>
                     </c:forEach>
                   </div>
         
@@ -450,7 +456,14 @@
                           <jsp:param name="helpLocale" value="students.viewStudent.phoneNumberHelp"/>
                         </jsp:include>  
                         <c:forEach var="phone" items="${student.contactInfo.phoneNumbers}">
-                          <div>${phone.number}</div>
+                          <c:choose>
+                            <c:when test="${not empty phone.contactType}">
+                              <div>${phone.number} (${fn:toLowerCase(phone.contactType.name)})</div>
+                            </c:when>
+                            <c:otherwise>
+                              <div>${phone.number}</div>
+                            </c:otherwise>
+                          </c:choose>
                         </c:forEach>
                       </div>
                     </c:when>
