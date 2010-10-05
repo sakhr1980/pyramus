@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.JSONRequestContext;
@@ -54,7 +55,11 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
     if ("advanced".equals(requestContext.getRequest().getParameter("activeTab"))) {
       String name = requestContext.getRequest().getParameter("name");
       String description = requestContext.getRequest().getParameter("description");
-
+      
+      String tags = requestContext.getString("tags");
+      if (!StringUtils.isBlank(tags))
+        tags = tags.replace(',', ' ');
+      
       Long userId = requestContext.getLong("user");
       User user = null;
       if ((userId != null ? userId.intValue() : -1) > -1)
@@ -73,12 +78,12 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
         timeframeEnd = new Date(NumberUtils.createLong(value));
       }
 
-      searchResult = studentDAO.searchStudentGroups(resultsPerPage, page, name, description, user, 
+      searchResult = studentDAO.searchStudentGroups(resultsPerPage, page, name, tags, description, user, 
           timeframeStart, timeframeEnd, true, false);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");
-      searchResult = studentDAO.searchStudentGroups(resultsPerPage, page, text, true, false); 
+      searchResult = studentDAO.searchStudentGroupsBasic(resultsPerPage, page, text); 
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();

@@ -757,16 +757,16 @@ public class StudentDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<StudentGroup> searchStudentGroups(int resultsPerPage, int page, String text,
-      boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<StudentGroup> searchStudentGroupsBasic(int resultsPerPage, int page, String text) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
-
     if (!StringUtils.isBlank(text)) {
-      queryBuilder.append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" name: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
-      queryBuilder.append(" description: ").append(escapeSpecialChars ? QueryParser.escape(text) : text);
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false, true);
+      queryBuilder.append(")");
     }
 
     Session s = getHibernateSession();
@@ -789,9 +789,8 @@ public class StudentDAO extends PyramusDAO {
           .setFirstResult(firstResult)
           .setMaxResults(resultsPerPage);
 
-      if (filterArchived) {
-        query.enableFullTextFilter("ArchivedStudentGroup").setParameter("archived", Boolean.FALSE);
-      }
+      query.enableFullTextFilter("ArchivedStudentGroup").setParameter("archived", Boolean.FALSE);
+
 
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;
@@ -804,19 +803,14 @@ public class StudentDAO extends PyramusDAO {
       return new SearchResult<StudentGroup>(page, pages, hits, firstResult, lastResult, query.list());
     }
     catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchStudentGroups(resultsPerPage, page, text, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 
   @SuppressWarnings("unchecked")
   public SearchResult<StudentGroup> searchStudentGroups(int resultsPerPage, int page, String name, 
-      String description, User user, Date timeframeStart, Date timeframeEnd, boolean filterArchived, 
-      boolean escapeSpecialChars) {
+      String tags, String description, User user, Date timeframeStart, Date timeframeEnd, 
+      boolean filterArchived, boolean escapeSpecialChars) {
     int firstResult = page * resultsPerPage;
 
     String timeframeS = null;
@@ -833,6 +827,10 @@ public class StudentDAO extends PyramusDAO {
       addTokenizedSearchCriteria(queryBuilder, "name", name, true, escapeSpecialChars);
     }
 
+    if (!StringUtils.isBlank(tags)) {
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true, escapeSpecialChars);
+    }
+    
     if (!StringUtils.isBlank(description)) {
       addTokenizedSearchCriteria(queryBuilder, "description", description, true, escapeSpecialChars);
     }
@@ -895,7 +893,7 @@ public class StudentDAO extends PyramusDAO {
     }
     catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchStudentGroups(resultsPerPage, page, name, description, user, 
+        return searchStudentGroups(resultsPerPage, page, name, tags, description, user, 
             timeframeStart, timeframeEnd, filterArchived, true);
       }
       else {
