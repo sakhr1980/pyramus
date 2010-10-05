@@ -42,9 +42,9 @@
        */
       function doSearch(page) {
         var searchModulesForm = $("searchModulesForm");
-        JSONRequest.request("modules/searchmodules.json", {
+        JSONRequest.request("projects/searchmodules.json", {
           parameters: {
-            text: searchModulesForm.text.value,
+            name: searchModulesForm.name.value,
             projectName: searchModulesForm.project.value,
             page: page
           },
@@ -179,7 +179,7 @@
                   <jsp:param name="titleLocale" value="projects.searchModulesDialog.textTitle"/>
                   <jsp:param name="helpLocale" value="projects.searchModulesDialog.textHelp"/>
                 </jsp:include>
-	            <input type="text" name="text" size="40"/>
+	            <input type="text" name="name" size="40"/>
 	          </div>
 	          
               <div class="genericFormSection">

@@ -127,31 +127,88 @@ public class ModuleDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return (ModuleComponent) s.load(ModuleComponent.class, moduleComponentId);
   }
-
+  
   @SuppressWarnings("unchecked")
-  public SearchResult<Module> searchModules(int resultsPerPage, int page, String projectName, String name, String description, String componentName, String componentDescription, Long ownerId, boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<Module> searchModulesBasic(int resultsPerPage, int page, String text) {
+    int firstResult = page * resultsPerPage;
+    StringBuilder queryBuilder = new StringBuilder();
+    
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", text, false, true);
+      queryBuilder.append(")");
+    }
+
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+    String queryString = queryBuilder.toString();
+    Query luceneQuery;
+    
+    try {
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      } else {
+        luceneQuery = parser.parse(queryString);
+      }
+  
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Module.class)
+          .setSort(new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING)}))
+          .setFirstResult(firstResult)
+          .setMaxResults(resultsPerPage);
+  
+      query.enableFullTextFilter("ArchivedModule").setParameter("archived", Boolean.FALSE);
+    
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+  
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+  
+      return new SearchResult<Module>(page, pages, hits, firstResult, lastResult, query.list());
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
+  }
+ 
+  @SuppressWarnings("unchecked")
+  public SearchResult<Module> searchModules(int resultsPerPage, int page, String projectName, String name, String tags, String description, String componentName, String componentDescription, Long ownerId, boolean filterArchived) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
     
     boolean hasName = !StringUtils.isBlank(name);
+    boolean hasTags = !StringUtils.isBlank(tags);
     boolean hasDescription = !StringUtils.isBlank(description);
     boolean hasComponentName = !StringUtils.isBlank(componentName);
     boolean hasComponentDescription = !StringUtils.isBlank(componentDescription);
     
-    if (hasName||hasDescription||hasComponentName||hasComponentDescription) {
+    if (hasName||hasTags||hasDescription||hasComponentName||hasComponentDescription) {
       queryBuilder.append("+(");
+      
       if (hasName)
-        queryBuilder.append(" name: ").append(escapeSpecialChars ? QueryParser.escape(name) : name);
+        addTokenizedSearchCriteria(queryBuilder, "name", name, false, true);
+      
+      if (hasTags)
+        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, true);
       
       if (hasDescription)
-        queryBuilder.append(" description: ").append(escapeSpecialChars ? QueryParser.escape(description) : description);
+        addTokenizedSearchCriteria(queryBuilder, "description", description, false, true);
       
       if (hasComponentName)
-        queryBuilder.append(" moduleComponents.name: ").append(escapeSpecialChars ? QueryParser.escape(componentName) : componentName);
+        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", componentName, false, true);
       
       if (hasComponentDescription)
-        queryBuilder.append(" moduleComponents.description: ").append(escapeSpecialChars ? QueryParser.escape(componentDescription) : componentDescription);
+        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", componentDescription, false, true);
+      
+      
       queryBuilder.append(")");
     }
     
@@ -219,14 +276,8 @@ public class ModuleDAO extends PyramusDAO {
 
       return new SearchResult<Module>(page, pages, hits, firstResult, lastResult, query.list());
 
-    }
-    catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchModules(resultsPerPage, page, projectName, name, description, componentName, componentDescription, ownerId, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
     }
   }
 
