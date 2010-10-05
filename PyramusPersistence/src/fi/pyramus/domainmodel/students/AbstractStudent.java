@@ -35,6 +35,7 @@ import org.hibernate.search.annotations.Store;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.usertypes.Sex;
 import fi.pyramus.persistence.usertypes.SexUserType;
 
@@ -603,6 +604,36 @@ public class AbstractStudent {
           results.add(student.getNationality().getId().toString());
       }
     }
+    return setToString(results);
+  }
+
+  @Transient
+  @Field (index = Index.TOKENIZED)
+  public String getUnarchivedTags() {
+    Set<String> results = new HashSet<String>();
+    for (Student student : getStudents()) {
+      if (student.getArchived() == Boolean.FALSE) {
+        for (Tag tag : student.getTags()) {
+          results.add(tag.getText());
+        }
+      }
+    }
+    
+    return setToString(results);
+  }
+
+  @Transient
+  @Field (index = Index.TOKENIZED)
+  public String getArchivedTags() {
+    Set<String> results = new HashSet<String>();
+    for (Student student : getStudents()) {
+      if (student.getArchived() == Boolean.TRUE) {
+        for (Tag tag : student.getTags()) {
+          results.add(tag.getText());
+        }
+      }
+    }
+    
     return setToString(results);
   }
   

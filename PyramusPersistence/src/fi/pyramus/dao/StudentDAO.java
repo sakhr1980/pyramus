@@ -362,6 +362,7 @@ public class StudentDAO extends PyramusDAO {
       addTokenizedSearchCriteria(queryBuilder, "unarchivedNicknames", queryText, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "unarchivedLastNames", queryText, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "unarchivedEmails", queryText, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "unarchivedTags", queryText, false, escapeSpecialChars);
       queryBuilder.append(")");
     }
 
@@ -405,7 +406,7 @@ public class StudentDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<AbstractStudent> searchAbstractStudents(int resultsPerPage, int page, String firstName, String lastName, String nickname,
+  public SearchResult<AbstractStudent> searchAbstractStudents(int resultsPerPage, int page, String firstName, String lastName, String nickname, String tags, 
       String education, String email, Sex sex, String ssn, String addressCity, String addressCountry, String addressPostalCode, String addressStreetAddress,
       String phone, Boolean lodging, StudyProgramme studyProgramme, Language language, Nationality nationality, Municipality municipality,
       ArchiveFilter archiveFilter, boolean escapeSpecialChars) {
@@ -427,6 +428,8 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "archivedLastNames", "unarchivedLastNames", lastName, true, escapeSpecialChars);
         if (!StringUtils.isBlank(nickname))
           addTokenizedSearchCriteria(queryBuilder, "archivedNicknames", "unarchivedNicknames", nickname, true, escapeSpecialChars);
+        if (!StringUtils.isBlank(nickname))
+          addTokenizedSearchCriteria(queryBuilder, "archivedTags", "unarchivedTags", tags, true, escapeSpecialChars);
         if (!StringUtils.isBlank(education))
           addTokenizedSearchCriteria(queryBuilder, "archivedEducations", "unarchivedEducations", education, true, escapeSpecialChars);
         if (!StringUtils.isBlank(email))
@@ -464,6 +467,8 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "archivedLastNames", lastName, true, escapeSpecialChars);
         if (!StringUtils.isBlank(nickname))
           addTokenizedSearchCriteria(queryBuilder, "archivedNicknames", nickname, true, escapeSpecialChars);
+        if (!StringUtils.isBlank(tags))
+          addTokenizedSearchCriteria(queryBuilder, "archivedTags", tags, true, escapeSpecialChars);
         if (!StringUtils.isBlank(education))
           addTokenizedSearchCriteria(queryBuilder, "archivedEducations", education, true, escapeSpecialChars);
         if (!StringUtils.isBlank(email))
@@ -499,6 +504,8 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "unarchivedNicknames", nickname, true, escapeSpecialChars);
         if (!StringUtils.isBlank(education))
           addTokenizedSearchCriteria(queryBuilder, "unarchivedEducations", education, true, escapeSpecialChars);
+        if (!StringUtils.isBlank(tags))
+          addTokenizedSearchCriteria(queryBuilder, "unarchivedTags", tags, true, escapeSpecialChars);
         if (!StringUtils.isBlank(email))
           addTokenizedSearchCriteria(queryBuilder, "unarchivedEmails", email, true, escapeSpecialChars);
         if (!StringUtils.isBlank(addressCity))
@@ -556,7 +563,7 @@ public class StudentDAO extends PyramusDAO {
       return new SearchResult<AbstractStudent>(page, pages, hits, firstResult, lastResult, query.list());
     } catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname, education, email, sex, ssn, addressCity, addressCountry,
+        return searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname, tags, education, email, sex, ssn, addressCity, addressCountry,
             addressPostalCode, addressStreetAddress, phone, lodging, studyProgramme, language, nationality, municipality, archiveFilter, true);
       } else {
         throw new PersistenceException(e);
