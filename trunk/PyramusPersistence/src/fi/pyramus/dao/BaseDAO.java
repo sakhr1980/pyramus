@@ -1068,6 +1068,52 @@ public class BaseDAO extends PyramusDAO {
     return subjects;
   }
 
+  @SuppressWarnings("unchecked")
+  public SearchResult<School> searchSchoolsBasic(int resultsPerPage, int page, String text) {
+
+    int firstResult = page * resultsPerPage;
+
+    StringBuilder queryBuilder = new StringBuilder();
+
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "code", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, true);
+      queryBuilder.append(")");
+    }
+
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    try {
+      String queryString = queryBuilder.toString();
+      Query luceneQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      } else {
+        luceneQuery = parser.parse(queryString);
+      }
+
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class).setFirstResult(firstResult).setMaxResults(resultsPerPage);
+      query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);
+
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+
+      return new SearchResult<School>(page, pages, hits, firstResult, lastResult, query.list());
+
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
   /**
    * Returns a list of schools matching the given search terms.
    * 
@@ -1079,6 +1125,8 @@ public class BaseDAO extends PyramusDAO {
    *          The school code
    * @param name
    *          The school name
+   * @param tags
+   *          The schools tags
    * @param filterArchived
    *          <code>true</code> if archived schools should be omitted, otherwise <code>false</code>
    * @param escapeSpecialChars
@@ -1087,16 +1135,19 @@ public class BaseDAO extends PyramusDAO {
    * @return A list of schools matching the given search terms
    */
   @SuppressWarnings("unchecked")
-  public SearchResult<School> searchSchools(int resultsPerPage, int page, String code, String name, boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<School> searchSchools(int resultsPerPage, int page, String code, String name, String tags, boolean filterArchived, boolean escapeSpecialChars) {
 
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
     if (!StringUtils.isBlank(code)) {
-      queryBuilder.append(" code:").append(escapeSpecialChars ? QueryParser.escape(code) : code);
+      addTokenizedSearchCriteria(queryBuilder, "code", code, false, escapeSpecialChars);
     }
     if (!StringUtils.isBlank(name)) {
-      queryBuilder.append(" name:").append(escapeSpecialChars ? QueryParser.escape(name) : name);
+      addTokenizedSearchCriteria(queryBuilder, "name", name, false, escapeSpecialChars);
+    }
+    if (!StringUtils.isBlank(tags)) {
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, escapeSpecialChars);
     }
 
     Session s = getHibernateSession();
@@ -1130,7 +1181,7 @@ public class BaseDAO extends PyramusDAO {
 
     } catch (ParseException e) {
       if (!escapeSpecialChars) {
-        return searchSchools(resultsPerPage, page, code, name, filterArchived, true);
+        return searchSchools(resultsPerPage, page, code, name, tags, filterArchived, true);
       } else {
         throw new PersistenceException(e);
       }

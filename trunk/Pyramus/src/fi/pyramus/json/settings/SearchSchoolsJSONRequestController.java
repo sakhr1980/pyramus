@@ -42,7 +42,7 @@ public class SearchSchoolsJSONRequestController implements JSONRequestController
 
     // Search via the DAO object
 
-    SearchResult<School> searchResult = baseDAO.searchSchools(resultsPerPage, page, text, text, true, false);
+    SearchResult<School> searchResult = baseDAO.searchSchoolsBasic(resultsPerPage, page, text);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<School> schools = searchResult.getResults();
