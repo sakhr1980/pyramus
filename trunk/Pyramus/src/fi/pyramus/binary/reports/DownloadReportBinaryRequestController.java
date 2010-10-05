@@ -78,6 +78,7 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
     HTML ("html"),
     PDF  ("pdf"),
     RTF  ("rtf"),
+    DOC  ("doc"),
     XLS  ("xml");
     
     ReportOutputFormat (String ext) {
