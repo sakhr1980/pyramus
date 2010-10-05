@@ -948,11 +948,13 @@ public class CourseDAO extends PyramusDAO {
     StringBuilder queryBuilder = new StringBuilder();
 
     if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
       addTokenizedSearchCriteria(queryBuilder, "description", text, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "nameExtension", text, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "courseComponents.name", text, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "courseComponents.description", text, false, escapeSpecialChars);
       addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, escapeSpecialChars);
+      queryBuilder.append(")");
     }
 
     Session s = getHibernateSession();

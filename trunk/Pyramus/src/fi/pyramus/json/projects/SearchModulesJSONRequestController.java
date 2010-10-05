@@ -1,4 +1,4 @@
-package fi.pyramus.json.modules;
+package fi.pyramus.json.projects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,11 +38,12 @@ public class SearchModulesJSONRequestController implements JSONRequestController
 
     // Gather the search terms
 
-    String text = requestContext.getString("text");
+    String name = requestContext.getString("name");
+    String projectName = requestContext.getString("projectName");
 
     // Search via the DAO object
 
-    SearchResult<Module> searchResult = moduleDAO.searchModulesBasic(resultsPerPage, page, text);
+    SearchResult<Module> searchResult = moduleDAO.searchModules(resultsPerPage, page, projectName, name, null, null, null, null, null, true);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Module> modules = searchResult.getResults();
