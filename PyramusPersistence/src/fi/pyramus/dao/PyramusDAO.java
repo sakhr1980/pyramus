@@ -9,7 +9,6 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
-import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Session;
 import org.hibernate.ejb.EntityManagerImpl;
 import org.hibernate.search.FullTextSession;
@@ -38,9 +37,9 @@ public class PyramusDAO {
     fullTextSession.index(o);
   }
   
-  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required, boolean escapeSpecialChars) {
+  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required) {
     String inputText = value.replaceAll(" +", " ");
-    String[] tokens = (escapeSpecialChars ? QueryParser.escape(inputText) : inputText).split("[ ,]");
+    String[] tokens = escapeSearchCriteria(inputText).split("[ ,]");
     for (String token : tokens) {
       queryBuilder.append(' ');
       if (required)
@@ -50,9 +49,9 @@ public class PyramusDAO {
     }
   }
   
-  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName1, String fieldName2, String value, boolean required, boolean escapeSpecialChars) {
+  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName1, String fieldName2, String value, boolean required) {
     String inputText = value.replaceAll(" +", " ");
-    String[] tokens = (escapeSpecialChars ? QueryParser.escape(inputText) : inputText).split("[ ,]");
+    String[] tokens = escapeSearchCriteria(inputText).split("[ ,]");
     for (String token : tokens) {
       if (required)
         queryBuilder.append("+");
@@ -71,6 +70,12 @@ public class PyramusDAO {
   
   protected String getSearchFormattedDate(Date date) {
     return COURSE_SEARCH_DATE_FORMAT.format(date);
+  }
+  
+  private String escapeSearchCriteria(String value) {
+    return value
+      .replaceAll("[\\:\\+\\-\\~\\(\\)\\{\\}\\[\\]\\^\\&\\|\\!\\\\]", "\\\\$0")
+      .replaceAll("[*]{1,}", "\\*");
   }
   
   private static final String DATERANGE_INFINITY_LOW = "00000000";

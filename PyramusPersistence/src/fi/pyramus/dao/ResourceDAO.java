@@ -58,8 +58,8 @@ public class ResourceDAO extends PyramusDAO {
 
     if (!StringUtils.isBlank(queryText)) {
       queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "name", queryText, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", queryText, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "name", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", queryText, false);
       queryBuilder.append(")");
     }
 
@@ -111,15 +111,15 @@ public class ResourceDAO extends PyramusDAO {
     StringBuilder queryBuilder = new StringBuilder();
 
     if (!StringUtils.isBlank(name)) {
-      addTokenizedSearchCriteria(queryBuilder, "name", name, true, true);
+      addTokenizedSearchCriteria(queryBuilder, "name", name, true);
     }
 
     if (!StringUtils.isBlank(tags)) {
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true, true);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true);
     }
     
     if (resourceCategory != null) {
-      addTokenizedSearchCriteria(queryBuilder, "category.id", resourceCategory.getId().toString(), true, true);
+      addTokenizedSearchCriteria(queryBuilder, "category.id", resourceCategory.getId().toString(), true);
     }
 
     FullTextSession fullTextSession = Search.getFullTextSession(getHibernateSession());

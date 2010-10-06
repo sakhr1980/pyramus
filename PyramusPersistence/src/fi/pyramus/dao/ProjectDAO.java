@@ -168,36 +168,30 @@ public class ProjectDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<Project> searchProjects(int resultsPerPage, int page, String name, String description,
-      Long ownerId, boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<Project> searchProjectsBasic(int resultsPerPage, int page, String text) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
 
-    if (!StringUtils.isBlank(name)) {
-      queryBuilder.append(escapeSpecialChars ? QueryParser.escape(name) : name);
-    }
-
-    if (!StringUtils.isBlank(description)) {
-      queryBuilder.append(" description: ").append(escapeSpecialChars ? QueryParser.escape(description) : description);
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
+      queryBuilder.append(")");
     }
 
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      if (ownerId != null && ownerId > 0) {
-        queryBuilder.append(" +creator.id: ").append(ownerId);
-      }
-
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "name", new StandardAnalyzer(Version.LUCENE_29));
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
       if (StringUtils.isBlank(queryString)) {
         luceneQuery = new MatchAllDocsQuery();
-      }
-      else {
+      } else {
         luceneQuery = parser.parse(queryString);
       }
 
@@ -206,10 +200,8 @@ public class ProjectDAO extends PyramusDAO {
           .setFirstResult(firstResult)
           .setMaxResults(resultsPerPage);
 
-      if (filterArchived) {
-        query.enableFullTextFilter("ArchivedProject").setParameter("archived", Boolean.FALSE);
-      }
-
+      query.enableFullTextFilter("ArchivedProject").setParameter("archived", Boolean.FALSE);
+      
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;
       if (hits % resultsPerPage > 0) {
@@ -222,12 +214,7 @@ public class ProjectDAO extends PyramusDAO {
 
     }
     catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchProjects(resultsPerPage, page, name, description, ownerId, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 

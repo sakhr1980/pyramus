@@ -90,11 +90,11 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
       SearchTimeFilterMode timeFilterMode = (SearchTimeFilterMode) requestContext.getEnum("timeframeMode", SearchTimeFilterMode.class);
       
       searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState,
-          subject, timeFilterMode, timeframeStart, timeframeEnd, true, false);
+          subject, timeFilterMode, timeframeStart, timeframeEnd, true);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");
-      searchResult = courseDAO.searchCoursesBasic(resultsPerPage, page, text, true, false);
+      searchResult = courseDAO.searchCoursesBasic(resultsPerPage, page, text, true);
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();

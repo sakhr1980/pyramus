@@ -135,11 +135,11 @@ public class ModuleDAO extends PyramusDAO {
     
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "name", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "description", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", text, false);
       queryBuilder.append(")");
     }
 
@@ -194,19 +194,19 @@ public class ModuleDAO extends PyramusDAO {
       queryBuilder.append("+(");
       
       if (hasName)
-        addTokenizedSearchCriteria(queryBuilder, "name", name, false, true);
+        addTokenizedSearchCriteria(queryBuilder, "name", name, false);
       
       if (hasTags)
-        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, true);
+        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false);
       
       if (hasDescription)
-        addTokenizedSearchCriteria(queryBuilder, "description", description, false, true);
+        addTokenizedSearchCriteria(queryBuilder, "description", description, false);
       
       if (hasComponentName)
-        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", componentName, false, true);
+        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.name", componentName, false);
       
       if (hasComponentDescription)
-        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", componentDescription, false, true);
+        addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", componentDescription, false);
       
       
       queryBuilder.append(")");
@@ -218,7 +218,7 @@ public class ModuleDAO extends PyramusDAO {
     Set<Long> moduleIds = new HashSet<Long>();
     if (!StringUtils.isBlank(projectName)) {
       ProjectDAO projectDAO = new ProjectDAO();
-      SearchResult<Project> searchResults = projectDAO.searchProjects(10, 0, projectName, null, null, true, false);
+      SearchResult<Project> searchResults = projectDAO.searchProjectsBasic(10, 0, projectName);
       List<Project> projects = searchResults.getResults();
       for(Project project : projects) {
         List<ProjectModule> projectModules = project.getProjectModules();

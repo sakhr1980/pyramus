@@ -34,7 +34,7 @@ public class SearchUsersJSONRequestController implements JSONRequestController {
     String text = requestContext.getString("text");
     Role role = (Role) requestContext.getEnum("role", Role.class);
 
-    SearchResult<User> searchResult = userDAO.searchUsers(resultsPerPage, page, text, text, text, text, role, false);
+    SearchResult<User> searchResult = userDAO.searchUsers(resultsPerPage, page, text, text, text, text, role);
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<User> users = searchResult.getResults();
     for (User user : users) {
