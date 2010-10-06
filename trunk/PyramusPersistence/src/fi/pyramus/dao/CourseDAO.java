@@ -941,19 +941,18 @@ public class CourseDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<Course> searchCoursesBasic(int resultsPerPage, int page, String text,
-      boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<Course> searchCoursesBasic(int resultsPerPage, int page, String text, boolean filterArchived) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
 
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "description", text, false, escapeSpecialChars);
-      addTokenizedSearchCriteria(queryBuilder, "nameExtension", text, false, escapeSpecialChars);
-      addTokenizedSearchCriteria(queryBuilder, "courseComponents.name", text, false, escapeSpecialChars);
-      addTokenizedSearchCriteria(queryBuilder, "courseComponents.description", text, false, escapeSpecialChars);
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "description", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "nameExtension", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "courseComponents.name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "courseComponents.description", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
       queryBuilder.append(")");
     }
 
@@ -993,19 +992,14 @@ public class CourseDAO extends PyramusDAO {
 
     }
     catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchCoursesBasic(resultsPerPage, page, text, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 
   @SuppressWarnings("unchecked")
   public SearchResult<Course> searchCourses(int resultsPerPage, int page, String name, String tags, String nameExtension,
       String description, CourseState courseState, Subject subject, SearchTimeFilterMode timeFilterMode,
-      Date timeframeStart, Date timeframeEnd, boolean filterArchived, boolean escapeSpecialChars) {
+      Date timeframeStart, Date timeframeEnd, boolean filterArchived) {
     int firstResult = page * resultsPerPage;
 
     String timeframeS = null;
@@ -1019,27 +1013,27 @@ public class CourseDAO extends PyramusDAO {
     StringBuilder queryBuilder = new StringBuilder();
 
     if (!StringUtils.isBlank(name)) {
-      addTokenizedSearchCriteria(queryBuilder, "name", name, true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "name", name, true);
     }
 
     if (!StringUtils.isBlank(tags)) {
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true);
     }
 
     if (!StringUtils.isBlank(nameExtension)) {
-      addTokenizedSearchCriteria(queryBuilder, "nameExtension", nameExtension, true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "nameExtension", nameExtension, true);
     }
 
     if (!StringUtils.isBlank(description)) {
-      addTokenizedSearchCriteria(queryBuilder, "description", description, true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "description", description, true);
     }
     
     if (courseState != null) {
-      addTokenizedSearchCriteria(queryBuilder, "state.id", courseState.getId().toString(), true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "state.id", courseState.getId().toString(), true);
     }
 
     if (subject != null) {
-      addTokenizedSearchCriteria(queryBuilder, "subject.id", subject.getId().toString(), true, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "subject.id", subject.getId().toString(), true);
     }
 
     if ((timeframeS != null) && (timeframeE != null)) {
@@ -1129,13 +1123,7 @@ public class CourseDAO extends PyramusDAO {
 
     }
     catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState,
-            subject, timeFilterMode, timeframeStart, timeframeEnd, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 

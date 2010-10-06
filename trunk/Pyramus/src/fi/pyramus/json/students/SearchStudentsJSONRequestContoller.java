@@ -95,11 +95,11 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       
       searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
           tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
-          phone, lodging, studyProgramme, language, nationality, municipality, archiveFilter, false);
+          phone, lodging, studyProgramme, language, nationality, municipality, archiveFilter);
     }
     else {
       String query = jsonRequestContext.getRequest().getParameter("query");
-      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, false);
+      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query);
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();

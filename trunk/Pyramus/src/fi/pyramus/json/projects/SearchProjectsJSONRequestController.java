@@ -39,12 +39,10 @@ public class SearchProjectsJSONRequestController implements JSONRequestControlle
     // Gather the search terms
 
     String text = requestContext.getRequest().getParameter("text");
-    Long userId = NumberUtils.createLong(requestContext.getRequest().getParameter("owner"));
 
     // Search via the DAO object
 
-    SearchResult<Project> searchResult = projectDAO.searchProjects(resultsPerPage, page, text, text, userId, true,
-        false);
+    SearchResult<Project> searchResult = projectDAO.searchProjectsBasic(resultsPerPage, page, text);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Project> projects = searchResult.getResults();

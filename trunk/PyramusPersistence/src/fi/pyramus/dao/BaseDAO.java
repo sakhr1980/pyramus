@@ -1077,9 +1077,9 @@ public class BaseDAO extends PyramusDAO {
 
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "code", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "name", text, false, true);
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false, true);
+      addTokenizedSearchCriteria(queryBuilder, "code", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
       queryBuilder.append(")");
     }
 
@@ -1129,25 +1129,23 @@ public class BaseDAO extends PyramusDAO {
    *          The schools tags
    * @param filterArchived
    *          <code>true</code> if archived schools should be omitted, otherwise <code>false</code>
-   * @param escapeSpecialChars
-   *          <code>true</code> if search terms should be escape for possible query breaking characters, otherwise <code>false</code>
    * 
    * @return A list of schools matching the given search terms
    */
   @SuppressWarnings("unchecked")
-  public SearchResult<School> searchSchools(int resultsPerPage, int page, String code, String name, String tags, boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<School> searchSchools(int resultsPerPage, int page, String code, String name, String tags, boolean filterArchived) {
 
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
     if (!StringUtils.isBlank(code)) {
-      addTokenizedSearchCriteria(queryBuilder, "code", code, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "code", code, false);
     }
     if (!StringUtils.isBlank(name)) {
-      addTokenizedSearchCriteria(queryBuilder, "name", name, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "name", name, false);
     }
     if (!StringUtils.isBlank(tags)) {
-      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false);
     }
 
     Session s = getHibernateSession();
@@ -1180,11 +1178,7 @@ public class BaseDAO extends PyramusDAO {
       return new SearchResult<School>(page, pages, hits, firstResult, lastResult, query.list());
 
     } catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchSchools(resultsPerPage, page, code, name, tags, filterArchived, true);
-      } else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 

@@ -79,7 +79,7 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
       }
 
       searchResult = studentDAO.searchStudentGroups(resultsPerPage, page, name, tags, description, user, 
-          timeframeStart, timeframeEnd, true, false);
+          timeframeStart, timeframeEnd, true);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");

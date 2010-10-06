@@ -283,7 +283,7 @@ public class UserDAO extends PyramusDAO {
 
   @SuppressWarnings("unchecked")
   public SearchResult<User> searchUsers(int resultsPerPage, int page, String firstName, String lastName, String tags,
-      String email, Role role, boolean escapeSpecialChars) {
+      String email, Role role) {
 
     int firstResult = page * resultsPerPage;
     
@@ -297,18 +297,18 @@ public class UserDAO extends PyramusDAO {
       queryBuilder.append("+(");
 
       if (hasFirstName) 
-        addTokenizedSearchCriteria(queryBuilder, "firstName", firstName, false, escapeSpecialChars);
+        addTokenizedSearchCriteria(queryBuilder, "firstName", firstName, false);
       if (hasLastName)
-        addTokenizedSearchCriteria(queryBuilder, "lastName", lastName, false, escapeSpecialChars);
+        addTokenizedSearchCriteria(queryBuilder, "lastName", lastName, false);
       if (hasTags)
-        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false, escapeSpecialChars);
+        addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false);
       if (hasEmail)
-        addTokenizedSearchCriteria(queryBuilder, "contactInfo.emails.address", email, false, escapeSpecialChars);
+        addTokenizedSearchCriteria(queryBuilder, "contactInfo.emails.address", email, false);
       queryBuilder.append(")");
     }
   
     if (role != null) 
-      addTokenizedSearchCriteria(queryBuilder, "role", role.toString(), false, escapeSpecialChars);
+      addTokenizedSearchCriteria(queryBuilder, "role", role.toString(), false);
 
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
@@ -338,12 +338,7 @@ public class UserDAO extends PyramusDAO {
       return new SearchResult<User>(page, pages, hits, firstResult, lastResult, query.list());
 
     } catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchUsers(resultsPerPage, page, firstName, lastName, tags, email, role, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
   
