@@ -43,7 +43,7 @@
       function updateDownloadLinks(baseURL) {
         $('downloadPDFLink').href = baseURL + '&format=PDF';
         $('downloadXLSLink').href = baseURL + '&format=XLS';
-        $('downloadRTFLink').href = baseURL + '&format=DOC';
+        $('downloadDOCLink').href = baseURL + '&format=DOC';
       }
     
       function showReportContent(reportId, urlParams) {
@@ -172,7 +172,7 @@
         <div id="viewReportControlsContainer">
           <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
           <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
-          <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadRTFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
+          <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadDOCLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
           <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
         </div>
         <div id="reportParametersCancelled" style="display: none; text-align: center;">

@@ -78,6 +78,7 @@
 			VALUE="<%= ParameterAccessor.htmlEncode( ( parameterBean.getDisplayText( ) == null )? "" : parameterBean.getDisplayText( ) ) %>" 
 			<%= ( !parameterBean.isRequired( ) && parameterBean.getValue( ) == null )? "DISABLED='true'" : "" %>
 			<%= parameterBean.isRequired( ) ? "aria-required='true'" : "" %>
+      <%= parameterBean.getParameter().getDataType() == 7 ? "ix:datefield='true'" : "" %>
             />
 
 		<INPUT TYPE="HIDDEN"
