@@ -77,7 +77,24 @@
 		</script>
 		
 		<SCRIPT SRC="birt/ajax/utility/Debug.js" type="text/javascript"></script>
-		<script src="birt/ajax/lib/prototype.js" type="text/javascript"></script>
+<!-- 		<script src="birt/ajax/lib/prototype.js" type="text/javascript"></script> -->
+		
+		<!-- Pyramus -->
+		<script src="../scripts/prototype/prototype.js" type="text/javascript"></script>
+    <script src="../scripts/fnievents/fnievents.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="../scripts/date-picker/js/datepicker.js"></script>
+    <link href="../scripts/date-picker/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../scripts/ixdatefield/ixbirtdatefield.js"></script>
+    <link rel="stylesheet" href="../css/ixbirtdatefield.css"/>
+    
+    <script type="text/javascript">
+      document.observe("dom:loaded", function(event) {
+        setTimeout(function () {
+          replaceDateFields();
+        }, 5000);
+      });
+    </script>
 		
 		<!-- Mask -->
 		<script src="birt/ajax/core/Mask.js" type="text/javascript"></script>
@@ -113,8 +130,7 @@
 		<SCRIPT SRC="birt/ajax/core/BirtCommunicationManager.js" type="text/javascript"></script>
 		<SCRIPT SRC="birt/ajax/core/BirtSoapRequest.js" type="text/javascript"></script>
 		<SCRIPT SRC="birt/ajax/core/BirtSoapResponse.js" type="text/javascript"></script>
-				
-	</HEAD>
+  </HEAD>
 
 	<BODY CLASS="BirtViewer_Body" onload="Javascript:init()" SCROLL="no" LEFTMARGIN='0px' STYLE='overflow:hidden'>
 		<%
