@@ -219,27 +219,78 @@ public class ProjectDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<StudentProject> searchStudentProjects(int resultsPerPage, int page, String name, String description, String studentName, boolean filterArchived, boolean escapeSpecialChars) {
+  public SearchResult<StudentProject> searchStudentProjectsBasic(int resultsPerPage, int page, String projectText, String studentText) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
 
-    boolean projectSearch = !StringUtils.isBlank(name) || !StringUtils.isBlank(description);
-    
-    if (projectSearch) {
+    if (!StringUtils.isBlank(projectText)) {
       queryBuilder.append("+(");
-      if (!StringUtils.isBlank(name)) {
-        queryBuilder.append("name: " + (escapeSpecialChars ? QueryParser.escape(name) : name));
-      }
-      if (!StringUtils.isBlank(description)) {
-        queryBuilder.append(" description: ").append(escapeSpecialChars ? QueryParser.escape(description) : description);
-      }
-      queryBuilder.append(")");
+      addTokenizedSearchCriteria(queryBuilder, "name", projectText, false);
+      addTokenizedSearchCriteria(queryBuilder, "description", projectText, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", projectText, false);
+      queryBuilder.append(')');
     }
 
-    if (!StringUtils.isBlank(studentName)) {
-      queryBuilder.append(" +student.fullName: ").append(escapeSpecialChars ? QueryParser.escape(studentName) : studentName);
+    if (!StringUtils.isBlank(studentText)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "student.fullName", studentText, false); 
+      addTokenizedSearchCriteria(queryBuilder, "student.tags.text", studentText, false); 
+      queryBuilder.append(')');
     }
+    
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    try {
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      String queryString = queryBuilder.toString();
+      Query luceneQuery;
+
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      }
+      else {
+        luceneQuery = parser.parse(queryString);
+      }
+
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, StudentProject.class)
+          .setSort(new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING)}))
+          .setFirstResult(firstResult)
+          .setMaxResults(resultsPerPage);
+
+      query.enableFullTextFilter("ArchivedStudentProject").setParameter("archived", Boolean.FALSE);
+
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+
+      return new SearchResult<StudentProject>(page, pages, hits, firstResult, lastResult, query.list());
+
+    }
+    catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public SearchResult<StudentProject> searchStudentProjects(int resultsPerPage, int page, String name, String tags, String description, String studentName, boolean filterArchived) {
+    int firstResult = page * resultsPerPage;
+
+    StringBuilder queryBuilder = new StringBuilder();
+
+    if (!StringUtils.isBlank(name))
+      addTokenizedSearchCriteria(queryBuilder, "name", name, true);
+    if (!StringUtils.isBlank(description))
+      addTokenizedSearchCriteria(queryBuilder, "description", description, true);
+    if (!StringUtils.isBlank(tags))
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, true);
+    if (!StringUtils.isBlank(description))
+      addTokenizedSearchCriteria(queryBuilder, "student.fullName", studentName, true); 
 
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
@@ -277,12 +328,7 @@ public class ProjectDAO extends PyramusDAO {
 
     }
     catch (ParseException e) {
-      if (!escapeSpecialChars) {
-        return searchStudentProjects(resultsPerPage, page, name, description, studentName, filterArchived, true);
-      }
-      else {
-        throw new PersistenceException(e);
-      }
+      throw new PersistenceException(e);
     }
   }
 

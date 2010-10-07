@@ -58,6 +58,16 @@
 	      Event.stop(event);
 	      doSearch(0);
 	    }
+	    
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
 
 	    function onLoad(event) {
 	      var tabControl = new IxProtoTabs($('tabs'));
@@ -68,6 +78,9 @@
             $('activeTab').value = event.name;
           } 
         });
+        
+        setupTags();
+        
 	      new IxSearchNavigation($('searchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
           maxNavigationPages: 19,
@@ -214,8 +227,9 @@
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="resources.searchResources.advancedSearchTagsTitle"/>
                 <jsp:param name="helpLocale" value="resources.searchResources.advancedSearchTagsHelp"/>
-              </jsp:include>          
-              <input type="text" name="tags" size="40"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
             
             <div class="genericFormSection">

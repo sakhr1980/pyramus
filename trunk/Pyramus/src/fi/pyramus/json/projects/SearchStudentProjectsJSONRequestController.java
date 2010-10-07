@@ -43,8 +43,7 @@ public class SearchStudentProjectsJSONRequestController implements JSONRequestCo
 
     // Search via the DAO object
 
-    SearchResult<StudentProject> searchResult = projectDAO.searchStudentProjects(resultsPerPage, page, projectText,
-        projectText, studentText, true, false);
+    SearchResult<StudentProject> searchResult = projectDAO.searchStudentProjectsBasic(resultsPerPage, page, projectText, studentText);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<StudentProject> studentProjects = searchResult.getResults();
