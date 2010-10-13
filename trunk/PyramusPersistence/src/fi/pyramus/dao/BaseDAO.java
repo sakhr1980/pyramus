@@ -26,10 +26,12 @@ import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.Address;
+import fi.pyramus.domainmodel.base.ComponentBase;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.ContactURL;
 import fi.pyramus.domainmodel.base.ContactURLType;
+import fi.pyramus.domainmodel.base.CourseBase;
 import fi.pyramus.domainmodel.base.Defaults;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
@@ -1533,4 +1535,65 @@ public class BaseDAO extends PyramusDAO {
     EntityManager entityManager = getEntityManager();
     entityManager.remove(tag);
   }
+  
+  public void archiveComponentBase(ComponentBase componentBase) {
+    Session s = getHibernateSession();
+    componentBase.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(componentBase);
+  }
+
+  public void unarchiveComponentBase(ComponentBase componentBase) {
+    Session s = getHibernateSession();
+    componentBase.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(componentBase);
+  }
+
+  public void archiveCourseBase(CourseBase courseBase) {
+    Session s = getHibernateSession();
+    courseBase.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(courseBase);
+  }
+
+  public void unarchiveCourseBase(CourseBase courseBase) {
+    Session s = getHibernateSession();
+    courseBase.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseBase);
+  }
+
+  public void archiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+    Session s = getHibernateSession();
+    educationalTimeUnit.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(educationalTimeUnit);
+  }
+
+  public void unarchiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+    Session s = getHibernateSession();
+    educationalTimeUnit.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(educationalTimeUnit);
+  }
+
+  public void archiveLanguage(Language language) {
+    Session s = getHibernateSession();
+    language.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(language);
+  }
+
+  public void unarchiveLanguage(Language language) {
+    Session s = getHibernateSession();
+    language.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(language);
+  }
+
+  public void archiveNationality(Nationality nationality) {
+    Session s = getHibernateSession();
+    nationality.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(nationality);
+  }
+
+  public void unarchiveNationality(Nationality nationality) {
+    Session s = getHibernateSession();
+    nationality.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(nationality);
+  }
+
 }

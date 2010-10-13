@@ -1005,4 +1005,48 @@ public class StudentDAO extends PyramusDAO {
     entry.setArchived(Boolean.TRUE);
     s.saveOrUpdate(entry);
   }
+
+  public void unarchiveContactEntry(StudentContactLogEntry entry) {
+    Session s = getHibernateSession();
+
+    entry.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(entry);
+  }
+
+  public void archiveStudentActivityType(StudentActivityType studentActivityType) {
+    Session s = getHibernateSession();
+    studentActivityType.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(studentActivityType);
+  }
+
+  public void unarchiveStudentActivityType(StudentActivityType studentActivityType) {
+    Session s = getHibernateSession();
+    studentActivityType.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(studentActivityType);
+  }
+
+  public void archiveStudentEducationalLevel(StudentEducationalLevel studentEducationalLevel) {
+    Session s = getHibernateSession();
+    studentEducationalLevel.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(studentEducationalLevel);
+  }
+
+  public void unarchiveStudentEducationalLevel(StudentEducationalLevel studentEducationalLevel) {
+    Session s = getHibernateSession();
+    studentEducationalLevel.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(studentEducationalLevel);
+  }
+  
+  public void archiveStudentExaminationType(StudentExaminationType studentExaminationType) {
+    Session s = getHibernateSession();
+    studentExaminationType.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(studentExaminationType);
+  }
+
+  public void unarchiveStudentExaminationType(StudentExaminationType studentExaminationType) {
+    Session s = getHibernateSession();
+    studentExaminationType.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(studentExaminationType);
+  }
+
 }

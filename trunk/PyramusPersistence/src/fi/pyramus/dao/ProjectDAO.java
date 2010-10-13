@@ -421,4 +421,28 @@ public class ProjectDAO extends PyramusDAO {
         Restrictions.eq("studentProject", getStudentProject(studentProjectId))).list();
   }
 
+  public void archiveProject(Project project) {
+    Session s = getHibernateSession();
+    project.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(project);
+  }
+
+  public void unarchiveProject(Project project) {
+    Session s = getHibernateSession();
+    project.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(project);
+  }
+  
+  public void archiveStudentProject(StudentProject studentProject) {
+    Session s = getHibernateSession();
+    studentProject.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(studentProject);
+  }
+
+  public void unarchiveStudentProject(StudentProject studentProject) {
+    Session s = getHibernateSession();
+    studentProject.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(studentProject);
+  }
+  
 }
