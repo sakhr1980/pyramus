@@ -272,4 +272,15 @@ public class GradingDAO extends PyramusDAO {
     return (TransferCredit) s.load(TransferCredit.class, transferCreditId);
   }
 
+  public void archiveCredit(Credit credit)  {
+    Session s = getHibernateSession();
+    credit.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(credit);
+  }
+
+  public void unarchiveCredit(Credit credit)  {
+    Session s = getHibernateSession();
+    credit.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(credit);
+  }
 }
