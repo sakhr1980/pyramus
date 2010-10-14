@@ -379,6 +379,12 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(academicTerm);
   }
 
+  public void unarchiveAcademicTerm(AcademicTerm academicTerm) {
+    Session s = getHibernateSession();
+    academicTerm.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(academicTerm);
+  }
+  
   /**
    * Archives the given education subtype.
    * 
@@ -391,6 +397,12 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(educationSubtype);
   }
 
+  public void unarchiveEducationSubtype(EducationSubtype educationSubtype) {
+    Session s = getHibernateSession();
+    educationSubtype.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(educationSubtype);
+  }
+  
   /**
    * Archives the given education type.
    * 
@@ -403,6 +415,12 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(educationType);
   }
 
+  public void unarchiveEducationType(EducationType educationType) {
+    Session s = getHibernateSession();
+    educationType.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(educationType);
+  }
+  
   /**
    * Archives the given school.
    * 
@@ -415,6 +433,12 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(school);
   }
 
+  public void unarchiveSchool(School school) {
+    Session s = getHibernateSession();
+    school.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(school);
+  }
+  
   /**
    * Archives the given subject.
    * 
@@ -427,6 +451,12 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(subject);
   }
 
+  public void unarchiveSubject(Subject subject) {
+    Session s = getHibernateSession();
+    subject.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(subject);
+  }
+  
   /**
    * Creates a new academic term.
    * 
@@ -1494,10 +1524,16 @@ public class BaseDAO extends PyramusDAO {
 
   public void archiveMunicipality(Municipality municipality) {
     Session s = getHibernateSession();
-    municipality.setArchived(true);
+    municipality.setArchived(Boolean.TRUE);
     s.saveOrUpdate(municipality);
   }
 
+  public void unarchiveMunicipality(Municipality municipality) {
+    Session s = getHibernateSession();
+    municipality.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(municipality);
+  }
+  
   public Tag findTagByText(String text) {
     Session s = getHibernateSession();
     

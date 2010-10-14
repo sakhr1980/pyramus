@@ -112,6 +112,12 @@ public class ModuleDAO extends PyramusDAO {
     s.saveOrUpdate(module);
   }
 
+  public void unarchiveModule(Module module) {
+    Session s = getHibernateSession();
+    module.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(module);
+  }
+  
   /**
    * Archives a module component.
    * 
@@ -123,6 +129,12 @@ public class ModuleDAO extends PyramusDAO {
     s.saveOrUpdate(moduleComponent);
   }
 
+  public void unarchiveModuleComponent(ModuleComponent moduleComponent) {
+    Session s = getHibernateSession();
+    moduleComponent.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(moduleComponent);
+  }
+  
   public ModuleComponent getModuleComponent(Long moduleComponentId) {
     Session s = getHibernateSession();
     return (ModuleComponent) s.load(ModuleComponent.class, moduleComponentId);

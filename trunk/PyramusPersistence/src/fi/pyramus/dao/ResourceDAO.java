@@ -199,6 +199,12 @@ public class ResourceDAO extends PyramusDAO {
     s.saveOrUpdate(resource);
   }
 
+  public void unarchiveResource(Resource resource) {
+    Session s = getHibernateSession();
+    resource.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(resource);
+  }
+
   public void deleteResource(Resource resource) {
     Session s = getHibernateSession();
     s.delete(resource);
@@ -248,6 +254,12 @@ public class ResourceDAO extends PyramusDAO {
     s.saveOrUpdate(resourceCategory);
   }
 
+  public void unarchiveResourceCategory(ResourceCategory resourceCategory) {
+    Session s = getHibernateSession();
+    resourceCategory.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(resourceCategory);
+  }
+  
   public void deleteResourceCategory(ResourceCategory resourceCategory) {
     Session s = getHibernateSession();
     s.delete(resourceCategory);

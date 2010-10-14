@@ -961,6 +961,16 @@ public class StudentDAO extends PyramusDAO {
     s.saveOrUpdate(studentGroup);
   }
 
+  public void unarchiveStudentGroup(StudentGroup studentGroup, User updatingUser) {
+    Session s = getHibernateSession();
+    studentGroup.setArchived(Boolean.FALSE);
+
+    studentGroup.setLastModifier(updatingUser);
+    studentGroup.setLastModified(new Date(System.currentTimeMillis()));
+
+    s.saveOrUpdate(studentGroup);
+  }
+  
   public StudentGroupStudent findStudentGroupStudentById(Long studentGroupStudentId) {
     Session s = getHibernateSession();
     return (StudentGroupStudent) s.load(StudentGroupStudent.class, studentGroupStudentId);
