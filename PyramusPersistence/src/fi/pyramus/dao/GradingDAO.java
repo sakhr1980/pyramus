@@ -74,6 +74,12 @@ public class GradingDAO extends PyramusDAO {
     s.saveOrUpdate(grade);
   }
 
+  public void unarchiveGrade(Grade grade)  {
+    Session s = getHibernateSession();
+    grade.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(grade);
+  }
+  
   /**
    * Archives a GradingScale
    * 
@@ -85,6 +91,12 @@ public class GradingDAO extends PyramusDAO {
     s.saveOrUpdate(gradingScale);
   }
 
+  public void unarchiveGradingScale(GradingScale gradingScale)  {
+    Session s = getHibernateSession();
+    gradingScale.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(gradingScale);
+  }
+  
   /**
    * Creates new Grade
    * 

@@ -189,6 +189,12 @@ public class CourseDAO extends PyramusDAO {
     s.saveOrUpdate(courseComponent);
   }
 
+  public void unarchiveCourseComponent(CourseComponent courseComponent) {
+    Session s = getHibernateSession();
+    courseComponent.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseComponent);
+  }
+  
   /**
    * Unarchives a course.
    * 
