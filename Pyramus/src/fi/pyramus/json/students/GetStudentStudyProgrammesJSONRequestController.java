@@ -44,7 +44,7 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
 
     Long abstractStudentId = NumberUtils.createLong(requestContext.getRequest().getParameter("abstractStudentId"));
     AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
-    List<Student> students = abstractStudent.getStudents();
+    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {

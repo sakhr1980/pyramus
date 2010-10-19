@@ -40,21 +40,16 @@ import fi.pyramus.persistence.usertypes.Sex;
 import fi.pyramus.persistence.usertypes.SexUserType;
 
 /**
- * AbstractStudent defines a student "shell" that can be used
- * to link different student instances to each other. i.e. same
- * student can be "archived" from previous education department
- * and joined as new Student to a new education department thus
- * perceiving all the information the student had at the time of
- * the earlier studies. 
+ * AbstractStudent defines a student "shell" that can be used to link different student instances to each other. i.e. same student can be "archived" from
+ * previous education department and joined as new Student to a new education department thus perceiving all the information the student had at the time of the
+ * earlier studies.
  * 
  * @author antti.viljakainen
  */
 
 @Entity
 @Indexed
-@TypeDefs ({
-  @TypeDef (name="Sex", typeClass=SexUserType.class)
-})
+@TypeDefs({ @TypeDef(name = "Sex", typeClass = SexUserType.class) })
 public class AbstractStudent {
 
   /**
@@ -69,7 +64,8 @@ public class AbstractStudent {
   /**
    * Sets birthday for this AbstractStudent
    * 
-   * @param birthday New birthday
+   * @param birthday
+   *          New birthday
    */
   public void setBirthday(Date birthday) {
     this.birthday = birthday;
@@ -87,7 +83,8 @@ public class AbstractStudent {
   /**
    * Sets social security number for this AbstractStudent
    * 
-   * @param socialSecurityNumber New social security number
+   * @param socialSecurityNumber
+   *          New social security number
    */
   public void setSocialSecurityNumber(String socialSecurityNumber) {
     this.socialSecurityNumber = socialSecurityNumber;
@@ -101,7 +98,7 @@ public class AbstractStudent {
   public String getSocialSecurityNumber() {
     return socialSecurityNumber;
   }
-  
+
   /**
    * Returns sex given for this AbstractStudent
    * 
@@ -110,25 +107,26 @@ public class AbstractStudent {
   public Sex getSex() {
     return sex;
   }
-  
+
   /**
    * Sets the sex of this AbstractStudent
    * 
-   * @param sex New sex
+   * @param sex
+   *          New sex
    */
   public void setSex(Sex sex) {
     this.sex = sex;
   }
 
   public List<Student> getStudents() {
-	  return students;
+    return students;
   }
-  
+
   @SuppressWarnings("unused")
   private void setStudents(List<Student> students) {
-  	this.students = students;
+    this.students = students;
   }
-  
+
   public void addStudent(Student student) {
     if (!this.students.contains(student)) {
       student.setAbstractStudent(this);
@@ -137,7 +135,7 @@ public class AbstractStudent {
       throw new PersistenceException("Student is already in this AbstractStudent");
     }
   }
-  
+
   public void removeStudent(Student student) {
     if (this.students.contains(student)) {
       student.setAbstractStudent(null);
@@ -146,41 +144,41 @@ public class AbstractStudent {
       throw new PersistenceException("Student is not in this AbstractStudent");
     }
   }
-  
+
   @Transient
-  public Student getLatestStudent()  {
-  	// TODO: This is a last student in a list not a latest student
-    return students.size() > 0 ? students.get(students.size() - 1) : null;  
-  }
-  
-  public void setBasicInfo(String basicInfo) {
-	  this.basicInfo = basicInfo;
+  public Student getLatestStudent() {
+    // TODO: This is a last student in a list not a latest student
+    return students.size() > 0 ? students.get(students.size() - 1) : null;
   }
 
-	public String getBasicInfo() {
-	  return basicInfo;
+  public void setBasicInfo(String basicInfo) {
+    this.basicInfo = basicInfo;
   }
-	
+
+  public String getBasicInfo() {
+    return basicInfo;
+  }
+
   @Transient
-  @Field (index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
   public String getLastNameSortable() {
     Student student = getLatestStudent();
     return student != null ? student.getLastName() : "";
   }
-  
+
   @Transient
-  @Field (index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
   public String getFirstNameSortable() {
     Student student = getLatestStudent();
     return student != null ? student.getFirstName() : "";
   }
-  
+
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedFirstNames() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getFirstName() != null) {
           results.add(student.getFirstName());
         }
@@ -188,13 +186,13 @@ public class AbstractStudent {
     }
     return setToString(results);
   }
-  
+
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedLastNames() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getLastName() != null) {
           results.add(student.getLastName());
         }
@@ -204,11 +202,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedNicknames() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getNickname() != null) {
           results.add(student.getNickname());
         }
@@ -218,11 +216,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedEducations() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getEducation() != null) {
           results.add(student.getEducation());
         }
@@ -232,11 +230,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedEmails() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Email email : student.getContactInfo().getEmails()) {
           if (email.getAddress() != null) {
             results.add(email.getAddress());
@@ -248,11 +246,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedStreetAddresses() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getStreetAddress() != null) {
             results.add(address.getStreetAddress());
@@ -264,11 +262,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedPostalCodes() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getPostalCode() != null) {
             results.add(address.getPostalCode());
@@ -279,12 +277,31 @@ public class AbstractStudent {
     return setToString(results);
   }
 
+  /**
+   * Returns whether this abstract student contains at least one non-archived student who has got his
+   * study end date set and that date is in the past.
+   *  
+   * @return <code>true</code> if this abstract student contains at least one inactive student, otherwise <code>false</code>
+   */
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedCities() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactive() {
+    String result = Boolean.FALSE.toString();
+    for (Student student : getStudents()) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
+        result = Boolean.TRUE.toString();
+        break;
+      }
+    }
+    return result;
+  }
+
+  @Transient
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCity() != null) {
             results.add(address.getCity());
@@ -296,11 +313,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedCountries() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCountry() != null) {
             results.add(address.getCountry());
@@ -312,11 +329,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedPhones() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (PhoneNumber phoneNumber : student.getContactInfo().getPhoneNumbers()) {
           results.add(phoneNumber.getNumber());
         }
@@ -326,11 +343,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedLodgings() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getLodging() != null) {
           results.add(student.getLodging().toString());
         }
@@ -340,11 +357,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedStudyProgrammeIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getStudyProgramme() != null)
           results.add(student.getStudyProgramme().getId().toString());
       }
@@ -353,11 +370,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedLanguageIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getLanguage() != null)
           results.add(student.getLanguage().getId().toString());
       }
@@ -366,11 +383,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedMunicipalityIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getMunicipality() != null)
           results.add(student.getMunicipality().getId().toString());
       }
@@ -379,11 +396,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedNationalityIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         if (student.getNationality() != null)
           results.add(student.getNationality().getId().toString());
       }
@@ -392,11 +409,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedFirstNames() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getFirstName() != null) {
           results.add(student.getFirstName());
         }
@@ -404,13 +421,13 @@ public class AbstractStudent {
     }
     return setToString(results);
   }
-  
+
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedLastNames() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getLastName() != null) {
           results.add(student.getLastName());
         }
@@ -420,11 +437,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedNicknames() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getNickname() != null) {
           results.add(student.getNickname());
         }
@@ -434,11 +451,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedEducations() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getEducation() != null) {
           results.add(student.getEducation());
         }
@@ -448,11 +465,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedEmails() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Email email : student.getContactInfo().getEmails()) {
           if (email.getAddress() != null) {
             results.add(email.getAddress());
@@ -464,11 +481,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedStreetAddresses() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getStreetAddress() != null) {
             results.add(address.getStreetAddress());
@@ -480,11 +497,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedPostalCodes() {
+  @Field(index = Index.TOKENIZED)
+  public String getActivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getPostalCode() != null) {
             results.add(address.getPostalCode());
@@ -495,12 +512,31 @@ public class AbstractStudent {
     return setToString(results);
   }
 
+  /**
+   * Returns whether this abstract student contains at least one non-archived student who hasn't got his
+   * study end date set or it has been set but it is in the future.
+   *  
+   * @return <code>true</code> if this abstract student contains at least one active student, otherwise <code>false</code>
+   */
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedCities() {
+  @Field(index = Index.TOKENIZED)
+  public String getActive() {
+    String result = Boolean.FALSE.toString();
+    for (Student student : getStudents()) {
+      if (!student.getArchived() && isActiveStudent(student)) {
+        result = Boolean.TRUE.toString();
+        break;
+      }
+    }
+    return result;
+  }
+
+  @Transient
+  @Field(index = Index.TOKENIZED)
+  public String getActiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCity() != null) {
             results.add(address.getCity());
@@ -512,11 +548,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedCountries() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCountry() != null) {
             results.add(address.getCountry());
@@ -528,11 +564,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedPhones() {
+  @Field(index = Index.TOKENIZED)
+  public String getActivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (PhoneNumber phoneNumber : student.getContactInfo().getPhoneNumbers()) {
           results.add(phoneNumber.getNumber());
         }
@@ -542,11 +578,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedLodgings() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getLodging() != null) {
           results.add(student.getLodging().toString());
         }
@@ -556,11 +592,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedStudyProgrammeIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getStudyProgramme() != null)
           results.add(student.getStudyProgramme().getId().toString());
       }
@@ -569,11 +605,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedLanguageIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getLanguage() != null)
           results.add(student.getLanguage().getId().toString());
       }
@@ -582,11 +618,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedMunicipalityIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getMunicipality() != null)
           results.add(student.getMunicipality().getId().toString());
       }
@@ -595,11 +631,11 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedNationalityIds() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         if (student.getNationality() != null)
           results.add(student.getNationality().getId().toString());
       }
@@ -608,35 +644,41 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getUnarchivedTags() {
+  @Field(index = Index.TOKENIZED)
+  public String getActiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.FALSE) {
+      if (!student.getArchived() && isActiveStudent(student)) {
         for (Tag tag : student.getTags()) {
           results.add(tag.getText());
         }
       }
     }
-    
+
     return setToString(results);
   }
 
+  /**
+   * Returns whether this abstract student contains at least one student who has got his/her
+   * study end date set or it has been set but it is in the future.
+   *  
+   * @return <code>true</code> if this abstract student contains at least one active student, otherwise <code>false</code>
+   */
   @Transient
-  @Field (index = Index.TOKENIZED)
-  public String getArchivedTags() {
+  @Field(index = Index.TOKENIZED)
+  public String getInactiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (student.getArchived() == Boolean.TRUE) {
+      if (!student.getArchived() && !isActiveStudent(student)) {
         for (Tag tag : student.getTags()) {
           results.add(tag.getText());
         }
       }
     }
-    
+
     return setToString(results);
   }
-  
+
   private String setToString(Set<String> set) {
     StringBuilder sb = new StringBuilder();
     Iterator<String> i = set.iterator();
@@ -649,31 +691,35 @@ public class AbstractStudent {
     return sb.toString();
   }
 
-  @Id 
-  @GeneratedValue(strategy=GenerationType.TABLE, generator="AbstractStudent")  
-  @TableGenerator(name="AbstractStudent", allocationSize=1)
+  private boolean isActiveStudent(Student student) {
+    return student.getStudyEndDate() == null || student.getStudyEndDate().after(new Date());
+  }
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.TABLE, generator = "AbstractStudent")
+  @TableGenerator(name = "AbstractStudent", allocationSize = 1)
   @DocumentId
   private Long id;
-    
-  @Column 
-  @Temporal (value=TemporalType.DATE)
-  private Date birthday;
-  
+
   @Column
-  @Field (index = Index.TOKENIZED, store = Store.NO)
-  private String socialSecurityNumber;  
-  
-  @Column 
-  @Type (type="Sex")  
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Temporal(value = TemporalType.DATE)
+  private Date birthday;
+
+  @Column
+  @Field(index = Index.TOKENIZED, store = Store.NO)
+  private String socialSecurityNumber;
+
+  @Column
+  @Type(type = "Sex")
+  @Field(index = Index.TOKENIZED, store = Store.NO)
   private Sex sex;
-  
-  @Basic (fetch = FetchType.LAZY)
-  @Column (length=1073741824)
+
+  @Basic(fetch = FetchType.LAZY)
+  @Column(length = 1073741824)
   private String basicInfo;
-  
+
   @OneToMany
-  @JoinColumn (name = "abstractStudent")
+  @JoinColumn(name = "abstractStudent")
   @IndexedEmbedded
   private List<Student> students = new ArrayList<Student>();
 }

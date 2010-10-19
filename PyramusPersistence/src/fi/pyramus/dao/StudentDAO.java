@@ -31,6 +31,7 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
@@ -45,7 +46,7 @@ import fi.pyramus.domainmodel.students.StudentVariable;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
-import fi.pyramus.persistence.usertypes.ArchiveFilter;
+import fi.pyramus.persistence.search.StudentFilter;
 import fi.pyramus.persistence.usertypes.Sex;
 import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
@@ -64,6 +65,16 @@ public class StudentDAO extends PyramusDAO {
     Session s = getHibernateSession();
     student.setArchived(Boolean.TRUE);
     s.saveOrUpdate(student);
+    
+    // Also archive course students of the archived student
+    
+    List<CourseStudent> courseStudents = listCourseStudents(student);
+    if (courseStudents.size() > 0) {
+      CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+      for (CourseStudent courseStudent : courseStudents) {
+        courseDAO.archiveCourseStudent(courseStudent);
+      }
+    }
 
     // This is necessary because AbstractStudent entity does not really
     // change in this operation but it still needs to be reindexed
@@ -235,6 +246,14 @@ public class StudentDAO extends PyramusDAO {
     return s.createCriteria(Student.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<Student> listStudentsByAbstractStudent(AbstractStudent abstractStudent) {
+    Session s = getHibernateSession();
+    return s.createCriteria(Student.class)
+        .add(Restrictions.eq("archived", Boolean.FALSE))
+        .add(Restrictions.eq("abstractStudent", abstractStudent)).list();
+  }
+
   public StudentActivityType getStudentActivityType(Long id) {
     Session s = getHibernateSession();
     return (StudentActivityType) s.load(StudentActivityType.class, id);
@@ -291,6 +310,20 @@ public class StudentDAO extends PyramusDAO {
       add(Restrictions.eq("student", student)).
       add(Restrictions.eq("archived", Boolean.FALSE)).
       list();
+  }
+
+  /**
+   * Returns a list of the course students of the given student.
+   * 
+   * @param student The student
+   * 
+   * @return A list of the course students of the given student
+   */
+  @SuppressWarnings("unchecked")
+  public List<CourseStudent> listCourseStudents(Student student) {
+    Session s = getHibernateSession();
+    return s.createCriteria(CourseStudent.class).add(Restrictions.eq("student", student)).add(
+        Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   @SuppressWarnings("unchecked")
@@ -358,29 +391,26 @@ public class StudentDAO extends PyramusDAO {
     StringBuilder queryBuilder = new StringBuilder();
     if (!StringUtils.isBlank(queryText)) {
       queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "unarchivedFirstNames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "unarchivedNicknames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "unarchivedLastNames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "unarchivedEmails", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "unarchivedTags", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "activeFirstNames", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "activeNicknames", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "activeLastNames", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "activeEmails", queryText, false);
+      addTokenizedSearchCriteria(queryBuilder, "activeTags", queryText, false);
       queryBuilder.append(")");
     }
-
-    queryBuilder.append(" +students.archived:false");
-
+   
+    addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
+    
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
       String queryString = queryBuilder.toString();
-      Query luceneQuery;
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
-      if (StringUtils.isBlank(queryString)) {
-        luceneQuery = new MatchAllDocsQuery();
-      } else {
-        luceneQuery = parser.parse(queryString);
-      }
+      System.out.println(queryString);
 
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      Query luceneQuery = parser.parse(queryString);
+    
       FullTextQuery query = fullTextSession
           .createFullTextQuery(luceneQuery, AbstractStudent.class)
           .setSort(
@@ -405,7 +435,7 @@ public class StudentDAO extends PyramusDAO {
   public SearchResult<AbstractStudent> searchAbstractStudents(int resultsPerPage, int page, String firstName, String lastName, String nickname, String tags, 
       String education, String email, Sex sex, String ssn, String addressCity, String addressCountry, String addressPostalCode, String addressStreetAddress,
       String phone, Boolean lodging, StudyProgramme studyProgramme, Language language, Nationality nationality, Municipality municipality,
-      ArchiveFilter archiveFilter) {
+      StudentFilter studentFilter) {
 
     int firstResult = page * resultsPerPage;
 
@@ -416,111 +446,142 @@ public class StudentDAO extends PyramusDAO {
     if (!StringUtils.isBlank(ssn))
       addTokenizedSearchCriteria(queryBuilder, "socialSecurityNumber", ssn, true);
 
-    switch (archiveFilter) {
-      case INCLUDEARCHIVED:
+    switch (studentFilter) {
+      case INCLUDE_INACTIVE:
+
+        // Search should find past students as well, so an abstract student is considered
+        // a match if it contains at least one non-archived student, no matter whether
+        // their study end date has been set or not
+        
+        queryBuilder.append("+(");
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", false);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", false);
+        queryBuilder.append(")");
+        
+        // Other search terms
+        
         if (!StringUtils.isBlank(firstName))
-          addTokenizedSearchCriteria(queryBuilder, "archivedFirstNames", "unarchivedFirstNames", firstName, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveFirstNames", "activeFirstNames", firstName, true);
         if (!StringUtils.isBlank(lastName))
-          addTokenizedSearchCriteria(queryBuilder, "archivedLastNames", "unarchivedLastNames", lastName, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLastNames", "activeLastNames", lastName, true);
         if (!StringUtils.isBlank(nickname))
-          addTokenizedSearchCriteria(queryBuilder, "archivedNicknames", "unarchivedNicknames", nickname, true);
-        if (!StringUtils.isBlank(nickname))
-          addTokenizedSearchCriteria(queryBuilder, "archivedTags", "unarchivedTags", tags, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveNicknames", "activeNicknames", nickname, true);
+        if (!StringUtils.isBlank(tags))
+          addTokenizedSearchCriteria(queryBuilder, "inactiveTags", "activeTags", tags, true);
         if (!StringUtils.isBlank(education))
-          addTokenizedSearchCriteria(queryBuilder, "archivedEducations", "unarchivedEducations", education, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveEducations", "activeEducations", education, true);
         if (!StringUtils.isBlank(email))
-          addTokenizedSearchCriteria(queryBuilder, "archivedEmails", "unarchivedEmails", email, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveEmails", "activeEmails", email, true);
         if (!StringUtils.isBlank(addressCity))
-          addTokenizedSearchCriteria(queryBuilder, "archivedCities", "unarchivedCities", addressCity, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveCities", "activeCities", addressCity, true);
         if (!StringUtils.isBlank(addressCountry))
-          addTokenizedSearchCriteria(queryBuilder, "archivedCountries", "unarchivedCountries", addressCountry, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveCountries", "activeCountries", addressCountry, true);
         if (!StringUtils.isBlank(addressPostalCode))
-          addTokenizedSearchCriteria(queryBuilder, "archivedPostalCodes", "unarchivedPostalCodes", addressPostalCode, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactivePostalCodes", "activePostalCodes", addressPostalCode, true);
         if (!StringUtils.isBlank(addressStreetAddress))
-          addTokenizedSearchCriteria(queryBuilder, "archivedStreetAddresses", "unarchivedStreetAddresses", addressStreetAddress, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStreetAddresses", "activeStreetAddresses", addressStreetAddress, true);
         if (!StringUtils.isBlank(phone))
-          addTokenizedSearchCriteria(queryBuilder, "archivedPhones", "unarchivedPhones", phone, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactivePhones", "activePhones", phone, true);
         if (studyProgramme != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedStudyProgrammeIds", "unarchivedStudyProgrammeIds", studyProgramme.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
         if (nationality != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedNationalityIds", "unarchivedNationalityIds", nationality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveNationalityIds", "activeNationalityIds", nationality.getId().toString(), true);
         if (municipality != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedMunicipalityIds", "unarchivedMunicipalityIds", municipality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveMunicipalityIds", "activeMunicipalityIds", municipality.getId().toString(), true);
         if (language != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedLanguageIds", "unarchivedLanguageIds", language.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLanguageIds", "activeLanguageIds", language.getId().toString(), true);
         if (lodging != null) {
-          addTokenizedSearchCriteria(queryBuilder, "archivedLodgings", "unarchivedLodgings", lodging.toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLodgings", "activeLodgings", lodging.toString(), true);
         }
 
       break;
-      case ONLYARCHIVED:
+      case ONLY_INACTIVE:
+
+        // Search should only find past students, so an abstract student is considered
+        // a match if it only contains non-archived students who have their study end date
+        // set and that date is in the past
+        
+        addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
+        
+        // Other search terms
+        
         if (!StringUtils.isBlank(firstName))
-          addTokenizedSearchCriteria(queryBuilder, "archivedFirstNames", firstName, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveFirstNames", firstName, true);
         if (!StringUtils.isBlank(lastName))
-          addTokenizedSearchCriteria(queryBuilder, "archivedLastNames", lastName, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLastNames", lastName, true);
         if (!StringUtils.isBlank(nickname))
-          addTokenizedSearchCriteria(queryBuilder, "archivedNicknames", nickname, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveNicknames", nickname, true);
         if (!StringUtils.isBlank(tags))
-          addTokenizedSearchCriteria(queryBuilder, "archivedTags", tags, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveTags", tags, true);
         if (!StringUtils.isBlank(education))
-          addTokenizedSearchCriteria(queryBuilder, "archivedEducations", education, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveEducations", education, true);
         if (!StringUtils.isBlank(email))
-          addTokenizedSearchCriteria(queryBuilder, "archivedEmails", email, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveEmails", email, true);
         if (!StringUtils.isBlank(addressCity))
-          addTokenizedSearchCriteria(queryBuilder, "archivedCities", addressCity, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveCities", addressCity, true);
         if (!StringUtils.isBlank(addressCountry))
-          addTokenizedSearchCriteria(queryBuilder, "archivedCountries", addressCountry, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveCountries", addressCountry, true);
         if (!StringUtils.isBlank(addressPostalCode))
-          addTokenizedSearchCriteria(queryBuilder, "archivedPostalCodes", addressPostalCode, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactivePostalCodes", addressPostalCode, true);
         if (!StringUtils.isBlank(addressStreetAddress))
-          addTokenizedSearchCriteria(queryBuilder, "archivedStreetAddresses", addressStreetAddress, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStreetAddresses", addressStreetAddress, true);
         if (!StringUtils.isBlank(phone))
-          addTokenizedSearchCriteria(queryBuilder, "archivedPhones", phone, true);
+          addTokenizedSearchCriteria(queryBuilder, "inactivePhones", phone, true);
         if (studyProgramme != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedStudyProgrammeIds", studyProgramme.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", studyProgramme.getId().toString(), true);
         if (nationality != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedNationalityIds", nationality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveNationalityIds", nationality.getId().toString(), true);
         if (municipality != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedMunicipalityIds", municipality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveMunicipalityIds", municipality.getId().toString(), true);
         if (language != null)
-          addTokenizedSearchCriteria(queryBuilder, "archivedLanguageIds", language.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLanguageIds", language.getId().toString(), true);
         if (lodging != null) {
-          addTokenizedSearchCriteria(queryBuilder, "archivedLodgings", lodging.toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLodgings", lodging.toString(), true);
         }
       break;
-      case SKIPARCHIVED:
+      case SKIP_INACTIVE:
+        
+        // Search should skip past students, so an abstract student is considered a match
+        // if it contains at least one non-archived student who hasn't got his study end
+        // date set or the date is in the future
+
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
+        
+        // Other search terms
+        
         if (!StringUtils.isBlank(firstName))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedFirstNames", firstName, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeFirstNames", firstName, true);
         if (!StringUtils.isBlank(lastName))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedLastNames", lastName, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeLastNames", lastName, true);
         if (!StringUtils.isBlank(nickname))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedNicknames", nickname, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeNicknames", nickname, true);
         if (!StringUtils.isBlank(education))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedEducations", education, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeEducations", education, true);
         if (!StringUtils.isBlank(tags))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedTags", tags, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeTags", tags, true);
         if (!StringUtils.isBlank(email))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedEmails", email, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeEmails", email, true);
         if (!StringUtils.isBlank(addressCity))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedCities", addressCity, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeCities", addressCity, true);
         if (!StringUtils.isBlank(addressCountry))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedCountries", addressCountry, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeCountries", addressCountry, true);
         if (!StringUtils.isBlank(addressPostalCode))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedPostalCodes", addressPostalCode, true);
+          addTokenizedSearchCriteria(queryBuilder, "activePostalCodes", addressPostalCode, true);
         if (!StringUtils.isBlank(addressStreetAddress))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedStreetAddresses", addressStreetAddress, true);
+          addTokenizedSearchCriteria(queryBuilder, "activeStreetAddresses", addressStreetAddress, true);
         if (!StringUtils.isBlank(phone))
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedPhones", phone, true);
+          addTokenizedSearchCriteria(queryBuilder, "activePhones", phone, true);
         if (studyProgramme != null)
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedStudyProgrammeIds", studyProgramme.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
         if (nationality != null)
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedNationalityIds", nationality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "activeNationalityIds", nationality.getId().toString(), true);
         if (municipality != null)
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedMunicipalityIds", municipality.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "activeMunicipalityIds", municipality.getId().toString(), true);
         if (language != null)
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedLanguageIds", language.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "activeLanguageIds", language.getId().toString(), true);
         if (lodging != null) {
-          addTokenizedSearchCriteria(queryBuilder, "unarchivedLodgings", lodging.toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "activeLodgings", lodging.toString(), true);
         }
       break;
     }
@@ -530,6 +591,7 @@ public class StudentDAO extends PyramusDAO {
 
     try {
       String queryString = queryBuilder.toString();
+      System.out.println(queryString);
       Query luceneQuery;
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       if (StringUtils.isBlank(queryString)) {

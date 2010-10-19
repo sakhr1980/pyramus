@@ -329,7 +329,7 @@
         var value;
         
         <c:forEach var="student" items="${students}">
-          setupRelatedCommands(${student.id}, '${student.fullName}', ${student.archived});
+          setupRelatedCommands(${student.id}, '${student.fullName}');
 
           // Addresses
 
@@ -449,7 +449,7 @@
         }));
       }
 
-      function setupRelatedCommands(studentId, studentFullName, studentArchived) {
+      function setupRelatedCommands(studentId, studentFullName) {
         var studentRelatedActionsHoverMenu = new IxHoverMenu($('studentRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.editStudent.studentTabRelatedActionsLabel"/>'
         });
@@ -469,62 +469,44 @@
           }
         }));         
 
-        if (!studentArchived) {
-          studentRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
-            iconURL: GLOBAL_contextPath + '/gfx/edit-delete.png',
-            text: '<fmt:message key="students.editStudent.studentTabRelatedActionsArchiveStudentLabel"/>',
-            onclick: function (event) {
-              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.editStudent.archiveStudentConfirmDialogContent&localeParams=" + encodeURIComponent(studentFullName);
-              
-              var dialog = new IxDialog({
-                id : 'confirmRemoval',
-                contentURL : url,
-                centered : true,
-                showOk : true,  
-                showCancel : true,
-                autoEvaluateSize: true,
-                title : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogTitle"/>',
-                okLabel : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogOkLabel"/>',
-                cancelLabel : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogCancelLabel"/>'
-              });
+        studentRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/edit-delete.png',
+          text: '<fmt:message key="students.editStudent.studentTabRelatedActionsArchiveStudentLabel"/>',
+          onclick: function (event) {
+            var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.editStudent.archiveStudentConfirmDialogContent&localeParams=" + encodeURIComponent(studentFullName);
             
-              dialog.addDialogListener( function(event) {
-                var dlg = event.dialog;
-            
-                switch (event.name) {
-                  case 'okClick':
-                    JSONRequest.request("students/archivestudent.json", {
-                      parameters: {
-                        student: studentId
-                      },
-                      onSuccess: function (jsonResponse) {
-                        window.location.reload();
-                      }
-                    });   
-                  break;
-                }
-              });
-            
-              dialog.open(); 
-            }
-          }));
-        } else {
-          studentRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
-            // TODO undelete icon
-            iconURL: GLOBAL_contextPath + '/gfx/edit-delete.png',
-            text: '<fmt:message key="students.editStudent.studentTabRelatedActionsUnarchiveStudentLabel"/>',
-            onclick: function (event) {
-              JSONRequest.request("students/unarchivestudent.json", {
-                parameters: {
-                  student: studentId
-                },
-                onSuccess: function (jsonResponse) {
-                  window.location.reload();
-                }
-              });   
-            }
-          }));
-        } 
+            var dialog = new IxDialog({
+              id : 'confirmRemoval',
+              contentURL : url,
+              centered : true,
+              showOk : true,  
+              showCancel : true,
+              autoEvaluateSize: true,
+              title : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogTitle"/>',
+              okLabel : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogOkLabel"/>',
+              cancelLabel : '<fmt:message key="students.editStudent.archiveStudentConfirmDialogCancelLabel"/>'
+            });
+          
+            dialog.addDialogListener( function(event) {
+              var dlg = event.dialog;
+          
+              switch (event.name) {
+                case 'okClick':
+                  JSONRequest.request("students/archivestudent.json", {
+                    parameters: {
+                      student: studentId
+                    },
+                    onSuccess: function (jsonResponse) {
+                      window.location.reload();
+                    }
+                  });   
+                break;
+              }
+            });
+          
+            dialog.open(); 
+          }
+        }));
       }
     </script>
   </head>
@@ -553,15 +535,8 @@
                     ${student.studyProgramme.name}
                   </c:otherwise>
                 </c:choose>
-
-	              <c:choose>
-                  <c:when test="${student.archived}">
-                  ***
-                  </c:when>
-	                <c:when test="${student.studyEndDate != null}">
-	                *
-	                </c:when>
-	              </c:choose>
+                
+                <c:if test="${student.studyEndDate != null}">*</c:if>
               </a>
             </c:forEach>
             <ix:extensionHook name="students.editStudent.tabLabels"/>
