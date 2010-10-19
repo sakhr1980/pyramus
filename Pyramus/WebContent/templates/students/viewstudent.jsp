@@ -225,7 +225,7 @@
         var transferCreditsTable;
         var courseAssesmentsTable;
         
-        <c:forEach var="student" items="${abstractStudent.students}">
+        <c:forEach var="student" items="${students}">
           // Setup basics
           setupBasicTab(${abstractStudent.id}, ${student.id}, '${student.fullName}', ${student.archived}); 
 
@@ -269,7 +269,7 @@
              
         var tabControl2 = new IxProtoTabs($('studentTabs'));
 
-        <c:forEach var="student" items="${abstractStudent.students}">
+        <c:forEach var="student" items="${students}">
           var tabControl = new IxProtoTabs($('tabs.${student.id}'));
         </c:forEach>
 
@@ -285,32 +285,25 @@
   
     <h1 class="genericPageHeader"><fmt:message key="students.viewStudent.pageTitle" /></h1>
   
-    <div id="viewStudentViewContainer"> 
-      <div class="genericFormContainer"> 
+    <div id="viewStudentViewContainer">
+      <div class="genericFormContainer">
         <div class="tabLabelsContainer" id="studentTabs">
-          <c:forEach var="student" items="${abstractStudent.students}">
+          <c:forEach var="student" items="${students}">
             <a class="tabLabel" href="#student.${student.id}">
               <c:choose>
                 <c:when test="${student.studyProgramme == null}">
-                   <fmt:message key="students.viewStudent.noStudyProgrammeTabLabel"/>
+                  <fmt:message key="students.viewStudent.noStudyProgrammeTabLabel"/>
                 </c:when>
                 <c:otherwise>
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:choose>
-                <c:when test="${student.archived}">
-                ***
-                </c:when>
-                <c:when test="${student.studyEndDate ne null}">
-                *
-                </c:when>
-              </c:choose>
+              <c:if test="${student.studyEndDate ne null}">*</c:if>
             </a>
           </c:forEach>
         </div>
     
-        <c:forEach var="student" items="${abstractStudent.students}">
+        <c:forEach var="student" items="${students}">
           <div id="student.${student.id}" class="tabContent">    
   
             <div id="viewStudentViewContainer"> 
