@@ -119,6 +119,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
     }
     
+    pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("courses", courseStudents);
     pageRequestContext.getRequest().setAttribute("contactEntries", contactEntries);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
