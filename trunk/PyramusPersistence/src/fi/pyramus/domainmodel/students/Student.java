@@ -29,6 +29,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
@@ -36,6 +37,7 @@ import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -515,6 +517,8 @@ public class Student implements ArchivableEntity {
   private Date studyStartDate;
   
   @Temporal (value=TemporalType.DATE)
+  @Field (index = Index.UN_TOKENIZED)
+  @DateBridge (resolution = Resolution.DAY)
   private Date studyEndDate;
   
   @ManyToOne

@@ -3,7 +3,6 @@ package fi.pyramus.json.students;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -53,11 +52,9 @@ public class EditStudentJSONRequestController implements JSONRequestController {
     // Abstract student
     studentDAO.updateAbstractStudent(abstractStudent, birthday, ssecId, sex, basicInfo);
 
-    Iterator<Student> students = abstractStudent.getStudents().iterator();
+    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
 
-    while (students.hasNext()) {
-    	Student student = students.next();
-    		
+    for (Student student : students) {
 	    String firstName = requestContext.getString("firstName." + student.getId());
 	    String lastName = requestContext.getString("lastName." + student.getId());
 	    String nickname = requestContext.getString("nickname." + student.getId());

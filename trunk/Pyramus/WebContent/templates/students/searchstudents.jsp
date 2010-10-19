@@ -43,7 +43,7 @@
             lodging: searchForm.lodging.value,
             studyProgramme: searchForm.studyProgramme.value,
             ssn: searchForm.ssn.value,
-            archiveFilter: searchForm.archiveFilter.value,
+            studentFilter: searchForm.studentFilter.value,
             activeTab: searchForm.activeTab.value,
             query: searchForm.simpleQuery.value,
             page: page
@@ -417,10 +417,10 @@
                     <jsp:param name="titleLocale" value="students.searchStudents.advancedSearchArchiveTitle"/>
                     <jsp:param name="helpLocale" value="students.searchStudents.advancedSearchArchiveHelp"/>
                   </jsp:include>                                     
-                  <select name="archiveFilter">
-                    <option value="SKIPARCHIVED"><fmt:message key="students.searchStudents.advancedSearchArchiveSkipOption"/></option>
-                    <option value="INCLUDEARCHIVED"><fmt:message key="students.searchStudents.advancedSearchArchiveIncludeOption"/></option>
-                    <option value="ONLYARCHIVED"><fmt:message key="students.searchStudents.advancedSearchArchiveOnlyOption"/></option>
+                  <select name="studentFilter">
+                    <option value="SKIP_INACTIVE"><fmt:message key="students.searchStudents.advancedSearchSkipInactiveOption"/></option>
+                    <option value="INCLUDE_INACTIVE"><fmt:message key="students.searchStudents.advancedSearchIncludeInactiveOption"/></option>
+                    <option value="ONLY_INACTIVE"><fmt:message key="students.searchStudents.advancedSearchOnlyInactiveOption"/></option>
                   </select>
                 </div>
                 

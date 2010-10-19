@@ -68,7 +68,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     
     pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
 
-    List<Student> students = abstractStudent.getStudents();
+    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {

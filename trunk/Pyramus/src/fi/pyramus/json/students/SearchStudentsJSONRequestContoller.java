@@ -22,7 +22,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
-import fi.pyramus.persistence.usertypes.ArchiveFilter;
+import fi.pyramus.persistence.search.StudentFilter;
 import fi.pyramus.persistence.usertypes.Sex;
 
 /**
@@ -67,7 +67,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       String phone = jsonRequestContext.getString("phone");
       Integer lodgingInt = jsonRequestContext.getInteger("lodging");
       Boolean lodging = lodgingInt == null ? null : lodgingInt == 1;
-      ArchiveFilter archiveFilter = (ArchiveFilter) jsonRequestContext.getEnum("archiveFilter", ArchiveFilter.class);
+      StudentFilter studentFilter = (StudentFilter) jsonRequestContext.getEnum("studentFilter", StudentFilter.class);
 
       Language language = null;
       Long languageId = jsonRequestContext.getLong("language");
@@ -95,7 +95,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       
       searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
           tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
-          phone, lodging, studyProgramme, language, nationality, municipality, archiveFilter);
+          phone, lodging, studyProgramme, language, nationality, municipality, studentFilter);
     }
     else {
       String query = jsonRequestContext.getRequest().getParameter("query");
