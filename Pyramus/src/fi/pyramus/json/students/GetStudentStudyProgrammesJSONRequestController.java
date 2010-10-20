@@ -88,10 +88,10 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
           Map<String, Object> studentInfo = new HashMap<String, Object>();
           studentInfo.put("studyProgrammeId", student.getStudyProgramme().getId());
 
-          String studyProgrammeName = 
-            student.getArchived() ? student.getStudyProgramme().getName() + " ***" :
-              student.getStudyEndDate() != null ? student.getStudyProgramme().getName() + " *" :
-                student.getStudyProgramme().getName();
+          String studyProgrammeName = student.getStudyProgramme().getName();
+          if (student.getStudyEndDate() != null) {
+            studyProgrammeName += " *";
+          }
 
           studentInfo.put("studyProgrammeName", studyProgrammeName);
           studentInfo.put("studentId", student.getId());

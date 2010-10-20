@@ -406,7 +406,6 @@ public class StudentDAO extends PyramusDAO {
 
     try {
       String queryString = queryBuilder.toString();
-      System.out.println(queryString);
 
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       Query luceneQuery = parser.parse(queryString);
@@ -591,7 +590,6 @@ public class StudentDAO extends PyramusDAO {
 
     try {
       String queryString = queryBuilder.toString();
-      System.out.println(queryString);
       Query luceneQuery;
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       if (StringUtils.isBlank(queryString)) {
