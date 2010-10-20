@@ -54,7 +54,6 @@
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
               resultsTable.addRow(['', results[i].lastName + ", " + results[i].firstName, '', '', results[i].abstractStudentId]);
-              // TODO results[i].archived -logiikka
             }
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);

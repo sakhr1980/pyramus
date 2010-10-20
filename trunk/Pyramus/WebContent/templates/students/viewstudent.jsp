@@ -21,7 +21,7 @@
     <% pageContext.setAttribute("newLineChar", "\n"); %>
 
     <script type="text/javascript">
-      function setupBasicTab(abstractStudentId, studentId, studentFullName, studentArchived) {
+      function setupBasicTab(abstractStudentId, studentId, studentFullName) {
         var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsLabel"/>'
         });
@@ -227,7 +227,7 @@
         
         <c:forEach var="student" items="${students}">
           // Setup basics
-          setupBasicTab(${abstractStudent.id}, ${student.id}, '${student.fullName}', ${student.archived}); 
+          setupBasicTab(${abstractStudent.id}, ${student.id}, '${student.fullName}'); 
 
           // Setup course tabs
           coursesTable = setupCoursesTab(${student.id});

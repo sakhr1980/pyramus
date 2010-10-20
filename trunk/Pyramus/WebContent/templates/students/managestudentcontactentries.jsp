@@ -286,14 +286,7 @@
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:choose>
-                <c:when test="${student.archived}">
-                ***
-                </c:when>
-                <c:when test="${student.studyEndDate ne null}">
-                *
-                </c:when>
-              </c:choose>
+              <c:if test="${student.studyEndDate ne null}">*</c:if>
             </a>
           </c:forEach>
         </div>
