@@ -22,6 +22,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -140,6 +141,15 @@ public class School implements ArchivableEntity {
     }
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="School")  
   @TableGenerator(name="School", allocationSize=1)
@@ -176,4 +186,9 @@ public class School implements ArchivableEntity {
   @JoinTable (name="__SchoolTags", joinColumns=@JoinColumn(name="school"), inverseJoinColumns=@JoinColumn(name="tag"))
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -83,6 +84,15 @@ public class Report {
     return category;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Report")  
   @TableGenerator(name="Report", allocationSize=1)
@@ -117,4 +127,9 @@ public class Report {
   @Column (nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

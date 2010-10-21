@@ -520,6 +520,8 @@
       <div class="genericFormContainer"> 
 
         <form action="editstudent.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+          <input type="hidden" name="version" value="${abstractStudent.version}"/>
+        
           <div class="tabLabelsContainer" id="tabs">
             <a class="tabLabel" href="#basic">
               <fmt:message key="students.editStudent.studentBasicInfoTabLabel"/>
@@ -601,7 +603,9 @@
           </div>
 
           <c:forEach var="student" items="${students}">
-            <div id="student.${student.id}" class="tabContent">    
+            <div id="student.${student.id}" class="tabContent">
+              <input type="hidden" name="studentVersion.${student.id}" value="${student.version}"/>
+                  
               <div id="studentRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
 
               <div class="genericFormSection">           

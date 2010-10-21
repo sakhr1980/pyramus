@@ -1,5 +1,6 @@
 package fi.pyramus.domainmodel.students;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -42,6 +45,15 @@ public class StudentGroupUser {
     return user;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentGroupUser")  
   @TableGenerator(name="StudentGroupUser", allocationSize=1)
@@ -56,4 +68,9 @@ public class StudentGroupUser {
   @JoinColumn (name = "user")
   @IndexedEmbedded
   private User user;  
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

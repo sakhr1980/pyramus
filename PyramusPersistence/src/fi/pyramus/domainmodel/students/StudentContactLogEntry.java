@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -166,6 +167,15 @@ public class StudentContactLogEntry implements ArchivableEntity {
     this.archived = archived;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentContactLogEntry")  
   @TableGenerator(name="StudentContactLogEntry", allocationSize=1)
@@ -189,4 +199,9 @@ public class StudentContactLogEntry implements ArchivableEntity {
   @Column (nullable = false)
   @Field (index = Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

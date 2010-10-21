@@ -10,8 +10,10 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.StaleObjectStateException;
 
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -25,7 +27,6 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 
@@ -46,6 +47,10 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     
     Module module = moduleDAO.getModule(moduleId);
 
+    Long version = requestContext.getLong("version");
+    if (!module.getVersion().equals(version))
+      throw new StaleObjectStateException(Module.class.getName(), module.getId());
+    
     // Education types and subtypes submitted from the web page
 
     Map<Long, Vector<Long>> chosenEducationTypes = new HashMap<Long, Vector<Long>>();

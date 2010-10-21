@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -119,6 +120,15 @@ public class EducationSubtype implements ArchivableEntity {
     return archived;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationSubtype")  
   @TableGenerator(name="EducationSubtype", allocationSize=1)
@@ -143,4 +153,8 @@ public class EducationSubtype implements ArchivableEntity {
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

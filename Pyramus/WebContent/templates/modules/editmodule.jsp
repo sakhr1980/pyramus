@@ -217,6 +217,7 @@
 	    <div class="genericFormContainer"> 
 	  	  <form action="editmodule.json" method="post" ix:jsonform="true" ix:useglasspane="true">
 	        <input type="hidden" name="moduleId" value="${module.id}"></input>
+	        <input type="hidden" name="version" value="${module.version}"/>
 	      
 	        <div class="tabLabelsContainer" id="tabs">
 	          <a class="tabLabel" href="#basic">

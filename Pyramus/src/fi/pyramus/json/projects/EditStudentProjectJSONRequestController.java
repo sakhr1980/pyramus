@@ -7,8 +7,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.hibernate.StaleObjectStateException;
 
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
@@ -20,7 +22,6 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionality;
@@ -37,6 +38,12 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
 
     Long studentProjectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("studentProject"));
     StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
+    
+    // Version check
+    Long version = jsonRequestContext.getLong("version"); 
+    if (!studentProject.getVersion().equals(version))
+      throw new StaleObjectStateException(StudentProject.class.getName(), studentProject.getId());
+    
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
     User user = userDAO.getUser(jsonRequestContext.getLoggedUserId());

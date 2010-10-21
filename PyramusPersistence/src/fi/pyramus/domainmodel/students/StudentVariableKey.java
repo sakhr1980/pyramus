@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -61,6 +62,15 @@ public class StudentVariableKey {
     this.userEditable = userEditable;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentVariableKey")  
   @TableGenerator(name="StudentVariableKey", allocationSize=1)
@@ -84,4 +94,9 @@ public class StudentVariableKey {
   @Type (type="VariableType")  
   @Field (index = Index.UN_TOKENIZED, store = Store.NO)
   private VariableType variableType;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

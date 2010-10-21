@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 
@@ -49,6 +50,15 @@ public class EducationalLength {
     setUnits(baseUnits / getUnit().getBaseUnits());
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationalLength")  
   @TableGenerator(name="EducationalLength", allocationSize=1)
@@ -61,4 +71,9 @@ public class EducationalLength {
   @ManyToOne 
   @JoinColumn (name = "unit")
   private EducationalTimeUnit unit;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

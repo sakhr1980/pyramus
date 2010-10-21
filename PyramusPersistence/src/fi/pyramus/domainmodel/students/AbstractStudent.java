@@ -21,6 +21,8 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -695,6 +697,15 @@ public class AbstractStudent {
     return student.getStudyEndDate() == null || student.getStudyEndDate().after(new Date());
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.TABLE, generator = "AbstractStudent")
   @TableGenerator(name = "AbstractStudent", allocationSize = 1)
@@ -722,4 +733,9 @@ public class AbstractStudent {
   @JoinColumn(name = "abstractStudent")
   @IndexedEmbedded
   private List<Student> students = new ArrayList<Student>();
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;  
 }

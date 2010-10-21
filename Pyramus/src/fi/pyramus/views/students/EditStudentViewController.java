@@ -1,5 +1,6 @@
 package fi.pyramus.views.students;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,9 +9,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
@@ -19,7 +19,6 @@ import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
 public class EditStudentViewController implements PyramusViewController, Breadcrumbable {
@@ -28,7 +27,7 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
-    Long abstractStudentId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("abstractStudent"));
+    Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
     
     List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);

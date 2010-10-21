@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -77,6 +78,15 @@ public class Grade implements ArchivableEntity {
     this.archived = archived;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Grade")  
   @TableGenerator(name="Grade", allocationSize=1)
@@ -103,4 +113,9 @@ public class Grade implements ArchivableEntity {
 
   private String qualification;
   private Double GPA;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

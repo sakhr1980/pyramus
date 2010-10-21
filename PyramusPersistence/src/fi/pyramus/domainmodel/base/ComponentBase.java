@@ -13,6 +13,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
@@ -65,6 +66,15 @@ public abstract class ComponentBase implements ArchivableEntity {
     return archived;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ComponentBase")  
@@ -91,4 +101,8 @@ public abstract class ComponentBase implements ArchivableEntity {
   @Field (index=Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

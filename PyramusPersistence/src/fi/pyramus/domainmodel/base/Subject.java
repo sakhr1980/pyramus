@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -66,6 +67,15 @@ public class Subject implements ArchivableEntity {
     return archived;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Subject")  
   @TableGenerator(name="Subject", allocationSize=1)
@@ -84,4 +94,8 @@ public class Subject implements ArchivableEntity {
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

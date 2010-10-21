@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
@@ -72,6 +73,15 @@ public class GradingScale implements ArchivableEntity {
     grade.setGradingScale(null);
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="GradingScale")  
   @TableGenerator(name="GradingScale", allocationSize=1)
@@ -94,4 +104,9 @@ public class GradingScale implements ArchivableEntity {
   @IndexColumn (name = "indexColumn")
   @JoinColumn (name="gradingScale")
   private List<Grade> grades = new ArrayList<Grade>(); 
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

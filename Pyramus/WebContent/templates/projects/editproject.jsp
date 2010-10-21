@@ -167,6 +167,8 @@
     <h1 class="genericPageHeader"><fmt:message key="projects.editProject.pageTitle" /></h1>
     
     <form id="projectForm" action="editproject.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+      <input type="hidden" name="version" value="${project.version}"/>
+      
       <div id="editProjectEditFormContainer"> 
         <div class="genericFormContainer"> 
           <div class="tabLabelsContainer" id="tabs">

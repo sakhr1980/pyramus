@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -57,6 +58,15 @@ public class ProjectModule {
     return optionality;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ProjectModule")  
   @TableGenerator(name="ProjectModule", allocationSize=1)
@@ -75,4 +85,8 @@ public class ProjectModule {
   @Type (type="ProjectModuleOptionality")  
   private ProjectModuleOptionality optionality;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

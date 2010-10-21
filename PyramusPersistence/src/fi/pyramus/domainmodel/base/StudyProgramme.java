@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -94,6 +95,15 @@ public class StudyProgramme implements ArchivableEntity {
     return category;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudyProgramme")  
   @TableGenerator(name="StudyProgramme", allocationSize=1)
@@ -116,4 +126,9 @@ public class StudyProgramme implements ArchivableEntity {
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

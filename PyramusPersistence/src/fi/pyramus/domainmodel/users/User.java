@@ -23,6 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -146,6 +147,15 @@ public class User {
     return contactInfo;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="User")  
   @TableGenerator(name="User", allocationSize=1)
@@ -194,4 +204,9 @@ public class User {
   @JoinTable (name="__UserTags", joinColumns=@JoinColumn(name="user"), inverseJoinColumns=@JoinColumn(name="tag"))
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
+  
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

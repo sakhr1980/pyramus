@@ -25,6 +25,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
@@ -259,6 +260,15 @@ public class StudentProject implements ArchivableEntity {
     return name;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentProject")  
   @TableGenerator(name="StudentProject", allocationSize=1)
@@ -317,4 +327,9 @@ public class StudentProject implements ArchivableEntity {
   @JoinTable (name="__StudentProjectTags", joinColumns=@JoinColumn(name="studentProject"), inverseJoinColumns=@JoinColumn(name="tag"))
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
+  
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

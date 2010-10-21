@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
@@ -177,6 +178,15 @@ public class EducationType implements ArchivableEntity {
     return archived;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationType")  
   @TableGenerator(name="EducationType", allocationSize=1)
@@ -202,4 +212,8 @@ public class EducationType implements ArchivableEntity {
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

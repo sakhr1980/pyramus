@@ -1,5 +1,6 @@
 package fi.pyramus.domainmodel.base;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -75,6 +78,15 @@ public class CourseEducationSubtype {
     this.educationSubtype = educationSubtype;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseEducationSubtype")  
   @TableGenerator(name="CourseEducationSubtype", allocationSize=1)
@@ -88,4 +100,8 @@ public class CourseEducationSubtype {
   @JoinColumn(name = "educationSubtype", updatable = false)
   private EducationSubtype educationSubtype;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }
