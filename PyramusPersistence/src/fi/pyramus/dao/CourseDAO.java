@@ -954,6 +954,7 @@ public class CourseDAO extends PyramusDAO {
 
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false);
       addTokenizedSearchCriteria(queryBuilder, "description", text, false);
       addTokenizedSearchCriteria(queryBuilder, "nameExtension", text, false);
       addTokenizedSearchCriteria(queryBuilder, "courseComponents.name", text, false);
@@ -966,7 +967,7 @@ public class CourseDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "name", new StandardAnalyzer(Version.LUCENE_29));
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
@@ -976,6 +977,8 @@ public class CourseDAO extends PyramusDAO {
       else {
         luceneQuery = parser.parse(queryString);
       }
+      
+      System.out.println(queryString);
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Course.class)
           .setSort(new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING)}))

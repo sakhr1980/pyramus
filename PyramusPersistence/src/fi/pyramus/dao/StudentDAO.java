@@ -821,7 +821,7 @@ public class StudentDAO extends PyramusDAO {
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
-      QueryParser parser = new QueryParser(Version.LUCENE_29, "name", new StandardAnalyzer(Version.LUCENE_29));
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       String queryString = queryBuilder.toString();
       Query luceneQuery;
 
