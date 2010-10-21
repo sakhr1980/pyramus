@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.StaleObjectStateException;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.UserRole;
@@ -63,6 +64,11 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
     StudentGroup studentGroup = studentDAO.findStudentGroupById(requestContext.getLong("studentGroupId"));
     User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
 
+    // Version check
+    Long version = requestContext.getLong("version"); 
+    if (!studentGroup.getVersion().equals(version))
+      throw new StaleObjectStateException(StudentGroup.class.getName(), studentGroup.getId());
+    
     studentDAO.updateStudentGroup(studentGroup, name, description, beginDate, loggedUser);
 
     // Tags

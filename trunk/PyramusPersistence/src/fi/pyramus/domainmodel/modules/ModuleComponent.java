@@ -25,5 +25,4 @@ public class ModuleComponent extends ComponentBase {
   @ManyToOne
   @JoinColumn(name="module")
   private Module module;
-
 }

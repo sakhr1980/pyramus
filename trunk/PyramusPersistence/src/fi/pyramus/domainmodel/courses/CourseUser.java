@@ -1,5 +1,6 @@
 package fi.pyramus.domainmodel.courses;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -7,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -46,6 +49,14 @@ public class CourseUser {
     return role;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseUser")  
@@ -66,4 +77,8 @@ public class CourseUser {
   @IndexedEmbedded
   private CourseUserRole role;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

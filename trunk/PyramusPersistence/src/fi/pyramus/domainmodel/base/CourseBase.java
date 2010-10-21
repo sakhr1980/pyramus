@@ -23,6 +23,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.HibernateException;
@@ -323,6 +324,15 @@ public abstract class CourseBase implements ArchivableEntity {
     return name;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseBase")  
@@ -384,4 +394,8 @@ public abstract class CourseBase implements ArchivableEntity {
   @JoinColumn (name="courseBase")
   private List<CourseBaseVariable> variables = new ArrayList<CourseBaseVariable>();
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

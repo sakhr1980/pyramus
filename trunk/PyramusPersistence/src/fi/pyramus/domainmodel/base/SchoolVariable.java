@@ -2,6 +2,7 @@ package fi.pyramus.domainmodel.base;
 
 import java.lang.Long;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -44,6 +45,15 @@ public class SchoolVariable {
     this.value = value;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
 	@Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="SchoolVariable")  
   @TableGenerator(name="SchoolVariable", allocationSize=1)
@@ -59,4 +69,9 @@ public class SchoolVariable {
 	
 	@NotEmpty
 	private String value;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

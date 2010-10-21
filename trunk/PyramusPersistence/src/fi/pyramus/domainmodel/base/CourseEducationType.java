@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 /**
  * Representation of an education type associated with a course.
@@ -135,6 +138,15 @@ public class CourseEducationType {
     return false;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseEducationType")  
   @TableGenerator(name="CourseEducationType", allocationSize=1)
@@ -152,4 +164,8 @@ public class CourseEducationType {
   @JoinColumn(name = "courseEducationType")
   private List<CourseEducationSubtype> courseEducationSubtypes = new Vector<CourseEducationSubtype>();
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

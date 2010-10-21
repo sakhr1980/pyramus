@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
@@ -49,6 +50,15 @@ public class ContactURL {
     return contactInfo;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ContactURL")  
   @TableGenerator(name="ContactURL", allocationSize=1)
@@ -69,4 +79,8 @@ public class ContactURL {
   @JoinColumn(name="contactInfo")
   private ContactInfo contactInfo;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

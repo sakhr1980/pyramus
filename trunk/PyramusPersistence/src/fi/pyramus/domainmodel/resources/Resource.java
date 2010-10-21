@@ -88,10 +88,6 @@ public class Resource implements ArchivableEntity {
     return archived;
   }
   
-  public Long getVersion() {
-    return version;
-  }
-
   public Set<Tag> getTags() {
     return tags;
   }
@@ -127,6 +123,15 @@ public class Resource implements ArchivableEntity {
     return name;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Resource")  
   @TableGenerator(name="Resource", allocationSize=1)
@@ -155,5 +160,7 @@ public class Resource implements ArchivableEntity {
   private Set<Tag> tags = new HashSet<Tag>();
   
   @Version
+  @NotNull
+  @Column(nullable = false)
   private Long version;
 }

@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -36,6 +38,15 @@ public class MagicKey {
     this.created = created;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="MagicKey")  
   @TableGenerator(name="MagicKey", allocationSize=1)
@@ -48,4 +59,9 @@ public class MagicKey {
   @Column (updatable=false, nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

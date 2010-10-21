@@ -11,8 +11,10 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.StaleObjectStateException;
 
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -39,7 +41,6 @@ import fi.pyramus.domainmodel.courses.OtherCost;
 import fi.pyramus.domainmodel.courses.StudentCourseResource;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
@@ -85,6 +86,10 @@ public class EditCourseJSONRequestController implements JSONRequestController {
     Double planningHours = requestContext.getDouble("planningHours");
     Double assessingHours = requestContext.getDouble("assessingHours");
     String tagsText = requestContext.getString("tags");
+    
+    Long version = requestContext.getLong("version");
+    if (!course.getVersion().equals(version))
+      throw new StaleObjectStateException(Course.class.getName(), course.getId());
     
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {

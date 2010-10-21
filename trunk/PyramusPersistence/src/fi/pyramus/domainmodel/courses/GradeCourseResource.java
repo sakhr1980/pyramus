@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
@@ -81,6 +82,15 @@ public class GradeCourseResource {
     return unitCost;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="GradeCourseResource")  
   @TableGenerator(name="GradeCourseResource", allocationSize=1)
@@ -108,4 +118,8 @@ public class GradeCourseResource {
   @Type (type="MonetaryAmount")  
   private MonetaryAmount unitCost;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

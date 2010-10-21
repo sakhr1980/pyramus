@@ -1,9 +1,12 @@
 package fi.pyramus.domainmodel.base;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import fi.pyramus.domainmodel.courses.CourseState;
 
@@ -30,6 +33,15 @@ public class Defaults {
     return baseTimeUnit;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id
   private Long id;
 
@@ -41,4 +53,8 @@ public class Defaults {
   @JoinColumn (name = "courseState")
   private CourseState initialCourseState;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

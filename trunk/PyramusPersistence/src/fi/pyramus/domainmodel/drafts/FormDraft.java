@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -64,6 +66,15 @@ public class FormDraft {
     this.data = data;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="FormDraft")  
   @TableGenerator(name="FormDraft", allocationSize=1)
@@ -84,4 +95,9 @@ public class FormDraft {
   
   @Temporal (TemporalType.TIMESTAMP)
   private Date modified;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

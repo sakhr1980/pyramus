@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.DocumentId;
@@ -124,6 +126,15 @@ public class ContactInfo {
     return additionalInfo;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ContactInfo")  
@@ -158,4 +169,8 @@ public class ContactInfo {
   @Column (length=1073741824)
   private String additionalInfo;
  
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

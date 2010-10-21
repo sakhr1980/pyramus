@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.hibernate.StaleObjectStateException;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
@@ -48,6 +49,10 @@ public class EditStudentJSONRequestController implements JSONRequestController {
     String ssecId = requestContext.getString("ssecId");
     Sex sex = "male".equals(requestContext.getRequest().getParameter("gender")) ? Sex.MALE : Sex.FEMALE;
     String basicInfo = requestContext.getString("basicInfo");
+    Long version = requestContext.getLong("version"); 
+    
+    if (!abstractStudent.getVersion().equals(version))
+      throw new StaleObjectStateException(AbstractStudent.class.getName(), abstractStudent.getId());
 
     // Abstract student
     studentDAO.updateAbstractStudent(abstractStudent, birthday, ssecId, sex, basicInfo);
@@ -55,7 +60,11 @@ public class EditStudentJSONRequestController implements JSONRequestController {
     List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
 
     for (Student student : students) {
-	    String firstName = requestContext.getString("firstName." + student.getId());
+    	Long studentVersion = requestContext.getLong("studentVersion." + student.getId());
+      if (!student.getVersion().equals(studentVersion))
+        throw new StaleObjectStateException(Student.class.getName(), student.getId());
+
+      String firstName = requestContext.getString("firstName." + student.getId());
 	    String lastName = requestContext.getString("lastName." + student.getId());
 	    String nickname = requestContext.getString("nickname." + student.getId());
 	    String additionalInfo = requestContext.getString("additionalInfo." + student.getId());
@@ -227,7 +236,7 @@ public class EditStudentJSONRequestController implements JSONRequestController {
     systemDAO.forceReindex(abstractStudent);
         
     requestContext.setRedirectURL(requestContext.getReferer(true));
- }
+  }
 
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };

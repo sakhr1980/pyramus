@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
@@ -90,6 +91,15 @@ public class CourseStudent implements ArchivableEntity {
     return lodging;
   }
 
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseStudent")  
   @TableGenerator(name="CourseStudent", allocationSize=1)
@@ -123,4 +133,8 @@ public class CourseStudent implements ArchivableEntity {
   @Column(nullable = false)
   private Boolean lodging = Boolean.FALSE;
 
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

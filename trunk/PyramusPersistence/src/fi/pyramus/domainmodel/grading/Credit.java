@@ -17,6 +17,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -94,6 +97,15 @@ public class Credit implements ArchivableEntity {
     this.creditType = creditType;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Credit")  
   @TableGenerator(name="Credit", allocationSize=1)
@@ -125,4 +137,9 @@ public class Credit implements ArchivableEntity {
   @Type (type="CreditType")  
   @Column (insertable = true, updatable = false, nullable = false)
   private CreditType creditType;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }

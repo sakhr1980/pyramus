@@ -1084,6 +1084,7 @@
 	    <div class="genericFormContainer">
 	      <form action="editcourse.json" method="post" ix:jsonform="true" ix:useglasspane="true">
 	        <input type="hidden" name="course" value="${course.id}"/>
+          <input type="hidden" name="version" value="${course.version}"/>
 	        <div class="tabLabelsContainer" id="tabs">
 	          <a class="tabLabel" href="#basic"><fmt:message key="courses.editCourse.basicTabTitle" /></a>
 	          <a class="tabLabel" href="#components"><fmt:message key="courses.editCourse.componentsTabTitle" /></a>

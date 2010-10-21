@@ -326,6 +326,7 @@
     <div id="createStudentGroupCreateFormContainer">
       <div class="genericFormContainer">
         <form action="editstudentgroup.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+          <input type="hidden" name="version" value="${studentGroup.version}"/>
       
           <div class="tabLabelsContainer" id="tabs">
             <a class="tabLabel" href="#basic"><fmt:message key="students.editStudentGroup.basicTabTitle" /></a>

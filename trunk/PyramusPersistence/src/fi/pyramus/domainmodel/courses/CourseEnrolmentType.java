@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -25,6 +26,15 @@ public class CourseEnrolmentType {
     this.name = name;
   }
   
+  @SuppressWarnings("unused")
+  private void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseEnrolmentType")  
   @TableGenerator(name="CourseEnrolmentType", allocationSize=1)
@@ -34,4 +44,9 @@ public class CourseEnrolmentType {
   @Column (nullable = false)
   @NotEmpty
   private String name;
+
+  @Version
+  @NotNull
+  @Column(nullable = false)
+  private Long version;
 }
