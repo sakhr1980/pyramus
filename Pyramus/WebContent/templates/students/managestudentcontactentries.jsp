@@ -191,9 +191,9 @@
         var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId, class: "studentContactEntryItem"}));
         var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactEntryCaption"}));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryDate"}, [dateStr])); 
-        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryType"}, [entryTypeName])); 
-        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryCreator"}, [entryCreatorName])); 
+        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryDate." + entryId + ".caption", class: "studentContactEntryDate"}, [dateStr])); 
+        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryType." + entryId + ".caption", class: "studentContactEntryType"}, [entryTypeName])); 
+        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryCreator." + entryId + ".caption", class: "studentContactEntryCreator"}, [entryCreatorName])); 
         
         var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactEntryButtons"}));
         buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", class: "studentContactEntryEditButton", 
@@ -262,9 +262,11 @@
             var date = new Date(entryDate);
             var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
             var entryTypeName = getEntryTypeName(entryType);
-            var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creatorName;
+            //var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creatorName;
 
-            $("entry." + entryId + ".caption").innerHTML = entryCaption;
+            $("entryDate." + entryId + ".caption").innerHTML = dateStr;
+            $("entryType." + entryId + ".caption").innerHTML = entryTypeName;
+            $("entryCreator." + entryId + ".caption").innerHTML = creatorName;
             $("entry." + entryId + ".text").innerHTML = entryText;
                                                 
             resetEntryForm(studentId);
