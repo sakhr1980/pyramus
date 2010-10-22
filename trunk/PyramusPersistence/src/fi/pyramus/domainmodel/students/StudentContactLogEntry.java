@@ -185,6 +185,7 @@ public class StudentContactLogEntry implements ArchivableEntity {
   @JoinColumn (name = "student")
   private Student student;
   
+  @Column (length=1073741824)
   private String text;
   
   private String creatorName;
