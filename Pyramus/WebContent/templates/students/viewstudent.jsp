@@ -736,35 +736,37 @@
                 <div id="contactlog.${student.id}" class="tabContent">
                   <div id="contactLogTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
 
-                  <div id="studentContactEntryList.${student.id}">
+                  <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-                      <div id="studentContactEntryItem">
+                      <div id="studentContactEntryItem" class="studentContactEntryItem">
                         <div>
-                          <fmt:formatDate pattern="dd.MM.yyyy" value="${contactEntry.entryDate}" />
+                          <span class="studentContactEntryDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${contactEntry.entryDate}" /></span>
+                          <span class="studentContactEntryType">
                           <c:choose>
                             <c:when test="${contactEntry.type eq 'OTHER'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.other"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.other"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'LETTER'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.letter"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.letter"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'EMAIL'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.email"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.email"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'PHONE'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.phone"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.phone"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'CHATLOG'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.chatlog"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.chatlog"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'SKYPE'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.skype"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.skype"/>
                             </c:when>
                             <c:when test="${contactEntry.type eq 'FACE2FACE'}">
-                              &lt;<fmt:message key="students.viewStudent.contactEntry.types.face2face"/>&gt;
+                              <fmt:message key="students.viewStudent.contactEntry.types.face2face"/>
                             </c:when>
                           </c:choose>
-                          ${contactEntry.creatorName} 
+                          </span>
+                          <span class="studentContactEntryCreator">${contactEntry.creatorName}</span> 
                         </div>              
                         <div>
                           ${contactEntry.text}

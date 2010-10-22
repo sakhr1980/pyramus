@@ -322,7 +322,7 @@
                     </script>
                   </div>
       
-                  <div class="studentContactNewEntryWrapper ">
+                  <div class="studentContactNewEntryWrapper">
 	                  <div class="genericFormSection">                            
 	                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
 	                      <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.typeTitle"/>
