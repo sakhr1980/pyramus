@@ -59,6 +59,18 @@ input[type='submit']{
   font-size:13px;
 }
 
+input[type='button']{
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  border:1px solid #fff;
+  color:#fff;
+  padding:3px 8px 3px 8px;
+  background-color:#2e5ec5;
+  font-family: "trebuchet ms";
+  font-size:13px;
+}
+
 .genericFormContainer {
   margin-bottom: 4px;
 }

@@ -1292,14 +1292,20 @@ div.autocomplete_choices ul li.selected {
 
 /* Student Entry Management */
 
+.studentContactNewEntryWrapper{
+  width:49%;
+  display:inline-block;
+  margin-left:1%;
+}
+
 .studentContactEntryWrapper{
-  margin-bottom:20px;
+  width:48%;
 }
 
 .studentContactEntryItem{
   background-color:#fff;
   border:1px solid #E5ECFC;
-  width:600px;
+
   border-radius:5px;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
