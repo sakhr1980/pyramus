@@ -304,7 +304,7 @@
         </div>
     
         <c:forEach var="student" items="${students}">
-          <div id="student.${student.id}" class="tabContent">    
+          <div id="student.${student.id}" class="tabContent tabContentNestedTabs">    
   
             <div id="viewStudentViewContainer"> 
               <div class="genericFormContainer"> 
