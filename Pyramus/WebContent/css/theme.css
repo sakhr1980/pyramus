@@ -1288,3 +1288,66 @@ div.autocomplete_choices ul li.selected {
   background:#D7E3F9;
   color:#2351B1;
 }
+
+
+/* Student Entry Management */
+
+.studentContactEntryWrapper{
+  margin-bottom:20px;
+}
+
+.studentContactEntryItem{
+  background-color:#fff;
+  border:1px solid #E5ECFC;
+  width:600px;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:10px;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.studentContactEntryItem:hover{
+  border:1px solid #CAD8F8;
+}
+
+.studentContactEntryButtons{
+  position:absolute;
+  right:5px;
+  top:5px;
+}
+
+img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
+  padding:5px 5px 5px 5px;
+  cursor:pointer;
+}
+
+img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:hover{
+  background:#D3E0F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+.studentContactEntryDate{
+  padding:0px 10px 0px 5px;
+  display:inline-block;
+  font-weight:bold;
+}
+
+.studentContactEntryType{
+  padding:0px 5px 0px 5px;
+  display:inline-block;
+  background:#739DE7;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  color:#fff;
+}
+
+.studentContactEntryCreator{
+  padding:0px 5px 0px 10px;
+  display:inline-block;
+}
+

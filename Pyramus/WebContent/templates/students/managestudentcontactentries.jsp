@@ -188,12 +188,18 @@
 
         var entryTypeName = getEntryTypeName(entryType);
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId}));
-        newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption"}, [dateStr + ' <' + entryTypeName + '> ' + entryCreatorName]));
-        newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", 
+        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId, class: "studentContactEntryItem"}));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactEntryCaption"}));
+        
+        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryDate"}, [dateStr])); 
+        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryType"}, [entryTypeName])); 
+        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {class: "studentContactEntryCreator"}, [entryCreatorName])); 
+        
+        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactEntryButtons"}));
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", class: "studentContactEntryEditButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
-        newEntryDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton", 
           src: "${pageContext.request.contextPath}/gfx/list-remove.png", 
           onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
 
@@ -301,7 +307,7 @@
                   <input type="hidden" name="studentId" value="${student.id}"/>
                   <input type="hidden" name="entryId" value="-1"/>
       
-                  <div id="studentContactEntryList.${student.id}">
+                  <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
                     <script type="text/javascript">
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
                       addEntryRow(
