@@ -113,7 +113,15 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     	Student student = students.get(i);
     	
       courseStudents.put(student.getId(), courseDAO.listStudentCourses(student));
-      contactEntries.put(student.getId(), studentDAO.listStudentContactEntries(student));
+
+      List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+      Collections.sort(listStudentContactEntries, new Comparator<StudentContactLogEntry>() {
+        public int compare(StudentContactLogEntry o1, StudentContactLogEntry o2) {
+          return o1.getEntryDate() == null ? -1 : o2.getEntryDate() == null ? 1 : o2.getEntryDate().compareTo(o1.getEntryDate());
+        }
+      });
+
+      contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), gradingDAO.listStudentsTransferCredits(student));
       courseAssesments.put(student.getId(), gradingDAO.listStudentsCourseAssessments(student));
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
