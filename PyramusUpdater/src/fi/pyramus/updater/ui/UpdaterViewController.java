@@ -397,7 +397,7 @@ public class UpdaterViewController {
         scale = NumberUtils.createInteger(scaleAttr);
       boolean unique = "true".equals(fieldElement.getAttribute("unique"));
 
-      org.hibernate.type.Type type = TypeFactory.basic(fieldType);
+      org.hibernate.type.Type type = parseColumnType(fieldType);
       
       if (StringUtils.isBlank(newFieldName)) {
         newFieldName = oldFieldName;
@@ -506,27 +506,7 @@ public class UpdaterViewController {
       scale = NumberUtils.createInteger(scaleAttr);
     boolean unique = "true".equals(fieldElement.getAttribute("unique"));
     
-    org.hibernate.type.Type type = null;
-    if (fieldType.startsWith("Types.")) {
-      String typeName = fieldType.split("\\.")[1];
-      try {
-        Field field = Types.class.getField(typeName);
-        int sqlType = field.getInt(null);
-        String hibernateType = dialect.getHibernateTypeName(sqlType);
-        type = TypeFactory.basic(hibernateType);
-      } catch (SecurityException e) {
-        throw new UpdaterException(e);
-      } catch (NoSuchFieldException e) {
-        throw new UpdaterException(e);
-      } catch (IllegalArgumentException e) {
-        throw new UpdaterException(e);
-      } catch (IllegalAccessException e) {
-        throw new UpdaterException(e);
-      }
-      
-    } else {
-      type = TypeFactory.basic(fieldType);
-    }
+    org.hibernate.type.Type type = parseColumnType(fieldType);
     
     Column column = new Column(fieldName);
     column.setNullable(fieldNullable);
@@ -541,6 +521,28 @@ public class UpdaterViewController {
       column.setScale(scale);
 
     return column;
+  }
+
+  private org.hibernate.type.Type parseColumnType(String fieldType) {
+    if (fieldType.startsWith("Types.")) {
+      String typeName = fieldType.split("\\.")[1];
+      try {
+        Field field = Types.class.getField(typeName);
+        int sqlType = field.getInt(null);
+        String hibernateType = dialect.getHibernateTypeName(sqlType);
+        return TypeFactory.basic(hibernateType);
+      } catch (SecurityException e) {
+        throw new UpdaterException(e);
+      } catch (NoSuchFieldException e) {
+        throw new UpdaterException(e);
+      } catch (IllegalArgumentException e) {
+        throw new UpdaterException(e);
+      } catch (IllegalAccessException e) {
+        throw new UpdaterException(e);
+      }
+    } else {
+      return TypeFactory.basic(fieldType);
+    }
   }
   
   private void handleDropTableMapping(UpgradeBatch upgradeBatch, Element tableElement) {
