@@ -309,12 +309,12 @@ public class Course extends CourseBase implements ArchivableEntity {
   @Field (index=Index.TOKENIZED)
   private String nameExtension;
   
-  @Temporal (value=TemporalType.TIMESTAMP)
+  @Temporal (value=TemporalType.DATE)
   @Field (index = Index.UN_TOKENIZED)
   @DateBridge (resolution = Resolution.DAY)
   private Date beginDate;
   
-  @Temporal (value=TemporalType.TIMESTAMP)
+  @Temporal (value=TemporalType.DATE)
   @Field (index = Index.UN_TOKENIZED)
   @DateBridge (resolution = Resolution.DAY)
   private Date endDate;
