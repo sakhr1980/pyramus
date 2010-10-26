@@ -10,6 +10,11 @@
 
 /* Generic */
 
+html{
+  height:100%;
+  margin-bottom:1px;
+}
+
 h1.genericPageHeader{
   font-size:20px;
   margin:10px 0px 10px 2px;
@@ -136,7 +141,6 @@ h1.genericPageHeader{
 
 /* Edit Student */
 
-
 #editStudentEditFormContainer .ixTableRowContent{
   height:24px;
 }
@@ -145,6 +149,49 @@ h1.genericPageHeader{
   margin-bottom:2px;
   height:15px;
   padding:0;
+}
+
+/* View Student - Basic Info */
+
+.studentViewInfoWapper{
+  background-color:#fff;
+  border:1px solid #E5ECFC;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:4px 10px;
+  margin-bottom:10px;
+  position:relative;
+  width:48%;
+}
+
+#studentViewBasicInfoWrapper .genericFormTitle, #studentViewContactInfoWrapper .genericFormTitle, #studentViewEducationInfoWrapper .genericFormTitle, #studentViewAdditionalInfoWrapper .genericFormTitle{
+  float:left;
+  margin-right:10px;
+  background:#f2f2f2;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  color:#000;
+  padding:2px 4px;
+  width:160px;
+}
+
+#studentViewBasicInfoWrapper .genericFormSection, #studentViewContactInfoWrapper .genericFormSection, #studentViewEducationInfoWrapper .genericFormSection, #studentViewAdditionalInfoWrapper .genericFormSection{
+  clear:both;
+  display:table;
+  width:100%;
+  padding:6px 0px 6px 0px;
+
+}
+
+#studentViewBasicInfoWrapper .studentViewFormDataText, #studentViewContactInfoWrapper .studentViewFormDataText, #studentViewEducationInfoWrapper .studentViewFormDataText, #studentViewAdditionalInfoWrapper .studentViewFormDataText{
+  margin-left:180px;
+  padding:2px 0px;
+}
+
+.studentViewFormDataText p{
+  margin-top:0px;
 }
 
 /* Create Course: Module search */
@@ -1290,16 +1337,18 @@ div.autocomplete_choices ul li.selected {
 }
 
 
-/* Student Entry Management */
+/* Student Contact Entry Management */
 
 .studentContactNewEntryWrapper{
-  width:49%;
-  display:inline-block;
-  margin-left:1%;
+  width:48%;
+//  display:inline-block;
+  margin-left:50%;
+
+
 }
 
 .studentContactEntryWrapper{
-  width:48%;
+  width:49%;
 }
 
 .studentContactEntryItem{
@@ -1336,7 +1385,7 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
 }
 
 .studentContactEntryDate{
-  padding:0px 10px 0px 5px;
+  padding:0px 10px 0px 0px;
   display:inline-block;
   font-weight:bold;
 }

@@ -200,7 +200,7 @@
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
         buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton", 
-          src: "${pageContext.request.contextPath}/gfx/list-remove.png", 
+          src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
           onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
 
         var node = Builder.node("div", {id: "entry." + entryId + ".text"}, []);
