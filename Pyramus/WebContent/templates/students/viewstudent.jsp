@@ -327,14 +327,14 @@
                   <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
                   
                     <!--  Student Basic Info Starts -->
-                    <div class="studentViewInfoWapper" id="studentViewBasicInfoWrapper">
+                    <div class="genericViewInfoWapper" id="studentViewBasicInfoWrapper">
                     
                       <div class="genericFormSection">
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                           <jsp:param name="titleLocale" value="students.viewStudent.firstNameTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.firstNameHelp"/>
                         </jsp:include>                                        
-                        <div class="studentViewFormDataText">${student.firstName}</div>
+                        <div class="genericViewFormDataText">${student.firstName}</div>
                       </div>
             
                       <div class="genericFormSection">  
@@ -342,7 +342,7 @@
                           <jsp:param name="titleLocale" value="students.viewStudent.lastNameTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.lastNameHelp"/>
                         </jsp:include>                                        
-                        <div class="studentViewFormDataText">${student.lastName}</div>
+                        <div class="genericViewFormDataText">${student.lastName}</div>
                       </div>
                     
 	                    <c:choose>
@@ -352,7 +352,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.birthdayTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.birthdayHelp"/>
 		                        </jsp:include>                     
-		                        <div class="studentViewFormDataText"><fmt:formatDate pattern="dd.MM.yyyy" value="${abstractStudent.birthday}" /></div>
+		                        <div class="genericViewFormDataText"><fmt:formatDate pattern="dd.MM.yyyy" value="${abstractStudent.birthday}" /></div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -364,7 +364,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.ssecIdTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.ssecIdHelp"/>
 		                        </jsp:include>                                        
-		                        <div class="studentViewFormDataText">${abstractStudent.socialSecurityNumber}</div>
+		                        <div class="genericViewFormDataText">${abstractStudent.socialSecurityNumber}</div>
 		                      </div>
 		                    </c:when>
 	                    </c:choose>
@@ -374,7 +374,7 @@
 		                      <jsp:param name="titleLocale" value="students.viewStudent.genderTitle"/>
 		                      <jsp:param name="helpLocale" value="students.viewStudent.genderHelp"/>
 		                    </jsp:include> 
-		                    <div class="studentViewFormDataText">                                       
+		                    <div class="genericViewFormDataText">                                       
 		                    <c:choose>
 		                      <c:when test="${abstractStudent.sex != 'FEMALE'}">
 		                        <fmt:message key="students.viewStudent.genderMaleTitle"/>
@@ -393,7 +393,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.nicknameTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.nicknameHelp"/>
 		                        </jsp:include>                                        
-		                        <div class="studentViewFormDataText">${student.nickname}</div>
+		                        <div class="genericViewFormDataText">${student.nickname}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -402,7 +402,7 @@
                     <!--  Student Basic Info Ends -->
                     
                     <!--  Student Contact Info Starts -->
-                    <div class="studentViewInfoWapper" id="studentViewContactInfoWrapper">
+                    <div class="genericViewInfoWapper" id="studentViewContactInfoWrapper">
                     
                       <c:if test="${!empty student.contactInfo.addresses}">
                         <div class="genericFormSection">  
@@ -412,7 +412,7 @@
                                 <div>${address.contactType.name}</div>
                               </div>
                             </div>
-                            <div class="studentViewFormDataText">
+                            <div class="genericViewFormDataText">
                               <div>${address.name}</div>
                               <div>${address.streetAddress}</div>
                               <div>${address.postalCode} ${address.city}</div>
@@ -427,7 +427,7 @@
                           <jsp:param name="titleLocale" value="students.viewStudent.emailTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.emailHelp"/>
                         </jsp:include>  
-                        <div class="studentViewFormDataText">
+                        <div class="genericViewFormDataText">
                         <c:forEach var="email" items="${student.contactInfo.emails}">
                           <c:choose>
                             <c:when test="${not empty email.contactType}">
@@ -448,7 +448,7 @@
                               <jsp:param name="titleLocale" value="students.viewStudent.phoneNumberTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.phoneNumberHelp"/>
                             </jsp:include>  
-                            <div class="studentViewFormDataText">
+                            <div class="genericViewFormDataText">
                             <c:forEach var="phone" items="${student.contactInfo.phoneNumbers}">
                               <c:choose>
                                 <c:when test="${not empty phone.contactType}">
@@ -471,7 +471,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.municipalityTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.municipalityHelp"/>
 		                        </jsp:include>  
-		                        <div class="studentViewFormDataText">${student.municipality.name}</div>
+		                        <div class="genericViewFormDataText">${student.municipality.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -482,7 +482,7 @@
                     <div class="columnClear"></div>
                     
                     <!--  Student Education Info Starts -->
-                    <div class="studentViewInfoWapper" id="studentViewEducationInfoWrapper">
+                    <div class="genericViewInfoWapper" id="studentViewEducationInfoWrapper">
                     
                       <c:choose>
                         <c:when test="${!empty student.examinationType}">
@@ -491,7 +491,7 @@
                               <jsp:param name="titleLocale" value="students.viewStudent.examinationTypeTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.examinationTypeHelp"/>
                             </jsp:include>    
-                            <div class="studentViewFormDataText">${student.examinationType.name}</div>
+                            <div class="genericViewFormDataText">${student.examinationType.name}</div>
                           </div>
                         </c:when>
                       </c:choose>
@@ -503,7 +503,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.educationalLevelTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.educationalLevelHelp"/>
 		                        </jsp:include>      
-		                        <div class="studentViewFormDataText">${student.educationalLevel.name}</div>
+		                        <div class="genericViewFormDataText">${student.educationalLevel.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -515,7 +515,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.educationTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.educationHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.education}</div>
+		                        <div class="genericViewFormDataText">${student.education}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -527,7 +527,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyProgrammeTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyProgrammeHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.studyProgramme.name}</div>
+		                        <div class="genericViewFormDataText">${student.studyProgramme.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -540,7 +540,7 @@
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studentGroupHelp"/>
 		                        </jsp:include>
 		                        
-		                        <div class="studentViewFormDataText">
+		                        <div class="genericViewFormDataText">
 		                          <c:forEach var="studentGroup" items="${studentGroups[student.id]}" varStatus="sgStat">
 		                            ${studentGroup.name}<c:if test="${!sgStat.last}">, </c:if>
 		                          </c:forEach>
@@ -556,7 +556,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.schoolTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.schoolHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.school.name}</div>
+		                        <div class="genericViewFormDataText">${student.school.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -568,7 +568,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.previousStudiesTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.previousStudiesHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.previousStudies}</div>
+		                        <div class="genericViewFormDataText">${student.previousStudies}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -580,7 +580,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyTimeEndTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyTimeEndHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.studyTimeEnd}</div>
+		                        <div class="genericViewFormDataText">${student.studyTimeEnd}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -592,7 +592,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyStartDateTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyStartDateHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.studyStartDate}</div>
+		                        <div class="genericViewFormDataText">${student.studyStartDate}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -604,7 +604,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyEndDateTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyEndDateHelp"/>
 		                        </jsp:include> 
-		                        <div class="studentViewFormDataText">${student.studyEndDate}</div>
+		                        <div class="genericViewFormDataText">${student.studyEndDate}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -616,7 +616,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyEndReasonTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyEndReasonHelp"/>
 		                        </jsp:include> 
-		                        <div class="studentViewFormDataText">${student.studyEndReason.name}</div>
+		                        <div class="genericViewFormDataText">${student.studyEndReason.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -628,7 +628,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.studyEndTextTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.studyEndTextHelp"/>
 		                        </jsp:include> 
-		                        <div class="studentViewFormDataText">${student.studyEndText}</div>
+		                        <div class="genericViewFormDataText">${student.studyEndText}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -637,7 +637,7 @@
                     <!--  Student Education Info Ends -->
                     
                     <!--  Student Additional Info Starts -->
-                    <div class="studentViewInfoWapper" id="studentViewAdditionalInfoWrapper">
+                    <div class="genericViewInfoWapper" id="studentViewAdditionalInfoWrapper">
                     
                       <c:choose>
 		                    <c:when test="${not empty student.tags}">
@@ -646,7 +646,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.tagsTitle" />
 		                          <jsp:param name="helpLocale" value="students.viewStudent.tagsHelp" />
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">
+		                        <div class="genericViewFormDataText">
 		                        <c:forEach var="tag" items="${student.tags}" varStatus="vs">
 		                          <c:out value="${tag.text}"/>
 		                          <c:if test="${not vs.last}"><c:out value=" "/></c:if>
@@ -663,7 +663,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.languageTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.languageHelp"/>
 		                        </jsp:include>    
-		                        <div class="studentViewFormDataText">${student.language.name}</div>
+		                        <div class="genericViewFormDataText">${student.language.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -675,7 +675,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.nationalityTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.nationalityHelp"/>
 		                        </jsp:include>    
-		                        <div class="studentViewFormDataText">${student.nationality.name}</div>
+		                        <div class="genericViewFormDataText">${student.nationality.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -687,7 +687,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.activityTypeTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.activityTypeHelp"/>
 		                        </jsp:include>    
-		                        <div class="studentViewFormDataText">${student.activityType.name}</div>
+		                        <div class="genericViewFormDataText">${student.activityType.name}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -699,7 +699,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.additionalInformationTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.additionalInformationHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${student.additionalInfo}</div>
+		                        <div class="genericViewFormDataText">${student.additionalInfo}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -711,7 +711,7 @@
 		                          <jsp:param name="titleLocale" value="students.viewStudent.additionalContactInfoTitle"/>
 		                          <jsp:param name="helpLocale" value="students.viewStudent.additionalContactInfoHelp"/>
 		                        </jsp:include>
-		                        <div class="studentViewFormDataText">${fn:replace(student.contactInfo.additionalInfo, newLineChar, "<br/>")}</div>
+		                        <div class="genericViewFormDataText">${fn:replace(student.contactInfo.additionalInfo, newLineChar, "<br/>")}</div>
 		                      </div>
 		                    </c:when>
 		                  </c:choose>
@@ -721,7 +721,7 @@
 		                      <jsp:param name="titleLocale" value="students.viewStudent.lodgingTitle"/>
 		                      <jsp:param name="helpLocale" value="students.viewStudent.lodgingHelp"/>
 		                    </jsp:include> 
-		                    <div class="studentViewFormDataText">
+		                    <div class="genericViewFormDataText">
 		                      <c:choose>
 		                        <c:when test="${student.lodging}">
 		                          <fmt:message key="students.viewStudent.lodgingYes"/>

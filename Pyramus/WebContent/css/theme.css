@@ -99,6 +99,27 @@ h1.genericPageHeader{
   margin:5px 0px 10px 8px;
 }
 
+.genericViewInfoWapper{
+  background-color:#fff;
+  border:1px solid #E5ECFC;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:4px 10px;
+  margin-bottom:10px;
+  position:relative;
+  width:48%;
+}
+
+.genericViewFormDataText{
+  margin-left:180px;
+  padding:2px 0px;
+}
+
+.genericViewFormDataText p{
+  margin-top:0px;
+}
+
 #componentHoursTotalContainer{
   margin-left:8px;
   width:300px;
@@ -153,18 +174,6 @@ h1.genericPageHeader{
 
 /* View Student - Basic Info */
 
-.studentViewInfoWapper{
-  background-color:#fff;
-  border:1px solid #E5ECFC;
-  border-radius:5px;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
-  padding:4px 10px;
-  margin-bottom:10px;
-  position:relative;
-  width:48%;
-}
-
 #studentViewBasicInfoWrapper .genericFormTitle, #studentViewContactInfoWrapper .genericFormTitle, #studentViewEducationInfoWrapper .genericFormTitle, #studentViewAdditionalInfoWrapper .genericFormTitle{
   float:left;
   margin-right:10px;
@@ -178,6 +187,28 @@ h1.genericPageHeader{
 }
 
 #studentViewBasicInfoWrapper .genericFormSection, #studentViewContactInfoWrapper .genericFormSection, #studentViewEducationInfoWrapper .genericFormSection, #studentViewAdditionalInfoWrapper .genericFormSection{
+  clear:both;
+  display:table;
+  width:100%;
+  padding:6px 0px 6px 0px;
+
+}
+
+/* View Course - Basic Info */
+
+#courseViewBasicInfoWrapper .genericFormTitle, #courseViewDetailedInfoWrapper .genericFormTitle{
+  float:left;
+  margin-right:10px;
+  background:#f2f2f2;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  color:#000;
+  padding:2px 4px;
+  width:160px;
+}
+
+#courseViewBasicInfoWrapper .genericFormSection, #courseViewDetailedInfoWrapper .genericFormSection{
   clear:both;
   display:table;
   width:100%;

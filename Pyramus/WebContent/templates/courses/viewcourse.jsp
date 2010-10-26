@@ -227,205 +227,223 @@
         
         <div id="basic" class="tabContent">
           <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
-          <div class="genericFormSection">
-            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-              <jsp:param name="titleLocale" value="courses.viewCourse.moduleTitle" />
-              <jsp:param name="helpLocale" value="courses.viewCourse.moduleHelp" />
-            </jsp:include>
-            <div>${course.module.name}</div>
-          </div>
           
-          <div class="genericFormSection">
-            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-              <jsp:param name="titleLocale" value="courses.viewCourse.nameTitle" />
-              <jsp:param name="helpLocale" value="courses.viewCourse.nameHelp" />
-            </jsp:include> 
-            
-            <c:choose>
-              <c:when test="${fn:length(course.nameExtension) gt 0}">
-                <div>${course.name} (${course.nameExtension})</div>
-              </c:when>
-              <c:otherwise>
-                <div>${course.name}</div>
-              </c:otherwise>
-            </c:choose>
-          </div>
+          <!--  Course Basic Info Starts -->
+          <div class="genericViewInfoWapper" id="courseViewBasicInfoWrapper">
           
-          <c:choose>
-            <c:when test="${not empty course.tags}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.tagsTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.tagsHelp" />
-                </jsp:include>
-                <c:forEach var="tag" items="${course.tags}" varStatus="vs">
-                  <c:out value="${tag.text}"/>
-                  <c:if test="${not vs.last}"><c:out value=" "/></c:if>
-                </c:forEach>
-              </div>
-            </c:when>
-          </c:choose> 
-  
-          <div class="genericFormSection">
-            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-              <jsp:param name="titleLocale" value="courses.viewCourse.stateTitle" />
-              <jsp:param name="helpLocale" value="courses.viewCourse.stateHelp" />
-            </jsp:include>
-            <div>${course.state.name}</div>
-          </div>
-          
-          <c:choose>
-            <c:when test="${fn:length(course.courseEducationTypes) gt 0}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.educationTypesTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.educationTypesHelp" />
-                </jsp:include>
-                
-                <c:forEach var="courseEducationType" items="${course.courseEducationTypes}">
-                  <c:forEach var="courseEducationSubtype" items="${courseEducationType.courseEducationSubtypes}">
-                    <div>${courseEducationType.educationType.name} - ${courseEducationSubtype.educationSubtype.name}</div>
-                  </c:forEach>
-                </c:forEach>
-              </div>
-            </c:when>
-          </c:choose>
-  
-          <div class="genericFormSection">
-            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-              <jsp:param name="titleLocale" value="courses.viewCourse.subjectTitle" />
-              <jsp:param name="helpLocale" value="courses.viewCourse.subjectHelp" />
-            </jsp:include>
-            <div>${course.subject.name}</div>
-          </div>
-  
-          <c:choose>
-            <c:when test="${course.courseNumber ne null}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.courseNumberTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.courseNumberHelp" />
-                </jsp:include>
-                <div>${course.courseNumber}</div>
-              </div>
-            </c:when>
-          </c:choose> 
-          
-          <c:choose>
-            <c:when test="${course.beginDate ne null}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.beginsTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.beginsHelp" />
-                </jsp:include>
-                <div><fmt:formatDate value="${course.beginDate}" /></div>
-              </div>
-            </c:when>
-          </c:choose> 
-          
-          <c:choose>
-            <c:when test="${course.endDate ne null}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.endsTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.endsHelp" />
-                </jsp:include>
-                <div><fmt:formatDate value="${course.endDate}" /></div>
-              </div>
-            </c:when>
-          </c:choose> 
-          
-          <c:choose>
-            <c:when test="${course.courseLength ne null}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.lengthTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.lengthHelp" />
-                </jsp:include>
-                <div>${course.courseLength.units} ${course.courseLength.unit.name}</div>
-              </div>
-            </c:when>
-          </c:choose> 
-          
-          <c:choose>
-            <c:when test="${course.assessingHours gt 0}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                <jsp:param name="titleLocale" value="courses.viewCourse.assessingHoursTitle" />
-	                <jsp:param name="helpLocale" value="courses.viewCourse.assessingHoursHelp" />
+	          <div class="genericFormSection">
+	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="courses.viewCourse.moduleTitle" />
+	              <jsp:param name="helpLocale" value="courses.viewCourse.moduleHelp" />
+	            </jsp:include>
+	            <div class="genericViewFormDataText">${course.module.name}</div>
+	          </div>
+	          
+	          <div class="genericFormSection">
+	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="courses.viewCourse.nameTitle" />
+	              <jsp:param name="helpLocale" value="courses.viewCourse.nameHelp" />
+	            </jsp:include> 
+	            <div class="genericViewFormDataText">
+	            <c:choose>
+	              <c:when test="${fn:length(course.nameExtension) gt 0}">
+	                <div>${course.name} (${course.nameExtension})</div>
+	              </c:when>
+	              <c:otherwise>
+	                <div>${course.name}</div>
+	              </c:otherwise>
+	            </c:choose>
+	            </div>
+	          </div>
+	          
+	          <div class="genericFormSection">
+		          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		            <jsp:param name="titleLocale" value="courses.viewCourse.descriptionTitle" />
+		            <jsp:param name="helpLocale" value="courses.viewCourse.descriptionHelp" />
+		          </jsp:include>
+		          <div class="genericViewFormDataText">${course.description}</div>
+		        </div>
+	          
+	        </div>
+	        <!--  Course Basic Info Ends -->
+	        
+	        <!--  Course Detailed Info Starts -->
+          <div class="genericViewInfoWapper" id="courseViewDetailedInfoWrapper">
+	          
+	          <c:choose>
+	            <c:when test="${not empty course.tags}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.tagsTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.tagsHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText">
+	                <c:forEach var="tag" items="${course.tags}" varStatus="vs">
+	                  <c:out value="${tag.text}"/>
+	                  <c:if test="${not vs.last}"><c:out value=" "/></c:if>
+	                </c:forEach>
+	                </div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	  
+	          <div class="genericFormSection">
+	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="courses.viewCourse.stateTitle" />
+	              <jsp:param name="helpLocale" value="courses.viewCourse.stateHelp" />
+	            </jsp:include>
+	            <div class="genericViewFormDataText">${course.state.name}</div>
+	          </div>
+	          
+	          <c:choose>
+	            <c:when test="${fn:length(course.courseEducationTypes) gt 0}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.educationTypesTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.educationTypesHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText">
+	                <c:forEach var="courseEducationType" items="${course.courseEducationTypes}">
+	                  <c:forEach var="courseEducationSubtype" items="${courseEducationType.courseEducationSubtypes}">
+	                    <div>${courseEducationType.educationType.name} - ${courseEducationSubtype.educationSubtype.name}</div>
+	                  </c:forEach>
+	                </c:forEach>
+	                </div>
+	              </div>
+	            </c:when>
+	          </c:choose>
+	  
+	          <div class="genericFormSection">
+	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	              <jsp:param name="titleLocale" value="courses.viewCourse.subjectTitle" />
+	              <jsp:param name="helpLocale" value="courses.viewCourse.subjectHelp" />
+	            </jsp:include>
+	            <div class="genericViewFormDataText">${course.subject.name}</div>
+	          </div>
+	  
+	          <c:choose>
+	            <c:when test="${course.courseNumber ne null}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.courseNumberTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.courseNumberHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText">${course.courseNumber}</div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	          
+	          <c:choose>
+	            <c:when test="${course.beginDate ne null}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.beginsTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.beginsHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText"><fmt:formatDate value="${course.beginDate}" /></div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	          
+	          <c:choose>
+	            <c:when test="${course.endDate ne null}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.endsTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.endsHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText"><fmt:formatDate value="${course.endDate}" /></div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	          
+	          <c:choose>
+	            <c:when test="${course.courseLength ne null}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.lengthTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.lengthHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText">${course.courseLength.units} ${course.courseLength.unit.name}</div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	          
+	          <c:choose>
+	            <c:when test="${course.assessingHours gt 0}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		                <jsp:param name="titleLocale" value="courses.viewCourse.assessingHoursTitle" />
+		                <jsp:param name="helpLocale" value="courses.viewCourse.assessingHoursHelp" />
+		              </jsp:include>
+	                <div class="genericViewFormDataText">${course.assessingHours}</div>
+	              </div>
+		          </c:when>
+		        </c:choose> 
+		        
+		        <c:choose>
+	            <c:when test="${course.planningHours gt 0}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="courses.viewCourse.planningHoursTitle" />
+	                  <jsp:param name="helpLocale" value="courses.viewCourse.planningHoursHelp" />
+	                </jsp:include>
+	                <div class="genericViewFormDataText">${course.planningHours}</div>
+	              </div>
+	            </c:when>
+	          </c:choose> 
+	          
+	          <c:choose>
+	            <c:when test="${course.localTeachingDays gt 0}">
+	              <div class="genericFormSection">
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                <jsp:param name="titleLocale" value="courses.viewCourse.localTeachingDaysTitle" />
+	                <jsp:param name="helpLocale" value="courses.viewCourse.localTeachingDaysHelp" />
 	              </jsp:include>
-                <div>${course.assessingHours}</div>
-              </div>
+	              <div class="genericViewFormDataText">${course.localTeachingDays}</div>
+	            </div>
 	          </c:when>
 	        </c:choose> 
 	        
 	        <c:choose>
-            <c:when test="${course.planningHours gt 0}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.viewCourse.planningHoursTitle" />
-                  <jsp:param name="helpLocale" value="courses.viewCourse.planningHoursHelp" />
-                </jsp:include>
-                <div>${course.planningHours}</div>
-              </div>
-            </c:when>
-          </c:choose> 
-          
-          <c:choose>
-            <c:when test="${course.localTeachingDays gt 0}">
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="courses.viewCourse.localTeachingDaysTitle" />
-                <jsp:param name="helpLocale" value="courses.viewCourse.localTeachingDaysHelp" />
-              </jsp:include>
-              <div>${course.localTeachingDays}</div>
-            </div>
-          </c:when>
-        </c:choose> 
-        
-        <c:choose>
-          <c:when test="${course.distanceTeachingDays gt 0}">
-            <div class="genericFormSection">
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="courses.viewCourse.distanceTeachingDaysTitle" />
-                <jsp:param name="helpLocale" value="courses.viewCourse.distanceTeachingDaysHelp" />
-              </jsp:include>
-              <div>${course.distanceTeachingDays}</div>
-            </div>
-          </c:when>
-        </c:choose> 
-        
-        <c:choose>
-          <c:when test="${course.distanceTeachingDays gt 0}">
-            <div class="genericFormSection">
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="courses.viewCourse.teachingHoursTitle" />
-                <jsp:param name="helpLocale" value="courses.viewCourse.teachingHoursHelp" />
-              </jsp:include>
-              <div>${course.teachingHours}</div>
-            </div>
-          </c:when>
-        </c:choose>
-        
-        <div class="genericFormSection">
-          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="courses.viewCourse.personnelTitle" />
-            <jsp:param name="helpLocale" value="courses.viewCourse.personnelHelp" />
-          </jsp:include>
-          <div>
-            <c:forEach var="courseUser" items="${course.courseUsers}">
-              <div>${courseUser.user.fullName} - ${courseUser.role.name}</div>
-            </c:forEach>
-          </div>
-        </div>        
+	          <c:when test="${course.distanceTeachingDays gt 0}">
+	            <div class="genericFormSection">
+	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                <jsp:param name="titleLocale" value="courses.viewCourse.distanceTeachingDaysTitle" />
+	                <jsp:param name="helpLocale" value="courses.viewCourse.distanceTeachingDaysHelp" />
+	              </jsp:include>
+	              <div class="genericViewFormDataText">${course.distanceTeachingDays}</div>
+	            </div>
+	          </c:when>
+	        </c:choose> 
+	        
+	        <c:choose>
+	          <c:when test="${course.distanceTeachingDays gt 0}">
+	            <div class="genericFormSection">
+	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                <jsp:param name="titleLocale" value="courses.viewCourse.teachingHoursTitle" />
+	                <jsp:param name="helpLocale" value="courses.viewCourse.teachingHoursHelp" />
+	              </jsp:include>
+	              <div class="genericViewFormDataText">${course.teachingHours}</div>
+	            </div>
+	          </c:when>
+	        </c:choose>
+	        
+	        <div class="genericFormSection">
+	          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	            <jsp:param name="titleLocale" value="courses.viewCourse.personnelTitle" />
+	            <jsp:param name="helpLocale" value="courses.viewCourse.personnelHelp" />
+	          </jsp:include>
+	          <div class="genericViewFormDataText">
+	            <c:forEach var="courseUser" items="${course.courseUsers}">
+	              <div>${courseUser.user.fullName} - ${courseUser.role.name}</div>
+	            </c:forEach>
+	          </div>
+	        </div>        
   
-        <div class="genericFormSection">
-          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="courses.viewCourse.descriptionTitle" />
-            <jsp:param name="helpLocale" value="courses.viewCourse.descriptionHelp" />
-          </jsp:include>
-          <div>${course.description}</div>
         </div>
+        <!--  Course Detailed Info Ends -->
+        
       </div>
   
       <div id="components" class="tabContent hiddenTab">
