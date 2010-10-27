@@ -294,7 +294,7 @@
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:if test="${student.studyEndDate ne null}">*</c:if>
+              <c:if test="${!student.active}">*</c:if>
             </a>
           </c:forEach>
         </div>

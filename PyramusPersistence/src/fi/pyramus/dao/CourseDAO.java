@@ -189,7 +189,13 @@ public class CourseDAO extends PyramusDAO {
     courseComponent.setArchived(Boolean.TRUE);
     s.saveOrUpdate(courseComponent);
   }
-
+  
+  public void unarchiveCourseComponent(CourseComponent courseComponent) {
+    Session s = getHibernateSession();
+    courseComponent.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseComponent);
+  }
+  
   /**
    * Unarchives a course.
    * 
@@ -1191,6 +1197,30 @@ public class CourseDAO extends PyramusDAO {
     else {
       throw new PersistenceException("Unknown VariableKey");
     }
+  }
+  
+  public void archiveCourseState(CourseState courseState) {
+    Session s = getHibernateSession();
+    courseState.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(courseState);
+  }
+  
+  public void unarchiveCourseState(CourseState courseState) {
+    Session s = getHibernateSession();
+    courseState.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseState);
+  }
+  
+  public void archiveCourseParticipationType(CourseParticipationType courseParticipationType) {
+    Session s = getHibernateSession();
+    courseParticipationType.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(courseParticipationType);
+  }
+  
+  public void unarchiveCourseParticipationType(CourseParticipationType courseParticipationType) {
+    Session s = getHibernateSession();
+    courseParticipationType.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseParticipationType);
   }
   
   /* CourseComponentResource */

@@ -6,7 +6,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -15,9 +14,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceException;
 import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
