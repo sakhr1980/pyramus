@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
@@ -20,8 +21,9 @@ import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
+import fi.pyramus.domainmodel.courses.CourseComponent;
 import fi.pyramus.domainmodel.courses.CourseStudent;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -79,6 +81,8 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
         tagsBuilder.append(' ');
     }
     
+    List<CourseComponent> courseComponents = courseDAO.listCourseComponents(course);
+    
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
     pageRequestContext.getRequest().setAttribute("roles", courseDAO.listCourseUserRoles());
@@ -87,7 +91,7 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
-    pageRequestContext.getRequest().setAttribute("courseComponents", courseDAO.listCourseComponents(course));
+    pageRequestContext.getRequest().setAttribute("courseComponents", courseComponents);
     
     pageRequestContext.setIncludeJSP("/templates/courses/editcourse.jsp");
   }

@@ -408,6 +408,30 @@ IxTable = Class.create({
     
     return null;
   },
+  changeTableId: function (newId) {
+    var oldId = this.options.id;
+    
+    if (this.fire("tableIdChange", { oldId: oldId, newId: newId})) {
+      // Update options id
+      this.options.id = newId;
+      // Update global hash
+      _ixTables.unset(oldId);
+      _ixTables.set(newId, this);
+      // Update rowCount element
+      this._rowCount.name = newId + '.rowCount';
+      // Update ix:tableid attribute
+      this.domNode.setAttribute("ix:tableid", newId);
+      // Update field ids
+      for (var i = 0; i < this.options.columns.length; i++) {
+        var column = this.options.columns[i];
+        for (var row = 0; row < this.getRowCount(); row++) {
+          var cellEditor = this.getCellEditor(row, i);
+          var name = newId ? newId + '.' + row + '.' + (column.paramName ? column.paramName : i) : '';
+          IxTableControllers.getController(cellEditor._dataType).changeParamName(cellEditor, name);
+        }
+      }
+    };
+  },
   _setRowCount: function (rowCount) {
     this._rowCount.value = rowCount; 
   },
@@ -517,10 +541,18 @@ IxTableEditorController = Class.create({
     var column = handlerInstance._column;
     var row = handlerInstance._row;
     var parentNode = handlerInstance._cell;
+    var visible = this.isVisible(handlerInstance); 
     
     this.detachContentHandler(handlerInstance);
+    
     var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
     this.attachContentHandler(table, column, row, parentNode, newHandler);
+    
+    if (visible) 
+      this.show(newHandler);
+    else 
+      this.hide(newHandler);
+    
     this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
     this.destroyHandler(handlerInstance);
   },
@@ -552,6 +584,16 @@ IxTableEditorController = Class.create({
   },
   getMode: function () { },
   getDataType: function () { },
+  changeParamName: function (handlerInstance, name) {
+    if (handlerInstance._editable) {
+      handlerInstance.name = name;
+    } else {
+      handlerInstance._name = name;
+      if (handlerInstance._fieldValue) {
+        handlerInstance._fieldValue.name = name;
+      }
+    }
+  },
   _createEditorElement: function (elementName, name, className, attributes, columnDefinition) {
     var editor = new Element(elementName, Object.extend(attributes||{}, {className: "ixTableCellEditor" + (className ? ' ' + className : '')}));
     

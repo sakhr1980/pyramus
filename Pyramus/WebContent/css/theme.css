@@ -724,6 +724,47 @@ h1.genericPageHeader{
   border-radius:3px;
 }
 
+.courseComponentTitles {
+  height: 20px;
+}
+
+.courseComponentTitle {
+  position: absolute;
+  margin-left: 4px;
+  font-weight: bold;
+} 
+
+.courseComponentResources { 
+  margin-top: 28px;
+  margin-bottom: 8px;
+  margin-left: 20px;
+  margin-right: 8px;
+}
+
+.courseComponentResourceTitle {
+  position: absolute;
+  margin-left: 16px;
+  margin-top: 4px;
+}
+
+.courseComponentResourceCategory {
+  margin-bottom: 4px;
+}
+
+.courseComponentResourceCategoryName {
+  
+  font-style: italic;
+}
+
+.courseComponentResource {
+  margin-left: 16px;
+}
+
+.courseComponentResourceInputContainer>input {
+  width: 292px;
+  margin-left: 16px;
+}
+
 /* Grading Scale */
 
 #createGradingScaleCreateFormContainer .ixTableRow{
@@ -1334,7 +1375,6 @@ a.modalSearchResultPageContainerActive{
 }
 
 /* Auto complete */
-
 div.autocomplete_choices {
   position:absolute;
   background-color:white;
@@ -1343,7 +1383,10 @@ div.autocomplete_choices {
   border-radius:3px;
   border:1px solid #739DE7;
   margin:0px;
-  padding:0;
+  padding:1px;
+  width: auto !important;
+  background: #fff;
+  z-index: 9999;
 }
 
 div.autocomplete_choices ul {
@@ -1353,9 +1396,14 @@ div.autocomplete_choices ul {
 }
 
 div.autocomplete_choices ul li {
-  margin: 1px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  margin-right: 1px;
+  margin-left: 1px;
   list-style-type:none;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 24px;
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   border-radius:3px;
@@ -1367,6 +1415,21 @@ div.autocomplete_choices ul li.selected {
   color:#2351B1;
 }
 
+.autocomplete_progress_indicator>img{
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+div.autocomplete_choices ul li.autocompleteGroupTitle{
+  padding-left: 1px;
+  font-weight: bold;
+} 
+
+div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
+  background:#fff;
+  color:#000;
+  cursor:default; 
+}
 
 /* Student Contact Entry Management */
 
@@ -1436,3 +1499,4 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
   display:inline-block;
 }
 
+>>>>>>> .r168
