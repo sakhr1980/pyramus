@@ -304,12 +304,12 @@
             <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
   
             <div id="viewStudentViewContainer"> 
-              <div class="genericFormContainer"> 
+              <div class="genericFormContainer genericAbsolutePositioningWrappeer"> 
                 <form method="post" id="newContactEntryForm.${student.id}" onsubmit="saveEvent(event, ${student.id});">
                   <input type="hidden" name="studentId" value="${student.id}"/>
                   <input type="hidden" name="entryId" value="-1"/>
-      
-                  <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper columnLeft">
+                  
+                  <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
                     <script type="text/javascript">
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
                       addEntryRow(
