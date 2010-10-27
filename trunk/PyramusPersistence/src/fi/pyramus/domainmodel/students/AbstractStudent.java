@@ -180,7 +180,7 @@ public class AbstractStudent {
   public String getInactiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getFirstName() != null) {
           results.add(student.getFirstName());
         }
@@ -194,7 +194,7 @@ public class AbstractStudent {
   public String getInactiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getLastName() != null) {
           results.add(student.getLastName());
         }
@@ -208,7 +208,7 @@ public class AbstractStudent {
   public String getInactiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getNickname() != null) {
           results.add(student.getNickname());
         }
@@ -222,7 +222,7 @@ public class AbstractStudent {
   public String getInactiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getEducation() != null) {
           results.add(student.getEducation());
         }
@@ -236,7 +236,7 @@ public class AbstractStudent {
   public String getInactiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Email email : student.getContactInfo().getEmails()) {
           if (email.getAddress() != null) {
             results.add(email.getAddress());
@@ -252,7 +252,7 @@ public class AbstractStudent {
   public String getInactiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getStreetAddress() != null) {
             results.add(address.getStreetAddress());
@@ -268,7 +268,7 @@ public class AbstractStudent {
   public String getInactivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getPostalCode() != null) {
             results.add(address.getPostalCode());
@@ -290,7 +290,7 @@ public class AbstractStudent {
   public String getInactive() {
     String result = Boolean.FALSE.toString();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         result = Boolean.TRUE.toString();
         break;
       }
@@ -303,7 +303,7 @@ public class AbstractStudent {
   public String getInactiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCity() != null) {
             results.add(address.getCity());
@@ -319,7 +319,7 @@ public class AbstractStudent {
   public String getInactiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCountry() != null) {
             results.add(address.getCountry());
@@ -335,7 +335,7 @@ public class AbstractStudent {
   public String getInactivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (PhoneNumber phoneNumber : student.getContactInfo().getPhoneNumbers()) {
           results.add(phoneNumber.getNumber());
         }
@@ -349,7 +349,7 @@ public class AbstractStudent {
   public String getInactiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getLodging() != null) {
           results.add(student.getLodging().toString());
         }
@@ -363,7 +363,7 @@ public class AbstractStudent {
   public String getInactiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getStudyProgramme() != null)
           results.add(student.getStudyProgramme().getId().toString());
       }
@@ -376,7 +376,7 @@ public class AbstractStudent {
   public String getInactiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getLanguage() != null)
           results.add(student.getLanguage().getId().toString());
       }
@@ -389,7 +389,7 @@ public class AbstractStudent {
   public String getInactiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getMunicipality() != null)
           results.add(student.getMunicipality().getId().toString());
       }
@@ -402,7 +402,7 @@ public class AbstractStudent {
   public String getInactiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         if (student.getNationality() != null)
           results.add(student.getNationality().getId().toString());
       }
@@ -415,7 +415,7 @@ public class AbstractStudent {
   public String getActiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getFirstName() != null) {
           results.add(student.getFirstName());
         }
@@ -429,7 +429,7 @@ public class AbstractStudent {
   public String getActiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getLastName() != null) {
           results.add(student.getLastName());
         }
@@ -443,7 +443,7 @@ public class AbstractStudent {
   public String getActiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getNickname() != null) {
           results.add(student.getNickname());
         }
@@ -457,7 +457,7 @@ public class AbstractStudent {
   public String getActiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getEducation() != null) {
           results.add(student.getEducation());
         }
@@ -471,7 +471,7 @@ public class AbstractStudent {
   public String getActiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Email email : student.getContactInfo().getEmails()) {
           if (email.getAddress() != null) {
             results.add(email.getAddress());
@@ -487,7 +487,7 @@ public class AbstractStudent {
   public String getActiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getStreetAddress() != null) {
             results.add(address.getStreetAddress());
@@ -503,7 +503,7 @@ public class AbstractStudent {
   public String getActivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getPostalCode() != null) {
             results.add(address.getPostalCode());
@@ -525,7 +525,7 @@ public class AbstractStudent {
   public String getActive() {
     String result = Boolean.FALSE.toString();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         result = Boolean.TRUE.toString();
         break;
       }
@@ -538,7 +538,7 @@ public class AbstractStudent {
   public String getActiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCity() != null) {
             results.add(address.getCity());
@@ -554,7 +554,7 @@ public class AbstractStudent {
   public String getActiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Address address : student.getContactInfo().getAddresses()) {
           if (address.getCountry() != null) {
             results.add(address.getCountry());
@@ -570,7 +570,7 @@ public class AbstractStudent {
   public String getActivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (PhoneNumber phoneNumber : student.getContactInfo().getPhoneNumbers()) {
           results.add(phoneNumber.getNumber());
         }
@@ -584,7 +584,7 @@ public class AbstractStudent {
   public String getActiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getLodging() != null) {
           results.add(student.getLodging().toString());
         }
@@ -598,7 +598,7 @@ public class AbstractStudent {
   public String getActiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getStudyProgramme() != null)
           results.add(student.getStudyProgramme().getId().toString());
       }
@@ -611,7 +611,7 @@ public class AbstractStudent {
   public String getActiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getLanguage() != null)
           results.add(student.getLanguage().getId().toString());
       }
@@ -624,7 +624,7 @@ public class AbstractStudent {
   public String getActiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getMunicipality() != null)
           results.add(student.getMunicipality().getId().toString());
       }
@@ -637,7 +637,7 @@ public class AbstractStudent {
   public String getActiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         if (student.getNationality() != null)
           results.add(student.getNationality().getId().toString());
       }
@@ -650,7 +650,7 @@ public class AbstractStudent {
   public String getActiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && isActiveStudent(student)) {
+      if (!student.getArchived() && student.getActive()) {
         for (Tag tag : student.getTags()) {
           results.add(tag.getText());
         }
@@ -671,7 +671,7 @@ public class AbstractStudent {
   public String getInactiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
-      if (!student.getArchived() && !isActiveStudent(student)) {
+      if (!student.getArchived() && !student.getActive()) {
         for (Tag tag : student.getTags()) {
           results.add(tag.getText());
         }
@@ -691,10 +691,6 @@ public class AbstractStudent {
       }
     }
     return sb.toString();
-  }
-
-  private boolean isActiveStudent(Student student) {
-    return student.getStudyEndDate() == null || student.getStudyEndDate().after(new Date());
   }
 
   @SuppressWarnings("unused")

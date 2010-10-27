@@ -165,14 +165,9 @@
             </c:otherwise>
           </c:choose>
 
-          <c:choose>
-            <c:when test="${courseStudent.student.archived}">
-              <c:set var="studyProgrammeName">${studyProgrammeName} ***</c:set>
-            </c:when>
-            <c:when test="${courseStudent.student.studyEndDate ne null}">
-              <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
-            </c:when>
-          </c:choose>
+          <c:if test="${!courseStudent.student.active}">
+            <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+          </c:if>
           
           studentsTable.addRow([
             "", 

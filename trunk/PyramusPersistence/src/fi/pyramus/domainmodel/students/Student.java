@@ -308,6 +308,11 @@ public class Student implements ArchivableEntity {
 	  return studyEndText;
   }
 	
+	@Transient
+	public boolean getActive() {
+	  return studyEndDate == null || studyEndDate.after(new Date());
+	}
+	
   @Transient
   public Map<String, String> getVariablesAsStringMap() {
     Map<String, String> result = new HashMap<String, String>();
