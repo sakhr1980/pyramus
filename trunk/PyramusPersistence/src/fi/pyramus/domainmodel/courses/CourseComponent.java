@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PersistenceException;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import fi.pyramus.domainmodel.base.ComponentBase;
@@ -34,15 +35,24 @@ public class CourseComponent extends ComponentBase {
   }
   
   public void addResource(CourseComponentResource resource) {
-    if (resource.getCourseComponent() != null)
-      resource.getCourseComponent().removeResource(resource);
+    if (resources.contains(resource)) {
+      if (resource.getCourseComponent() != null)
+        resource.getCourseComponent().removeResource(resource);
+      
       resource.setCourseComponent(this);
-    resources.add(resource);
+      resources.add(resource);
+    } else {
+      throw new PersistenceException("Component already contains this resource");
+    }
   }
   
   public void removeResource(CourseComponentResource resource) {
-    resource.setCourseComponent(null);
-    this.resources.remove(resource);
+    if (!resources.contains(resource)) {
+      resource.setCourseComponent(null);
+      this.resources.remove(resource);
+    } else {
+      throw new PersistenceException("Component does not contain this resource");
+    }
   } 
   
   @ManyToOne
