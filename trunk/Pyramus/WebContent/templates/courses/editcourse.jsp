@@ -1,3 +1,4 @@
+<%@page import="fi.pyramus.domainmodel.courses.CourseComponent"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -21,10 +22,13 @@
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponentseditor.js"></script>
     <script type="text/javascript">
 
       var archivedStudentRowIndex;
       var archivedComponentRowIndex;
+      var componentsEditor;
 
       // Generic resource related functions
 
@@ -372,8 +376,69 @@
         }
         return -1;
       }
-
+      
       // Course components
+      
+      function setupComponents() {
+        componentsEditor = new CourseComponentsEditor($('editCourseComponentsList'), {
+          paramName: 'components',
+          resourceSearchUrl: '${pageContext.request.contextPath}/resources/searchresourcesautocomplete.binary',
+          resourceSearchParamName: 'query',
+          resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+	        nameHeader: '<fmt:message key="courses.editCourse.componentsNameHeader"/>',
+	        lengthHeader: '<fmt:message key="courses.editCourse.componentsLengthHeader"/>',
+	        descriptionHeader: '<fmt:message key="courses.editCourse.componentsDescriptionHeader"/>',
+	        editButtonTooltip: '<fmt:message key="courses.editCourse.componentsEditButtonTooltip"/>',
+	        removeButtonTooltip: '<fmt:message key="courses.editCourse.componentsRemoveButtonTooltip"/>',
+	        archiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsArchiveButtonTooltip"/>',
+          resourceNameTitle: '<fmt:message key="courses.editCourse.componentsResourceNameTitle"/>',
+          resourceUsageTitle: '<fmt:message key="courses.editCourse.componentsResourceUsageTitle"/>',
+          resourceRemoveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceRemoveButtonTooltip"/>',
+          resourceArchiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceArchiveButtonTooltip"/>',
+          resourceDeleteConfirmTitle: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogTitle"/>',
+          resourceDeleteConfirmContentLocale: 'courses.editCourse.componentsResourceDeleteConfirmDialogContent',
+          resourceDeleteConfirmOkLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogOkLabel"/>',
+          resourceDeleteConfirmCancelLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogCancelLabel"/>'
+        });   
+        
+        var componentEditor;
+        var resourceCategory;
+        
+        <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
+          componentEditor = componentsEditor.addCourseComponent(
+            ${component.id}, 
+            '${fn:escapeXml(component.name)}', 
+            ${component.length.units}, 
+            '${fn:escapeXml(component.description)}');
+          
+          <c:forEach var="componentResource" items="${component.resources}">
+	          if (!componentEditor.hasResourceCategory(${componentResource.resource.category.id})) {
+	            resourceCategory = componentEditor.addResourceCategory(
+	                ${componentResource.resource.category.id}, 
+	                '${fn:escapeXml(componentResource.resource.category.name)}');
+	          }
+	            
+	          componentEditor.addResource(${componentResource.resource.category.id}, 
+	              ${componentResource.id}, 
+	              ${componentResource.resource.id},
+	              '${componentResource.resource.resourceType}',
+	              '${fn:escapeXml(componentResource.resource.name)}', 
+	              ${componentResource.usagePercent},
+	              ${componentResource.usagePercent / 100});
+          </c:forEach>
+          
+        </c:forEach>
+      }
+      
+      function addNewComponent() {
+        componentsEditor.addCourseComponent(-1, '', 0, '').toggleEditable();
+        $('noComponentsAddedMessageContainer').setStyle({
+          display: 'none'
+        });
+        $('componentHoursTotalContainer').setStyle({
+          display: ''
+        });
+      }
       
       function setupComponentsTable() {
         var componentsTable = new IxTable($('componentsTable'), {
@@ -508,18 +573,6 @@
             display: ''
           });
         }
-      }
-
-      function addComponentsTableRow() {
-        var table = getIxTableById('componentsTable');
-        table.addRow([-1, '', 0, '', '', '']);
-        table.showCell(table.getRowCount() - 1, table.getNamedColumnIndex("removeButton"));
-        $('noComponentsAddedMessageContainer').setStyle({
-          display: 'none'
-        });
-        $('componentHoursTotalContainer').setStyle({
-          display: ''
-        });
       }
 
       function updateComponentHours() {
@@ -1047,7 +1100,7 @@
       }
             
       // onLoad
-      
+
       function setupTags() {
         JSONRequest.request("tags/getalltags.json", {
           onSuccess: function (jsonResponse) {
@@ -1057,14 +1110,15 @@
           }
         });   
       }
-
+      
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         initializeDraftListener();
         setupTags();
         setupRelatedCommands();
         setupPersonnelTable();
-        setupComponentsTable();
+        setupComponents();
+        /// setupComponentsTable();
         setupBasicResourcesTable();
         setupStudentResourcesTable();
         setupGradeResourcesTable();
@@ -1320,17 +1374,22 @@
 	    
 	        <div id="components" class="tabContentixTableFormattedData hiddenTab">
 	          <div class="genericTableAddRowContainer">
-	             <span class="genericTableAddRowLinkContainer" onclick="addComponentsTableRow();"><fmt:message key="courses.editCourse.addComponentLink"/></span>
-	           </div>
-	             
-	           <div id="noComponentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-	             <span><fmt:message key="courses.editCourse.noComponentsAddedPreFix"/> <span onclick="addComponentsTableRow();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noComponentsAddedClickHereLink"/></span>.</span>
-	           </div>
-	          <div id="componentsTable"> </div>
-            <div id="componentHoursTotalContainer" style="display:none;">
+              <span class="genericTableAddRowLinkContainer" onclick="addNewComponent();"><fmt:message key="courses.editCourse.addComponentLink"/></span>
+            </div>
+            
+            <div id="noComponentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+              <span><fmt:message key="courses.editCourse.noComponentsAddedPreFix"/> <span onclick="addNewComponent();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noComponentsAddedClickHereLink"/></span>.</span>
+            </div>
+            
+	          <div id="editCourseComponentsList">
+	            
+	          </div>
+	          
+	          <div id="componentHoursTotalContainer" style="display:none;">
               <span><fmt:message key="courses.editCourse.totalComponentHoursLabel"/></span>
               <span id="componentHoursTotalValueContainer">0</span>
             </div>
+            
             <ix:extensionHook name="courses.editCourse.tabs.components"/>
 	        </div>
 	        
