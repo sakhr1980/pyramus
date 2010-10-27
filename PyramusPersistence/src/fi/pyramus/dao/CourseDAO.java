@@ -38,6 +38,7 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.BasicCourseResource;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.pyramus.domainmodel.courses.CourseComponentResource;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -189,12 +190,6 @@ public class CourseDAO extends PyramusDAO {
     s.saveOrUpdate(courseComponent);
   }
 
-  public void unarchiveCourseComponent(CourseComponent courseComponent) {
-    Session s = getHibernateSession();
-    courseComponent.setArchived(Boolean.FALSE);
-    s.saveOrUpdate(courseComponent);
-  }
-  
   /**
    * Unarchives a course.
    * 
@@ -267,7 +262,7 @@ public class CourseDAO extends PyramusDAO {
    * @param name Component name
    * @param description Component description
    */
-  public void updateCourseComponent(CourseComponent courseComponent, Double length, EducationalTimeUnit lenghtTimeUnit,
+  public CourseComponent updateCourseComponent(CourseComponent courseComponent, Double length, EducationalTimeUnit lenghtTimeUnit,
       String name, String description) {
     Session s = getHibernateSession();
 
@@ -277,6 +272,8 @@ public class CourseDAO extends PyramusDAO {
     courseComponent.setDescription(description);
 
     s.saveOrUpdate(courseComponent);
+    
+    return courseComponent;
   }
 
   /**
@@ -1196,28 +1193,54 @@ public class CourseDAO extends PyramusDAO {
     }
   }
   
-  public void archiveCourseState(CourseState courseState) {
-    Session s = getHibernateSession();
-    courseState.setArchived(Boolean.TRUE);
-    s.saveOrUpdate(courseState);
-  }
-
-  public void unarchiveCourseState(CourseState courseState) {
-    Session s = getHibernateSession();
-    courseState.setArchived(Boolean.FALSE);
-    s.saveOrUpdate(courseState);
-  }
-
-  public void archiveCourseParticipationType(CourseParticipationType courseParticipationType) {
-    Session s = getHibernateSession();
-    courseParticipationType.setArchived(Boolean.TRUE);
-    s.saveOrUpdate(courseParticipationType);
-  }
-
-  public void unarchiveCourseParticipationType(CourseParticipationType courseParticipationType) {
-    Session s = getHibernateSession();
-    courseParticipationType.setArchived(Boolean.FALSE);
-    s.saveOrUpdate(courseParticipationType);
+  /* CourseComponentResource */
+  
+  public CourseComponentResource findComponentResourceById(Long id) {
+    EntityManager entityManager = getEntityManager();
+    return entityManager.find(CourseComponentResource.class, id);
   }
   
+  @SuppressWarnings("unchecked")
+  public List<CourseComponentResource> listCourseComponentResourcesByCourseComponent(CourseComponent courseComponent) {
+    Session session = getHibernateSession();
+    
+    return session.createCriteria(CourseComponentResource.class)
+      .add(Restrictions.eq("courseComponent", courseComponent))
+      .list();
+  }
+  
+  public CourseComponentResource createCourseComponentResource(CourseComponent courseComponent, Resource resource, Double usagePercent) {
+    EntityManager entityManager = getEntityManager();
+    
+    CourseComponentResource courseComponentResource = new CourseComponentResource();
+    courseComponentResource.setResource(resource);
+    courseComponentResource.setUsagePercent(usagePercent);
+    
+    entityManager.persist(courseComponentResource);
+    
+    courseComponent.addResource(courseComponentResource);
+    entityManager.persist(courseComponent);
+    
+    return courseComponentResource;
+  }
+  
+  public CourseComponentResource updateCourseComponentResourceUsagePercent(CourseComponentResource courseComponentResource, Double usagePercent) {
+    EntityManager entityManager = getEntityManager();
+    
+    courseComponentResource.setUsagePercent(usagePercent);
+    
+    entityManager.persist(courseComponentResource);
+    
+    return courseComponentResource;
+  }
+  
+  public void deleteCourseComponentResource(CourseComponentResource courseComponentResource) {
+    EntityManager entityManager = getEntityManager();
+    
+    CourseComponent courseComponent = courseComponentResource.getCourseComponent();
+    courseComponent.removeResource(courseComponentResource);
+    entityManager.persist(courseComponent);
+    
+    entityManager.remove(courseComponentResource);
+  }
 }
