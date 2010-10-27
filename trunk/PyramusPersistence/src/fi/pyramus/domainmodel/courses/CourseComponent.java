@@ -1,16 +1,18 @@
 package fi.pyramus.domainmodel.courses;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
-
-import org.hibernate.search.annotations.Indexed;
 
 import fi.pyramus.domainmodel.base.ComponentBase;
 
 @Entity
-@Indexed
 @PrimaryKeyJoinColumn(name="id")
 public class CourseComponent extends ComponentBase {
 
@@ -22,8 +24,32 @@ public class CourseComponent extends ComponentBase {
     this.course = course;
   }
   
+  public List<CourseComponentResource> getResources() {
+    return resources;
+  }
+  
+  @SuppressWarnings("unused")
+  private void setResources(List<CourseComponentResource> resource) {
+    this.resources = resource;
+  }
+  
+  public void addResource(CourseComponentResource resource) {
+    if (resource.getCourseComponent() != null)
+      resource.getCourseComponent().removeResource(resource);
+      resource.setCourseComponent(this);
+    resources.add(resource);
+  }
+  
+  public void removeResource(CourseComponentResource resource) {
+    resource.setCourseComponent(null);
+    this.resources.remove(resource);
+  } 
+  
   @ManyToOne
   @JoinColumn(name="course")
   private Course course;
 
+  @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn (name="courseComponent")
+  private List<CourseComponentResource> resources = new ArrayList<CourseComponentResource>();
 }
