@@ -90,9 +90,7 @@
     
     <script type="text/javascript">
       document.observe("dom:loaded", function(event) {
-        setTimeout(function () {
-          replaceDateFields();
-        }, 5000);
+        replaceDateFields();
       });
     </script>
 		
