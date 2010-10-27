@@ -35,7 +35,7 @@ public class CourseComponent extends ComponentBase {
   }
   
   public void addResource(CourseComponentResource resource) {
-    if (resources.contains(resource)) {
+    if (!resources.contains(resource)) {
       if (resource.getCourseComponent() != null)
         resource.getCourseComponent().removeResource(resource);
       
@@ -47,7 +47,7 @@ public class CourseComponent extends ComponentBase {
   }
   
   public void removeResource(CourseComponentResource resource) {
-    if (!resources.contains(resource)) {
+    if (resources.contains(resource)) {
       resource.setCourseComponent(null);
       this.resources.remove(resource);
     } else {
