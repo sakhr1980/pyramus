@@ -32,9 +32,9 @@
           <a class="tabLabel" href="#hibernate">
             <fmt:message key="system.hibernateStatistics.tabLabelHibernate"/>
           </a>
-          <a class="tabLabel" href="#ehcache">
+          <span class="containsNestedTabs"><a class="tabLabel" href="#ehcache">
             <fmt:message key="system.hibernateStatistics.tabLabelEHCache"/>
-          </a>
+          </a></span>
         </div>
         
         <div id="hibernate" class="tabContent">
@@ -150,7 +150,7 @@
 			    </table>
 				</div>
 				  
-			  <div id="ehcache" class="tabContent tabContentSubTabContainer">
+			  <div id="ehcache" class="tabContent tabContentNestedTabs">
 			    <div class="tabLabelsContainer" id="cacheTabs">
 			      <c:forEach var="cache" items="${cacheInfos}">
 			      <a class="tabLabel" href="#ehcache.${cache.name}">

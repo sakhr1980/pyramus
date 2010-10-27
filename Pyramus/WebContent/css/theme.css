@@ -120,6 +120,10 @@ h1.genericPageHeader{
   margin-top:0px;
 }
 
+.genericAbsolutePositioningWrappeer{
+  position:relative;
+}
+
 #componentHoursTotalContainer{
   margin-left:8px;
   width:300px;
@@ -1434,15 +1438,15 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 /* Student Contact Entry Management */
 
 .studentContactNewEntryWrapper{
-  width:48%;
-//  display:inline-block;
-  margin-left:50%;
-
-
+  position:absolute;
+  right:10px;
+  left:50%;
+  top:0px;
 }
 
 .studentContactEntryWrapper{
-  width:49%;
+  width:50%;
+  min-height:480px;
 }
 
 .studentContactEntryItem{
@@ -1454,6 +1458,7 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
   padding:10px;
   margin-bottom:10px;
   position:relative;
+  margin-right:20px;
 }
 
 .studentContactEntryItem:hover{
