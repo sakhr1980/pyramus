@@ -538,7 +538,7 @@
                   </c:otherwise>
                 </c:choose>
                 
-                <c:if test="${student.studyEndDate != null}">*</c:if>
+                <c:if test="${!student.active}">*</c:if>
               </a>
             </c:forEach>
             <ix:extensionHook name="students.editStudent.tabLabels"/>
