@@ -125,7 +125,7 @@ h1.genericPageHeader{
 }
 
 #componentHoursTotalContainer{
-  margin-left:8px;
+  margin-left:18px;
   width:300px;
   text-align:right;
   padding:0px 2px 0px 0px;
@@ -728,13 +728,24 @@ h1.genericPageHeader{
   border-radius:3px;
 }
 
+.courseComponent {
+  display:block;
+  background-color:#fff;
+  border:1px solid #E5ECFC;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  margin:8px;
+  padding:0px 0px 8px 0px;
+}
+
 .courseComponentTitles {
   height: 20px;
 }
 
 .courseComponentTitle {
   position: absolute;
-  margin-left: 4px;
+  margin-left: 12px;
   font-weight: bold;
 } 
 
@@ -747,17 +758,22 @@ h1.genericPageHeader{
 
 .courseComponentResourceTitle {
   position: absolute;
-  margin-left: 16px;
+  margin-left: 30px;
   margin-top: 4px;
 }
 
 .courseComponentResourceCategory {
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
 .courseComponentResourceCategoryName {
-  
+  font-weight:bold;
   font-style: italic;
+  background:#f8f8f8;
+  padding:4px 5px 4px 8px;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
 }
 
 .courseComponentResource {
@@ -1385,10 +1401,13 @@ div.autocomplete_choices {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   border-radius:3px;
-  border:1px solid #739DE7;
+  border-left:2px solid #E5ECFC;
+  border-right:2px solid #E5ECFC;
+  border-bottom:2px solid #E5ECFC;
   margin:0px;
-  padding:1px;
+  padding:0px;
   width: auto !important;
+  min-width:290px;
   background: #fff;
   z-index: 9999;
 }
@@ -1427,10 +1446,13 @@ div.autocomplete_choices ul li.selected {
 div.autocomplete_choices ul li.autocompleteGroupTitle{
   padding-left: 1px;
   font-weight: bold;
+  font-style: italic;
+  background:#f8f8f8;
+  padding:4px 5px 4px 5px;
 } 
 
 div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
-  background:#fff;
+  background:#f8f8f8;
   color:#000;
   cursor:default; 
 }
@@ -1503,3 +1525,4 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
   padding:0px 5px 0px 10px;
   display:inline-block;
 }
+
