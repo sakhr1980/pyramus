@@ -97,6 +97,8 @@ CourseComponentsEditor = Class.create({
       editButtonTooltip: this._options.editButtonTooltip,
       removeButtonTooltip: this._options.removeButtonTooltip,
       archiveButtonTooltip: this._options.archiveButtonTooltip,
+      materialResourceUnit: this._options.materialResourceUnit,
+      workResourceUnit: this._options.workResourceUnit,
       archiveConfirmTitle: this._options.archiveConfirmTitle,
       archiveConfirmContentLocale: this._options.archiveConfirmContentLocale,
       archiveConfirmOkLabel: this._options.archiveConfirmOkLabel,
@@ -115,6 +117,7 @@ CourseComponentsEditor = Class.create({
       resourceDeleteConfirmOkLabel: this._options.resourceDeleteConfirmOkLabel,
       resourceDeleteConfirmCancelLabel: this._options.resourceDeleteConfirmCancelLabel,
       resourceCategoryTableSettings: [
+        { },
         { },
         { },
         {
@@ -170,11 +173,20 @@ CourseComponentsEditor = Class.create({
     
     this._updateComponentHoursSum();
   },
+  getComponentEditors: function () {
+    return this._components;
+  },
+  removeAllCourseComponents: function () {
+    var components = this.getComponentEditors();
+    for (var i = components.length; i >= 0; i--) {
+      this.removeCourseComponent(i);
+    }
+  },
   _updateComponentHoursSum: function () {
     var sum = 0;
     
     for (var i = 0, l = this._components.length; i < l; i++) {
-      sum += this._components[i].getHours();
+      sum += parseInt(this._components[i].getLength());
     }
     
     $(this._options.componentHoursSumElement).update(sum);
