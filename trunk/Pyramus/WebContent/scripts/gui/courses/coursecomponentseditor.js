@@ -178,7 +178,7 @@ CourseComponentsEditor = Class.create({
   },
   removeAllCourseComponents: function () {
     var components = this.getComponentEditors();
-    for (var i = components.length; i >= 0; i--) {
+    for (var i = components.length - 1; i >= 0; i--) {
       this.removeCourseComponent(i);
     }
   },
