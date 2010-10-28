@@ -5,11 +5,22 @@ var DRAFTUI;
 var __STOPDRAFTING = false;
 
 function storeLatestDraftDataHash(draftData) {
-  $(document.body).getStorage().set("latestDraftDataHash", hex_md5(draftData));
+  var hash = hex_md5(draftData);
+  $(document.body).getStorage().set("latestDraftDataHash", hash);
+  return hash;
+}
+
+function getLatestDraftDataHash() {
+  var hash = $(document.body).getStorage().get("latestDraftDataHash");  
+  if (!hash) {
+    hash = storeLatestDraftDataHash(DRAFTAPI.createFormDraft());
+  }
+  
+  return hash;
 }
 
 function isDraftEqualToLatestDraft(draftData) {
-  var hash = $(document.body).getStorage().get("latestDraftDataHash");
+  var hash = getLatestDraftDataHash();
   return hex_md5(draftData) == hash;
 }
 
