@@ -58,6 +58,9 @@ CourseComponentEditor = Class.create({
   
     parentNode.appendChild(this._domNode);
   },
+  getHours: function () {
+    return parseInt(this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("length")));
+  },
   setParamName: function (paramName) {
     this._paramName = paramName;
     this._resourceCategoryCountElement.name = this._paramName + '.resourceCategoryCount';
@@ -65,7 +68,7 @@ CourseComponentEditor = Class.create({
     
     var categoryTables = this._categoryTables.values();
     for (var i = 0, l = categoryTables.length; i < l; i++) {
-      categoryTables[i].changeTableId(this._paramName + '.' + categoryCount + '.resources');
+      categoryTables[i].changeTableId(this._paramName + '.' + i + '.resources');
     }
   },
   addResourceCategory: function (categoryId, categoryName) {
@@ -213,6 +216,9 @@ CourseComponentEditor = Class.create({
   },
   remove: function () {
     this._domNode.remove();
+  },
+  getComponentsInfoTable: function () {
+    return this._componentInfoTable;
   },
   _addResourceAddInput: function () {
     this._resourceAddInput = new Element("div", {className: "courseComponentResourceInputContainer"});
@@ -372,6 +378,41 @@ CourseComponentEditor = Class.create({
         imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
         tooltip: this._options.archiveButtonTooltip,
         onclick: function (event) {
+          var table = event.tableObject;
+          var componentId = table.getCellValue(event.row, table.getNamedColumnIndex('componentId'));
+          var name = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
+          var url = GLOBAL_contextPath + "/simpledialog.page?localeId=" + _this._options.archiveConfirmContentLocale + "&localeParams=" + encodeURIComponent(name);
+           
+          deleteRowIndex = event.row; 
+             
+          var dialog = new IxDialog({
+            id : 'confirmRemoval',
+            contentURL : url,
+            centered : true,
+            showOk : true,  
+            showCancel : true,
+            autoEvaluateSize: true,
+            title : _this._options.archiveConfirmTitle,
+            okLabel : _this._options.archiveConfirmOkLabel,
+            cancelLabel : _this._options.archiveConfirmCancelLabel
+          });
+        
+          dialog.addDialogListener(function(event) {
+            switch (event.name) {
+              case 'okClick':
+                JSONRequest.request("courses/archivecoursecomponent.json", {
+                  parameters: {
+                    componentId: componentId
+                  },
+                  onSuccess: function (jsonResponse) {
+                    componentsEditor.removeCourseComponent(componentsEditor.getCourseComponentIndex(_this));
+                  }
+                });   
+              break;
+            }
+          });
+        
+          dialog.open();
         }
       }];
 

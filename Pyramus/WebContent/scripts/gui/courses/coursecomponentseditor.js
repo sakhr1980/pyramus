@@ -87,7 +87,7 @@ CourseComponentsEditor = Class.create({
   },
   addCourseComponent: function (componentId, componentName, componentLength, componentDescription) {
     var componentCount = parseInt(this._componentCountElement.value);
-    
+     
     var componentEditor = new CourseComponentEditor(this._domNode, this, {
       paramName: this._options.paramName + '.component.' + componentCount,
       componentId: componentId,
@@ -97,6 +97,10 @@ CourseComponentsEditor = Class.create({
       editButtonTooltip: this._options.editButtonTooltip,
       removeButtonTooltip: this._options.removeButtonTooltip,
       archiveButtonTooltip: this._options.archiveButtonTooltip,
+      archiveConfirmTitle: this._options.archiveConfirmTitle,
+      archiveConfirmContentLocale: this._options.archiveConfirmContentLocale,
+      archiveConfirmOkLabel: this._options.archiveConfirmOkLabel,
+      archiveConfirmCancelLabel: this._options.archiveConfirmCancelLabel,
       resourceSearchUrl: this._options.resourceSearchUrl,
       resourceSearchParamName: this._options.resourceSearchParamName,
       resourceSearchProgressImageUrl: this._options.resourceSearchProgressImageUrl,
@@ -144,6 +148,13 @@ CourseComponentsEditor = Class.create({
     
     this._components.push(componentEditor);
     
+    var _this = this;
+    componentEditor.getComponentsInfoTable().addListener("cellValueChange", function (event) {
+      _this._updateComponentHoursSum();
+    });
+    
+    this._updateComponentHoursSum();
+    
     return componentEditor;
   },
   removeCourseComponent: function (courseComponentIndex) {
@@ -156,5 +167,16 @@ CourseComponentsEditor = Class.create({
       component.remove();
       this._componentCountElement.value = parseInt(this._componentCountElement.value) - 1;
     }
+    
+    this._updateComponentHoursSum();
+  },
+  _updateComponentHoursSum: function () {
+    var sum = 0;
+    
+    for (var i = 0, l = this._components.length; i < l; i++) {
+      sum += this._components[i].getHours();
+    }
+    
+    $(this._options.componentHoursSumElement).update(sum);
   }
 });
