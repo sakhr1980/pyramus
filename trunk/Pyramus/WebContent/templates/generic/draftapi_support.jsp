@@ -77,7 +77,6 @@
                   
                     dialog.open();
                   } else {
-                    storeLatestDraftDataHash(DRAFTAPI.createFormDraft());
                     startDraftSaving();
                   }
                 } 
