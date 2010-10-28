@@ -382,6 +382,7 @@
       function setupComponents() {
         componentsEditor = new CourseComponentsEditor($('editCourseComponentsList'), {
           paramName: 'components',
+          componentHoursSumElement: $('componentHoursTotalValueContainer'),
           resourceSearchUrl: '${pageContext.request.contextPath}/resources/searchresourcesautocomplete.binary',
           resourceSearchParamName: 'query',
           resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
@@ -391,7 +392,11 @@
 	        editButtonTooltip: '<fmt:message key="courses.editCourse.componentsEditButtonTooltip"/>',
 	        removeButtonTooltip: '<fmt:message key="courses.editCourse.componentsRemoveButtonTooltip"/>',
 	        archiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsArchiveButtonTooltip"/>',
-          resourceNameTitle: '<fmt:message key="courses.editCourse.componentsResourceNameTitle"/>',
+          archiveConfirmTitle: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogTitle"/>',
+          archiveConfirmContentLocale: 'courses.editCourse.archiveComponentConfirmDialogContent',
+          archiveConfirmOkLabel: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogOkLabel"/>',
+          archiveConfirmCancelLabel: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogCancelLabel"/>',
+	        resourceNameTitle: '<fmt:message key="courses.editCourse.componentsResourceNameTitle"/>',
           resourceUsageTitle: '<fmt:message key="courses.editCourse.componentsResourceUsageTitle"/>',
           resourceRemoveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceRemoveButtonTooltip"/>',
           resourceArchiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceArchiveButtonTooltip"/>',
@@ -401,33 +406,41 @@
           resourceDeleteConfirmCancelLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogCancelLabel"/>'
         });   
         
-        var componentEditor;
-        var resourceCategory;
-        
-        <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
-          componentEditor = componentsEditor.addCourseComponent(
-            ${component.id}, 
-            '${fn:escapeXml(component.name)}', 
-            ${component.length.units}, 
-            '${fn:escapeXml(component.description)}');
-          
-          <c:forEach var="componentResource" items="${component.resources}">
-	          if (!componentEditor.hasResourceCategory(${componentResource.resource.category.id})) {
-	            resourceCategory = componentEditor.addResourceCategory(
-	                ${componentResource.resource.category.id}, 
-	                '${fn:escapeXml(componentResource.resource.category.name)}');
-	          }
-	            
-	          componentEditor.addResource(${componentResource.resource.category.id}, 
-	              ${componentResource.id}, 
-	              ${componentResource.resource.id},
-	              '${componentResource.resource.resourceType}',
-	              '${fn:escapeXml(componentResource.resource.name)}', 
-	              ${componentResource.usagePercent},
-	              ${componentResource.usagePercent / 100});
-          </c:forEach>
-          
-        </c:forEach>
+        <c:if test="${fn:length(courseComponents) gt 0}">
+	        $('noComponentsAddedMessageContainer').setStyle({
+	          display: 'none'
+	        });
+	        $('componentHoursTotalContainer').setStyle({
+	          display: ''
+	        });
+	        var componentEditor;
+	        var resourceCategory;
+	        
+	        <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
+	          componentEditor = componentsEditor.addCourseComponent(
+	            ${component.id}, 
+	            '${fn:escapeXml(component.name)}', 
+	            ${component.length.units}, 
+	            '${fn:escapeXml(component.description)}');
+	          
+	          <c:forEach var="componentResource" items="${component.resources}">
+		          if (!componentEditor.hasResourceCategory(${componentResource.resource.category.id})) {
+		            resourceCategory = componentEditor.addResourceCategory(
+		                ${componentResource.resource.category.id}, 
+		                '${fn:escapeXml(componentResource.resource.category.name)}');
+		          }
+		            
+		          componentEditor.addResource(${componentResource.resource.category.id}, 
+		              ${componentResource.id}, 
+		              ${componentResource.resource.id},
+		              '${componentResource.resource.resourceType}',
+		              '${fn:escapeXml(componentResource.resource.name)}', 
+		              ${componentResource.usagePercent},
+		              ${componentResource.usagePercent / 100});
+	          </c:forEach>
+	          
+	        </c:forEach>
+	      </c:if>
       }
       
       function addNewComponent() {
