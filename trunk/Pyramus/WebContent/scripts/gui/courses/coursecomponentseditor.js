@@ -153,8 +153,8 @@ CourseComponentsEditor = Class.create({
       for (var i = courseComponentIndex, l = this._components.length; i < l;i++) {
         this._components[i].setParamName(this._options.paramName + '.component.' + i);
       }
-      
       component.remove();
+      this._componentCountElement.value = parseInt(this._componentCountElement.value) - 1;
     }
   }
 });
