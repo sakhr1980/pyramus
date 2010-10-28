@@ -61,7 +61,7 @@ CourseComponentEditor = Class.create({
   setParamName: function (paramName) {
     this._paramName = paramName;
     this._resourceCategoryCountElement.name = this._paramName + '.resourceCategoryCount';
-    this._componentInfoTable.changeTableId(this._options.paramName);
+    this._componentInfoTable.changeTableId(this._paramName);
     
     var categoryTables = this._categoryTables.values();
     for (var i = 0, l = categoryTables.length; i < l; i++) {
@@ -172,7 +172,7 @@ CourseComponentEditor = Class.create({
     }
     
     var resourcesTable = new IxTable(categoryElement, {
-      id: this._options.paramName + '.' + categoryCount + '.resources',
+      id: this._paramName + '.' + categoryCount + '.resources',
       columns: columnSettings
     });
     
@@ -388,7 +388,7 @@ CourseComponentEditor = Class.create({
     }
     
     return new IxTable(this._domNode, {
-      id: this._options.paramName,
+      id: this._paramName,
       columns: componentInfoTableColumnSettings
     });
   }
