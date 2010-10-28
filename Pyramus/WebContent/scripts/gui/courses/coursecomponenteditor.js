@@ -58,8 +58,17 @@ CourseComponentEditor = Class.create({
   
     parentNode.appendChild(this._domNode);
   },
-  getHours: function () {
-    return parseInt(this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("length")));
+  getComponentId: function () {
+    return this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("componentId"));
+  },
+  getName: function () {
+    return this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("name"));
+  },
+  getLength: function () {
+    return this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("length"));
+  },
+  getDescription: function () {
+    return this._componentInfoTable.getCellValue(0, this._componentInfoTable.getNamedColumnIndex("description"));
   },
   setParamName: function (paramName) {
     this._paramName = paramName;
@@ -87,8 +96,11 @@ CourseComponentEditor = Class.create({
         dataType: 'hidden',
         paramName: 'id'
       }, {
-        dataType: 'hidden',
+        dataType: 'hidden', 
         paramName: 'resourceId'
+      }, {
+        dataType: 'hidden', 
+        paramName: 'resourceType'
       }, {
         dataType: 'text',
         editable: false,
@@ -190,15 +202,15 @@ CourseComponentEditor = Class.create({
   },
   addResource: function (categoryId, componentResourceId, resourceId, resourceType, resourceName, usage, quantity) {
     var categoryTable = this._categoryTables.get(categoryId);
-    var row = categoryTable.addRow([componentResourceId, resourceId, resourceName, usage, quantity, '', '', '']);
+    var row = categoryTable.addRow([componentResourceId, resourceId, resourceType, resourceName, usage, quantity, '', '', '']);
     var usageColumn;
     
     if (resourceType == 'MATERIAL_RESOURCE') {
       usageColumn = categoryTable.getNamedColumnIndex("quantity");
-      categoryTable.setCellValue(row, categoryTable.getNamedColumnIndex("unit"), 'kpl');
+      categoryTable.setCellValue(row, categoryTable.getNamedColumnIndex("unit"), this._options.materialResourceUnit);
     } else if (resourceType == 'WORK_RESOURCE') {
       usageColumn = categoryTable.getNamedColumnIndex("usage");
-      categoryTable.setCellValue(row, categoryTable.getNamedColumnIndex("unit"), '%');
+      categoryTable.setCellValue(row, categoryTable.getNamedColumnIndex("unit"), this._options.workResourceUnit);
     }
 
     categoryTable.showCell(row, usageColumn);
@@ -272,6 +284,53 @@ CourseComponentEditor = Class.create({
   _removeResourceAddInput: function () {
     if (this._resourceAddInput)
       this._resourceAddInput.remove();
+  },
+  getComponentResourceCategoryIds: function() {
+    return this._categoryTables.keys();
+  },
+  getComponentResourceCategoryName: function (categoryId) {
+    var categoryIdElement = this._resourcesContainer.down('div.courseComponentResourceCategory>input[value=' + categoryId + ']');
+    return categoryIdElement.nextElementSibling.innerHTML;
+  },
+  getComponentResourceCategoryResourceCount: function (categoryId) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    return categoryTable.getRowCount();
+  },
+  getComponentResourceId: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('id'));
+    }
+  },
+  getComponentResourceResourceId: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('resourceId'));
+    }
+  }, 
+  getComponentResourceResourceType: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('resourceType'));
+    }
+  }, 
+  getComponentResourceResourceName: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('name'));
+    }
+  }, 
+  getComponentResourceUsage: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('usage'));
+    }
+  },
+  getComponentResourceQuantity: function (categoryId, index) {
+    var categoryTable = this._categoryTables.get(categoryId);
+    if (categoryTable) {
+      return categoryTable.getCellValue(index, categoryTable.getNamedColumnIndex('quantity'));
+    }
   },
   toggleEditable: function () {
     if (!this._editing) {

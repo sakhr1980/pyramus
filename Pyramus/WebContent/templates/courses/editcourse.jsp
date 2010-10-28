@@ -24,12 +24,17 @@
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditor.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponentseditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditordrafttask.js"></script>
     <script type="text/javascript">
 
       var archivedStudentRowIndex;
       var archivedComponentRowIndex;
       var componentsEditor;
 
+      function getCourseComponentsEditor() {
+        return componentsEditor;
+      }
+      
       // Generic resource related functions
 
       function openSearchResourcesDialog(targetTableId) {
@@ -388,6 +393,8 @@
           resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
 	        nameHeader: '<fmt:message key="courses.editCourse.componentsNameHeader"/>',
 	        lengthHeader: '<fmt:message key="courses.editCourse.componentsLengthHeader"/>',
+	        materialResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceMaterialResourceUnit"/>',
+	        workResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceWorkResourceUnit"/>',
 	        descriptionHeader: '<fmt:message key="courses.editCourse.componentsDescriptionHeader"/>',
 	        editButtonTooltip: '<fmt:message key="courses.editCourse.componentsEditButtonTooltip"/>',
 	        removeButtonTooltip: '<fmt:message key="courses.editCourse.componentsRemoveButtonTooltip"/>',
