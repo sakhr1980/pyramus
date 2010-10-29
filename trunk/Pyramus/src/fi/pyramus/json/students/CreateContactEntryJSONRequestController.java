@@ -21,7 +21,7 @@ import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
  * 
  * @author antti.viljakainen
  */
-public class CreateNewContactEntryJSONRequestController implements JSONRequestController {
+public class CreateContactEntryJSONRequestController implements JSONRequestController {
 
   /**
    * Method to process JSON requests.
@@ -37,7 +37,7 @@ public class CreateNewContactEntryJSONRequestController implements JSONRequestCo
    * - results Map including
    * * id - New entry id
    * * creatorName - New entry creator
-   * * date - New entry date
+   * * timestamp - New entry date
    * * text - New entry message
    * * type - New entry type
    * 

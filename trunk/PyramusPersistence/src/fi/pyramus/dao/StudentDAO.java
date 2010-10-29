@@ -36,6 +36,7 @@ import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
 import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentGroup;
@@ -1119,4 +1120,45 @@ public class StudentDAO extends PyramusDAO {
     s.saveOrUpdate(studentExaminationType);
   }
 
+  public StudentContactLogEntryComment findStudentContactLogEntryCommentById(Long commentId) {
+    Session s = getHibernateSession();
+    return (StudentContactLogEntryComment) s.load(StudentContactLogEntryComment.class, commentId);
+  }
+
+  public void archiveContactEntryComment(StudentContactLogEntryComment comment) {
+    Session s = getHibernateSession();
+    comment.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(comment);
+  }
+
+  public void unarchiveContactEntryComment(StudentContactLogEntryComment comment) {
+    Session s = getHibernateSession();
+    comment.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(comment);
+  }
+
+  public void updateStudentContactLogEntryComment(StudentContactLogEntryComment comment, 
+      String commentText, Date commentDate, String commentCreatorName) {
+    Session s = getHibernateSession();
+    comment.setText(commentText);
+    comment.setCommentDate(commentDate);
+    comment.setCreatorName(commentCreatorName);
+    s.saveOrUpdate(comment);
+  }
+
+  public StudentContactLogEntryComment createStudentContactLogEntryComment(
+      StudentContactLogEntry entry, String commentText, Date commentDate,
+      String commentCreatorName) {
+    Session s = getHibernateSession();
+
+    StudentContactLogEntryComment comment = new StudentContactLogEntryComment();
+    comment.setEntry(entry);
+    comment.setCreatorName(commentCreatorName);
+    comment.setCommentDate(commentDate);
+    comment.setText(commentText);
+
+    s.save(comment);
+    return comment;
+  }
+  
 }
