@@ -736,6 +736,14 @@ h1.genericPageHeader{
   color:#000;
 }
 
+#editCourseEditFormContainer .courseComponentEdit .ixTableRow:hover{
+  background:#D7E3F9;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  color:#000;
+}
+
 .courseComponent {
   display:block;
   background-color:#fff;
