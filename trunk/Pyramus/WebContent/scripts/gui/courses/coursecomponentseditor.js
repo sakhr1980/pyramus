@@ -14,11 +14,12 @@ CourseComponentsEditor = Class.create({
       {
         title: options.lengthHeader,
         left : 248,
+        headerLeft: 285,
         width : 60
       },
       {
         title: options.descriptionHeader,
-        left: 312,
+        left: 346,
         right : 68
       },
       {
@@ -48,24 +49,28 @@ CourseComponentsEditor = Class.create({
       if (setting.title) {
         var titleElement = new Element("div", {className: "courseComponentTitle"}).update(setting.title);
         
-        if (setting.left) {
+        var left = setting.headerLeft||setting.left; 
+        var right = setting.headerRight||setting.right;
+        var width = setting.headerWidth||setting.width;
+        
+        if (left) {
           titleElement.setStyle({
-            left: setting.left + 'px'
+            left: left + 'px'
           });
         }
         
-        if (setting.right) {
+        if (right) {
           titleElement.setStyle({
-            right: setting.right + 'px'
+            right: right + 'px'
           });
         }
         
-        if (setting.width) {
+        if (width) {
           titleElement.setStyle({
-            width: setting.width + 'px'
+            width: width + 'px'
           });
         }
-        
+
         this._titlesContainer.appendChild(titleElement);
       }
     }
@@ -127,6 +132,7 @@ CourseComponentsEditor = Class.create({
         }, { 
           title: this._options.resourceUsageTitle,
           left : 248,
+          headerLeft: 330,
           width : 120
         }, { 
           title: '',
