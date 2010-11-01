@@ -335,6 +335,7 @@ CourseComponentEditor = Class.create({
   toggleEditable: function () {
     if (!this._editing) {
       this._editing = true;
+      this._domNode.addClassName('courseComponentEdit');
       
       this._addResourceAddInput();
       
@@ -360,6 +361,7 @@ CourseComponentEditor = Class.create({
       }
     } else {
       this._editing = false;
+      this._domNode.removeClassName('courseComponentEdit');
       
       this._removeResourceAddInput();
       
