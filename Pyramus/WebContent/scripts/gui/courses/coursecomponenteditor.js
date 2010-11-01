@@ -30,24 +30,28 @@ CourseComponentEditor = Class.create({
       if (setting.title) {
         var resourceTitle = new Element("div", {className: "courseComponentResourceTitle"}).update(setting.title);
         
-        if (setting.left) {
+        var left = setting.headerLeft||setting.left; 
+        var right = setting.headerRight||setting.right;
+        var width = setting.headerWidth||setting.width;
+        
+        if (left) {
           resourceTitle.setStyle({
-            left: setting.left + 'px'
+            left: left + 'px'
           });
         }
         
-        if (setting.right) {
+        if (right) {
           resourceTitle.setStyle({
-            right: setting.right + 'px'
+            right: right + 'px'
           });
         }
         
-        if (setting.width) {
+        if (width) {
           resourceTitle.setStyle({
-            width: setting.width + 'px'
+            width: width + 'px'
           });
         }
-        
+
         this._resourceTitlesContainer.appendChild(resourceTitle);
       }
     }

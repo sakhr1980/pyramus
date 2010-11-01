@@ -778,10 +778,17 @@ h1.genericPageHeader{
   margin-right: 8px;
 }
 
+.courseComponentResourceTitles {
+  border-bottom:1px solid #fff;
+  margin-top:5px;
+}
+
 .courseComponentResourceTitle {
   position: absolute;
   margin-left: 30px;
   margin-top: 4px;
+  padding-top:2px;
+  font-weight:bold;
 }
 
 .courseComponentResourceCategory {
