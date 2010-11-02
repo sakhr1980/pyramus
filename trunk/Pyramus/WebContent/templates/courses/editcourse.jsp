@@ -410,16 +410,19 @@
           resourceDeleteConfirmTitle: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogTitle"/>',
           resourceDeleteConfirmContentLocale: 'courses.editCourse.componentsResourceDeleteConfirmDialogContent',
           resourceDeleteConfirmOkLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogOkLabel"/>',
-          resourceDeleteConfirmCancelLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogCancelLabel"/>'
+          resourceDeleteConfirmCancelLabel: '<fmt:message key="courses.editCourse.componentsResourceDeleteConfirmDialogCancelLabel"/>',
+          noResourcesMessage: "<fmt:message key="courses.editCourse.componentsNoResourcesMessage" />"
         });   
         
         <c:if test="${fn:length(courseComponents) gt 0}">
+        
 	        $('noComponentsAddedMessageContainer').setStyle({
 	          display: 'none'
 	        });
 	        $('componentHoursTotalContainer').setStyle({
 	          display: ''
 	        });
+	        
 	        var componentEditor;
 	        var resourceCategory;
 	        
@@ -451,7 +454,12 @@
       }
       
       function addNewComponent() {
-        componentsEditor.addCourseComponent(-1, '', 0, '').toggleEditable();
+        var componentEditor = componentsEditor.addCourseComponent(-1, '', 0, '');
+        
+        componentEditor.toggleEditable();
+        if (!componentsEditor.isComponentInView(componentEditor))
+          componentsEditor.scrollToComponent(componentEditor);
+        
         $('noComponentsAddedMessageContainer').setStyle({
           display: 'none'
         });

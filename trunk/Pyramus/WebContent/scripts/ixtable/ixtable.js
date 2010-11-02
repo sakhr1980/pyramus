@@ -225,7 +225,7 @@ IxTable = Class.create({
     }
     
     this.fire("rowDelete", {
-      tableObject: this,
+      tableObject: this, 
       row: rowNumber
     });
 
@@ -371,6 +371,11 @@ IxTable = Class.create({
         dataType: dataType
       });
     }
+  },
+  focusCell: function (row, column) {
+    var editor = this.getCellEditor(row, column);
+    var controller = IxTableControllers.getController(editor._dataType);
+    controller.focus(editor);
   },
   getCellDataType: function (row, column) {
     var editor = this.getCellEditor(row, column);
@@ -593,6 +598,9 @@ IxTableEditorController = Class.create({
         handlerInstance._fieldValue.name = name;
       }
     }
+  },
+  focus: function (handlerInstance) {
+    Form.Element.focus(handlerInstance);
   },
   _createEditorElement: function (elementName, name, className, attributes, columnDefinition) {
     var editor = new Element(elementName, Object.extend(attributes||{}, {className: "ixTableCellEditor" + (className ? ' ' + className : '')}));
@@ -1239,6 +1247,8 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
   _onClick: function (event) {
     var handlerInstance = Event.element(event);
     if (handlerInstance._columnDefinition.onclick) {
+      Event.stop(event);
+      
       if (this.isDisabled(handlerInstance) != true) { 
         handlerInstance._columnDefinition.onclick.call(window, {
           tableObject: handlerInstance._table,
