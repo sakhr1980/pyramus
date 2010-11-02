@@ -297,13 +297,13 @@
         var date = new Date(commentDate);
         var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryCommentItem." + commentId, class: "studentContactEntryItem"}));
-        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactEntryCaption"}));
+        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryCommentItem." + commentId, class: "studentContactCommentEntryItem"}));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactCommentEntryCaption"}));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentDate." + commentId + ".caption", class: "studentContactEntryDate"}, [dateStr])); 
-        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", class: "studentContactEntryCreator"}, [commentCreatorName])); 
+        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentDate." + commentId + ".caption", class: "studentContactCommentEntryDate"}, [dateStr])); 
+        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", class: "studentContactCommentEntryCreator"}, [commentCreatorName])); 
         
-        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactEntryButtons"}));
+        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactCommentEntryButtons"}));
         buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", class: "studentContactEntryEditButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editComment(" + commentId + ", " + entryId + ", " + studentId + ")"}, []));
@@ -553,11 +553,13 @@
                     <input type="hidden" name="commentId" value="-1"/>
                     <input type="hidden" name="commentCreatorName" value=""/>
                     <input type="hidden" name="commentDate.${student.id}" value=""/>
-                    <div class="genericFormSection">                            
+                    <div class="genericFormSection">  
+                    <!--                           
                       <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                         <jsp:param name="titleLocale" value="students.manageStudentContactEntries.comments.textTitle"/>
                         <jsp:param name="helpLocale" value="students.manageStudentContactEntries.comments.textHelp"/>
-                      </jsp:include> 
+                      </jsp:include>
+                       --> 
                       <textarea name="commentText.${student.id}" cols="40" rows="4" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
                     </div>            
                     <div>

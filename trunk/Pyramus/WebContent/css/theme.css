@@ -1513,11 +1513,33 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
   margin-right:20px;
 }
 
+.studentContactCommentEntryItem{
+  background-color:#E5ECFC;
+  border:1px solid #E5ECFC;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:10px 10px 0px 10px;
+  margin-bottom:10px;
+  position:relative;
+  margin-right:0px;
+  margin-left:20px;
+}
+
+.studentContactCommentEntryItem p{
+  margin:6px 0px 8px 0px;
+  
+}
+
 .studentContactEntryItem:hover{
   border:1px solid #CAD8F8;
 }
 
-.studentContactEntryButtons{
+.studentContactCommentEntryItem:hover{
+  border:1px solid #CAD8F8;
+}
+
+.studentContactEntryButtons, .studentContactCommentEntryButtons{
   position:absolute;
   right:5px;
   top:5px;
@@ -1541,7 +1563,15 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
   font-weight:bold;
 }
 
-.studentContactEntryType{
+.studentContactCommentEntryDate{
+  padding:0px 0px 0px 0px;
+  display:inline-block;
+  font-weight:bold;
+  font-style:italic;
+
+}
+
+.studentContactEntryType, .studentContactCommentEntryType{
   padding:0px 5px 0px 5px;
   display:inline-block;
   background:#739DE7;
@@ -1554,5 +1584,11 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
 .studentContactEntryCreator{
   padding:0px 5px 0px 10px;
   display:inline-block;
+}
+
+ .studentContactCommentEntryCreator{
+  padding:0px 5px 0px 10px;
+  display:inline-block;
+  font-style:italic;
 }
 
