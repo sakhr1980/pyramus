@@ -23,7 +23,7 @@
 
     <script type="text/javascript">
       // Course components
-      
+      /**
       function setupComponentsTable() {
         var componentsTable = new IxTable($('viewCourseComponentsTableContainer'), {
           id : "componentsTable",
@@ -50,7 +50,6 @@
             paramName: 'description'
           }]
         });
-        
         <c:forEach var="component" items="${courseComponents}">
           componentsTable.addRow([
             '${fn:replace(component.name, "'", "\\'")}',
@@ -59,7 +58,7 @@
           ]);
         </c:forEach>
       }
-     
+      **/
       function setupStudentsTable() {
         var studentsTable = new IxTable($('viewCourseStudentsTableContainer'), {
           id : "studentsTable",
@@ -203,7 +202,7 @@
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         setupRelatedCommands();
-        setupComponentsTable();
+        // setupComponentsTable();
         setupStudentsTable();
       }
 
@@ -442,12 +441,59 @@
       </div>
   
       <div id="components" class="tabContent hiddenTab">
-        <div id="viewCourseComponentsTableContainer"></div>
         <c:choose>
           <c:when test="${fn:length(courseComponents) le 0}">
             <div class="genericTableNotAddedMessageContainer">
               <fmt:message key="courses.viewCourse.noCourseComponents" /></div>
           </c:when>
+          <c:otherwise>
+            <div class="viewCourseComponentsContainer">
+              <div class="viewCourseComponentsTitlesContainer">
+                <div class="viewCourseComponentsNameTitle">
+                  <fmt:message key="courses.viewCourse.componentsNameHeader"/>
+                </div>
+                <div class="viewCourseComponentsLengthTitle">
+                  <fmt:message key="courses.viewCourse.componentsLengthHeader"/>
+                </div>
+                <div class="viewCourseComponentsDescriptionTitle">
+                  <fmt:message key="courses.viewCourse.componentsDescriptionHeader"/>
+                </div>
+              </div>
+            
+	            <div class="viewCourseComponentsInnerContainer">
+	              <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
+	                <div class="viewCourseComponentContainer">
+		                <div class="viewCourseComponentName">${fn:escapeXml(component.name)}</div>
+		                <div class="viewCourseComponentLengthTitle">${fn:escapeXml(component.length.units)}</div>
+		                <div class="viewCourseComponentDescriptionTitle">${fn:escapeXml(component.description)}</div>
+		                <div class="viewCourseComponentResourcesContainer">
+		                  <c:forEach var="componentResource" items="${component.resources}">
+		                    <div class="viewCourseComponentResourcesContainer">
+			                    <div class="viewCourseComponentResourceName">${fn:escapeXml(componentResource.resource.name)}</div>
+			                    
+			                    <c:choose>
+			                      <c:when test="${componentResource.resource.resourceType eq 'MATERIAL_RESOURCE'}">
+			                        <div class="viewCourseComponentResourceUsage">${componentResource.usagePercent / 100}</div>
+			                        <div class="viewCourseComponentResourceUsageUnit"><fmt:message key="courses.viewCourse.componentsMaterialResourceUnit"/></div>
+			                        <div class="viewCourseComponentResourceResourceType"><fmt:message key="courses.viewCourse.componentsMaterialResource"/></div>
+			                      </c:when>
+			                      <c:when test="${componentResource.resource.resourceType eq 'WORK_RESOURCE'}">
+			                        <div class="viewCourseComponentResourceUsage">${componentResource.usagePercent}</div>
+			                        <div class="viewCourseComponentResourceUsageUnit"><fmt:message key="courses.viewCourse.componentsWorkResourceUnit"/></div>
+                              <div class="viewCourseComponentResourceResourceType"><fmt:message key="courses.viewCourse.componentsWorkResource"/></div>
+			                      </c:when>
+			                    </c:choose>
+			                    
+                          <div class="viewCourseComponentResourceCategory">${fn:escapeXml(componentResource.resource.category.name)}</div>
+							          </div>
+							        </c:forEach>
+		                </div>
+	                </div>
+	              </c:forEach>
+	            </div>
+            </div>
+          
+          </c:otherwise>
         </c:choose>
       </div>
   
