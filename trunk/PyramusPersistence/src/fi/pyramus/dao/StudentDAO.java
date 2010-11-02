@@ -1160,5 +1160,15 @@ public class StudentDAO extends PyramusDAO {
     s.save(comment);
     return comment;
   }
+
+  @SuppressWarnings("unchecked")
+  public List<StudentContactLogEntryComment> listStudentContactEntryComments(StudentContactLogEntry entry) {
+    Session s = getHibernateSession();
+
+    return s.createCriteria(StudentContactLogEntryComment.class).
+      add(Restrictions.eq("entry", entry)).
+      add(Restrictions.eq("archived", Boolean.FALSE)).
+      list();
+  }
   
 }

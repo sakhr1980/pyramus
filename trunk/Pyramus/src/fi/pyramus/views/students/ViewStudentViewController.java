@@ -2,6 +2,7 @@ package fi.pyramus.views.students;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +22,7 @@ import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.views.PyramusViewController;
 
@@ -108,6 +110,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
     Map<Long, List<CourseAssessment>> courseAssesments = new HashMap<Long, List<CourseAssessment>>();
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
+    Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
@@ -116,11 +119,52 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
 
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
       Collections.sort(listStudentContactEntries, new Comparator<StudentContactLogEntry>() {
+        private Date getDateForEntry(StudentContactLogEntry entry) {
+          Date d = entry.getEntryDate();
+          
+          for (int i = 0; i < entry.getComments().size(); i++) {
+            StudentContactLogEntryComment comment = entry.getComments().get(i);
+            
+            if (d == null) {
+              d = comment.getCommentDate();
+            } else {
+              if (d.compareTo(comment.getCommentDate()) < 0)
+                d = comment.getCommentDate();
+            }
+          }
+          
+          return d;
+        }
+        
         public int compare(StudentContactLogEntry o1, StudentContactLogEntry o2) {
-          return o1.getEntryDate() == null ? -1 : o2.getEntryDate() == null ? 1 : o2.getEntryDate().compareTo(o1.getEntryDate());
+          Date d1 = getDateForEntry(o1);
+          Date d2 = getDateForEntry(o2);
+
+          return d1 == null ? 
+              d2 == null ? 0 : 1 :
+                d2 == null ? -1 : d2.compareTo(d1);
         }
       });
 
+      for (int j = 0; j < listStudentContactEntries.size(); j++) {
+        StudentContactLogEntry entry = listStudentContactEntries.get(j);
+        
+        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
+        
+        Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
+          public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
+            Date d1 = o1.getCommentDate();
+            Date d2 = o2.getCommentDate();
+            
+            return d1 == null ? 
+                d2 == null ? 0 : 1 :
+                  d2 == null ? -1 : d1.compareTo(d2);
+          }
+        });
+        
+        contactEntryComments.put(entry.getId(), listComments);
+      }
+      
       contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), gradingDAO.listStudentsTransferCredits(student));
       courseAssesments.put(student.getId(), gradingDAO.listStudentsCourseAssessments(student));
@@ -130,6 +174,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("courses", courseStudents);
     pageRequestContext.getRequest().setAttribute("contactEntries", contactEntries);
+    pageRequestContext.getRequest().setAttribute("contactEntryComments", contactEntryComments);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
     pageRequestContext.getRequest().setAttribute("courseAssesments", courseAssesments);
     pageRequestContext.getRequest().setAttribute("studentGroups", studentGroups);
