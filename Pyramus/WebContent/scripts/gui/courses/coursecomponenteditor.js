@@ -10,12 +10,15 @@ CourseComponentEditor = Class.create({
     this._domNode.appendChild(this._resourceCategoryCountElement);
     
     this._resourcesContainer = new Element("div", {className: "courseComponentResources"});
+    this._noResourcesMessageContainer = new Element("div", {className: "genericTableNotAddedMessageContainer"});
+    this._noResourcesMessageContainer.update(this._options.noResourcesMessage);
+    this._resourcesContainer.appendChild(this._noResourcesMessageContainer);
     
     this._categoryTables = new Hash();
 
     this._componentInfoTable = this._createComponentInfoTable();
     
-    var rowIndex = this._componentInfoTable.addRow([this._options.componentId, this._options.componentName, this._options.componentLength, this._options.componentDescription, '', '', '']);
+    var rowIndex = this._componentInfoTable.addRow([this._options.componentId, this._options.componentName, this._options.componentLength, 'h', this._options.componentDescription, '', '', '']);
     
     if (this._options.componentId && this._options.componentId > 0) {
       this._componentInfoTable.showCell(rowIndex, this._componentInfoTable.getNamedColumnIndex("archiveButton"));
@@ -24,6 +27,8 @@ CourseComponentEditor = Class.create({
     }
     
     this._resourceTitlesContainer = new Element("div", {className: "courseComponentResourceTitles"});
+    
+    this._updateResourcesVisibility();
     
     for (var i = 0, l = this._options.resourceCategoryTableSettings.length; i < l; i++) {
       var setting = this._options.resourceCategoryTableSettings[i];
@@ -180,11 +185,11 @@ CourseComponentEditor = Class.create({
 
     for (var i = 0, l = this._options.resourceCategoryTableSettings.length; i < l; i++) {
       var settings = this._options.resourceCategoryTableSettings[i];
-      if (settings.left)
+      if (settings.left != undefined)
         columnSettings[i].left = settings.left;
-      if (settings.right)
+      if (settings.right != undefined)
         columnSettings[i].right = settings.right;
-      if (settings.width)
+      if (settings.width != undefined)
         columnSettings[i].width = settings.width;
       if (settings.tooltip)
         columnSettings[i].tooltip = settings.tooltip;
@@ -195,9 +200,25 @@ CourseComponentEditor = Class.create({
       columns: columnSettings
     });
     
+    var _this = this;
+    resourcesTable.addListener("rowDelete", function (event) {
+      var table = event.tableObject;
+      if (table.getRowCount() <= 0) {
+        categoryElement.hide(); 
+      }
+      
+      _this._updateResourcesVisibility();
+    });
+    
+    resourcesTable.addListener("rowAdd", function (event) {
+      categoryElement.show(); 
+    });
+    
     this._categoryTables.set(categoryId, resourcesTable);
     
     this._resourceCategoryCountElement.value = categoryCount + 1;
+    
+    this._updateResourcesVisibility();
     
     return categoryElement;
   },
@@ -229,6 +250,8 @@ CourseComponentEditor = Class.create({
         categoryTable.setCellEditable(row, usageColumn, true);
       }
     }
+    
+    this._updateResourcesVisibility();
   },
   remove: function () {
     this._domNode.remove();
@@ -343,8 +366,11 @@ CourseComponentEditor = Class.create({
       
       this._addResourceAddInput();
       
+      var unitColumnIndex = this._componentInfoTable.getNamedColumnIndex("unit");
+      
       for (var i = 0; i < this._componentInfoTable.getColumnCount(); i++) {
-        this._componentInfoTable.setCellEditable(0, i, true);
+        if (i != unitColumnIndex)
+          this._componentInfoTable.setCellEditable(0, i, true);
       }
       
       var categoryTableIds = this._categoryTables.keys();
@@ -363,6 +389,8 @@ CourseComponentEditor = Class.create({
           }
         }
       }
+      
+      this._componentInfoTable.focusCell(0, 1);
     } else {
       this._editing = false;
       this._domNode.removeClassName('courseComponentEdit');
@@ -386,6 +414,8 @@ CourseComponentEditor = Class.create({
         }
       }
     }
+    
+    this._updateResourcesVisibility();
   },
   _createComponentInfoTable: function () {
     var _this = this;
@@ -394,28 +424,24 @@ CourseComponentEditor = Class.create({
         dataType: 'hidden',
         paramName: 'componentId'
       }, {
-        left : 8,
-        width : 236,
         dataType: 'text',
         editable: false,
         paramName: 'name',
         editorClassNames: 'required'
       }, {
-        left : 248,
-        width : 60,
         dataType : 'number',
         editable: false,
         paramName: 'length',
         editorClassNames: 'required'
       }, {
-        left: 312,
-        right : 68,
+        dataType : 'text',
+        editable: false,
+        paramName: 'unit'
+      }, {
         dataType: 'text',
         editable: false,
         paramName: 'description'
       }, {
-        width: 30,
-        right: 30,
         dataType: 'button',
         paramName: 'editButton',
         imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
@@ -424,8 +450,6 @@ CourseComponentEditor = Class.create({
           _this.toggleEditable();
         }
       }, {
-        width: 30,
-        right: 0,
         dataType: 'button',
         paramName: 'removeButton',
         hidden: true,
@@ -435,8 +459,6 @@ CourseComponentEditor = Class.create({
           componentsEditor.removeCourseComponent(componentsEditor.getCourseComponentIndex(_this));
         }
       }, {
-        width: 30,
-        right: 0,
         dataType: 'button',
         paramName: 'archiveButton',
         hidden: true,
@@ -483,13 +505,13 @@ CourseComponentEditor = Class.create({
 
     for (var i = 0, l = this._options.componentTableSettings.length; i < l; i++) {
       var settings = this._options.componentTableSettings[i];
-      if (settings.left)
+      if (settings.left != undefined)
         componentInfoTableColumnSettings[i].left = settings.left;
-      if (settings.right)
+      if (settings.right != undefined)
         componentInfoTableColumnSettings[i].right = settings.right;
-      if (settings.width)
+      if (settings.width != undefined)
         componentInfoTableColumnSettings[i].width = settings.width;
-      if (settings.tooltip)
+      if (settings.tooltip != undefined)
         componentInfoTableColumnSettings[i].tooltip = settings.tooltip;
     }
     
@@ -497,5 +519,31 @@ CourseComponentEditor = Class.create({
       id: this._paramName,
       columns: componentInfoTableColumnSettings
     });
+  },
+  _hasResources: function () {
+    var categoryIds = this.getComponentResourceCategoryIds();
+    for (var i = 0, l = categoryIds.length; i < l; i++) {
+      if (this.getComponentResourceCategoryResourceCount(categoryIds[i]) > 0)
+        return true;
+    }
+
+    return false;
+  },
+  _updateResourcesVisibility: function () {
+    var hasResources = this._hasResources();
+    var visible = this._editing||hasResources;
+    
+    if (visible) {
+      this._resourceTitlesContainer.show();
+      this._resourcesContainer.show();
+      if (!hasResources) {
+        this._noResourcesMessageContainer.show();
+      } else {
+        this._noResourcesMessageContainer.hide();
+      }
+    } else {
+      this._resourceTitlesContainer.hide();
+      this._resourcesContainer.hide();
+    }
   }
 });

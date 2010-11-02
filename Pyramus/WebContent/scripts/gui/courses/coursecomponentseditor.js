@@ -18,6 +18,10 @@ CourseComponentsEditor = Class.create({
         width : 60
       },
       {
+        left : 318,
+        width : 20
+      },
+      {
         title: options.descriptionHeader,
         left: 346,
         right : 68
@@ -75,6 +79,7 @@ CourseComponentsEditor = Class.create({
       }
     }
     
+    this.hide();
     this._domNode.appendChild(this._titlesContainer);
     
     this._components = new Array();
@@ -121,6 +126,7 @@ CourseComponentsEditor = Class.create({
       resourceDeleteConfirmContentLocale: this._options.resourceDeleteConfirmContentLocale,
       resourceDeleteConfirmOkLabel: this._options.resourceDeleteConfirmOkLabel,
       resourceDeleteConfirmCancelLabel: this._options.resourceDeleteConfirmCancelLabel,
+      noResourcesMessage: this._options.noResourcesMessage,
       resourceCategoryTableSettings: [
         { },
         { },
@@ -164,7 +170,22 @@ CourseComponentsEditor = Class.create({
     
     this._updateComponentHoursSum();
     
+    this.show();
+    
     return componentEditor;
+  },
+  scrollToComponent: function (componentEditor) {
+    Effect.ScrollTo(componentEditor._domNode, { duration:'0.2', offset: -20 });
+  },
+  isComponentInView: function (componentEditor) {
+    var dimensions = componentEditor._domNode.getDimensions();
+    var offset = componentEditor._domNode.cumulativeOffset();
+    var viewportDimensions = document.viewport.getDimensions();
+    var viewportScrollOffsets = document.viewport.getScrollOffsets();
+    var elementBottom = offset.top + dimensions.height;
+    var viewportBottom = viewportScrollOffsets.top + viewportDimensions.height;
+    
+    return viewportBottom > elementBottom;
   },
   removeCourseComponent: function (courseComponentIndex) {
     var component = this._components[courseComponentIndex];
@@ -177,6 +198,9 @@ CourseComponentsEditor = Class.create({
       this._componentCountElement.value = parseInt(this._componentCountElement.value) - 1;
     }
     
+    if (this._components.length <= 0)
+      this.hide();
+    
     this._updateComponentHoursSum();
   },
   getComponentEditors: function () {
@@ -187,6 +211,12 @@ CourseComponentsEditor = Class.create({
     for (var i = components.length - 1; i >= 0; i--) {
       this.removeCourseComponent(i);
     }
+  },
+  show: function() {
+    this._domNode.show();
+  },
+  hide: function() {
+    this._domNode.hide();
   },
   _updateComponentHoursSum: function () {
     var sum = 0;
