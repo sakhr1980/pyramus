@@ -811,7 +811,7 @@
                           ${contactEntry.text}
                         </div>
 
-
+                        <div class="contactEntryCommentsWrapper">
 	                      <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
                           <div class="studentContactCommentEntryItem">
                             <div class="studentContactCommentEntryCaption">
@@ -821,6 +821,7 @@
                             <div>${comment.text}</div>
                           </div>
 	                      </c:forEach>
+	                      </div>
                       </div>
                     </c:forEach>
                   </div>
