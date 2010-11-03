@@ -1508,7 +1508,7 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 
 .studentContactNewEntryWrapper{
   position:absolute;
-  right:10px;
+  right:0px;
   left:50%;
   top:0px;
 }
@@ -1528,6 +1528,16 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
   margin-bottom:10px;
   position:relative;
   margin-right:20px;
+}
+
+.studentContactNewEntryFormContainer{
+  background-color:#fff;
+  border:1px solid #CAD8F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:5px 10px 10px 10px;
+  position:relative;
 }
 
 .studentContactCommentEntryItem{
@@ -1612,4 +1622,11 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 
 .studentCommentContainer{
 
+}
+
+.studentContactLogViewTitle{
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:10px;
+  padding-top:10px;
 }
