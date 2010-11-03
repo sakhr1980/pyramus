@@ -28,12 +28,15 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
+import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.pyramus.domainmodel.courses.CourseComponentResource;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
 import fi.pyramus.domainmodel.courses.CourseUserRole;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.resources.Resource;
+import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
@@ -103,19 +106,49 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       CourseUserRole role = courseDAO.getCourseUserRole(roleId);
       courseDAO.createCourseUser(course, user, role);
     }
-
+    
     // Course components
 
-    rowCount = requestContext.getInteger("componentsTable.rowCount");
+    rowCount = requestContext.getInteger("components.componentCount").intValue();
     for (int i = 0; i < rowCount; i++) {
-      String colPrefix = "componentsTable." + i;
-      String componentName = requestContext.getString(colPrefix + ".name");
-      Double componentLength = requestContext.getDouble(colPrefix + ".length");
-      String componentDescription = requestContext.getString(colPrefix + ".description");
+      String colPrefix = "components.component." + i;
+      String componentName = requestContext.getString(colPrefix + ".0.name");
+      Double componentLength = requestContext.getDouble(colPrefix + ".0.length");
+      String componentDescription = requestContext.getString(colPrefix + ".0.description");
+
       // TODO Component length; should be just hours but it currently depends on the default time unit - ok?  
       EducationalTimeUnit componentTimeUnit = baseDAO.getDefaults().getBaseTimeUnit();
-      courseDAO.createCourseComponent(course, componentLength, componentTimeUnit, componentName, componentDescription)
-          .getId();
+
+      CourseComponent courseComponent = courseDAO.createCourseComponent(course, componentLength, componentTimeUnit, componentName,
+          componentDescription);
+                        
+      Long resourceCategoryCount = requestContext.getLong(colPrefix + ".resourceCategoryCount");
+      for (int categoryIndex = 0; categoryIndex < resourceCategoryCount; categoryIndex++) {
+        String resourcesPrefix = colPrefix + "." + categoryIndex + ".resources";
+        Long resourcesCount = requestContext.getLong(resourcesPrefix + ".rowCount");
+        
+        for (int j = 0; j < resourcesCount; j++) {
+          String resourcePrefix = resourcesPrefix + "." + j;
+          
+          Long id = requestContext.getLong(resourcePrefix + ".id");
+          Long resourceId = requestContext.getLong(resourcePrefix + ".resourceId");
+          Resource resource = resourceDAO.findResourceById(resourceId);
+          Double usagePercent;
+          
+          if (resource.getResourceType() == ResourceType.MATERIAL_RESOURCE) {
+            usagePercent = requestContext.getDouble(resourcePrefix + ".quantity") * 100;
+          } else {
+            usagePercent = requestContext.getDouble(resourcePrefix + ".usage");
+          }
+          
+          if (id == -1) {
+            courseDAO.createCourseComponentResource(courseComponent, resource, usagePercent);
+          } else {
+            CourseComponentResource courseComponentResource = courseDAO.findComponentResourceById(id);            
+            courseDAO.updateCourseComponentResourceUsagePercent(courseComponentResource, usagePercent);
+          }
+        }
+      }
     }
 
     // Education types and subtypes submitted from the web page

@@ -20,7 +20,16 @@
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
 
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponentseditor.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditordrafttask.js"></script>
+    
     <script type="text/javascript">
+	    var componentsEditor;
+	
+	    function getCourseComponentsEditor() {
+	      return componentsEditor;
+	    }
 
       // Generic resource related functions
 
@@ -295,97 +304,42 @@
 
       // Course components
       
-      function setupComponentsTable() {
-        var componentsTable = new IxTable($('componentsTable'), {
-          id : "componentsTable",
-          columns : [ {
-            header : '<fmt:message key="courses.createCourse.componentsTableNameHeader"/>',
-            left : 8,
-            width : 236,
-            dataType: 'text',
-            editable: true,
-            paramName: 'name',
-            editorClassNames: 'required'
-          }, {
-            header : '<fmt:message key="courses.createCourse.componentsTableLengthHeader"/>',
-            left : 248,
-            width : 60,
-            dataType : 'number',
-            editable: true,
-            paramName: 'length',
-            editorClassNames: 'required'
-          }, {
-            header : '<fmt:message key="courses.createCourse.componentsTableDescriptionHeader"/>',
-            left: 312,
-            right : 30,
-            dataType: 'text',
-            editable: true,
-            paramName: 'description'
-          }, {
-            width: 26,
-            right: 0,
-            dataType: 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="courses.createCourse.componentsTableRemoveRowTooltip"/>',
-            onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
-                $('noComponentsAddedMessageContainer').setStyle({
-                  display: ''
-                });
-                $('componentHoursTotalContainer').setStyle({
-                  display: 'none'
-                });
-              }
-            }
-          }]
-        });
-        componentsTable.addListener("cellValueChange", function (event) {
-          updateComponentHours();
-        });
-        componentsTable.addListener("rowAdd", function (event) {
-          updateComponentHours();
-        });
-        componentsTable.addListener("rowDelete", function(event) {
-          updateComponentHours();
-        });
-        <c:forEach var="component" items="${module.moduleComponents}">
-          componentsTable.addRow([
-            '${fn:replace(component.name, "'", "\\'")}',
-            ${component.length.units},
-            '${fn:replace(component.description, "'", "\\'")}',
-            ''
-          ]);
-        </c:forEach>
-
-        if (componentsTable.getRowCount() > 0) {
-          $('noComponentsAddedMessageContainer').setStyle({
-            display: 'none'
-          });
-          $('componentHoursTotalContainer').setStyle({
-            display: ''
-          });
-        }
+      function setupComponents() {
+        componentsEditor = new CourseComponentsEditor($('createCourseComponentsList'), {
+          paramName: 'components',
+          componentHoursSumElement: $('componentHoursTotalValueContainer'),
+          resourceSearchUrl: '${pageContext.request.contextPath}/resources/searchresourcesautocomplete.binary',
+          resourceSearchParamName: 'query',
+          resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+          nameHeader: '<fmt:message key="courses.createCourse.componentsNameHeader"/>',
+          lengthHeader: '<fmt:message key="courses.createCourse.componentsLengthHeader"/>',
+          materialResourceUnit: '<fmt:message key="courses.createCourse.componentsResourceMaterialResourceUnit"/>',
+          workResourceUnit: '<fmt:message key="courses.createCourse.componentsResourceWorkResourceUnit"/>',
+          descriptionHeader: '<fmt:message key="courses.createCourse.componentsDescriptionHeader"/>',
+          editButtonTooltip: '<fmt:message key="courses.createCourse.componentsEditButtonTooltip"/>',
+          removeButtonTooltip: '<fmt:message key="courses.createCourse.componentsRemoveButtonTooltip"/>',
+          archiveButtonTooltip: '<fmt:message key="courses.createCourse.componentsArchiveButtonTooltip"/>',
+          resourceNameTitle: '<fmt:message key="courses.createCourse.componentsResourceNameTitle"/>',
+          resourceUsageTitle: '<fmt:message key="courses.createCourse.componentsResourceUsageTitle"/>',
+          resourceRemoveButtonTooltip: '<fmt:message key="courses.createCourse.componentsResourceRemoveButtonTooltip"/>',
+          resourceArchiveButtonTooltip: '<fmt:message key="courses.createCourse.componentsResourceArchiveButtonTooltip"/>',
+          noResourcesMessage: "<fmt:message key="courses.createCourse.componentsNoResourcesMessage" />"
+        });   
       }
-
-      function addComponentsTableRow() {
-        var table = getIxTableById('componentsTable');
-        table.addRow(['', 0, '', '']);
+      
+      function addNewComponent() {
+        var componentEditor = getCourseComponentsEditor().addCourseComponent(-1, '', 0, '');
+        
+        componentEditor.toggleEditable();
+        if (!componentsEditor.isComponentInView(componentEditor))
+          componentsEditor.scrollToComponent(componentEditor);
+        
         $('noComponentsAddedMessageContainer').setStyle({
           display: 'none'
         });
         $('componentHoursTotalContainer').setStyle({
           display: ''
         });
-      }
-
-      function updateComponentHours() {
-        var table = getIxTableById('componentsTable');
-        var sum = 0;
-        for (var row = 0; row < table.getRowCount(); row++) {
-          sum += parseFloat(table.getCellValue(row, table.getNamedColumnIndex('length')).replace(',','.'));
-        }
-        $('componentHoursTotalValueContainer').innerHTML = sum;
       }
 
       // Basic course resources 
@@ -769,7 +723,7 @@
         var tabControl = new IxProtoTabs($('tabs'));
         setupTags();
         setupPersonnelTable();
-        setupComponentsTable();
+        setupComponents();
         setupBasicResourcesTable();
         setupStudentResourcesTable();
         setupGradeResourcesTable();
@@ -1022,13 +976,17 @@
 	    
 	        <div id="components" class="tabContentixTableFormattedData hiddenTab">
 	          <div class="genericTableAddRowContainer">
-              <span class="genericTableAddRowLinkContainer" onclick="addComponentsTableRow();"><fmt:message key="courses.createCourse.addComponentLink"/></span>
+              <span class="genericTableAddRowLinkContainer" onclick="addNewComponent();"><fmt:message key="courses.createCourse.addComponentLink"/></span>
             </div>
               
             <div id="noComponentsAddedMessageContainer" class="genericTableAddRowContainer">
-              <span><fmt:message key="courses.createCourse.noComponentsAddedPreFix"/> <span onclick="addComponentsTableRow();" class="genericTableAddRowLink"><fmt:message key="courses.createCourse.noComponentsAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="courses.createCourse.noComponentsAddedPreFix"/> <span onclick="addNewComponent();" class="genericTableAddRowLink"><fmt:message key="courses.createCourse.noComponentsAddedClickHereLink"/></span>.</span>
             </div>
-	          <div id="componentsTable"> </div>
+	          
+            <div id="createCourseComponentsList">
+              
+            </div>
+
             <!-- TODO Lankinen taitaa komponenttien yhteistunnit kauniiksi -->
             <div id="componentHoursTotalContainer" style="display:none;">
               <span><fmt:message key="courses.createCourse.totalComponentHoursLabel"/></span>
