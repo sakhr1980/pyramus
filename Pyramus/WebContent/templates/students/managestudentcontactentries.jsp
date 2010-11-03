@@ -238,8 +238,10 @@
             var entryId = results.id;
 
             addEntryRow(studentId, entryId, entryDate, results.type, results.creatorName, results.text);
-                                    
+
             resetEntryForm(studentId);
+
+            window.location.reload();
           } 
         });
       }
@@ -276,6 +278,8 @@
             $("entry." + entryId + ".text").innerHTML = entryText;
                                                 
             resetEntryForm(studentId);
+
+            window.location.reload();
           } 
         });
       }
@@ -354,6 +358,8 @@
             addCommentRow(entryId, commentId, studentId, entryDate, results.creatorName, results.text);
                                     
             resetEntryForm(studentId);
+
+            window.location.reload();
           } 
         });
       }
@@ -384,6 +390,8 @@
             $("comment." + commentId + ".text").innerHTML = entryText;
                                                 
             resetCommentForm(studentId);
+
+            window.location.reload();
           } 
         });
       }
@@ -531,7 +539,7 @@
 		                      '${fn:replace(fn:replace(contactEntry.text, newLineChar, ""), "'", "\\'")}'
 		                  );
 		
-		                  <c:forEach var="comment" items="${contactEntry.comments}">
+		                  <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
 		                  <c:if test="${!comment.archived}">
 		                  addCommentRow(
 		                      ${comment.entry.id}, 
