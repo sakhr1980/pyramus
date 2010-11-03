@@ -810,6 +810,17 @@
                         <div>
                           ${contactEntry.text}
                         </div>
+
+
+	                      <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
+                          <div class="studentContactCommentEntryItem">
+                            <div class="studentContactCommentEntryCaption">
+                              <span class="studentContactCommentEntryDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${comment.commentDate}"/></span>
+                              <span class="studentContactCommentEntryCreator">${comment.creatorName}</span>
+                            </div>
+                            <div>${comment.text}</div>
+                          </div>
+	                      </c:forEach>
                       </div>
                     </c:forEach>
                   </div>
