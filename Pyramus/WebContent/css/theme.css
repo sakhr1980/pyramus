@@ -120,8 +120,24 @@ h1.genericPageHeader{
   margin-top:0px;
 }
 
-.genericAbsolutePositioningWrappeer{
+.genericAbsolutePositioningWrapper{
   position:relative;
+}
+
+.iconButton{
+  padding:2px;
+  cursor:pointer; 
+  border:1px solid #739DE7;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+.iconButton:hover{
+  background:#D3E0F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
 }
 
 #componentHoursTotalContainer{
@@ -1504,7 +1520,7 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 
 .studentContactEntryItem{
   background-color:#fff;
-  border:1px solid #E5ECFC;
+  border:1px solid #CAD8F8;
   border-radius:5px;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
@@ -1515,29 +1531,24 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 }
 
 .studentContactCommentEntryItem{
-  background-color:#E5ECFC;
-  border:1px solid #E5ECFC;
+  background-color:#EFF3FC;
+  border:1px solid #E2E8F5;
   border-radius:5px;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
-  padding:10px 10px 0px 10px;
-  margin-bottom:10px;
+  padding:10px 10px 10px 10px;
+  margin-bottom:0px;
   position:relative;
-  margin-right:0px;
+  margin:0px 0px 10px 0px
+}
+
+.contactEntryCommentsWrapper{
   margin-left:20px;
 }
 
 .studentContactCommentEntryItem p{
-  margin:6px 0px 8px 0px;
+  margin:10px 0px 8px 0px;
   
-}
-
-.studentContactEntryItem:hover{
-  border:1px solid #CAD8F8;
-}
-
-.studentContactCommentEntryItem:hover{
-  border:1px solid #CAD8F8;
 }
 
 .studentContactEntryButtons, .studentContactCommentEntryButtons{
@@ -1547,15 +1558,8 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 }
 
 img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
-  padding:5px 5px 5px 5px;
-  cursor:pointer;
-}
-
-img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:hover{
-  background:#D3E0F8;
-  border-radius:5px;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
+  margin-right:5px;  
+  margin-top:4px;
 }
 
 .studentContactEntryDate{
@@ -1593,3 +1597,19 @@ img.studentContactEntryEditButton:hover, img.studentContactEntryArchiveButton:ho
   font-style:italic;
 }
 
+.studentContactShowCommentWrapper{
+  text-align:right;
+  position:relative;
+  height:20px;
+  border-top:1px solid #E5ECFC;
+}
+
+.studentContactShowCommentWrapper img{
+  position:absolute;
+  right:0px;
+  top:2px;
+}
+
+.studentCommentContainer{
+
+}

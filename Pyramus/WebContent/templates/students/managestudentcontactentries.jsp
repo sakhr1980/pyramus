@@ -196,13 +196,13 @@
         var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryCreator." + entryId + ".caption", class: "studentContactEntryCreator"}, [entryCreatorName])); 
         
         var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".commentbtn", class: "studentContactEntryEditButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".commentbtn", class: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/list-add.png", 
           onClick: "addComment(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", class: "studentContactEntryEditButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", class: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
           onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
 
@@ -210,7 +210,8 @@
         node.innerHTML = entryText;
         newEntryDiv.appendChild(node);
 
-        node = Builder.node("div", {id: "contactEntryComments." + entryId}, []);
+       
+        node = Builder.node("div", {id: "contactEntryComments." + entryId, class: "contactEntryCommentsWrapper"}, []);
         newEntryDiv.appendChild(node);
       }
       
@@ -292,7 +293,7 @@
         var entryForm = $("newContactEntryCommentForm." + studentId);
         entryForm.entryId.value = entryId;
 
-        var parentNode = $("studentContactEntryItem." + entryId);
+        var parentNode = $("contactEntryComments." + entryId); /* studentContactEntryItem */
         showCommentForm(parentNode, studentId); 
       }
       
@@ -308,10 +309,10 @@
         var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", class: "studentContactCommentEntryCreator"}, [commentCreatorName])); 
         
         var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactCommentEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", class: "studentContactEntryEditButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", class: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editComment(" + commentId + ", " + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
           onClick: "archiveComment(" + commentId + ", " + entryId + ")"}, []));
 
@@ -524,7 +525,7 @@
             <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
   
             <div id="viewStudentViewContainer"> 
-              <div class="genericFormContainer genericAbsolutePositioningWrappeer"> 
+              <div class="genericFormContainer genericAbsolutePositioningWrapper"> 
                 <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
                   <div id="contactEntries.${student.id}"></div>
 
@@ -555,7 +556,7 @@
                   </script>
                 </div>
 
-                <div id="commentFormContainer.${student.id}" style="display: none">
+                <div id="commentFormContainer.${student.id}" style="display: none" class="studentCommentContainer">
                   <form method="post" id="newContactEntryCommentForm.${student.id}" onsubmit="saveEntryComment(event, ${student.id});">
                     <input type="hidden" name="entryId" value="-1"/>
                     <input type="hidden" name="commentId" value="-1"/>
@@ -567,7 +568,7 @@
                         <jsp:param name="titleLocale" value="students.manageStudentContactEntries.comments.textTitle"/>
                         <jsp:param name="helpLocale" value="students.manageStudentContactEntries.comments.textHelp"/>
                       </jsp:include>
-                       --> 
+                    --> 
                       <textarea name="commentText.${student.id}" cols="40" rows="4" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
                     </div>            
                     <div>
