@@ -1630,3 +1630,115 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   margin-bottom:10px;
   padding-top:10px;
 }
+
+/* View Course Components */
+
+.viewCourseComponentsTitlesContainer{
+  font-weight:bold;
+  position:relative;
+  height:1.5em;
+  margin-bottom:5px;
+}
+
+.viewCourseComponentsNameTitle{
+  position:absolute;
+  left:10px;
+  width:200px;
+}
+
+.viewCourseComponentsLengthTitle{
+  position:absolute;
+  left:268px;
+  width:60px;
+  text-align:center;
+}
+
+.viewCourseComponentsDescriptionTitle{
+  position:absolute;
+  left:344px;
+  right:5px;
+}
+
+.viewCourseComponentContainer{
+  background-color:#fff;
+  border:1px solid #CAD8F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:10px;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.viewCourseComponentHeaderRow{
+  font-weight:bold;
+  height:2em;
+  margin-bottom:10px;
+  clear:both;
+}
+
+.viewCourseComponentName{
+  font-weight:bold;
+  width:240px;
+  font-size:14px;
+  float:left;
+}
+
+.viewCourseComponentLengthTitle{
+  float:left;
+  width:94px;
+  text-align:center;
+}
+
+.viewCourseComponentDescriptionTitle{
+  float:left;
+}
+
+.viewCourseComponentResourcesWrapper{
+
+}
+
+.viewCourseComponentResourcesContainer{
+  position:relative;
+  margin-bottom:0px;
+  height:1.6em;
+  padding:4px;
+}
+
+.viewCourseComponentResourcesContainer:hover{ 
+  background:#f8f8f8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+.viewCourseComponentResourceName{
+  position:absolute;
+  width:240px;
+  font-weight:bold;
+}
+
+.viewCourseComponentResourceUsage{
+  position:absolute;
+  left:256px;
+  margin-right:2px;
+  width:40px;
+  text-align:right;
+}
+
+.viewCourseComponentResourceUsageUnit{
+  position:absolute;
+  left:300px;
+}
+
+.viewCourseComponentResourceResourceType{
+  position:absolute;
+  left:335px;
+}
+
+.viewCourseComponentResourceCategory{
+  font-style:italic;
+  position:absolute;
+  left:450px;
+}
+
