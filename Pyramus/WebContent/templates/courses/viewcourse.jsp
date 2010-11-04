@@ -463,10 +463,12 @@
 	            <div class="viewCourseComponentsInnerContainer">
 	              <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
 	                <div class="viewCourseComponentContainer">
-		                <div class="viewCourseComponentName">${fn:escapeXml(component.name)}</div>
-		                <div class="viewCourseComponentLengthTitle">${fn:escapeXml(component.length.units)}</div>
-		                <div class="viewCourseComponentDescriptionTitle">${fn:escapeXml(component.description)}</div>
-		                <div class="viewCourseComponentResourcesContainer">
+	                  <div class="viewCourseComponentHeaderRow">
+		                  <div class="viewCourseComponentName">${fn:escapeXml(component.name)}</div>
+		                  <div class="viewCourseComponentLengthTitle">${fn:escapeXml(component.length.units)}</div>
+		                  <div class="viewCourseComponentDescriptionTitle">${fn:escapeXml(component.description)}</div>
+		                </div>
+		                <div class="viewCourseComponentResourcesWrapper">
 		                  <c:forEach var="componentResource" items="${component.resources}">
 		                    <div class="viewCourseComponentResourcesContainer">
 			                    <div class="viewCourseComponentResourceName">${fn:escapeXml(componentResource.resource.name)}</div>
