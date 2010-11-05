@@ -9,6 +9,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -448,6 +449,12 @@ public class DataImporter {
       }
     });
 
+    interpreters.put(Integer.class, new ValueInterpreter() {
+      public Object interpret(Object o) {
+        return NumberUtils.createInteger((String) o);
+      }
+    });
+
     interpreters.put(Long.class, new ValueInterpreter() {
       public Object interpret(Object o) {
         return NumberUtils.createLong((String) o);
@@ -463,6 +470,12 @@ public class DataImporter {
     interpreters.put(Boolean.class, new ValueInterpreter() {
       public Object interpret(Object o) {
         return "true".equals(o) ? Boolean.TRUE : Boolean.FALSE;
+      }
+    });
+
+    interpreters.put(Locale.class, new ValueInterpreter() {
+      public Object interpret(Object o) {
+        return new Locale((String) o);
       }
     });
 
