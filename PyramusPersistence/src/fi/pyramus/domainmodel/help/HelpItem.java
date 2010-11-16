@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -27,6 +28,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -119,6 +121,16 @@ public class HelpItem {
     helpItemTitle.setItem(null);
     titles.remove(helpItemTitle);
   }
+  
+  @Transient
+  public HelpItemTitle getTitleByLocale(Locale locale) {
+    for (HelpItemTitle title : titles) {
+      if (title.getLocale().equals(locale))
+        return title;
+    }
+    
+    return null;
+  }
 
   public Set<Tag> getTags() {
     return tags;
@@ -143,6 +155,29 @@ public class HelpItem {
       throw new PersistenceException("Entity does not have this tag");
     }
   }
+  
+  @Transient
+  @Field (store = Store.YES, index = Index.UN_TOKENIZED)
+  public String getRecursiveIndex() {
+    String result = StringUtils.leftPad(String.valueOf(getIndexColumn() + 1), 3, '0'); 
+    
+    HelpFolder parent = getParent();
+    int depth = 0;
+    
+    while (depth <= 4) {
+      depth++;
+      
+      int index = 0;
+      if (parent != null) {
+        index = parent.getIndexColumn() + 1; 
+        parent = parent.getParent();
+      } 
+
+      result = StringUtils.leftPad(String.valueOf(index), 3, '0') + result; 
+    }
+    
+    return result;
+  }
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="HelpItem")  
@@ -155,6 +190,7 @@ public class HelpItem {
   private HelpFolder parent;
   
   @Column (nullable=false)
+  @Field (store = Store.YES, index = Index.UN_TOKENIZED)
   @NotNull
   private Integer indexColumn;
   
@@ -180,6 +216,7 @@ public class HelpItem {
   private User lastModifier;
   
   @OneToMany (cascade = CascadeType.ALL, mappedBy="item")
+  @IndexedEmbedded
   private List<HelpItemTitle> titles = new ArrayList<HelpItemTitle>();
   
   @ManyToMany (fetch = FetchType.LAZY)

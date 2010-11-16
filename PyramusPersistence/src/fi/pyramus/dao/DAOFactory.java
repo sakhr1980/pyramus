@@ -48,6 +48,10 @@ public class DAOFactory {
     return new UserDAO();
   }
   
+  public HelpDAO getHelpDAO() {
+    return new HelpDAO();
+  }
+  
   public SystemDAO getSystemDAO() {
     return new SystemDAO();
   }
