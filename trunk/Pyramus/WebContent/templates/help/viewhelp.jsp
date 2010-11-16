@@ -118,7 +118,7 @@
     </script>    
   </head>
 
-  <body onload="onLoad(event);">
+  <body onload="onLoad(event);" class="fixedSizedContentContainer">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
   
     <div id="viewHelpNavigationContainer">
