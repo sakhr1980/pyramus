@@ -167,7 +167,7 @@ body {
  Menu z-index: 20-30
 ******************************/
 
-ul#GUI_MENU_indexContainer,ul#GUI_MENU_userContainer,ul#GUI_MENU_coursesContainer,ul#GUI_MENU_studentsContainer,ul#GUI_MENU_modulesContainer,ul#GUI_MENU_projectsContainer,ul#GUI_MENU_resourcesContainer,ul#GUI_MENU_reportsContainer,ul#GUI_MENU_settingsContainer,ul#GUI_MENU_systemContainer{
+ul#GUI_MENU_indexContainer,ul#GUI_MENU_userContainer,ul#GUI_MENU_coursesContainer,ul#GUI_MENU_studentsContainer,ul#GUI_MENU_modulesContainer,ul#GUI_MENU_projectsContainer,ul#GUI_MENU_resourcesContainer,ul#GUI_MENU_reportsContainer,ul#GUI_MENU_settingsContainer,ul#GUI_MENU_systemContainer,ul#GUI_MENU_helpContainer{
   list-style-type:none;
   padding:0;
   margin:0;
@@ -222,7 +222,7 @@ a.GUI_MENU_itemLink{
   cursor:pointer;
 }
 
-li#GUI_MENU_indexLink,li#GUI_MENU_userLink,li#GUI_MENU_coursesLink,li#GUI_MENU_studentsLink,li#GUI_MENU_modulesLink,li#GUI_MENU_projectsLink,li#GUI_MENU_resourcesLink,li#GUI_MENU_reportsLink,li#GUI_MENU_settingsLink,li#GUI_MENU_systemLink{
+li#GUI_MENU_indexLink,li#GUI_MENU_userLink,li#GUI_MENU_coursesLink,li#GUI_MENU_studentsLink,li#GUI_MENU_modulesLink,li#GUI_MENU_projectsLink,li#GUI_MENU_resourcesLink,li#GUI_MENU_reportsLink,li#GUI_MENU_settingsLink,li#GUI_MENU_systemLink,li#GUI_MENU_helpLink{
   padding:7px 10px 4px 10px;
   margin:0px 0px 0px 0px;
   color:#fff;

@@ -1742,3 +1742,107 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   left:450px;
 }
 
+/* Help */
+
+#viewHelpNavigationSearchContainer {
+  width: 230px;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  border: 1px solid #CAD8F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+}
+
+#viewHelpNavigationSearchContainer .genericFormSection {
+  margin-left: 4px;
+  margin-right: 4px;
+  border-bottom: 1px solid #CAD8F8;
+}
+
+#viewHelpNavigationSearchContainer input {
+  width: 220px;
+}
+
+#viewHelpNavigationItemsContainer {
+  position: absolute;
+  top: 52px;
+  left: 6px;
+  width: 220px; 
+  bottom: 6px;  
+  overflow: auto;
+}
+
+.viewHelpPageNavigationItem {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.viewHelpPageNavigationItem>.viewHelpPageNavigationItemLabel>a {
+  text-decoration: none;
+  color: #2E5EC5;
+  padding-left: 2px;
+  display: block;
+}
+
+.viewHelpPageNavigationPageContainer:hover,
+.viewHelpPageNavigationSelectedItem {
+  background: #2E5EC5;
+}
+
+.viewHelpPageNavigationPageContainer:hover>.viewHelpPageNavigationItemLabel>a,
+.viewHelpPageNavigationSelectedItem>.viewHelpPageNavigationItemLabel>a {
+  color: #fff;
+}
+
+.viewHelpPageNavigationItemLabel {
+  white-space: nowrap;
+}
+
+.viewHelpPageNavigationFolderContainer>.viewHelpPageNavigationItemLabel {
+  font-weight: bold;
+  padding-left: 2px;
+}
+
+.viewHelpPageNavigationFolderChildren {
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+#viewHelpContentsContainer {
+  position: absolute;
+  left: 234px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  border: 1px solid #CAD8F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding-left: 4px;
+  padding-bottom: 4px;
+  padding-right: 4px;
+  overflow: auto;
+}
+
+.helpPageLoading {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-position: center;
+  background-repeat: no-repeat; 
+}
+
+.helpNavigationLoading {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background-position: center;
+  background-repeat: no-repeat; 
+}

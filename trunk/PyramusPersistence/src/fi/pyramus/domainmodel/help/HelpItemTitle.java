@@ -107,6 +107,7 @@ public class HelpItemTitle {
   @Column (nullable=false)
   @NotNull
   @NotEmpty  
+  @Field (index=Index.TOKENIZED)
   private String title;
   
   @Column (nullable=false)

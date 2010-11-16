@@ -5,17 +5,31 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.help.HelpFolder;
 import fi.pyramus.domainmodel.help.HelpItem;
+import fi.pyramus.domainmodel.help.HelpItemTitle;
 import fi.pyramus.domainmodel.help.HelpPage;
 import fi.pyramus.domainmodel.help.HelpPageContent;
-import fi.pyramus.domainmodel.help.HelpItemTitle;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.persistence.search.SearchResult;
 
 public class HelpDAO extends PyramusDAO {
 
@@ -111,6 +125,52 @@ public class HelpDAO extends PyramusDAO {
   public HelpPage findHelpPageById(Long id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(HelpPage.class, id);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<HelpPage> searchHelpPagesBasic(int resultsPerPage, int page, String text) {
+    int firstResult = page * resultsPerPage;
+    StringBuilder queryBuilder = new StringBuilder();
+    
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "titles.title", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "contents.content", text, false);
+      queryBuilder.append(")");
+    }
+
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+    String queryString = queryBuilder.toString();
+    Query luceneQuery;
+    
+    try {
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      } else {
+        luceneQuery = parser.parse(queryString);
+      }
+  
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, HelpPage.class)
+          .setSort(new Sort(new SortField[]{ new SortField("recursiveIndex", SortField.STRING) }))
+          .setFirstResult(firstResult)
+          .setMaxResults(resultsPerPage);
+  
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+  
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+  
+      return new SearchResult<HelpPage>(page, pages, hits, firstResult, lastResult, query.list());
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
   }
    
   public HelpPage createHelpPage(HelpFolder parent, Integer indexColumn, User creatingUser) {

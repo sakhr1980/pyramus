@@ -140,6 +140,12 @@
         </li>
       </ul>
     </c:if>
+    
+    <ul id="GUI_MENU_helpContainer">
+      <li id="GUI_MENU_helpLink">
+        <a href="${pageContext.request.contextPath}/help/viewhelp.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.help"/></a>
+      </li>
+    </ul>
   </div>
 	<div id="GUI_headerLoginInformationContainer">   
 	  <c:choose>

@@ -2,6 +2,7 @@ package fi.pyramus.domainmodel.help;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 @Entity
 @Indexed
@@ -40,6 +42,17 @@ public class HelpPage extends HelpItem {
     contents.remove(helpPageContent);
   }
   
+  @Transient
+  public HelpPageContent getContentByLocale(Locale locale) {
+    for (HelpPageContent content : contents) {
+      if (content.getLocale().equals(locale))
+        return content;
+    }
+    
+    return null;
+  }
+  
   @OneToMany (cascade = CascadeType.ALL, mappedBy="page")
+  @IndexedEmbedded
   private List<HelpPageContent> contents = new ArrayList<HelpPageContent>();
 }
