@@ -1857,3 +1857,12 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   background-position: center;
   background-repeat: no-repeat; 
 }
+
+.fixedSizedContentContainer #GUI_contentContainer{
+  position:absolute;
+  top:125px;
+  left:5px;
+  right:5px;
+  bottom:5px; 
+  min-height:0;
+}
