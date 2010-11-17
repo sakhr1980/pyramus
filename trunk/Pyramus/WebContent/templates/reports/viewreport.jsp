@@ -151,7 +151,7 @@
     </script>
     
   </head>
-  <body onload="onLoad(event);">
+  <body onload="onLoad(event);" class="fixedSizedContentContainer">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
   
     <h1 class="genericPageHeader"><fmt:message key="reports.viewReport.pageTitle"/></h1>
@@ -168,7 +168,7 @@
         </a>
       </div>
       
-      <div id="viewReport" class="tabContent">
+      <div id="viewReport" class="tabContent fixedSizedTabContent">
         <div id="viewReportControlsContainer">
           <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
           <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
@@ -180,7 +180,7 @@
           <a href="javascript:showParameterDialog()"><fmt:message key="reports.viewReport.viewReportCancelledLink"/></a>
         </div>
         <div id="viewReportViewerContainer">
-          <iframe id="viewReportViewerFrame" src="about:blank" frameborder="0" style="border: 0px; width: 100%; height: 800px;">
+          <iframe id="viewReportViewerFrame" src="about:blank" frameborder="0" style="border: 0px; width: 100%; height: 100%;">
             
           </iframe>
         </div>

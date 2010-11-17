@@ -4,6 +4,8 @@
   display:table;
   clear:both;
   padding-left:13px;
+  position:relative;
+  z-index:2;
 }
 
 a.tabLabel {
@@ -178,4 +180,10 @@ a.activeTabLabel{
   background:#fff;
 }
 
-
+.fixedSizedTabContent{
+	position:absolute;
+	top:73px;
+	bottom:0;
+	left:0;
+	right:0;
+}
