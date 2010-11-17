@@ -178,4 +178,10 @@ public class SystemDAO extends PyramusDAO {
   }
   
   private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+
+  @SuppressWarnings({ "unchecked", "rawtypes" }) 
+  public Object findEntityById(Class referencedClass, Long id) {
+    EntityManager entityManager = getEntityManager();
+    return entityManager.find(referencedClass, id);
+  }
 }

@@ -526,7 +526,7 @@ public class Student implements ArchivableEntity {
   
   @NotNull
   @Column (nullable = false)
-  private Boolean lodging;
+  private Boolean lodging = Boolean.FALSE;
   
   @Temporal (value=TemporalType.DATE)
   private Date studyStartDate;
@@ -554,7 +554,6 @@ public class Student implements ArchivableEntity {
   private Set<Tag> tags = new HashSet<Tag>();
   
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

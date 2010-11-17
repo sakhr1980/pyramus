@@ -93,7 +93,6 @@ public class Email {
   private ContactInfo contactInfo;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

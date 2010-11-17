@@ -206,7 +206,6 @@ public class User {
   private Set<Tag> tags = new HashSet<Tag>();
   
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

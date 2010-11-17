@@ -56,7 +56,6 @@ public class Tag {
   private String text;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

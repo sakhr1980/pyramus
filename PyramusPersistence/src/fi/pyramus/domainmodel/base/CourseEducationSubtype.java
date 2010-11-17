@@ -101,7 +101,6 @@ public class CourseEducationSubtype {
   private EducationSubtype educationSubtype;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

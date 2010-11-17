@@ -66,7 +66,6 @@ public class StudentGroupStudent {
   private Student student;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

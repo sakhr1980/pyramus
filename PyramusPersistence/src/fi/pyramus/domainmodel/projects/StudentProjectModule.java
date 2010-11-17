@@ -99,7 +99,6 @@ public class StudentProjectModule {
   private AcademicTerm academicTerm;
   
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

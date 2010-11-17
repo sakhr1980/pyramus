@@ -86,7 +86,6 @@ public class ProjectModule {
   private ProjectModuleOptionality optionality;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

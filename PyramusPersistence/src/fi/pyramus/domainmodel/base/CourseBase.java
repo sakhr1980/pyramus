@@ -395,7 +395,6 @@ public abstract class CourseBase implements ArchivableEntity {
   private List<CourseBaseVariable> variables = new ArrayList<CourseBaseVariable>();
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

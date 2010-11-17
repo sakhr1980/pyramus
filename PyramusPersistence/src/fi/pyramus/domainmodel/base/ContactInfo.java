@@ -170,7 +170,6 @@ public class ContactInfo {
   private String additionalInfo;
  
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

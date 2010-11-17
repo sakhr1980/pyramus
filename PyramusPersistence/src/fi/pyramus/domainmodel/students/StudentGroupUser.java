@@ -70,7 +70,6 @@ public class StudentGroupUser {
   private User user;  
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }
