@@ -7,9 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,15 +35,10 @@ import org.xml.sax.SAXException;
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
 import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
-import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.persistence.usertypes.MonetaryAmount;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
-import fi.pyramus.persistence.usertypes.Sex;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
-import fi.pyramus.persistence.usertypes.VariableType;
+import fi.pyramus.util.dataimport.DataImportUtils;
+import fi.pyramus.util.dataimport.ValueInterpreter;
 
 public class DataImporter {
   
@@ -187,7 +180,7 @@ public class DataImporter {
           }
           
           System.out.println("    >> property: " + propertyName + " to " + propertyValue);
-          setValue(pojo, propertyName, propertyValue);
+          DataImportUtils.setValue(pojo, propertyName, propertyValue);
         }
       }
   
@@ -216,7 +209,7 @@ public class DataImporter {
                 String keyValue = ((Text) keyElement.getFirstChild()).getData();
                 String valueValue = ((Text) valueElement.getFirstChild()).getData();
                 
-                Field mapField = getField(pojo, mapName);
+                Field mapField = DataImportUtils.getField(pojo, mapName);
                 ParameterizedType genericType = (ParameterizedType) mapField.getGenericType();
                 Class<?> mapKeyTypeClass = (Class<?>) genericType.getActualTypeArguments()[0];
                 Class<?> mapValueTypeClass = (Class<?>) genericType.getActualTypeArguments()[1];
@@ -225,7 +218,7 @@ public class DataImporter {
                 Object value;
                 
                 if (!isHibernateClass(mapKeyTypeClass)) {
-                  ValueInterpreter valueInterpreter = interpreters.get(mapKeyTypeClass);
+                  ValueInterpreter valueInterpreter = DataImportUtils.getValueInterpreter(mapKeyTypeClass);
                   if (valueInterpreter != null)
                     key = valueInterpreter.interpret(keyValue);
                   else
@@ -235,7 +228,7 @@ public class DataImporter {
                 }
                 
                 if (!isHibernateClass(mapValueTypeClass)) {
-                  ValueInterpreter valueInterpreter = interpreters.get(mapValueTypeClass);
+                  ValueInterpreter valueInterpreter = DataImportUtils.getValueInterpreter(mapValueTypeClass);
                   if (valueInterpreter != null)
                     value = valueInterpreter.interpret(valueValue);
                   else
@@ -246,7 +239,7 @@ public class DataImporter {
                 
                 Class<?>[] params = {key.getClass(), value.getClass()};
                 Object[] paramValues = {key, value}; 
-                Method method = getMethod(pojo, methodName, params);
+                Method method = DataImportUtils.getMethod(pojo, methodName, params);
                 method.invoke(pojo, paramValues);
               }
             break;
@@ -256,7 +249,7 @@ public class DataImporter {
               Class<?> listTypeClass;
               
               if (StringUtils.isBlank(listClass)) {
-                Field listField = getField(pojo, listName);
+                Field listField = DataImportUtils.getField(pojo, listName);
                 ParameterizedType genericType = (ParameterizedType) listField.getGenericType();
                 listTypeClass = (Class<?>) genericType.getActualTypeArguments()[0];
               } else {
@@ -276,7 +269,8 @@ public class DataImporter {
               
               String idField = ((Text) element.getFirstChild()).getData();
               
-              Field joinField = getField(pojo, element.getAttribute("name"));
+              Field joinField = DataImportUtils.getField(pojo, element.getAttribute("name"));
+              
               if ("PARENT".equals(idField)) {
                 String parentListMethod = parentListElement.getAttribute("method");
                 AccessType parentListAccessType = AccessType.Field;
@@ -286,15 +280,15 @@ public class DataImporter {
                 
                 if (parentListAccessType == AccessType.Method) {
                   Class<?>[] params = {pojo.getClass()};
-                  Method method = getMethod(parent, parentListMethod, params);
+                  Method method = DataImportUtils.getMethod(parent, parentListMethod, params);
                   method.invoke(parent, pojo);
                 } else {
-                  setFieldValue(pojo, joinField, parent);
+                  DataImportUtils.setFieldValue(pojo, joinField, parent);
                 }
               } else {
                 Object joinedPojo = getPojo(className, idField);
                 if (joinedPojo != null) {
-                  setFieldValue(pojo, joinField, joinedPojo);
+                  DataImportUtils.setFieldValue(pojo, joinField, joinedPojo);
                 } else {
                   throw new PyramusRuntimeException(new Exception(className + " #" + idField + " could not be found"));
                 }
@@ -337,7 +331,7 @@ public class DataImporter {
   private Long getPojoId(Object pojo) {
     if (pojo != null) {
       try {
-        Method getIdMethod = getMethod(pojo, "getId", new Class<?>[] {});
+        Method getIdMethod = DataImportUtils.getMethod(pojo, "getId", new Class<?>[] {});
         if (getIdMethod != null) {
           return (Long) getIdMethod.invoke(pojo, new Object[] {});
         }
@@ -369,47 +363,7 @@ public class DataImporter {
     return getPojo(pojoClass, identifier);
   }
   
-  private void setValue(Object pojo, String property, Object value) throws SecurityException, NoSuchFieldException, IllegalArgumentException,  IllegalAccessException {
-    Field field = getField(pojo, property);
-    Class<?> fieldType = field.getType();
-
-    ValueInterpreter valueInterpreter = interpreters.get(fieldType);
-
-    if (valueInterpreter != null)
-      setFieldValue(pojo, field, valueInterpreter.interpret(value));
-    else
-      throw new PyramusRuntimeException(new Exception("Value interpreter for " + fieldType + " is not implemented yet"));
-  }
   
-  private Field getField(Object pojo, String property) {
-    Field field = null;
-    
-    Class<?> cClass = pojo.getClass();
-    while (cClass != null && field == null) {
-      try {
-        field = cClass.getDeclaredField(property);
-      } catch (NoSuchFieldException nsf) {
-        cClass = cClass.getSuperclass();
-      }
-    }
-    
-    return field;
-  }
-  
-  private Method getMethod(Object pojo, String methodName, Class<?>[] params) {
-    Method method = null;
-    
-    Class<?> cClass = pojo.getClass();
-    while (cClass != null && method == null) {
-      try {
-        method = cClass.getDeclaredMethod(methodName, params);
-      } catch (NoSuchMethodException nsf) {
-        cClass = cClass.getSuperclass();
-      }
-    }
-    
-    return method;
-  }
   
   private boolean isHibernateClass (String className) {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
@@ -435,104 +389,7 @@ public class DataImporter {
   
   private Map<String, Long> storedValues = new HashMap<String, Long>();
 
-  private void setFieldValue(Object pojo, Field field, Object value) throws SecurityException, NoSuchFieldException, IllegalArgumentException,
-      IllegalAccessException {
-    field.setAccessible(true);
-    field.set(pojo, value);
-  }
-
-  private interface ValueInterpreter {
-    Object interpret(Object o);
-  }
-  
   private DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-  private static Map<Class<?>, ValueInterpreter> interpreters = new HashMap<Class<?>, ValueInterpreter>();
-
-  static {
-    interpreters.put(String.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return o;
-      }
-    });
-
-    interpreters.put(Integer.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return NumberUtils.createInteger((String) o);
-      }
-    });
-
-    interpreters.put(Long.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return NumberUtils.createLong((String) o);
-      }
-    });
-
-    interpreters.put(Double.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return NumberUtils.createDouble((String) o);
-      }
-    });
-
-    interpreters.put(Boolean.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return "true".equals(o) ? Boolean.TRUE : Boolean.FALSE;
-      }
-    });
-
-    interpreters.put(Locale.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return new Locale((String) o);
-      }
-    });
-
-    interpreters.put(Date.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return new Date("NOW".equals(o) ? System.currentTimeMillis() : NumberUtils.createLong((String) o));
-      }
-    });
-
-    interpreters.put(UserRole.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return UserRole.getRole(NumberUtils.createInteger((String) o));
-      }
-    });
-    
-    interpreters.put(Role.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return Role.getRole(NumberUtils.createInteger((String) o));
-      }
-    });
-    
-    interpreters.put(MonetaryAmount.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return new MonetaryAmount(NumberUtils.createDouble((String) o));
-      }
-    });
-
-    interpreters.put(Sex.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return "male".equals(o) ? Sex.MALE : Sex.FEMALE;
-      }
-    });
-
-    interpreters.put(ProjectModuleOptionality.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return ProjectModuleOptionality.getOptionality(NumberUtils.createInteger((String) o));
-      }
-    });
-    
-    interpreters.put(VariableType.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return VariableType.getType(NumberUtils.createInteger((String) o));
-      }
-    });
-
-    interpreters.put(StudentContactLogEntryType.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return StudentContactLogEntryType.getType(NumberUtils.createInteger((String) o));
-      }
-    });
-  }
   
   public enum EntityDirective {
     Join ("j"),
