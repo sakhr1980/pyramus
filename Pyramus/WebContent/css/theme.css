@@ -1021,6 +1021,14 @@ h1.genericPageHeader{
   margin-bottom: 4px;
 }
 
+#viewReportViewerContainer{
+  position:absolute;
+  top:50px;
+  left:10px;
+  right:5px;
+  bottom:5px;
+}
+
 /* Generic search definitions */
 
 .searchResultsMessageContainer{
