@@ -252,10 +252,17 @@ public class DataImporter {
             break;
             case List:
               String listName = element.getAttribute("name");
+              String listClass = element.getAttribute("class");
+              Class<?> listTypeClass;
               
-              Field listField = getField(pojo, listName);
-              ParameterizedType genericType = (ParameterizedType) listField.getGenericType();
-              Class<?> listTypeClass = (Class<?>) genericType.getActualTypeArguments()[0];
+              if (StringUtils.isBlank(listClass)) {
+                Field listField = getField(pojo, listName);
+                ParameterizedType genericType = (ParameterizedType) listField.getGenericType();
+                listTypeClass = (Class<?>) genericType.getActualTypeArguments()[0];
+              } else {
+                listTypeClass = Class.forName(listClass);
+              }
+              
               NodeIterator listEntryIterator = XPathAPI.selectNodeIterator(element, "e");
               
               Element listEntry;
@@ -270,7 +277,6 @@ public class DataImporter {
               String idField = ((Text) element.getFirstChild()).getData();
               
               Field joinField = getField(pojo, element.getAttribute("name"));
-              
               if ("PARENT".equals(idField)) {
                 String parentListMethod = parentListElement.getAttribute("method");
                 AccessType parentListAccessType = AccessType.Field;

@@ -802,7 +802,18 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
 
       for (var j = 0, l = options.length; j < l; j++) {
         var option = options[j];
-        this.addOption(cellEditor, option.value, option.text);
+        if (option.optionGroup == true) {
+          
+          var optionGroup = this.addOptionGroup(cellEditor, option.text);
+
+          var groupOptions = option.options;
+          for (var groupIndex = 0; groupIndex < groupOptions.length; groupIndex++) {
+            var optionElement = this.addOption(cellEditor, groupOptions[groupIndex].value, groupOptions[groupIndex].text);
+            optionGroup.appendChild(optionElement);
+          }
+        } else {
+          this.addOption(cellEditor, option.value, option.text);
+        }
       }
     }
     
@@ -815,8 +826,16 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
       }  
     }
   },
+  addOptionGroup: function (handlerInstance, text) {
+    if (handlerInstance._editable) {
+      var optGroupElement = new Element("optgroup", {label:text});
+      
+      handlerInstance.appendChild(optGroupElement);
+      return optGroupElement;
+    }
+  },
   addOption: function (handlerInstance, value, text) {
-    this.addOption(handlerInstance, value, text, false);
+    return this.addOption(handlerInstance, value, text, false);
   },
   addOption: function (handlerInstance, value, text, selected) {
     if (handlerInstance._editable) {
@@ -829,6 +848,8 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
         optionNode.update(text);
       
       handlerInstance.appendChild(optionNode);
+    
+      return optionNode;
     }
   },
   buildViewer: function ($super, name, columnDefinition) {
