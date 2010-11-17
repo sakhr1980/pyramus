@@ -46,7 +46,6 @@ public class CourseEnrolmentType {
   private String name;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

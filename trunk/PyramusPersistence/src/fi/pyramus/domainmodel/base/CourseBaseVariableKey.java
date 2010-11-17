@@ -96,7 +96,6 @@ public class CourseBaseVariableKey {
   private VariableType variableType;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

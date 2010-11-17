@@ -114,7 +114,6 @@ public class Language implements ArchivableEntity {
   private Boolean archived = Boolean.FALSE;  
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

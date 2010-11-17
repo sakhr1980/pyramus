@@ -129,7 +129,6 @@ public class Report {
   private Date lastModified;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

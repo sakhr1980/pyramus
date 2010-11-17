@@ -731,7 +731,6 @@ public class AbstractStudent {
   private List<Student> students = new ArrayList<Student>();
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;  
 }

@@ -89,7 +89,6 @@ public class OtherCost {
   private MonetaryAmount cost;
   
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

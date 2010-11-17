@@ -134,7 +134,6 @@ public class CourseStudent implements ArchivableEntity {
   private Boolean lodging = Boolean.FALSE;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

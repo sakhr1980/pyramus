@@ -56,7 +56,6 @@ public class ReportCategory {
   private Integer indexColumn;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

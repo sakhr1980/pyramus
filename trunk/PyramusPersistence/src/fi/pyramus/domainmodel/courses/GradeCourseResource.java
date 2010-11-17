@@ -119,7 +119,6 @@ public class GradeCourseResource {
   private MonetaryAmount unitCost;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

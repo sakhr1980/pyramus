@@ -86,7 +86,6 @@ public class InternalAuth {
   private String password;
   
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

@@ -71,7 +71,6 @@ public class SchoolVariable {
 	private String value;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

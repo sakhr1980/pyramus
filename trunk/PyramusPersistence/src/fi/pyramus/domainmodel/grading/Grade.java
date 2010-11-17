@@ -115,7 +115,6 @@ public class Grade implements ArchivableEntity {
   private Double GPA;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

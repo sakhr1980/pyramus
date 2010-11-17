@@ -139,7 +139,6 @@ public class Credit implements ArchivableEntity {
   private CreditType creditType;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

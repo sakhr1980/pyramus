@@ -54,7 +54,6 @@ public class Defaults {
   private CourseState initialCourseState;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

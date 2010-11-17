@@ -61,7 +61,6 @@ public class MagicKey {
   private Date created;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

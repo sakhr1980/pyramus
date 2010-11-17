@@ -94,7 +94,6 @@ public class StudentStudyEndReason {
   private List<StudentStudyEndReason> childEndReasons = new ArrayList<StudentStudyEndReason>();
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

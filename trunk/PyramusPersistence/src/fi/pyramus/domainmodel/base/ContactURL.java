@@ -80,7 +80,6 @@ public class ContactURL {
   private ContactInfo contactInfo;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

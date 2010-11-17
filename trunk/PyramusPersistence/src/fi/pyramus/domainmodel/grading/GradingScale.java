@@ -106,7 +106,6 @@ public class GradingScale implements ArchivableEntity {
   private List<Grade> grades = new ArrayList<Grade>(); 
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

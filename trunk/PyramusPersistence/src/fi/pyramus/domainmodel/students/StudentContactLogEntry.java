@@ -235,7 +235,6 @@ public class StudentContactLogEntry implements ArchivableEntity {
   private Boolean archived = Boolean.FALSE;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 

@@ -97,7 +97,6 @@ public class FormDraft {
   private Date modified;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

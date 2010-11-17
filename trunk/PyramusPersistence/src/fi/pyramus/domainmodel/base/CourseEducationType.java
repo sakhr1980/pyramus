@@ -165,7 +165,6 @@ public class CourseEducationType {
   private List<CourseEducationSubtype> courseEducationSubtypes = new Vector<CourseEducationSubtype>();
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

@@ -126,7 +126,6 @@ public class BasicCourseResource {
   private MonetaryAmount unitCost;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

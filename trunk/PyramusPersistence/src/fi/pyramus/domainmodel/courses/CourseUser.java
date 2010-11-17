@@ -78,7 +78,6 @@ public class CourseUser {
   private CourseUserRole role;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

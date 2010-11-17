@@ -93,7 +93,6 @@ public class PhoneNumber {
   private ContactInfo contactInfo;
  
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }

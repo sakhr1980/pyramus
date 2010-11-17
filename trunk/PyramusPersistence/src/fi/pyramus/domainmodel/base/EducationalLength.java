@@ -73,7 +73,6 @@ public class EducationalLength {
   private EducationalTimeUnit unit;
 
   @Version
-  @NotNull
   @Column(nullable = false)
   private Long version;
 }
