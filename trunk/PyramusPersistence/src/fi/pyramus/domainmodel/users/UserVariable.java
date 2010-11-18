@@ -2,8 +2,6 @@ package fi.pyramus.domainmodel.users;
 
 import java.lang.Long;
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**

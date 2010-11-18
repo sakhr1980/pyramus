@@ -1,11 +1,9 @@
 package fi.pyramus.views.users;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import fi.pyramus.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -17,6 +15,7 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
+import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -36,12 +35,27 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     User user = userDAO.getUser(pageRequestContext.getLong("userId"));
+    String username = "";
     
-    Set<String> registeredAuthorizationProviders = AuthenticationProviderVault.getAuthenticationProviderClasses().keySet();
-    Map<String, Boolean> activeAuthorizationProviders = new HashMap<String, Boolean>();
-    
-    for (AuthenticationProvider authorizationProvider : AuthenticationProviderVault.getInstance().getAuthenticationProviders()) {
-      activeAuthorizationProviders.put(authorizationProvider.getName(), registeredAuthorizationProviders.contains(authorizationProvider.getName()));
+    List<AuthorizationProviderInfoBean> authorizationProviders = new ArrayList<AuthorizationProviderInfoBean>();
+    for (String authorizationProviderName : AuthenticationProviderVault.getAuthenticationProviderClasses().keySet()) {
+      boolean active = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName) != null;
+      boolean canUpdateCredentials;
+      
+      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName);
+      
+      if (authenticationProvider instanceof InternalAuthenticationProvider) {
+        InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
+        canUpdateCredentials = internalAuthenticationProvider.canUpdateCredentials();
+
+        if (internalAuthenticationProvider.getName().equals(user.getAuthProvider())) {
+          username = internalAuthenticationProvider.getUsername(user.getExternalId());
+        }
+      } else {
+        canUpdateCredentials = false;
+      }
+      
+      authorizationProviders.add(new AuthorizationProviderInfoBean(authorizationProviderName, active, canUpdateCredentials));
     }
     
     StringBuilder tagsBuilder = new StringBuilder();
@@ -55,11 +69,11 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
     
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("user", user);
+    pageRequestContext.getRequest().setAttribute("username", username);
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
     pageRequestContext.getRequest().setAttribute("variableKeys", userDAO.listUserVariableKeys());
-    pageRequestContext.getRequest().setAttribute("activeAuthorizationProviders", activeAuthorizationProviders);
-    pageRequestContext.getRequest().setAttribute("registeredAuthorizationProviders", registeredAuthorizationProviders);
+    pageRequestContext.getRequest().setAttribute("authorizationProviders", authorizationProviders);
     
     pageRequestContext.setIncludeJSP("/templates/users/edituser.jsp");
   }

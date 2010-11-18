@@ -10,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
-
 import org.hibernate.search.annotations.DocumentId;
 
 @Entity

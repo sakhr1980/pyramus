@@ -9,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 
 
 /**

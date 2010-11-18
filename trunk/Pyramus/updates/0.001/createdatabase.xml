@@ -312,7 +312,7 @@
     </table>
     <table name="InternalAuth" primaryKeys="id">
       <fields>
-        <field name="password" type="java.lang.String" nullable="false" unique="true" />
+        <field name="password" type="java.lang.String" nullable="false" unique="false" />
         <field name="username" type="java.lang.String" nullable="false" unique="true" />
         <field name="id" type="java.lang.Long" nullable="false" unique="true" />
       </fields>

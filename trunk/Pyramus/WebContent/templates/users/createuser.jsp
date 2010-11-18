@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -36,10 +37,43 @@
           }
         });   
       }
+
+      function canUpdateCredentials(strategyName) {
+        <c:if test="${fn:length(authorizationProviders) gt 0}">
+          switch (strategyName) {
+	          <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+	            <c:choose>
+	              <c:when test="${authorizationProvider.active eq true}">
+	                case '${authorizationProvider.name}':
+	                  return ${authorizationProvider.canUpdateCredentials};
+	              </c:when>
+	            </c:choose>
+	          </c:forEach>
+	        }
+        </c:if>
+        return false;
+      }
+      
+      function updateCredentialsVisibility() {
+        var inputElement = $$('select[name="authProvider"]')[0];
+        
+        $('createUserCredentialsContainer').setStyle({
+          display: canUpdateCredentials(inputElement.value) ? 'block' : 'none'
+        });     
+      }
+      
+      function setupAuthSelect() {
+        Event.observe($$('select[name="authProvider"]')[0], "change", function (event) {
+          updateCredentialsVisibility();
+          revalidateAll();
+        });
+      }
       
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         setupTags();
+        setupAuthSelect();
+        updateCredentialsVisibility();
 
         // E-mail address
 
@@ -292,6 +326,61 @@
                 </jsp:include>                  
                 <input type="text" name="lastName" size="30" class="required"/>
               </div>
+
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.createUser.authenticationMethodTitle"/>
+                  <jsp:param name="helpLocale" value="users.createUser.authenticationMethodHelp"/>
+                </jsp:include>                  
+    
+                <select name="authProvider">
+                  <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+                    <c:choose>
+                      <c:when test="${authorizationProvider.active eq true}">
+                        <c:set var="authorizationProviderName">${authorizationProvider.name}</c:set>
+                      </c:when>
+                      <c:otherwise>
+                        <c:set var="authorizationProviderName">${authorizationProvider.name} (<fmt:message key="users.createUser.authenticationMethodDisabled"/>)</c:set>
+                      </c:otherwise>
+                    </c:choose>
+                    
+                    <c:choose>
+                      <c:when test="${authorizationProvider.name eq user.authProvider}">
+                        <option value="${authorizationProvider.name}" selected="selected">${authorizationProviderName}</option>
+                      </c:when>
+                      <c:otherwise>
+                        <option value="${authorizationProvider.name}">${authorizationProviderName}</option>
+                      </c:otherwise>
+                    </c:choose>
+                  </c:forEach>
+                </select>
+              </div>
+          
+	            <div id="createUserCredentialsContainer">
+	              <div class="genericFormSection">  
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="users.createUser.usernameTitle"/>
+	                  <jsp:param name="helpLocale" value="users.createUser.usernameHelp"/>
+	                </jsp:include>                  
+	                <input type="text" class="required" name="username" size="30">
+	              </div>
+	              
+	              <div class="genericFormSection">  
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="users.createUser.password1Title"/>
+	                  <jsp:param name="helpLocale" value="users.createUser.password1Help"/>
+	                </jsp:include>                  
+	                <input type="password" class="required equals" ix:equals-field-name="password2" name="password1" value="" size="30">
+	              </div>
+	              
+	              <div class="genericFormSection">  
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="users.createUser.password2Title"/>
+	                  <jsp:param name="helpLocale" value="users.createUser.password2Help"/>
+	                </jsp:include>                  
+	                <input type="password" class="required equals" ix:equals-field-name="password1" name="password2" value="" size="30">
+	              </div>
+	            </div>
               
               <div class="genericFormSection">
 	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -345,7 +434,6 @@
                   <input type="hidden" name="role" value="1"/>
                 </c:otherwise>
               </c:choose>
-
           </div>
           <div class="genericFormSubmitSectionOffTab">
             <input type="submit" name="login" value="<fmt:message key="users.createUser.submitButton"/>" class="formvalid">
