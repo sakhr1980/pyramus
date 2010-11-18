@@ -61,5 +61,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate 3.5.1"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Quartz 1.8.3"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PyramusDomainModelExtension"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/OpenCSV-2.2">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
