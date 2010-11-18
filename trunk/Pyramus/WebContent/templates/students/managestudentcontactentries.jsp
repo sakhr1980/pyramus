@@ -531,7 +531,6 @@
             <div id="viewStudentViewContainer"> 
               <div class="genericFormContainer genericAbsolutePositioningWrapper"> 
                 <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
-                  <!-- title tähän -->
                   <div class="studentContactLogViewTitle"><fmt:message key="students.viewStudent.contactLogEntriesTitle"/></div>
                   <div id="contactEntries.${student.id}"></div>
 
@@ -563,7 +562,6 @@
                 </div>
 
                 <div id="commentFormContainer.${student.id}" style="display: none" class="studentCommentContainer">
-                  <!-- title tähän -->
                   <form method="post" id="newContactEntryCommentForm.${student.id}" onsubmit="saveEntryComment(event, ${student.id});">
                     <input type="hidden" name="entryId" value="-1"/>
                     <input type="hidden" name="commentId" value="-1"/>
