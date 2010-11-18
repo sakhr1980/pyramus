@@ -9,7 +9,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
@@ -22,6 +25,9 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.plugin.auth.AuthenticationProvider;
+import fi.pyramus.plugin.auth.AuthenticationProviderVault;
+import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 
 /**
  * The controller responsible of editing an existing Pyramus user. 
@@ -47,6 +53,9 @@ public class EditUserJSONRequestController implements JSONRequestController {
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
     Role role = Role.getRole(requestContext.getInteger("role").intValue());
+    String username = requestContext.getString("username");
+    String password = requestContext.getString("password1");
+    String password2 = requestContext.getString("password2");
     String tagsText = requestContext.getString("tags");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
@@ -80,6 +89,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
       String postal = requestContext.getString(colPrefix + ".postal");
       String city = requestContext.getString(colPrefix + ".city");
       String country = requestContext.getString(colPrefix + ".country");
+      
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (addressId == -1 && hasAddress) {
         Address address = baseDAO.createAddress(user.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
@@ -162,12 +172,39 @@ public class EditUserJSONRequestController implements JSONRequestController {
         userDAO.updateAuthProvider(user, authProvider);
       }
       
-      int variableCount = requestContext.getInteger("variablesTable.rowCount");
-      for (int i = 0; i < variableCount; i++) {
+      Integer variableCount = requestContext.getInteger("variablesTable.rowCount");
+      for (int i = 0; i < (variableCount != null ? variableCount : 0); i++) {
         String colPrefix = "variablesTable." + i;
         String variableKey = requestContext.getString(colPrefix + ".key");
         String variableValue = requestContext.getString(colPrefix + ".value");
         userDAO.setUserVariable(user, variableKey, variableValue);
+      }
+    }
+    
+    boolean usernameBlank = StringUtils.isBlank(username);
+    boolean passwordBlank = StringUtils.isBlank(password);
+    
+    if (!usernameBlank||!passwordBlank) {
+      if (!passwordBlank) {
+        if (!password.equals(password2))
+          throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.PASSWORD_MISMATCH, "Passwords don't match");
+      }
+      
+      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(user.getAuthProvider());
+      if (authenticationProvider instanceof InternalAuthenticationProvider) {
+        InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
+        if (internalAuthenticationProvider.canUpdateCredentials()) {
+          if ("-1".equals(user.getExternalId())) {
+            String externalId = internalAuthenticationProvider.createCredentials(username, password);
+            userDAO.updateExternalId(user, externalId);
+          } else {
+            if (!StringUtils.isBlank(username))
+              internalAuthenticationProvider.updateUsername(user.getExternalId(), username);
+          
+            if (!StringUtils.isBlank(password))
+              internalAuthenticationProvider.updatePassword(user.getExternalId(), password);
+          }
+        }
       }
     }
     

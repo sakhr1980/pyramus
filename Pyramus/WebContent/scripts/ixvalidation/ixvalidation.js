@@ -299,34 +299,50 @@ IxValidationDelegator = Class.create({
   insideForm: function (formElement) {
     return this._field.form == formElement;
   },
+  _isVisible: function () {
+    var e = $(this._field);
+    while (e.parentNode) {
+      if (!e.visible())
+        return false;
+      
+      e = $(e.parentNode);
+    }
+    
+    return true;
+  },
   _validate: function (requiredCheckAsUnknown, validators, initialStatus) {
     var status = initialStatus;
     
-    for (var i = 0, l = validators.length; i < l; i++) {
-      if (status != IxFieldValidator.STATUS_INVALID) {
-        switch (validators[i].validate(this._field)) {
-          case IxFieldValidator.STATUS_INVALID:
-            if (requiredCheckAsUnknown && (validators[i].className == "required"))
-              status = IxFieldValidator.STATUS_UNKNOWN;
-            else
-              status = IxFieldValidator.STATUS_INVALID;
-          break;
-          case IxFieldValidator.STATUS_VALID:
-            status = IxFieldValidator.STATUS_VALID;
+    if (this._isVisible()) {
+      for (var i = 0, l = validators.length; i < l; i++) {
+        if (status != IxFieldValidator.STATUS_INVALID) {
+          switch (validators[i].validate(this._field)) {
+            case IxFieldValidator.STATUS_INVALID:
+              if (requiredCheckAsUnknown && (validators[i].className == "required"))
+                status = IxFieldValidator.STATUS_UNKNOWN;
+              else
+                status = IxFieldValidator.STATUS_INVALID;
+            break;
+            case IxFieldValidator.STATUS_VALID:
+              status = IxFieldValidator.STATUS_VALID;
+            break;
+          }
+        } else {
           break;
         }
-      } else {
-        break;
       }
-    }
-    
-    if (status != IxFieldValidator.STATUS_UNKNOWN) {
-      var linkedValidators = this._getLinkedValidators(validators);
-      for (var i = 0, l = linkedValidators.length; i < l; i++) {
-        var linkedField = linkedValidators[i].getLinkedField(this._field);
-        var fieldDelegator = IxValidationDelegatorVault.getDelegator(linkedField);
-        fieldDelegator._linkedValidate(requiredCheckAsUnknown, status, linkedValidators[i]);
+      
+      if (status != IxFieldValidator.STATUS_UNKNOWN) {
+        var linkedValidators = this._getLinkedValidators(validators);
+        for (var i = 0, l = linkedValidators.length; i < l; i++) {
+          var linkedField = linkedValidators[i].getLinkedField(this._field);
+          var fieldDelegator = IxValidationDelegatorVault.getDelegator(linkedField);
+          fieldDelegator._linkedValidate(requiredCheckAsUnknown, status, linkedValidators[i]);
+        }
       }
+    } else {
+      // Invisible elements are always "valid"
+      status = IxFieldValidator.STATUS_VALID;
     }
     
     this._field.removeClassName('valid');

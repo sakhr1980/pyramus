@@ -107,7 +107,7 @@ public class AuthenticationProviderVault {
     authenticationProviders.put(authorizationProvider.getName(), authorizationProvider);  
   }
   
-  /** Hashamp containing authorization provider names as keys and the providers themselves as values */ 
+  /** Map containing authorization provider names as keys and the providers themselves as values */ 
   private Map<String, AuthenticationProvider> authenticationProviders = new HashMap<String, AuthenticationProvider>();
   
   @SuppressWarnings("unchecked")

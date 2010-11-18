@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
 
 /**
  * Representation of an education type associated with a course.

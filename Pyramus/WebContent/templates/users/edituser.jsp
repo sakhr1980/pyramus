@@ -61,7 +61,7 @@
             paramName: 'value'
           }]
         });
-
+        
         <c:forEach var="variableKey" items="${variableKeys}">
           value = '${fn:replace(user.variablesAsStringMap[variableKey.variableKey], "'", "\\'")}';
           var rowNumber = variablesTable.addRow([
@@ -101,10 +101,44 @@
         });   
       }
       
+      function canUpdateCredentials(strategyName) {
+        <c:if test="${fn:length(authorizationProviders) gt 0}">
+          switch (strategyName) {
+            <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+              <c:choose>
+                <c:when test="${authorizationProvider.active eq true}">
+                  case '${authorizationProvider.name}':
+                    return ${authorizationProvider.canUpdateCredentials};
+                </c:when>
+              </c:choose>
+            </c:forEach>
+          }
+        </c:if>
+        return false;
+      }
+      
+      function updateCredentialsVisibility() {
+        var inputElement = $$('select[name="authProvider"]')[0];
+        
+        $('editUserCredentialsContainer').setStyle({
+          display: canUpdateCredentials(inputElement.value) ? 'block' : 'none'
+        });     
+      }
+      
+      function setupAuthSelect() {
+        Event.observe($$('select[name="authProvider"]')[0], "change", function (event) {
+          updateCredentialsVisibility();
+          revalidateAll();
+        });
+      }
+      
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        
         setupTags();
         setupRelatedCommandsBasic();
+        setupAuthSelect();
+        updateCredentialsVisibility();
 
         var addressTable = new IxTable($('addressTable'), {
           id : "addressTable",
@@ -277,6 +311,7 @@
             }
           }]
         });
+        
         emailTable.addListener("rowAdd", function (event) {
           var emailTable = event.tableObject; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
@@ -379,7 +414,7 @@
         }
 
         <c:choose>
-          <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
+          <c:when test="${(loggedUserRole == 'ADMINISTRATOR') && (fn:length(variableKeys) > 0)}">
             setupUserVariablesTable();
           </c:when>
         </c:choose>
@@ -436,6 +471,65 @@
               </jsp:include>                  
               <input type="text" name="lastName" value="${fn:escapeXml(user.lastName)}" size="30" class="required">
             </div>
+          
+            <div id="editUserCredentialsContainer">
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.editUser.usernameTitle"/>
+                  <jsp:param name="helpLocale" value="users.editUser.usernameHelp"/>
+                </jsp:include>                  
+                <input type="text" name="username" value="${username}" size="30">
+              </div>
+              
+              <c:choose>
+                <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
+	                <div class="genericFormSection">  
+	                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                    <jsp:param name="titleLocale" value="users.editUser.authenticationMethodTitle"/>
+	                    <jsp:param name="helpLocale" value="users.editUser.authenticationMethodHelp"/>
+	                  </jsp:include>                  
+	      
+	                  <select name="authProvider">
+	                    <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+	                      <c:choose>
+	                        <c:when test="${authorizationProvider.active eq true}">
+	                          <c:set var="authorizationProviderName">${authorizationProvider.name}</c:set>
+	                        </c:when>
+	                        <c:otherwise>
+	                          <c:set var="authorizationProviderName">${authorizationProvider.name} (<fmt:message key="users.editUser.authenticationMethodDisabled"/>)</c:set>
+	                        </c:otherwise>
+	                      </c:choose>
+	                      
+	                      <c:choose>
+	                        <c:when test="${authorizationProvider.name eq user.authProvider}">
+	                          <option value="${authorizationProvider.name}" selected="selected">${authorizationProviderName}</option>
+	                        </c:when>
+	                        <c:otherwise>
+	                          <option value="${authorizationProvider.name}">${authorizationProviderName}</option>
+	                        </c:otherwise>
+	                      </c:choose>
+	                    </c:forEach>
+	                  </select>
+	                </div>
+	              </c:when>
+	            </c:choose>
+              
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.editUser.password1Title"/>
+                  <jsp:param name="helpLocale" value="users.editUser.password1Help"/>
+                </jsp:include>                  
+                <input type="password" class="equals" ix:equals-field-name="password2" name="password1" value="" size="30">
+              </div>
+              
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.editUser.password2Title"/>
+                  <jsp:param name="helpLocale" value="users.editUser.password2Help"/>
+                </jsp:include>                  
+                <input type="password" class="equals" ix:equals-field-name="password1" name="password2" value="" size="30">
+              </div>
+            </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -485,47 +579,17 @@
                   </select>
                 </div>
                 
-                <div class="genericFormSection">  
-                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                    <jsp:param name="titleLocale" value="users.editUser.authenticationMethodTitle"/>
-                    <jsp:param name="helpLocale" value="users.editUser.authenticationMethodHelp"/>
-                  </jsp:include>                  
-      
-                  <select name="authProvider">
-                    <c:forEach var="registeredProvider" items="${registeredAuthorizationProviders}">
-                      <c:choose>
-                        <c:when test="${registeredProvider eq user.authProvider}">
-                          <c:choose>
-                            <c:when test="${activeAuthorizationProviders[registeredProvider] eq true}">
-                              <option value="${registeredProvider}" selected="selected">${registeredProvider}</option>
-                            </c:when>
-                            <c:otherwise>
-                              <option value="${registeredProvider}" selected="selected">${registeredProvider} (<fmt:message key="users.editUser.authenticationMethodDisabled"/>)</option>
-                            </c:otherwise>
-                          </c:choose>
-                        </c:when>
-                        <c:otherwise>
-                          <c:choose>
-                            <c:when test="${activeAuthorizationProviders[registeredProvider] eq true}">
-                              <option value="${registeredProvider}">${registeredProvider}</option>
-                            </c:when>
-                            <c:otherwise>
-                              <option value="${registeredProvider}">${registeredProvider} (<fmt:message key="users.editUser.authenticationMethodDisabled"/>)</option>
-                            </c:otherwise>
-                          </c:choose>
-                        </c:otherwise>
-                      </c:choose>
-                    </c:forEach>
-                  </select>
-                </div>
-                
-                <div class="genericFormSection">  
-                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                    <jsp:param name="titleLocale" value="users.editUser.variablesTitle"/>
-                    <jsp:param name="helpLocale" value="users.editUser.variablesHelp"/>
-                  </jsp:include>         
-                  <div id="variablesTableContainer"></div>
-                </div>
+                <c:choose>
+                  <c:when test="${fn:length(variableKeys) > 0}">
+		                <div class="genericFormSection">  
+		                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		                    <jsp:param name="titleLocale" value="users.editUser.variablesTitle"/>
+		                    <jsp:param name="helpLocale" value="users.editUser.variablesHelp"/>
+		                  </jsp:include>         
+		                  <div id="variablesTableContainer"></div>
+		                </div>
+		              </c:when>
+		            </c:choose>
               </c:when>
               <c:otherwise>
                 <input type="hidden" name="role" value="${user.role.value}"/>

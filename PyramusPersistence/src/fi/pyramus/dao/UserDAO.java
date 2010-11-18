@@ -256,9 +256,15 @@ public class UserDAO extends PyramusDAO {
     return internalAuth;
   }
 
-  public InternalAuth updateInternalAuth(InternalAuth internalAuth, String username, String password) {
+  public InternalAuth updateInternalAuthUsername(InternalAuth internalAuth, String username) {
     Session s = getHibernateSession();
     internalAuth.setUsername(username);
+    s.saveOrUpdate(internalAuth);
+    return internalAuth;
+  }
+
+  public InternalAuth updateInternalAuthPassword(InternalAuth internalAuth, String password) {
+    Session s = getHibernateSession();
     internalAuth.setPassword(password);
     s.saveOrUpdate(internalAuth);
     return internalAuth;

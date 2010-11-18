@@ -81,18 +81,24 @@ public class LDAPAuthorizationStrategy implements InternalAuthenticationProvider
    
     return null;
   }
-
-  /**
-   * credential updating is not currently supported in LDAP strategy
-   * 
-   * @param externalId The user identifier
-   * @param currentPassword The current password of the user
-   * @param newUsername The new username of the user
-   * @param newPassword The new password of the user
-   * 
-   * @throws AuthenticationException If the current password is invalid
-   */
-  public void updateCredentials(String externalId, String currentPassword, String newUsername, String newPassword) throws AuthenticationException {
+  
+  @Override
+  public String getUsername(String externalId) {
+    return null;
+  }
+  
+  @Override
+  public String createCredentials(String username, String password) {
+    throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
+  }
+  
+  @Override
+  public void updateUsername(String externalId, String username) {
+    throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
+  }
+  
+  @Override
+  public void updatePassword(String externalId, String password) {
     throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
   }
 

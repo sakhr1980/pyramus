@@ -34,10 +34,17 @@ public class SimpleAuthDAO extends PyramusDAO {
     return simpleAuth;
   }
   
-  public void updateSimpleAuth(SimpleAuth simpleAuth, String username, String password) {
+  public void updateSimpleAuthUsername(SimpleAuth simpleAuth, String username) {
     Session session = getHibernateSession();
     
     simpleAuth.setUsername(username);
+    
+    session.saveOrUpdate(simpleAuth);
+  }
+  
+  public void updateSimpleAuthPassword(SimpleAuth simpleAuth, String password) {
+    Session session = getHibernateSession();
+    
     simpleAuth.setPassword(password);
     
     session.saveOrUpdate(simpleAuth);

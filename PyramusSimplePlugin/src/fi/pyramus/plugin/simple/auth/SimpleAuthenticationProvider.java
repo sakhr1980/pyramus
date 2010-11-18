@@ -42,22 +42,53 @@ public class SimpleAuthenticationProvider implements InternalAuthenticationProvi
       return null;
     }
   }
+  
+  @Override
+  public String getUsername(String externalId) {
+    SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    
+    SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthById(Long.parseLong(externalId));
+    
+    if (simpleAuth != null)
+      return  simpleAuth.getUsername();
+    
+    return null;
+  }
 
   @Override
   public boolean canUpdateCredentials() {
     return true;
   }
-
+  
   @Override
-  public void updateCredentials(String externalId, String currentPassword, String newUsername, String newPassword) throws AuthenticationException {
+  public String createCredentials(String username, String password) {
+    SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    
+    SimpleAuth simpleAuth = simpleAuthDAO.createSimpleAuth(username, password);
+    
+    String externalId = simpleAuth.getId().toString();
+  
+    return externalId;
+  }
+  
+  @Override
+  public void updatePassword(String externalId, String password) {
     SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
     
     SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthById(Long.parseLong(externalId));
-    if ((simpleAuth == null)||(!currentPassword.equals(simpleAuth.getPassword()))) {
-      throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.UNAUTHORIZED, "Permission denied");
-    }
     
-    simpleAuthDAO.updateSimpleAuth(simpleAuth, newUsername, newPassword);
+    simpleAuthDAO.updateSimpleAuthPassword(simpleAuth, password);
+  }
+  
+  @Override
+  public void updateUsername(String externalId, String username) {
+    SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
+    
+    SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthById(Long.parseLong(externalId));
+    
+    simpleAuthDAO.updateSimpleAuthUsername(simpleAuth, username);
   }
 
 }

@@ -17,6 +17,17 @@ public interface InternalAuthenticationProvider extends AuthenticationProvider {
    * @return The user corresponding to the given credentials, or <code>null</code> if not found
    */
   public User getUser(String username, String password) throws AuthenticationException;
+  
+  /**
+   * Returns the username of a user corresponding to the given identifier, or <code>null</code> if
+   * not found.
+   * 
+   * @param externalId The user identifier
+   * 
+   * @return The username of the user corresponding to the given identifier, or <code>null</code> if
+   * not found
+   */
+  public String getUsername(String externalId);
 
   /**
    * Returns whether this authorization provider is capable of updating the credentials of a user.
@@ -24,18 +35,30 @@ public interface InternalAuthenticationProvider extends AuthenticationProvider {
    * @return <code>true</code> if this authorization provider can update credentials, otherwise <code>false</code>
    */
   public boolean canUpdateCredentials();
+  
+  /**
+   * Creates new credentials
+   * 
+   * @param username The new username of the user
+   * @param password The new password of the user
+   * 
+   * @return external user identifier
+   */
+  public String createCredentials(String username, String password);
 
   /**
-   * Updates the credentials of the user corresponding to the given identifer.
+   * Updates the username of the user corresponding to the given identifer.
    * 
    * @param externalId The user identifier
-   * @param currentPassword The current password of the user
-   * @param newUsername The new username of the user
-   * @param newPassword The new password of the user
-   * 
-   * @throws AuthenticationException If the current password is invalid
+   * @param username The new username of the user
    */
-  public void updateCredentials(String externalId, String currentPassword, String newUsername, String newPassword)
-      throws AuthenticationException;
-
+  public void updateUsername(String externalId, String username);
+  
+  /**
+   * Updates the password of the user corresponding to the given identifer.
+   * 
+   * @param externalId The user identifier
+   * @param password The new password of the user
+   */
+  public void updatePassword(String externalId, String password);
 }

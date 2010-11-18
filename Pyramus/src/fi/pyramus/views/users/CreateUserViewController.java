@@ -1,5 +1,7 @@
 package fi.pyramus.views.users;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
@@ -8,6 +10,9 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.plugin.auth.AuthenticationProvider;
+import fi.pyramus.plugin.auth.AuthenticationProviderVault;
+import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -23,10 +28,29 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    // TODO user login types, usernames, passwords
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+        
+    List<AuthorizationProviderInfoBean> authorizationProviders = new ArrayList<AuthorizationProviderInfoBean>();
+    for (String authorizationProviderName : AuthenticationProviderVault.getAuthenticationProviderClasses().keySet()) {
+      boolean active = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName) != null;
+      boolean canUpdateCredentials;
+      
+      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName);
+      
+      if (authenticationProvider instanceof InternalAuthenticationProvider) {
+        InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
+        canUpdateCredentials = internalAuthenticationProvider.canUpdateCredentials();
+      } else {
+        canUpdateCredentials = false;
+      }
+      
+      authorizationProviders.add(new AuthorizationProviderInfoBean(authorizationProviderName, active, canUpdateCredentials));
+    }
+    
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
+    pageRequestContext.getRequest().setAttribute("authorizationProviders", authorizationProviders);
+    
     pageRequestContext.setIncludeJSP("/templates/users/createuser.jsp");
   }
 

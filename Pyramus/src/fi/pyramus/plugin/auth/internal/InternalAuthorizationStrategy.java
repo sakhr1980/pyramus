@@ -63,8 +63,14 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
    */
   public String getUsername(String externalId) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
-    return internalAuth == null ? null : internalAuth.getUsername();
+    
+    Long internalAuthId = NumberUtils.createLong(externalId);
+    if (internalAuthId != null && internalAuthId > 0) {
+      InternalAuth internalAuth = userDAO.getInternalAuth(internalAuthId);
+      return internalAuth == null ? null : internalAuth.getUsername();
+    }
+    
+    return null;
   }
 
   /**
@@ -100,6 +106,49 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
       return null;
     }
   }
+  
+  @Override
+  public String createCredentials(String username, String password) {
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    try {
+      String newPasswordEncoded = EncodingUtils.md5EncodeString(password);
+      InternalAuth internalAuth = userDAO.createInternalAuth(username, newPasswordEncoded);
+      String externalId = internalAuth.getId().toString();
+      return externalId;
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new PyramusRuntimeException(e);
+    }
+    catch (NoSuchAlgorithmException e) {
+      throw new PyramusRuntimeException(e);
+    }
+  }
+  
+  @Override
+  public void updateUsername(String externalId, String username) {
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+
+    InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
+    userDAO.updateInternalAuthUsername(internalAuth, username);
+  }
+  
+  @Override
+  public void updatePassword(String externalId, String password) {
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+
+    try {
+      InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
+
+      String newPasswordEncoded = EncodingUtils.md5EncodeString(password);
+      userDAO.updateInternalAuthPassword(internalAuth, newPasswordEncoded);
+    }
+    catch (UnsupportedEncodingException e) {
+      throw new PyramusRuntimeException(e);
+    }
+    catch (NoSuchAlgorithmException e) {
+      throw new PyramusRuntimeException(e);
+    }
+  }
 
   /**
    * Updates the credentials of the user corresponding to the given identifer.
@@ -113,23 +162,7 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
    */
   public void updateCredentials(String externalId, String currentPassword, String newUsername, String newPassword)
       throws AuthenticationException {
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-
-    try {
-      String currentPasswordEncoded = EncodingUtils.md5EncodeString(currentPassword);
-      InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
-      if (internalAuth == null || !internalAuth.getPassword().equals(currentPasswordEncoded)) {
-        throw new AuthenticationException(AuthenticationException.UNAUTHORIZED);
-      }
-      String newPasswordEncoded = EncodingUtils.md5EncodeString(newPassword);
-      userDAO.updateInternalAuth(internalAuth, newUsername, newPasswordEncoded);
-    }
-    catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
-    }
-    catch (NoSuchAlgorithmException e) {
-      throw new PyramusRuntimeException(e);
-    }
+    
   }
 
   /**

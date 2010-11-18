@@ -7,7 +7,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
@@ -17,6 +20,9 @@ import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.plugin.auth.AuthenticationProvider;
+import fi.pyramus.plugin.auth.AuthenticationProviderVault;
+import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 
 /**
  * The controller responsible of creating a new Pyramus user. 
@@ -41,6 +47,10 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     String lastName = requestContext.getString("lastName");
     Role role = Role.getRole(requestContext.getInteger("role"));
     String tagsText = requestContext.getString("tags");
+    String authProvider = requestContext.getString("authProvider");
+    String username = requestContext.getString("username");
+    String password = requestContext.getString("password1");
+    String password2 = requestContext.getString("password2");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {
@@ -53,9 +63,30 @@ public class CreateUserJSONRequestController implements JSONRequestController {
       }
     }
     
+    // Authentication
+    
+    String externalId = "-1";
+
+    AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authProvider);
+    if (authenticationProvider instanceof InternalAuthenticationProvider) {
+      InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
+      
+      boolean usernameBlank = StringUtils.isBlank(username);
+      boolean passwordBlank = StringUtils.isBlank(password);
+      
+      if (!usernameBlank||!passwordBlank) {
+        if (!passwordBlank) {
+          if (!password.equals(password2))
+            throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.PASSWORD_MISMATCH, "Passwords don't match");
+        }
+
+        externalId = internalAuthenticationProvider.createCredentials(username, password);
+      }
+    } 
+    
     // User
 
-    User user = userDAO.createUser(firstName, lastName, "-1", "internal", role);
+    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role);
     
     // Tags
     
