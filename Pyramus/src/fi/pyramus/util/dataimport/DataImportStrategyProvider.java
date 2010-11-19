@@ -150,29 +150,29 @@ public class DataImportStrategyProvider {
         }
       }
     });
-    instance().registerFieldHandler(importerClass, "firstName", new DefaultFieldHandingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "lastName", new DefaultFieldHandingStrategy(subClass, true));
+    instance().registerFieldHandler(importerClass, "firstName", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(importerClass, "lastName", new DefaultFieldHandingStrategy(subClass));
 
     // Address
     subClass = Address.class;
-    instance().registerFieldHandler(importerClass, "city", new DefaultFieldHandingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "country", new DefaultFieldHandingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "postalCode", new DefaultFieldHandingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "streetAddress", new DefaultFieldHandingStrategy(subClass, true));
+    instance().registerFieldHandler(importerClass, "city", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(importerClass, "country", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(importerClass, "postalCode", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(importerClass, "streetAddress", new DefaultFieldHandingStrategy(subClass));
 
     // Email
     subClass = Email.class;
-    instance().registerFieldHandler(importerClass, "email", new DefaultFieldHandingStrategy(subClass, true, "address"));
+    instance().registerFieldHandler(importerClass, "email", new DefaultFieldHandingStrategy(subClass, "address"));
 
     // Phone
     subClass = PhoneNumber.class;
-    instance().registerFieldHandler(importerClass, "phoneNumber", new DefaultFieldHandingStrategy(subClass, true, "number"));
+    instance().registerFieldHandler(importerClass, "phoneNumber", new DefaultFieldHandingStrategy(subClass, "number"));
 
     // AbstractStudent
     subClass = AbstractStudent.class;
-    instance().registerFieldHandler(importerClass, "birthday", new DefaultFieldHandingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "socialSecurityNumber", new DefaultFieldHandingStrategy(subClass, true));// new SocialSecurityNumberHandlingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "sex", new DefaultFieldHandingStrategy(subClass, true));
+    instance().registerFieldHandler(importerClass, "birthday", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(importerClass, "socialSecurityNumber", new DefaultFieldHandingStrategy(subClass));// new SocialSecurityNumberHandlingStrategy(subClass, true));
+    instance().registerFieldHandler(importerClass, "sex", new DefaultFieldHandingStrategy(subClass));
 
     // Course
     importerClass = Course.class;
@@ -220,7 +220,7 @@ public class DataImportStrategyProvider {
         courseStudent.setEnrolmentTime(new Date());
       }      
     });
-    instance().registerFieldHandler(importerClass, "student", new ReferenceFieldHandlingStrategy(subClass, "student", Student.class, true));
-    instance().registerFieldHandler(importerClass, "course", new ReferenceFieldHandlingStrategy(subClass, "course", Course.class, true));
+    instance().registerFieldHandler(importerClass, "student", new ReferenceFieldHandlingStrategy(subClass, "student", Student.class));
+    instance().registerFieldHandler(importerClass, "course", new ReferenceFieldHandlingStrategy(subClass, "course", Course.class));
   }
 }

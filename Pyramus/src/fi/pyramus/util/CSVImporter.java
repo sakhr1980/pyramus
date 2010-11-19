@@ -4,11 +4,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.StatusCode;
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.util.dataimport.DataImportContext;
 import fi.pyramus.util.dataimport.DataImportStrategyProvider;
 import fi.pyramus.util.dataimport.EntityHandlingStrategy;
@@ -18,7 +22,7 @@ public class CSVImporter {
   private String[] headerFields;
 
   @SuppressWarnings("rawtypes")
-  public List<Object> importDataFromStream(InputStream stream, Class entityClass, Long loggedUserId) {
+  public List<Object> importDataFromStream(InputStream stream, Class entityClass, Long loggedUserId, Locale locale) {
     List<Object> list = new ArrayList<Object>();
     CSVReader reader = new CSVReader(new InputStreamReader(stream));
     
@@ -26,31 +30,35 @@ public class CSVImporter {
       String [] firstLine = reader.readNext();
       this.headerFields = firstLine;
       String [] nextLine;
-      SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+      int rowNum = 1;
       EntityHandlingStrategy entityHandler = DataImportStrategyProvider.instance().getEntityHandler(entityClass);
 
       if (firstLine != null) {
         while ((nextLine = reader.readNext()) != null) {
-            // nextLine[] is an array of values from the line
-            System.out.println(nextLine[0] + nextLine[1] + "etc...");
-            
-          DataImportContext context = new DataImportContext(systemDAO, loggedUserId);
+          
+          if (firstLine.length != nextLine.length) {
+            throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.VALIDATION_FAILURE, 
+                Messages.getInstance().getText(locale, "system.importcsv.invalidNumberOfArguments", new Object[] { rowNum }));
+          }
+          
+          DataImportContext context = new DataImportContext(loggedUserId);
           context.setFields(firstLine);
           context.setFieldValues(nextLine);
           entityHandler.initializeContext(context);
           
   
-          Object value = null;
+          String value = null;
           String fieldName = null;
           
           for (int i = 0; i < firstLine.length; i++) {
             fieldName = firstLine[i];
             value = nextLine[i];
 
-            entityHandler.handleValue(fieldName, value, context);
+            if ((!StringUtils.isBlank(fieldName)) && (!StringUtils.isBlank(value)))
+              entityHandler.handleValue(fieldName, value, context);
           }
           
-          entityHandler.saveEntities(context, systemDAO);
+          entityHandler.saveEntities(context);
           
           Object[] entities2 = context.getEntities(); 
           for (int i = 0; i < entities2.length; i++) {
@@ -58,11 +66,11 @@ public class CSVImporter {
               list.add(entities2[i]);
             }
           }
+
+          rowNum++;
         }
       }
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
       throw new PyramusRuntimeException(e);
     }
 

@@ -5,6 +5,7 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 
 @SuppressWarnings("rawtypes")
@@ -34,11 +35,11 @@ public class DefaultEntityHandlingStrategy implements EntityHandlingStrategy {
   }
   
   @Override
-  public void saveEntities(DataImportContext context, SystemDAO systemDAO) {
+  public void saveEntities(DataImportContext context) {
     bindEntities(context);
     
-    // TODO Auto-generated method stub
     Object[] entities = context.getEntities();
+    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     
     for (int i = 0; i < entities.length; i++) {
       Object entity = entities[i];

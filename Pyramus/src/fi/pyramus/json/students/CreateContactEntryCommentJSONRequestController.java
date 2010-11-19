@@ -68,7 +68,7 @@ public class CreateContactEntryCommentJSONRequestController implements JSONReque
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
 
 }

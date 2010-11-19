@@ -92,19 +92,45 @@ public class ManageStudentContactEntriesViewController implements PyramusViewCon
     });
 
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
-    Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
+    final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
     	
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+
+      // Populate comments for each entry to lists
+      
+      for (int j = 0; j < listStudentContactEntries.size(); j++) {
+        StudentContactLogEntry entry = listStudentContactEntries.get(j);
+        
+        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
+        
+        Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
+          public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
+            Date d1 = o1.getCommentDate();
+            Date d2 = o2.getCommentDate();
+            
+            return d1 == null ? 
+                d2 == null ? 0 : 1 :
+                  d2 == null ? -1 : d1.compareTo(d2);
+          }
+        });
+        
+        contactEntryComments.put(entry.getId(), listComments);
+      }
+      
+      // Now we can sort entries based on date of entry and/or dates of the comments on the entry
+      
       Collections.sort(listStudentContactEntries, new Comparator<StudentContactLogEntry>() {
 
         private Date getDateForEntry(StudentContactLogEntry entry) {
           Date d = entry.getEntryDate();
           
-          for (int i = 0; i < entry.getComments().size(); i++) {
-            StudentContactLogEntryComment comment = entry.getComments().get(i);
+          List<StudentContactLogEntryComment> comments = contactEntryComments.get(entry.getId());
+          
+          for (int i = 0; i < comments.size(); i++) {
+            StudentContactLogEntryComment comment = comments.get(i);
             
             if (d == null) {
               d = comment.getCommentDate();
@@ -128,25 +154,6 @@ public class ManageStudentContactEntriesViewController implements PyramusViewCon
       });
       
       contactEntries.put(student.getId(), listStudentContactEntries);
-      
-      for (int j = 0; j < listStudentContactEntries.size(); j++) {
-        StudentContactLogEntry entry = listStudentContactEntries.get(j);
-        
-        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
-        
-        Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
-          public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
-            Date d1 = o1.getCommentDate();
-            Date d2 = o2.getCommentDate();
-            
-            return d1 == null ? 
-                d2 == null ? 0 : 1 :
-                  d2 == null ? -1 : d1.compareTo(d2);
-          }
-        });
-        
-        contactEntryComments.put(entry.getId(), listComments);
-      }
     }
     
     pageRequestContext.getRequest().setAttribute("students", students);

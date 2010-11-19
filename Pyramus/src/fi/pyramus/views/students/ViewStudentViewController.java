@@ -110,7 +110,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
     Map<Long, List<CourseAssessment>> courseAssesments = new HashMap<Long, List<CourseAssessment>>();
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
-    Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
+    final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
@@ -118,12 +118,38 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       courseStudents.put(student.getId(), courseDAO.listStudentCourses(student));
 
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+
+      // Firstly populate comments
+      
+      for (int j = 0; j < listStudentContactEntries.size(); j++) {
+        StudentContactLogEntry entry = listStudentContactEntries.get(j);
+        
+        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
+        
+        Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
+          public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
+            Date d1 = o1.getCommentDate();
+            Date d2 = o2.getCommentDate();
+            
+            return d1 == null ? 
+                d2 == null ? 0 : 1 :
+                  d2 == null ? -1 : d1.compareTo(d2);
+          }
+        });
+        
+        contactEntryComments.put(entry.getId(), listComments);
+      }
+
+      // And then sort the entries by latest date of entry or its comments
+      
       Collections.sort(listStudentContactEntries, new Comparator<StudentContactLogEntry>() {
         private Date getDateForEntry(StudentContactLogEntry entry) {
           Date d = entry.getEntryDate();
+
+          List<StudentContactLogEntryComment> comments = contactEntryComments.get(entry.getId());
           
-          for (int i = 0; i < entry.getComments().size(); i++) {
-            StudentContactLogEntryComment comment = entry.getComments().get(i);
+          for (int i = 0; i < comments.size(); i++) {
+            StudentContactLogEntryComment comment = comments.get(i);
             
             if (d == null) {
               d = comment.getCommentDate();
@@ -145,25 +171,6 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
                 d2 == null ? -1 : d2.compareTo(d1);
         }
       });
-
-      for (int j = 0; j < listStudentContactEntries.size(); j++) {
-        StudentContactLogEntry entry = listStudentContactEntries.get(j);
-        
-        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
-        
-        Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
-          public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
-            Date d1 = o1.getCommentDate();
-            Date d2 = o2.getCommentDate();
-            
-            return d1 == null ? 
-                d2 == null ? 0 : 1 :
-                  d2 == null ? -1 : d1.compareTo(d2);
-          }
-        });
-        
-        contactEntryComments.put(entry.getId(), listComments);
-      }
       
       contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), gradingDAO.listStudentsTransferCredits(student));

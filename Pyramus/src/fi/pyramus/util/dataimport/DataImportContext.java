@@ -3,15 +3,14 @@ package fi.pyramus.util.dataimport;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.users.User;
 
 @SuppressWarnings("rawtypes")
 public class DataImportContext {
 
-  public DataImportContext(SystemDAO systemDAO, Long loggedUserId) {
-    this.systemDAO = systemDAO;
+  public DataImportContext(Long loggedUserId) {
     this.loggedUserId = loggedUserId;
   }
   
@@ -27,19 +26,8 @@ public class DataImportContext {
     return entities.values().toArray();
   }
   
-  private Map<Class, Object> entities = new HashMap<Class, Object>();
-  private SystemDAO systemDAO;
-  private String[] fields;
-  private String[] values;
-  private User loggedUser;
-  private Long loggedUserId;
-
   public void addEntity(Class c, Object entity) {
     entities.put(c, entity);
-  }
-
-  public SystemDAO getSystemDAO() {
-    return systemDAO;
   }
 
   public void setFields(String[] firstLine) {
@@ -81,8 +69,14 @@ public class DataImportContext {
   }
 
   public User getLoggedUser() {
-    UserDAO userDAO = new UserDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     this.loggedUser = userDAO.getUser(this.loggedUserId); 
     return loggedUser;
   }
+
+  private Map<Class, Object> entities = new HashMap<Class, Object>();
+  private String[] fields;
+  private String[] values;
+  private User loggedUser;
+  private Long loggedUserId;
 }
