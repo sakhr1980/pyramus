@@ -9,4 +9,7 @@ public interface EntityHandlingStrategy {
   void saveEntities(DataImportContext context);
   
   void initializeContext(DataImportContext context);
+
+  @SuppressWarnings("rawtypes")
+  Class getMainEntityClass();
 }

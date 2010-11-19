@@ -21,8 +21,7 @@ public class CSVImporter {
 
   private String[] headerFields;
 
-  @SuppressWarnings("rawtypes")
-  public List<Object> importDataFromStream(InputStream stream, Class entityClass, Long loggedUserId, Locale locale) {
+  public List<Object> importDataFromStream(InputStream stream, String entityStrategy, Long loggedUserId, Locale locale) {
     List<Object> list = new ArrayList<Object>();
     CSVReader reader = new CSVReader(new InputStreamReader(stream));
     
@@ -31,7 +30,7 @@ public class CSVImporter {
       this.headerFields = firstLine;
       String [] nextLine;
       int rowNum = 1;
-      EntityHandlingStrategy entityHandler = DataImportStrategyProvider.instance().getEntityHandler(entityClass);
+      EntityHandlingStrategy entityHandler = DataImportStrategyProvider.instance().getEntityHandler(entityStrategy);
 
       if (firstLine != null) {
         while ((nextLine = reader.readNext()) != null) {
@@ -62,7 +61,7 @@ public class CSVImporter {
           
           Object[] entities2 = context.getEntities(); 
           for (int i = 0; i < entities2.length; i++) {
-            if (entities2[i].getClass().equals(entityClass)) {
+            if (entities2[i].getClass().equals(entityHandler.getMainEntityClass())) {
               list.add(entities2[i]);
             }
           }
@@ -79,5 +78,11 @@ public class CSVImporter {
 
   public String[] getHeaderFields() {
     return headerFields;
+  }
+
+  @SuppressWarnings("rawtypes")
+  public Class getEntityClassForStrategy(String strategyName) {
+    EntityHandlingStrategy entityHandler = DataImportStrategyProvider.instance().getEntityHandler(strategyName);
+    return entityHandler.getMainEntityClass();
   }  
 }
