@@ -44,9 +44,9 @@
               </jsp:include>
               <select name="entity">
                 <option value=""><fmt:message key="system.importcsv.selectOneOptionCaption"/></option>
-                <option value="fi.pyramus.domainmodel.courses.Course"><fmt:message key="system.importcsv.optionCourse" /></option>
-                <option value="fi.pyramus.domainmodel.students.Student"><fmt:message key="system.importcsv.optionStudent" /></option>
-                <option value="fi.pyramus.domainmodel.courses.CourseStudent"><fmt:message key="system.importcsv.optionCourseStudent" /></option>
+                <option value="Course"><fmt:message key="system.importcsv.optionCourse" /></option>
+                <option value="Student"><fmt:message key="system.importcsv.optionStudent" /></option>
+                <option value="CourseStudent"><fmt:message key="system.importcsv.optionCourseStudent" /></option>
               </select>          
             </div>
 
@@ -58,7 +58,7 @@
 	    	
 	    	<div>
           <c:choose>
-	    	    <c:when test="${entityClass eq 'fi.pyramus.domainmodel.students.Student'}">
+	    	    <c:when test="${strategyName eq 'Student'}">
 	    	      <table>
 	    	        <tr align="left">
 	    	          <th><fmt:message key="system.importcsv.results.studentId" /></th>
@@ -74,7 +74,7 @@
 			    	    </c:forEach>
 		    	    </table>
 		    	  </c:when>
-            <c:when test="${entityClass eq 'fi.pyramus.domainmodel.courses.Course'}">
+            <c:when test="${strategyName eq 'Course'}">
               <table>
                 <tr align="left">
                   <th><fmt:message key="system.importcsv.results.courseId" /></th>
@@ -88,7 +88,7 @@
 		            </c:forEach>
               </table>
             </c:when>
-            <c:when test="${entityClass eq 'fi.pyramus.domainmodel.courses.CourseStudent'}">
+            <c:when test="${strategyName eq 'CourseStudent'}">
               <table>
                 <tr align="left">
                   <th><fmt:message key="system.importcsv.results.courseStudentStudentName" /></th>

@@ -26,19 +26,19 @@ public class DataImportStrategyProvider {
     return _instance;
   }
   
-  public void registerFieldHandler(Class entityClass, String fieldName, FieldHandlingStrategy strategy) {
-    EntityFieldHandlerProvider entityHandler = getEntityFieldHandlerProvider(entityClass);
+  public void registerFieldHandler(String entityStrategy, String fieldName, FieldHandlingStrategy strategy) {
+    EntityFieldHandlerProvider entityHandler = getEntityFieldHandlerProvider(entityStrategy);
 
     if (entityHandler == null) {
       entityHandler = new EntityFieldHandlerProvider();
-      registerEntityFieldHandler(entityClass, entityHandler);
+      registerEntityFieldHandler(entityStrategy, entityHandler);
     }
     
     entityHandler.registerFieldHandler(fieldName, strategy);
   }
   
-  public FieldHandlingStrategy getFieldHandler(Class entityClass, String fieldName) {
-    EntityFieldHandlerProvider entityHandler = getEntityFieldHandlerProvider(entityClass);
+  public FieldHandlingStrategy getFieldHandler(String entityStrategy, String fieldName) {
+    EntityFieldHandlerProvider entityHandler = getEntityFieldHandlerProvider(entityStrategy);
     
     if (entityHandler != null)
       return entityHandler.getFieldHandlingStrategy(fieldName);
@@ -46,20 +46,20 @@ public class DataImportStrategyProvider {
       return null;
   }
   
-  private EntityFieldHandlerProvider getEntityFieldHandlerProvider(Class c) {
-    return entityFieldHandlers.get(c);
+  private EntityFieldHandlerProvider getEntityFieldHandlerProvider(String entityStrategy) {
+    return entityFieldHandlers.get(entityStrategy);
   }
   
-  public EntityHandlingStrategy getEntityHandler(Class entityClass) {
-    return entityHandlers.get(entityClass);
+  public EntityHandlingStrategy getEntityHandler(String entityStrategy) {
+    return entityHandlers.get(entityStrategy);
   }
   
-  public void registerEntityHandler(Class entityClass, EntityHandlingStrategy entityHandler) {
-    entityHandlers.put(entityClass, entityHandler);
+  public void registerEntityHandler(String entityStrategy, EntityHandlingStrategy entityHandler) {
+    entityHandlers.put(entityStrategy, entityHandler);
   }
 
-  private void registerEntityFieldHandler(Class c, EntityFieldHandlerProvider prov) {
-    entityFieldHandlers.put(c, prov);
+  private void registerEntityFieldHandler(String entityStrategy, EntityFieldHandlerProvider prov) {
+    entityFieldHandlers.put(entityStrategy, prov);
   }
 
   private class EntityFieldHandlerProvider {
@@ -75,19 +75,19 @@ public class DataImportStrategyProvider {
     private Map<String, FieldHandlingStrategy> fieldHandlers = new HashMap<String, FieldHandlingStrategy>();  
   }
 
-  private Map<Class, EntityFieldHandlerProvider> entityFieldHandlers = new HashMap<Class, EntityFieldHandlerProvider>();
-  private Map<Class, EntityHandlingStrategy> entityHandlers = new HashMap<Class, EntityHandlingStrategy>();
+  private Map<String, EntityFieldHandlerProvider> entityFieldHandlers = new HashMap<String, EntityFieldHandlerProvider>();
+  private Map<String, EntityHandlingStrategy> entityHandlers = new HashMap<String, EntityHandlingStrategy>();
   private static DataImportStrategyProvider _instance;
   
   static {
     _instance = new DataImportStrategyProvider();
 
-    Class importerClass;
+    String entityStrategyName;
     Class subClass;
     
-    importerClass = Student.class;
+    entityStrategyName = "Student";
     subClass = Student.class;
-    instance().registerEntityHandler(importerClass, new DefaultEntityHandlingStrategy(importerClass) {
+    instance().registerEntityHandler(entityStrategyName, new DefaultEntityHandlingStrategy(Student.class, entityStrategyName) {
       
       private ContactInfo getStudentContactInfo(Student student) {
         ContactInfo result = student.getContactInfo();
@@ -150,34 +150,34 @@ public class DataImportStrategyProvider {
         }
       }
     });
-    instance().registerFieldHandler(importerClass, "firstName", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "lastName", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "firstName", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "lastName", new DefaultFieldHandingStrategy(subClass));
 
     // Address
     subClass = Address.class;
-    instance().registerFieldHandler(importerClass, "city", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "country", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "postalCode", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "streetAddress", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "city", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "country", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "postalCode", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "streetAddress", new DefaultFieldHandingStrategy(subClass));
 
     // Email
     subClass = Email.class;
-    instance().registerFieldHandler(importerClass, "email", new DefaultFieldHandingStrategy(subClass, "address"));
+    instance().registerFieldHandler(entityStrategyName, "email", new DefaultFieldHandingStrategy(subClass, "address"));
 
     // Phone
     subClass = PhoneNumber.class;
-    instance().registerFieldHandler(importerClass, "phoneNumber", new DefaultFieldHandingStrategy(subClass, "number"));
+    instance().registerFieldHandler(entityStrategyName, "phoneNumber", new DefaultFieldHandingStrategy(subClass, "number"));
 
     // AbstractStudent
     subClass = AbstractStudent.class;
-    instance().registerFieldHandler(importerClass, "birthday", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "socialSecurityNumber", new DefaultFieldHandingStrategy(subClass));// new SocialSecurityNumberHandlingStrategy(subClass, true));
-    instance().registerFieldHandler(importerClass, "sex", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "birthday", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "socialSecurityNumber", new DefaultFieldHandingStrategy(subClass));// new SocialSecurityNumberHandlingStrategy(subClass, true));
+    instance().registerFieldHandler(entityStrategyName, "sex", new DefaultFieldHandingStrategy(subClass));
 
     // Course
-    importerClass = Course.class;
+    entityStrategyName = "Course";
     subClass = Course.class;
-    instance().registerEntityHandler(importerClass, new DefaultEntityHandlingStrategy(importerClass) {
+    instance().registerEntityHandler(entityStrategyName, new DefaultEntityHandlingStrategy(Course.class, entityStrategyName) {
       @Override
       protected void bindEntities(DataImportContext context) {
         super.bindEntities(context);
@@ -204,15 +204,15 @@ public class DataImportStrategyProvider {
         context.addEntity(Module.class, module);
       }
     });
-    instance().registerFieldHandler(importerClass, "name", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "description", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "beginDate", new DefaultFieldHandingStrategy(subClass));
-    instance().registerFieldHandler(importerClass, "endDate", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "name", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "description", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "beginDate", new DefaultFieldHandingStrategy(subClass));
+    instance().registerFieldHandler(entityStrategyName, "endDate", new DefaultFieldHandingStrategy(subClass));
 
     // CourseStudent
-    importerClass = CourseStudent.class;
+    entityStrategyName = "CourseStudent";
     subClass = CourseStudent.class;
-    instance().registerEntityHandler(importerClass, new DefaultEntityHandlingStrategy(importerClass) {
+    instance().registerEntityHandler(entityStrategyName, new DefaultEntityHandlingStrategy(CourseStudent.class, entityStrategyName) {
       @Override
       protected void bindEntities(DataImportContext context) {
         super.bindEntities(context);
@@ -220,7 +220,7 @@ public class DataImportStrategyProvider {
         courseStudent.setEnrolmentTime(new Date());
       }      
     });
-    instance().registerFieldHandler(importerClass, "student", new ReferenceFieldHandlingStrategy(subClass, "student", Student.class));
-    instance().registerFieldHandler(importerClass, "course", new ReferenceFieldHandlingStrategy(subClass, "course", Course.class));
+    instance().registerFieldHandler(entityStrategyName, "student", new ReferenceFieldHandlingStrategy(subClass, "student", Student.class));
+    instance().registerFieldHandler(entityStrategyName, "course", new ReferenceFieldHandlingStrategy(subClass, "course", Course.class));
   }
 }
