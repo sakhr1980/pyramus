@@ -16,6 +16,7 @@
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>    
 
     <!-- Used to render memo values with line breaks; for some reason this is the only approach that works -->
     <% pageContext.setAttribute("newLineChar", "\n"); %>
@@ -149,8 +150,8 @@
 
       function archiveEntry(entryId, studentId) {
         var entryShort = $("entry." + entryId + ".text").textContent;
-        if (entryShort.length > 20)
-          entryShort = entryShort.substring(0, 19) + "...";
+        entryShort = entryShort.stripScripts().stripTags().strip();
+        entryShort = entryShort.truncate(20, ["..."]);
         var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.archiveContactEntryConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
         var dialog = new IxDialog({
           id : 'confirmRemoval',
@@ -187,26 +188,25 @@
       
       function addEntryRow(studentId, entryId, entryDate, entryType, entryCreatorName, entryText) {
         var listDiv = $('contactEntries.' + studentId);
-        var date = new Date(entryDate);
-        var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+        var dateStr = getLocale().getDate(entryDate, false);
 
         var entryTypeName = getEntryTypeName(entryType);
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId, class: "studentContactEntryItem"}));
-        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactEntryCaption"}));
+        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId, className: "studentContactEntryItem"}));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", className: "studentContactEntryCaption"}));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryDate." + entryId + ".caption", class: "studentContactEntryDate"}, [dateStr])); 
-        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryType." + entryId + ".caption", class: "studentContactEntryType"}, [entryTypeName])); 
-        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryCreator." + entryId + ".caption", class: "studentContactEntryCreator"}, [entryCreatorName])); 
+        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryDate." + entryId + ".caption", className: "studentContactEntryDate"}, [dateStr])); 
+        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryType." + entryId + ".caption", className: "studentContactEntryType"}, [entryTypeName])); 
+        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryCreator." + entryId + ".caption", className: "studentContactEntryCreator"}, [entryCreatorName])); 
         
-        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".commentbtn", class: "studentContactEntryEditButton iconButton", 
+        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {className: "studentContactEntryButtons"}));
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".commentbtn", className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/list-add.png", 
           onClick: "addComment(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", class: "studentContactEntryEditButton iconButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton iconButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", className: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
           onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
 
@@ -215,7 +215,7 @@
         newEntryDiv.appendChild(node);
 
        
-        node = Builder.node("div", {id: "contactEntryComments." + entryId, class: "contactEntryCommentsWrapper"}, []);
+        node = Builder.node("div", {id: "contactEntryComments." + entryId, className: "contactEntryCommentsWrapper"}, []);
         newEntryDiv.appendChild(node);
       }
       
@@ -272,8 +272,7 @@
             var entryType = results.type;
             var entryText = results.text;
 
-            var date = new Date(entryDate);
-            var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+            var dateStr = getLocale().getDate(entryDate, false);
             var entryTypeName = getEntryTypeName(entryType);
             //var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creatorName;
 
@@ -303,20 +302,19 @@
       
       function addCommentRow(entryId, commentId, studentId, commentDate, commentCreatorName, commentText) {
         var listDiv = $('contactEntryComments.' + entryId);
-        var date = new Date(commentDate);
-        var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+        var dateStr = getLocale().getDate(commentDate, false);
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryCommentItem." + commentId, class: "studentContactCommentEntryItem"}));
-        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", class: "studentContactCommentEntryCaption"}));
+        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryCommentItem." + commentId, className: "studentContactCommentEntryItem"}));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", className: "studentContactCommentEntryCaption"}));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentDate." + commentId + ".caption", class: "studentContactCommentEntryDate"}, [dateStr])); 
-        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", class: "studentContactCommentEntryCreator"}, [commentCreatorName])); 
+        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentDate." + commentId + ".caption", className: "studentContactCommentEntryDate"}, [dateStr])); 
+        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", className: "studentContactCommentEntryCreator"}, [commentCreatorName])); 
         
-        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {class: "studentContactCommentEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", class: "studentContactEntryEditButton iconButton", 
+        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {className: "studentContactCommentEntryButtons"}));
+        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
           onClick: "editComment(" + commentId + ", " + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".archivebnt", class: "studentContactEntryArchiveButton iconButton", 
+        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".archivebnt", className: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
           onClick: "archiveComment(" + commentId + ", " + entryId + ")"}, []));
 
@@ -387,8 +385,7 @@
             var creatorName = results.creatorName;
             var entryText = results.text;
 
-            var date = new Date(entryDate);
-            var dateStr = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+            var dateStr = getLocale().getDate(entryDate, false);
 
             $("commentDate." + commentId + ".caption").innerHTML = dateStr;
             $("commentCreator." + commentId + ".caption").innerHTML = creatorName;
@@ -420,6 +417,8 @@
 
       function showCommentForm(parentNode, studentId) {
         var container = $("commentFormContainer." + studentId);
+        container.remove();
+        
         parentNode.appendChild(container);
 
         container.show();
@@ -462,8 +461,9 @@
 
       function archiveComment(commentId, entryId) {
         var entryShort = $("entry." + entryId + ".text").textContent;
-        if (entryShort.length > 20)
-          entryShort = entryShort.substring(0, 19) + "...";
+        entryShort = entryShort.stripScripts().stripTags().strip();
+        entryShort = entryShort.truncate(20, ["..."]);
+        
         var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.archiveCommentConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
         var dialog = new IxDialog({
           id : 'confirmRemoval',

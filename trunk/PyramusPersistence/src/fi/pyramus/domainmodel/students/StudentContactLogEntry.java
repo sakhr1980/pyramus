@@ -1,8 +1,6 @@
 package fi.pyramus.domainmodel.students;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,7 +22,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
@@ -181,34 +176,6 @@ public class StudentContactLogEntry implements ArchivableEntity {
     return version;
   }
 
-  public List<StudentContactLogEntryComment> getComments() {
-    return comments;
-  }
-
-  @SuppressWarnings("unused")
-  private void setComments(List<StudentContactLogEntryComment> comments) {
-    this.comments = comments;
-  }
-
-  public void addStudent(StudentContactLogEntryComment comment) {
-    if (!this.comments.contains(comment)) {
-      comment.setEntry(this);
-      comments.add(comment);
-    } else {
-      throw new PersistenceException("Comment is already in this StudentContactLogEntry");
-    }
-  }
-
-  public void removeStudent(StudentContactLogEntryComment comment) {
-    if (this.comments.contains(comment)) {
-      comment.setEntry(null);
-      comments.remove(comment);
-    } else {
-      throw new PersistenceException("Comment is not in this StudentContactLogEntry");
-    }
-  }
-
-
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentContactLogEntry")  
   @TableGenerator(name="StudentContactLogEntry", allocationSize=1)
@@ -237,9 +204,4 @@ public class StudentContactLogEntry implements ArchivableEntity {
   @Version
   @Column(nullable = false)
   private Long version;
-
-  @OneToMany
-  @JoinColumn(name = "entry")
-  @IndexedEmbedded
-  private List<StudentContactLogEntryComment> comments = new ArrayList<StudentContactLogEntryComment>();
 }

@@ -9,7 +9,6 @@ import fi.pyramus.StatusCode;
 @SuppressWarnings("rawtypes")
 public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {
 
-  private boolean createOnDemand = true;
   private Class entityClass;
   private String fieldName = null;
 
@@ -17,14 +16,8 @@ public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {
     this.entityClass = entityClass;
   }
 
-  public DefaultFieldHandingStrategy(Class entityClass, boolean createOnDemand) {
+  public DefaultFieldHandingStrategy(Class entityClass, String fieldName) {
     this.entityClass = entityClass;
-    this.createOnDemand = createOnDemand;
-  }
-
-  public DefaultFieldHandingStrategy(Class entityClass, boolean createOnDemand, String fieldName) {
-    this.entityClass = entityClass;
-    this.createOnDemand = createOnDemand;
     this.fieldName  = fieldName;
   }
   
@@ -33,7 +26,7 @@ public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {
   public void handleField(String fieldName, Object fieldValue, DataImportContext context) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
     Object entity = context.getEntity(entityClass);
 
-    if ((entity == null) && createOnDemand) {
+    if (entity == null) {
       Constructor<?> defaultConstructor;
       try {
         defaultConstructor = entityClass.getDeclaredConstructor(new Class[] {});

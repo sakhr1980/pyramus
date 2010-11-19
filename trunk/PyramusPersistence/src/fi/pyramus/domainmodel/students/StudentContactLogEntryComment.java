@@ -141,7 +141,7 @@ public class StudentContactLogEntryComment implements ArchivableEntity {
   @TableGenerator(name="StudentContactLogEntryComment", allocationSize=1)
   private Long id;
 
-  @ManyToOne (optional = false)
+  @ManyToOne
   @JoinColumn (name = "entry")
   private StudentContactLogEntry entry;
   

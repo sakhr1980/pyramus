@@ -6,12 +6,12 @@ import java.lang.reflect.Field;
 import fi.pyramus.ErrorLevel;
 import fi.pyramus.PyramusRuntimeException;
 import fi.pyramus.StatusCode;
+import fi.pyramus.dao.DAOFactory;
 
 @SuppressWarnings("rawtypes")
 public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {
 
   private final Class entityClass;
-  private final boolean createOnDemand;
   private final String fieldName;
   private final Class referencedClass;
 
@@ -20,12 +20,10 @@ public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {
    * @param entityClass Entity class to save data into
    * @param fieldName Field name in entityClass entity to save data into
    * @param referencedClass Class of the object that fieldName in entity is referring to
-   * @param createOnDemand Indicates if entity should be created if it doesn't exist 
    */
-  public ReferenceFieldHandlingStrategy(Class entityClass, String fieldName, Class referencedClass, boolean createOnDemand) {
+  public ReferenceFieldHandlingStrategy(Class entityClass, String fieldName, Class referencedClass) {
     this.entityClass = entityClass;
     this.referencedClass = referencedClass;
-    this.createOnDemand = createOnDemand;
     this.fieldName = fieldName;
   }
   
@@ -35,7 +33,7 @@ public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {
       NoSuchFieldException, IllegalAccessException {
     Object entity = context.getEntity(entityClass);
 
-    if ((entity == null) && createOnDemand) {
+    if (entity == null) {
       Constructor<?> defaultConstructor;
       try {
         defaultConstructor = entityClass.getDeclaredConstructor(new Class[] {});
@@ -48,7 +46,7 @@ public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {
     }
 
     Long id = Long.valueOf((String) fieldValue);
-    fieldValue = context.getSystemDAO().findEntityById(referencedClass, id);
+    fieldValue = DAOFactory.getInstance().getSystemDAO().findEntityById(referencedClass, id);
     
     Field field = DataImportUtils.getField(entity, this.fieldName != null ? this.fieldName : fieldName);
     DataImportUtils.setFieldValue(entity, field, fieldValue);

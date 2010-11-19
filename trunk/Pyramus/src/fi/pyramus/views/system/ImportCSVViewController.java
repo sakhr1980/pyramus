@@ -27,7 +27,6 @@ public class ImportCSVViewController extends PyramusFormViewController {
     try {
       entityClass = Class.forName(className);
     } catch (ClassNotFoundException e1) {
-      e1.printStackTrace();
       throw new PyramusRuntimeException(e1);
     }
 
@@ -35,7 +34,7 @@ public class ImportCSVViewController extends PyramusFormViewController {
     List<Object> list;
     try {
       list = dataImporter.importDataFromStream(requestContext.getFile("file").getInputStream(), 
-          entityClass, requestContext.getLoggedUserId());
+          entityClass, requestContext.getLoggedUserId(), requestContext.getRequest().getLocale());
     } catch (IOException e) {
       throw new PyramusRuntimeException(e);
     }
