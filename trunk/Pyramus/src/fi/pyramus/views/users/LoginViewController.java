@@ -21,17 +21,17 @@ public class LoginViewController implements PyramusViewController {
    * @param requestContext Page request context
    */
   public void process(PageRequestContext requestContext) {
-    AuthenticationProviderVault authorizationProviders = AuthenticationProviderVault.getInstance();
-    boolean hasInternals = authorizationProviders.hasInternalStrategies();
-    boolean hasExternals = authorizationProviders.hasExternalStrategies();
+    AuthenticationProviderVault authenticationProviders = AuthenticationProviderVault.getInstance();
+    boolean hasInternals = authenticationProviders.hasInternalStrategies();
+    boolean hasExternals = authenticationProviders.hasExternalStrategies();
     
     if (hasExternals && hasInternals) {
       requestContext.setIncludeJSP("/templates/users/login_both.jsp");
     } else {
       if (hasExternals) {
         // TODO: Does not support multiple external providers, yet
-        ExternalAuthenticationProvider authorizationProvider = authorizationProviders.getExternalAuthorizationProviders().get(0);
-        authorizationProvider.performDiscovery(requestContext);
+        ExternalAuthenticationProvider authenticationProvider = authenticationProviders.getExternalAuthenticationProviders().get(0);
+        authenticationProvider.performDiscovery(requestContext);
       } else { 
         requestContext.setIncludeJSP("/templates/users/login_internal.jsp");
       }

@@ -258,7 +258,7 @@ IxTable = Class.create({
   setCellValue: function (row, column, value) {
     var handlerInstance = this.getCellEditor(row, column);
     IxTableControllers.getController(handlerInstance._dataType).setEditorValue(handlerInstance, value);
-    this.fire("cellValueChanged", {
+    this.fire("cellValueChange", {
       tableComponent: this,
       row: row,
       column: column, 
@@ -654,7 +654,7 @@ IxTableEditorController = Class.create({
   },
   _fireValueChange: function (handlerInstance, newValue) {
     handlerInstance._table.fire("cellValueChange", {
-      tableObject: handlerInstance._table,
+      tableComponent: handlerInstance._table,
       fieldType: handlerInstance._dataType,
       column: handlerInstance._column,
       row: handlerInstance._row,

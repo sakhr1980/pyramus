@@ -18,7 +18,7 @@ CourseComponentEditor = Class.create({
 
     this._componentInfoTable = this._createComponentInfoTable();
     
-    var rowIndex = this._componentInfoTable.addRow([this._options.componentId, this._options.componentName, this._options.componentLength, 'h', this._options.componentDescription, '', '', '']);
+    var rowIndex = this._componentInfoTable.addRow([this._options.componentId, this._options.componentName, this._options.componentLength, this._options.componentUnit, this._options.componentDescription, '', '', '']);
     
     if (this._options.componentId && this._options.componentId > 0) {
       this._componentInfoTable.showCell(rowIndex, this._componentInfoTable.getNamedColumnIndex("archiveButton"));

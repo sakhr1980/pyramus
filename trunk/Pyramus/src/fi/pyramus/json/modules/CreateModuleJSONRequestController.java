@@ -52,7 +52,7 @@ public class CreateModuleJSONRequestController implements JSONRequestController 
     Integer courseNumber = requestContext.getInteger("courseNumber"); 
     User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
     Long moduleLengthTimeUnitId = requestContext.getLong("moduleLengthTimeUnit");
-    EducationalTimeUnit moduleLengthTimeUnit = baseDAO.getEducationalTimeUnit(moduleLengthTimeUnitId);
+    EducationalTimeUnit moduleLengthTimeUnit = baseDAO.findEducationalTimeUnitById(moduleLengthTimeUnitId);
     Double moduleLength = requestContext.getDouble("moduleLength");
     String tagsText = requestContext.getString("tags");
     

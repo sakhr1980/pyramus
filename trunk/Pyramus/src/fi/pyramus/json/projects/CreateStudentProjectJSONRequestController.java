@@ -64,7 +64,7 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
           "projects.createStudentProject.newStudentProject");
       description = null;
       // TODO default educational time unit?
-      unit = baseDAO.getEducationalTimeUnit((long) 1);
+      unit = baseDAO.findEducationalTimeUnitById((long) 1);
       units = 0.0;
     }
     else {

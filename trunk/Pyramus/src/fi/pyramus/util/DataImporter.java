@@ -218,7 +218,7 @@ public class DataImporter {
                 Object value;
                 
                 if (!isHibernateClass(mapKeyTypeClass)) {
-                  ValueInterpreter valueInterpreter = DataImportUtils.getValueInterpreter(mapKeyTypeClass);
+                  ValueInterpreter<?> valueInterpreter = DataImportUtils.getValueInterpreter(mapKeyTypeClass);
                   if (valueInterpreter != null)
                     key = valueInterpreter.interpret(keyValue);
                   else
@@ -228,7 +228,7 @@ public class DataImporter {
                 }
                 
                 if (!isHibernateClass(mapValueTypeClass)) {
-                  ValueInterpreter valueInterpreter = DataImportUtils.getValueInterpreter(mapValueTypeClass);
+                  ValueInterpreter<?> valueInterpreter = DataImportUtils.getValueInterpreter(mapValueTypeClass);
                   if (valueInterpreter != null)
                     value = valueInterpreter.interpret(valueValue);
                   else

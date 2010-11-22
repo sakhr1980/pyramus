@@ -81,7 +81,7 @@ public class EditCourseJSONRequestController implements JSONRequestController {
     Date beginDate = requestContext.getDate("beginDate");
     Date endDate = requestContext.getDate("endDate");
     Double courseLength = requestContext.getDouble("courseLength");
-    EducationalTimeUnit courseLengthTimeUnit = baseDAO.getEducationalTimeUnit(requestContext
+    EducationalTimeUnit courseLengthTimeUnit = baseDAO.findEducationalTimeUnitById(requestContext
         .getLong("courseLengthTimeUnit"));
     Double distanceTeachingDays = requestContext.getDouble("distanceTeachingDays");
     Double localTeachingDays = requestContext.getDouble("localTeachingDays");

@@ -52,7 +52,7 @@ public class CreateProjectJSONRequestController implements JSONRequestController
     Long optionalStudiesLengthTimeUnitId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLengthTimeUnit"));
     EducationalTimeUnit optionalStudiesLengthTimeUnit = baseDAO
-        .getEducationalTimeUnit(optionalStudiesLengthTimeUnitId);
+        .findEducationalTimeUnitById(optionalStudiesLengthTimeUnitId);
     Double optionalStudiesLength = NumberUtils.createDouble(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLength"));
     Project project = projectDAO.createProject(name, description, optionalStudiesLength,

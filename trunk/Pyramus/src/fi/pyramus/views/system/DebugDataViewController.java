@@ -45,13 +45,13 @@ public class DebugDataViewController implements PyramusViewController {
     
     if ("module".equals(type)) {
       for (int i = start; i < (start + count); i++) {
-        EducationalTimeUnit etu = baseDAO.getEducationalTimeUnit(new Long(1));
+        EducationalTimeUnit etu = baseDAO.findEducationalTimeUnitById(new Long(1));
         moduleDAO.createModule("Moduli " + i, null, null, new Double(10), etu, "Kuvaustekstiä modulille " + i, user);
       }
     }
     else if ("course".equals(type)) {
       for (int i = start; i < (start + count); i++) {
-        EducationalTimeUnit etu = baseDAO.getEducationalTimeUnit(new Long(1));
+        EducationalTimeUnit etu = baseDAO.findEducationalTimeUnitById(new Long(1));
         CourseState courseState = courseDAO.getCourseState(new Long(1));
         courseDAO.createCourse(moduleDAO.getModule(new Long(1)), "Kurssi " + i, "", courseState, null, null, null, null, new Double(10), etu, null, null, null, null, null, "Kuvaustekstiä kurssille " + i, user);
       }
@@ -64,7 +64,7 @@ public class DebugDataViewController implements PyramusViewController {
     }
     else if ("project".equals(type)) {
       for (int i = start; i < (start + count); i++) {
-        EducationalTimeUnit etu = baseDAO.getEducationalTimeUnit(new Long(1));
+        EducationalTimeUnit etu = baseDAO.findEducationalTimeUnitById(new Long(1));
         projectDAO.createProject("Projekti " + i, "Kuvaustekstiä projektille " + i, new Double(10), etu, user);
       }
     }

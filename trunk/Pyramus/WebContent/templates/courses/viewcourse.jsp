@@ -23,42 +23,7 @@
 
     <script type="text/javascript">
       // Course components
-      /**
-      function setupComponentsTable() {
-        var componentsTable = new IxTable($('viewCourseComponentsTableContainer'), {
-          id : "componentsTable",
-          columns : [{
-            header : '<fmt:message key="courses.viewCourse.componentsTableNameHeader"/>',
-            left : 8,
-            width : 236,
-            dataType: 'text',
-            editable: false,
-            paramName: 'name'
-          }, {
-            header : '<fmt:message key="courses.viewCourse.componentsTableLengthHeader"/>',
-            left : 248,
-            width : 30,
-            dataType : 'number',
-            editable: false,
-            paramName: 'length'
-          }, {
-            header : '<fmt:message key="courses.viewCourse.componentsTableDescriptionHeader"/>',
-            left: 290,
-            right : 30,
-            dataType: 'text',
-            editable: false,
-            paramName: 'description'
-          }]
-        });
-        <c:forEach var="component" items="${courseComponents}">
-          componentsTable.addRow([
-            '${fn:replace(component.name, "'", "\\'")}',
-            ${component.length.units},
-            '${fn:replace(component.description, "'", "\\'")}'
-          ]);
-        </c:forEach>
-      }
-      **/
+      
       function setupStudentsTable() {
         var studentsTable = new IxTable($('viewCourseStudentsTableContainer'), {
           id : "studentsTable",
@@ -202,7 +167,6 @@
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         setupRelatedCommands();
-        // setupComponentsTable();
         setupStudentsTable();
       }
 

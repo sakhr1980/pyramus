@@ -1,5 +1,5 @@
 package fi.pyramus.util.dataimport;
 
-public interface ValueInterpreter {
-  Object interpret(Object o);
+public interface ValueInterpreter<T> {
+  T interpret(Object o);
 }

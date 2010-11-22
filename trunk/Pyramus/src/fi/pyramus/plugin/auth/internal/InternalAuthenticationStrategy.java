@@ -16,9 +16,9 @@ import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 import fi.pyramus.plugin.auth.utils.EncodingUtils;
 
 /**
- * An authorization provider using the credential storage of the application itself.
+ * An authentication provider using the credential storage of the application itself.
  */
-public class InternalAuthorizationStrategy implements InternalAuthenticationProvider {
+public class InternalAuthenticationStrategy implements InternalAuthenticationProvider {
 
   /**
    * Creates a new user.
@@ -166,7 +166,7 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
   }
 
   /**
-   * Returns whether this authorization provider is capable of updating the credentials of a user.
+   * Returns whether this authentication provider is capable of updating the credentials of a user.
    * This provider is capable of that, so <code>true</code> is always returned.
    * 
    * @return Always <code>true</code>
@@ -176,9 +176,9 @@ public class InternalAuthorizationStrategy implements InternalAuthenticationProv
   }
 
   /**
-   * Returns the name of this authorization provider.
+   * Returns the name of this authentication provider.
    * 
-   * @return The name of this authorization provider
+   * @return The name of this authentication provider
    */
   public String getName() {
     return "internal";

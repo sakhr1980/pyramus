@@ -4,7 +4,7 @@ import fi.pyramus.RequestContext;
 import fi.pyramus.domainmodel.users.User;
 
 /**
- * Defines requirements for a class capable of authorizing using external authorization source. 
+ * Defines requirements for a class capable of authorizing using external authentication source. 
  * (e.g. OpenId) 
  */
 public interface ExternalAuthenticationProvider extends AuthenticationProvider {

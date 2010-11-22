@@ -34,9 +34,9 @@ public class ExternalLoginLoginViewController implements PyramusViewController {
     }
     
     try {
-      AuthenticationProviderVault authorizationProviders = AuthenticationProviderVault.getInstance();
-      ExternalAuthenticationProvider authorizationProvider = authorizationProviders.getExternalAuthorizationProviders().get(0);
-      User user = authorizationProvider.processResponse(requestContext);
+      AuthenticationProviderVault authenticationProviders = AuthenticationProviderVault.getInstance();
+      ExternalAuthenticationProvider authenticationProvider = authenticationProviders.getExternalAuthenticationProviders().get(0);
+      User user = authenticationProvider.processResponse(requestContext);
       if (user != null) { 
         // User has been authorized, so store him in the session
         

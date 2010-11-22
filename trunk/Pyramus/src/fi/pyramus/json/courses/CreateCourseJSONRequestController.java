@@ -29,7 +29,6 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
-import fi.pyramus.domainmodel.courses.CourseComponentResource;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -67,7 +66,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     Date endDate = requestContext.getDate("endDate");
     Double courseLength = requestContext.getDouble("courseLength");
     Long courseLengthTimeUnitId = requestContext.getLong("courseLengthTimeUnit");
-    EducationalTimeUnit courseLengthTimeUnit = baseDAO.getEducationalTimeUnit(courseLengthTimeUnitId);
+    EducationalTimeUnit courseLengthTimeUnit = baseDAO.findEducationalTimeUnitById(courseLengthTimeUnitId);
     Double distanceTeachingDays = requestContext.getDouble("distanceTeachingDays");
     Double localTeachingDays = requestContext.getDouble("localTeachingDays");
     Double teachingHours = requestContext.getDouble("teachingHours");
@@ -130,7 +129,6 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
         for (int j = 0; j < resourcesCount; j++) {
           String resourcePrefix = resourcesPrefix + "." + j;
           
-          Long id = requestContext.getLong(resourcePrefix + ".id");
           Long resourceId = requestContext.getLong(resourcePrefix + ".resourceId");
           Resource resource = resourceDAO.findResourceById(resourceId);
           Double usagePercent;
@@ -141,12 +139,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
             usagePercent = requestContext.getDouble(resourcePrefix + ".usage");
           }
           
-          if (id == -1) {
-            courseDAO.createCourseComponentResource(courseComponent, resource, usagePercent);
-          } else {
-            CourseComponentResource courseComponentResource = courseDAO.findComponentResourceById(id);            
-            courseDAO.updateCourseComponentResourceUsagePercent(courseComponentResource, usagePercent);
-          }
+          courseDAO.createCourseComponentResource(courseComponent, resource, usagePercent);
         }
       }
     }

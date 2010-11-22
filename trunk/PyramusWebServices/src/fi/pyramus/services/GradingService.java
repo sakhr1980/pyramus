@@ -112,7 +112,7 @@ public class GradingService extends PyramusService {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
 
-    EducationalTimeUnit courseLengthUnit = baseDAO.getEducationalTimeUnit(courseLengthUnitId);
+    EducationalTimeUnit courseLengthUnit = baseDAO.findEducationalTimeUnitById(courseLengthUnitId);
     School school = baseDAO.getSchool(schoolId);
     Subject subject = baseDAO.getSubject(subjectId);
     Student student = studentDAO.getStudent(studentId);

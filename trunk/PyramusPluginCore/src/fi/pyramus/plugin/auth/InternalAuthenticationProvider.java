@@ -30,9 +30,9 @@ public interface InternalAuthenticationProvider extends AuthenticationProvider {
   public String getUsername(String externalId);
 
   /**
-   * Returns whether this authorization provider is capable of updating the credentials of a user.
+   * Returns whether this authentication provider is capable of updating the credentials of a user.
    * 
-   * @return <code>true</code> if this authorization provider can update credentials, otherwise <code>false</code>
+   * @return <code>true</code> if this authentication provider can update credentials, otherwise <code>false</code>
    */
   public boolean canUpdateCredentials();
   

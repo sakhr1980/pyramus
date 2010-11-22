@@ -30,12 +30,12 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
         
-    List<AuthorizationProviderInfoBean> authorizationProviders = new ArrayList<AuthorizationProviderInfoBean>();
-    for (String authorizationProviderName : AuthenticationProviderVault.getAuthenticationProviderClasses().keySet()) {
-      boolean active = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName) != null;
+    List<AuthenticationProviderInfoBean> authenticationProviders = new ArrayList<AuthenticationProviderInfoBean>();
+    for (String authenticationProviderName : AuthenticationProviderVault.getAuthenticationProviderClasses().keySet()) {
+      boolean active = AuthenticationProviderVault.getInstance().getAuthenticationProvider(authenticationProviderName) != null;
       boolean canUpdateCredentials;
       
-      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authorizationProviderName);
+      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthenticationProvider(authenticationProviderName);
       
       if (authenticationProvider instanceof InternalAuthenticationProvider) {
         InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
@@ -44,12 +44,12 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
         canUpdateCredentials = false;
       }
       
-      authorizationProviders.add(new AuthorizationProviderInfoBean(authorizationProviderName, active, canUpdateCredentials));
+      authenticationProviders.add(new AuthenticationProviderInfoBean(authenticationProviderName, active, canUpdateCredentials));
     }
     
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
-    pageRequestContext.getRequest().setAttribute("authorizationProviders", authorizationProviders);
+    pageRequestContext.getRequest().setAttribute("authenticationProviders", authenticationProviders);
     
     pageRequestContext.setIncludeJSP("/templates/users/createuser.jsp");
   }

@@ -49,7 +49,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     User user = userDAO.getUser(jsonRequestContext.getLoggedUserId());
     Long optionalStudiesLengthTimeUnitId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLengthTimeUnit"));
-    EducationalTimeUnit optionalStudiesLengthTimeUnit = baseDAO.getEducationalTimeUnit(optionalStudiesLengthTimeUnitId);
+    EducationalTimeUnit optionalStudiesLengthTimeUnit = baseDAO.findEducationalTimeUnitById(optionalStudiesLengthTimeUnitId);
     Double optionalStudiesLength = NumberUtils.createDouble(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLength"));
     String tagsText = jsonRequestContext.getString("tags");
