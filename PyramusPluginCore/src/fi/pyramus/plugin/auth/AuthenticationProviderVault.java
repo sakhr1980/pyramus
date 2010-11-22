@@ -11,7 +11,7 @@ import fi.pyramus.plugin.PluginDescriptor;
 import fi.pyramus.plugin.PluginVault;
 
 /**
- * The class responsible of managing the authorization providers of the application.
+ * The class responsible of managing the authentication providers of the application.
  */
 public class AuthenticationProviderVault {
   
@@ -26,31 +26,31 @@ public class AuthenticationProviderVault {
   
  
   /**
-   * Returns a collection of all authorization providers registered to this class.
+   * Returns a collection of all authentication providers registered to this class.
    * 
-   * @return A collection of all authorization providers registered to this class
+   * @return A collection of all authentication providers registered to this class
    */
   public Collection<AuthenticationProvider> getAuthenticationProviders() {
     return authenticationProviders.values();
   }
   
-  public List<InternalAuthenticationProvider> getInternalAuthorizationProviders() {
-    List<InternalAuthenticationProvider> internalAuthorizationProviders = new ArrayList<InternalAuthenticationProvider>();
-    for (AuthenticationProvider authorizationProvider : getAuthenticationProviders()) {
-      if (authorizationProvider instanceof InternalAuthenticationProvider)
-        internalAuthorizationProviders.add((InternalAuthenticationProvider) authorizationProvider);
+  public List<InternalAuthenticationProvider> getInternalAuthenticationProviders() {
+    List<InternalAuthenticationProvider> internalAuthenticationProviders = new ArrayList<InternalAuthenticationProvider>();
+    for (AuthenticationProvider authenticationProvider : getAuthenticationProviders()) {
+      if (authenticationProvider instanceof InternalAuthenticationProvider)
+        internalAuthenticationProviders.add((InternalAuthenticationProvider) authenticationProvider);
     }
-    return internalAuthorizationProviders;
+    return internalAuthenticationProviders;
   }
   
-  public List<ExternalAuthenticationProvider> getExternalAuthorizationProviders() {
-    List<ExternalAuthenticationProvider> externalAuthorizationProviders = new ArrayList<ExternalAuthenticationProvider>();
-    for (AuthenticationProvider authorizationProvider : getAuthenticationProviders()) {
-      if (authorizationProvider instanceof ExternalAuthenticationProvider)
-        externalAuthorizationProviders.add((ExternalAuthenticationProvider) authorizationProvider);
+  public List<ExternalAuthenticationProvider> getExternalAuthenticationProviders() {
+    List<ExternalAuthenticationProvider> externalAuthenticationProviders = new ArrayList<ExternalAuthenticationProvider>();
+    for (AuthenticationProvider authenticationProvider : getAuthenticationProviders()) {
+      if (authenticationProvider instanceof ExternalAuthenticationProvider)
+        externalAuthenticationProviders.add((ExternalAuthenticationProvider) authenticationProvider);
     }
     
-    return externalAuthorizationProviders;
+    return externalAuthenticationProviders;
   }
   
   public static Map<String, Class<AuthenticationProvider>> getAuthenticationProviderClasses() {
@@ -58,26 +58,26 @@ public class AuthenticationProviderVault {
   }
   
   public boolean hasExternalStrategies() {
-    return getExternalAuthorizationProviders().size() > 0;
+    return getExternalAuthenticationProviders().size() > 0;
   }
   
   public boolean hasInternalStrategies() {
-    return getInternalAuthorizationProviders().size() > 0;
+    return getInternalAuthenticationProviders().size() > 0;
   }
   
   /**
-   * Returns the authorization provider corresponding to the given name. If it doesn't exists, returns <code>null</code>.
+   * Returns the authentication provider corresponding to the given name. If it doesn't exists, returns <code>null</code>.
    * 
-   * @param name The authorization provider name
+   * @param name The authentication provider name
    * 
-   * @return The authorization provider corresponding to the given name, or <code>null</code> if not found
+   * @return The authentication provider corresponding to the given name, or <code>null</code> if not found
    */
-  public AuthenticationProvider getAuthorizationProvider(String name) {
+  public AuthenticationProvider getAuthenticationProvider(String name) {
     return authenticationProviders.get(name);
   }
   
   /**
-    Registers the various authorization providers to this class.
+    Registers the various authentication providers to this class.
   **/
   public void initializeStrategies() {
     String strategiesConf = System.getProperty("authentication.enabledStrategies");
@@ -89,7 +89,7 @@ public class AuthenticationProviderVault {
       AuthenticationProvider provider;
       try {
         provider = authenticationProviderClasses.get(strategyName.trim()).newInstance();
-        registerAuthorizationProvider(provider);
+        registerAuthenticationProvider(provider);
       } catch (InstantiationException e) {
         throw new PyramusRuntimeException(e);
       } catch (IllegalAccessException e) {
@@ -99,25 +99,25 @@ public class AuthenticationProviderVault {
   }
   
   /**
-   * Registers an authorization provider to this class.
+   * Registers an authentication provider to this class.
    * 
-   * @param authorizationProvider The authorization provider to be registered
+   * @param authenticationProvider The authentication provider to be registered
    */
-  private void registerAuthorizationProvider(AuthenticationProvider authorizationProvider) {
-    authenticationProviders.put(authorizationProvider.getName(), authorizationProvider);  
+  private void registerAuthenticationProvider(AuthenticationProvider authenticationProvider) {
+    authenticationProviders.put(authenticationProvider.getName(), authenticationProvider);  
   }
   
-  /** Map containing authorization provider names as keys and the providers themselves as values */ 
+  /** Map containing authentication provider names as keys and the providers themselves as values */ 
   private Map<String, AuthenticationProvider> authenticationProviders = new HashMap<String, AuthenticationProvider>();
   
   @SuppressWarnings("unchecked")
-  public static void registerAuthorizationProviderClass(String name, Class<?> class1) {
+  public static void registerAuthenticationProviderClass(String name, Class<?> class1) {
     authenticationProviderClasses.put(name, (Class<AuthenticationProvider>) class1);
   }
   
   /** The singleton instance of this class */
   private static AuthenticationProviderVault instance = new AuthenticationProviderVault();
-  /** All registered authorization provider classes **/
+  /** All registered authentication provider classes **/
   private static Map<String, Class<AuthenticationProvider>> authenticationProviderClasses = new HashMap<String, Class<AuthenticationProvider>>();
   
   static {
@@ -126,7 +126,7 @@ public class AuthenticationProviderVault {
       if (plugin.getAuthenticationProviders() != null) {
         Map<String, Class<?>> authenticationProviders = plugin.getAuthenticationProviders();
         for (String authenticationProviderName : authenticationProviders.keySet()) {
-          registerAuthorizationProviderClass(authenticationProviderName, authenticationProviders.get(authenticationProviderName));
+          registerAuthenticationProviderClass(authenticationProviderName, authenticationProviders.get(authenticationProviderName));
         }
       }
     }

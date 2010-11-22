@@ -482,28 +482,6 @@ public class BaseDAO extends PyramusDAO {
   }
 
   /**
-   * Creates a new educational time unit.
-   * 
-   * @param baseUnits
-   *          The number of base units this unit is
-   * @param name
-   *          The unit name
-   * 
-   * @return The created education time unit
-   */
-  public EducationalTimeUnit createEducationalTimeUnit(Double baseUnits, String name) {
-    EducationalTimeUnit educationalTimeUnit = new EducationalTimeUnit();
-    educationalTimeUnit.setArchived(Boolean.FALSE);
-    educationalTimeUnit.setBaseUnits(baseUnits);
-    educationalTimeUnit.setName(name);
-
-    Session s = getHibernateSession();
-    s.saveOrUpdate(educationalTimeUnit);
-
-    return educationalTimeUnit;
-  }
-
-  /**
    * Creates a new education subtype.
    * 
    * @param educationType
@@ -607,17 +585,6 @@ public class BaseDAO extends PyramusDAO {
   }
 
   /**
-   * Permanently deletes the given education time unit. This method is only present for unit testing purposes.
-   * 
-   * @param educationalTimeUnit
-   *          The educational time unit to be deleted
-   */
-  public void deleteEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
-    Session s = getHibernateSession();
-    s.delete(educationalTimeUnit);
-  }
-
-  /**
    * Permanently deletes the given education subtype. This method is only present for unit testing purposes.
    * 
    * @param educationSubtype
@@ -663,27 +630,9 @@ public class BaseDAO extends PyramusDAO {
     return (AcademicTerm) s.load(AcademicTerm.class, termId);
   }
 
-  public Defaults getDefaults() {
-    Session s = getHibernateSession();
-    return (Defaults) s.load(Defaults.class, new Long(1));
-  }
-
   public boolean isPyramusInitialized() {
     Session s = getHibernateSession();
     return s.get(Defaults.class, new Long(1)) != null;
-  }
-
-  /**
-   * Returns the educational time unit corresponding to the given identifier.
-   * 
-   * @param educationalTimeUnitId
-   *          The educational time unit identifier
-   * 
-   * @return The educational time unit corresponding to the given identifier
-   */
-  public EducationalTimeUnit getEducationalTimeUnit(Long educationalTimeUnitId) {
-    Session s = getHibernateSession();
-    return (EducationalTimeUnit) s.load(EducationalTimeUnit.class, educationalTimeUnitId);
   }
 
   /**
@@ -875,26 +824,6 @@ public class BaseDAO extends PyramusDAO {
     });
 
     return academicTerms;
-  }
-
-  /**
-   * Returns a list of all non-archived educational time units from the database, sorted by their name.
-   * 
-   * @return A list of all education time units
-   */
-  @SuppressWarnings("unchecked")
-  public List<EducationalTimeUnit> listEducationalTimeUnits() {
-    Session s = getHibernateSession();
-
-    List<EducationalTimeUnit> educationalTimeUnits = s.createCriteria(EducationalTimeUnit.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(educationalTimeUnits, new Comparator<EducationalTimeUnit>() {
-      public int compare(EducationalTimeUnit o1, EducationalTimeUnit o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return educationalTimeUnits;
   }
 
   /**
@@ -1596,18 +1525,6 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(courseBase);
   }
 
-  public void archiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
-    Session s = getHibernateSession();
-    educationalTimeUnit.setArchived(Boolean.TRUE);
-    s.saveOrUpdate(educationalTimeUnit);
-  }
-
-  public void unarchiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
-    Session s = getHibernateSession();
-    educationalTimeUnit.setArchived(Boolean.FALSE);
-    s.saveOrUpdate(educationalTimeUnit);
-  }
-
   public void archiveLanguage(Language language) {
     Session s = getHibernateSession();
     language.setArchived(Boolean.TRUE);
@@ -1631,5 +1548,114 @@ public class BaseDAO extends PyramusDAO {
     nationality.setArchived(Boolean.FALSE);
     s.saveOrUpdate(nationality);
   }
+  
+  /* Defaults */
+  
+  public Defaults getDefaults() {
+    Session s = getHibernateSession();
+    return (Defaults) s.load(Defaults.class, new Long(1));
+  }
+  
+  public Defaults updateDefaultBaseTimeUnit(EducationalTimeUnit defaultEducationalTimeUnit) {
+    EntityManager entityManager = getEntityManager();
+    
+    Defaults defaults = getDefaults();
+    defaults.setBaseTimeUnit(defaultEducationalTimeUnit);
+    
+    entityManager.persist(defaults);
+    
+    return defaults;
+  }
 
+  /* EducationalTimeUnit */
+  
+  /**
+   * Returns the educational time unit corresponding to the given identifier.
+   * 
+   * @param educationalTimeUnitId
+   *          The educational time unit identifier
+   * 
+   * @return The educational time unit corresponding to the given identifier
+   */
+  public EducationalTimeUnit findEducationalTimeUnitById(Long educationalTimeUnitId) {
+    Session s = getHibernateSession();
+    return (EducationalTimeUnit) s.load(EducationalTimeUnit.class, educationalTimeUnitId);
+  }
+
+  /**
+   * Returns a list of all non-archived educational time units from the database, sorted by their name.
+   * 
+   * @return A list of all education time units
+   */
+  @SuppressWarnings("unchecked")
+  public List<EducationalTimeUnit> listEducationalTimeUnits() {
+    Session s = getHibernateSession();
+
+    List<EducationalTimeUnit> educationalTimeUnits = s.createCriteria(EducationalTimeUnit.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
+
+    Collections.sort(educationalTimeUnits, new Comparator<EducationalTimeUnit>() {
+      public int compare(EducationalTimeUnit o1, EducationalTimeUnit o2) {
+        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
+      }
+    });
+
+    return educationalTimeUnits;
+  }
+
+  /**
+   * Creates a new educational time unit.
+   * 
+   * @param baseUnits
+   *          The number of base units this unit is
+   * @param name
+   *          The unit name
+   * 
+   * @return The created education time unit
+   */
+  public EducationalTimeUnit createEducationalTimeUnit(Double baseUnits, String name) {
+    EntityManager entityManager = getEntityManager();
+    
+    EducationalTimeUnit educationalTimeUnit = new EducationalTimeUnit();
+    educationalTimeUnit.setArchived(Boolean.FALSE);
+    educationalTimeUnit.setBaseUnits(baseUnits);
+    educationalTimeUnit.setName(name);
+
+    entityManager.persist(educationalTimeUnit);
+
+    return educationalTimeUnit;
+  }
+  
+  public EducationalTimeUnit updateEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit, Double baseUnits, String name) {
+    EntityManager entityManager = getEntityManager();
+    
+    educationalTimeUnit.setBaseUnits(baseUnits);
+    educationalTimeUnit.setName(name);
+
+    entityManager.persist(educationalTimeUnit);
+
+    return educationalTimeUnit;
+  }
+
+  public void archiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+    Session s = getHibernateSession();
+    educationalTimeUnit.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(educationalTimeUnit);
+  }
+
+  public void unarchiveEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+    Session s = getHibernateSession();
+    educationalTimeUnit.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(educationalTimeUnit);
+  }
+
+  /**
+   * Permanently deletes the given education time unit. This method is only present for unit testing purposes.
+   * 
+   * @param educationalTimeUnit
+   *          The educational time unit to be deleted
+   */
+  public void deleteEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
+    Session s = getHibernateSession();
+    s.delete(educationalTimeUnit);
+  }
 }

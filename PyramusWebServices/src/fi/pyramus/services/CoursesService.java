@@ -52,7 +52,7 @@ public class CoursesService extends PyramusService {
     Module module = moduleId == null ? null : moduleDAO.getModule(moduleId);
     Subject subject = subjectId == null ? null : baseDAO.getSubject(subjectId);
     EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(courseLengthTimeUnitId);
+        .findEducationalTimeUnitById(courseLengthTimeUnitId);
     User creatingUser = userDAO.getUser(creatingUserId);
 
     // If the course is based on a module, replace all null values with those from the module
@@ -132,7 +132,7 @@ public class CoursesService extends PyramusService {
     Course course = courseDAO.getCourse(courseId);
     Subject subject = subjectId == null ? null : baseDAO.getSubject(subjectId);
     EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(courseLengthTimeUnitId);
+        .findEducationalTimeUnitById(courseLengthTimeUnitId);
     User modifyingUser = userDAO.getUser(modifyingUserId);
 
     courseDAO.updateCourse(course, name, nameExtension, course.getState(), subject, courseNumber, beginDate, endDate, courseLength,
@@ -149,7 +149,7 @@ public class CoursesService extends PyramusService {
     
     Course course = courseDAO.getCourse(courseId);
     EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(componentLengthTimeUnitId);
+        .findEducationalTimeUnitById(componentLengthTimeUnitId);
 
     CourseComponent courseComponent = courseDAO.createCourseComponent(course, componentLength,
             componentLengthTimeUnit, name, description);
@@ -167,7 +167,7 @@ public class CoursesService extends PyramusService {
 
     CourseComponent courseComponent = courseDAO.getCourseComponent(courseComponentId);
     EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(componentLengthTimeUnitId);
+        .findEducationalTimeUnitById(componentLengthTimeUnitId);
 
     courseDAO.updateCourseComponent(courseComponent, componentLength, componentLengthTimeUnit, name, description);
     validateEntity(courseComponent);

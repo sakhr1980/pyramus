@@ -190,7 +190,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
           throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.PASSWORD_MISMATCH, "Passwords don't match");
       }
       
-      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(user.getAuthProvider());
+      AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthenticationProvider(user.getAuthProvider());
       if (authenticationProvider instanceof InternalAuthenticationProvider) {
         InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
         if (internalAuthenticationProvider.canUpdateCredentials()) {

@@ -31,7 +31,7 @@ public class LoginJSONRequestController implements JSONRequestController {
    * If the session contains a <code>loginFollowupURL</code> key, redirects the user to that URL.
    * Otherwise, redirects back to the index page of the application.
    * <p/>
-   * If the user is already logged in or the authorization fails, a <code>PyramusRuntimeException</code>
+   * If the user is already logged in or the authentication fails, a <code>PyramusRuntimeException</code>
    * is thrown with a localized message stating so.
    * 
    * @param jsonRequestContext The JSON request context
@@ -52,9 +52,9 @@ public class LoginJSONRequestController implements JSONRequestController {
       throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.ALREADY_LOGGED_IN, msg);
     }
     
-    // Go through all authorization providers and see if one authorizes the given credentials
+    // Go through all authentication providers and see if one authorizes the given credentials
     
-    for (InternalAuthenticationProvider provider : AuthenticationProviderVault.getInstance().getInternalAuthorizationProviders()) {
+    for (InternalAuthenticationProvider provider : AuthenticationProviderVault.getInstance().getInternalAuthenticationProviders()) {
       try {
       User user = provider.getUser(username, password);
         if (user != null) {
@@ -85,7 +85,7 @@ public class LoginJSONRequestController implements JSONRequestController {
       }
     }
     
-    // Reaching this point means no authorization provider authorized the user, so throw a login exception 
+    // Reaching this point means no authentication provider authorized the user, so throw a login exception 
     
     String msg = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), "users.login.loginFailed");
     throw new PyramusRuntimeException(ErrorLevel.WARNING, StatusCode.UNAUTHORIZED, msg);

@@ -155,7 +155,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       }
     }
     
-    EducationalTimeUnit moduleLengthTimeUnit = baseDAO.getEducationalTimeUnit(moduleLengthTimeUnitId);
+    EducationalTimeUnit moduleLengthTimeUnit = baseDAO.findEducationalTimeUnitById(moduleLengthTimeUnitId);
 
     
     moduleDAO.updateModule(module, name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, loggedUser);

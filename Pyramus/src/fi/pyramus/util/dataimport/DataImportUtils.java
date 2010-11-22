@@ -59,7 +59,7 @@ public class DataImportUtils {
     Field field = getField(pojo, property);
     Class<?> fieldType = field.getType();
 
-    ValueInterpreter valueInterpreter = DataImportUtils.getValueInterpreter(fieldType);
+    ValueInterpreter<?> valueInterpreter = DataImportUtils.getValueInterpreter(fieldType);
 
     if (valueInterpreter != null)
       setFieldValue(pojo, field, valueInterpreter.interpret(value));
@@ -110,42 +110,42 @@ public class DataImportUtils {
    * @param fieldType
    * @return
    */
-  public static ValueInterpreter getValueInterpreter(Class<?> fieldType) {
+  public static ValueInterpreter<?> getValueInterpreter(Class<?> fieldType) {
     return interpreters.get(fieldType);
   }
 
   
-  private static Map<Class<?>, ValueInterpreter> interpreters = new HashMap<Class<?>, ValueInterpreter>();
+  private static Map<Class<?>, ValueInterpreter<?>> interpreters = new HashMap<Class<?>, ValueInterpreter<?>>();
 
   static {
-    interpreters.put(String.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
-        return o;
+    interpreters.put(String.class, new ValueInterpreter<String>() {
+      public String interpret(Object o) {
+        return (String) o;
       }
     });
 
-    interpreters.put(Long.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Long.class, new ValueInterpreter<Long>() {
+      public Long interpret(Object o) {
         return NumberUtils.createLong((String) o);
       }
     });
 
-    interpreters.put(Double.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Double.class, new ValueInterpreter<Double>() {
+      public Double interpret(Object o) {
         return NumberUtils.createDouble((String) o);
       }
     });
 
-    interpreters.put(Boolean.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Boolean.class, new ValueInterpreter<Boolean>() {
+      public Boolean interpret(Object o) {
         return "true".equals(o) ? Boolean.TRUE : Boolean.FALSE;
       }
     });
 
-    interpreters.put(Date.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Date.class, new ValueInterpreter<Date>() {
+      public Date interpret(Object o) {
         if ("NOW".equals(o))
-          return System.currentTimeMillis();
+          return new Date(System.currentTimeMillis());
         
         String s = (String) o;
         
@@ -173,56 +173,56 @@ public class DataImportUtils {
       }
     });
 
-    interpreters.put(UserRole.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(UserRole.class, new ValueInterpreter<UserRole>() {
+      public UserRole interpret(Object o) {
         return UserRole.getRole(NumberUtils.createInteger((String) o));
       }
     });
     
-    interpreters.put(Role.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Role.class, new ValueInterpreter<Role>() {
+      public Role interpret(Object o) {
         return Role.getRole(NumberUtils.createInteger((String) o));
       }
     });
     
-    interpreters.put(MonetaryAmount.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(MonetaryAmount.class, new ValueInterpreter<MonetaryAmount>() {
+      public MonetaryAmount interpret(Object o) {
         return new MonetaryAmount(NumberUtils.createDouble((String) o));
       }
     });
 
-    interpreters.put(Sex.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Sex.class, new ValueInterpreter<Sex>() {
+      public Sex interpret(Object o) {
         return "male".equals(o) ? Sex.MALE : Sex.FEMALE;
       }
     });
 
-    interpreters.put(ProjectModuleOptionality.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(ProjectModuleOptionality.class, new ValueInterpreter<ProjectModuleOptionality>() {
+      public ProjectModuleOptionality interpret(Object o) {
         return ProjectModuleOptionality.getOptionality(NumberUtils.createInteger((String) o));
       }
     });
     
-    interpreters.put(VariableType.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(VariableType.class, new ValueInterpreter<VariableType>() {
+      public VariableType interpret(Object o) {
         return VariableType.getType(NumberUtils.createInteger((String) o));
       }
     });
 
-    interpreters.put(StudentContactLogEntryType.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(StudentContactLogEntryType.class, new ValueInterpreter<StudentContactLogEntryType>() {
+      public StudentContactLogEntryType interpret(Object o) {
         return StudentContactLogEntryType.getType(NumberUtils.createInteger((String) o));
       }
     });
     
-    interpreters.put(Locale.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Locale.class, new ValueInterpreter<Locale>() {
+      public Locale interpret(Object o) {
         return new Locale((String) o);
       }
     });    
 
-    interpreters.put(Integer.class, new ValueInterpreter() {
-      public Object interpret(Object o) {
+    interpreters.put(Integer.class, new ValueInterpreter<Integer>() {
+      public Integer interpret(Object o) {
         return NumberUtils.createInteger((String) o);
       }
     });    

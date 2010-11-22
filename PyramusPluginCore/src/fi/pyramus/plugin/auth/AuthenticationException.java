@@ -1,7 +1,7 @@
 package fi.pyramus.plugin.auth;
 
 /**
- * Exception class for errors during authorization.
+ * Exception class for errors during authentication.
  */
 public class AuthenticationException extends Exception {
 

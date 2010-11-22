@@ -67,7 +67,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     
     String externalId = "-1";
 
-    AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthorizationProvider(authProvider);
+    AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthenticationProvider(authProvider);
     if (authenticationProvider instanceof InternalAuthenticationProvider) {
       InternalAuthenticationProvider internalAuthenticationProvider = (InternalAuthenticationProvider) authenticationProvider;
       

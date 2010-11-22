@@ -19,7 +19,7 @@ import fi.pyramus.domainmodel.system.SettingKey;
 import fi.pyramus.plugin.PluginDescriptor;
 import fi.pyramus.plugin.PluginVault;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
-import fi.pyramus.plugin.auth.internal.InternalAuthorizationStrategy;
+import fi.pyramus.plugin.auth.internal.InternalAuthenticationStrategy;
 
 /**
  * The application context listener responsible of initialization and finalization of the
@@ -98,10 +98,10 @@ public class PyramusServletContextListener implements ServletContextListener {
 
       System.getProperties().setProperty("appdirectory", webappPath);
       
-      // Register internal authorization provider 
-      AuthenticationProviderVault.registerAuthorizationProviderClass("internal", InternalAuthorizationStrategy.class);
+      // Register internal authentication provider 
+      AuthenticationProviderVault.registerAuthenticationProviderClass("internal", InternalAuthenticationStrategy.class);
       
-      // Initializes all configured authorization strategies
+      // Initializes all configured authentication strategies
       AuthenticationProviderVault.getInstance().initializeStrategies();
     }
     catch (Exception e) {

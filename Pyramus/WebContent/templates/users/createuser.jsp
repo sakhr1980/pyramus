@@ -39,13 +39,13 @@
       }
 
       function canUpdateCredentials(strategyName) {
-        <c:if test="${fn:length(authorizationProviders) gt 0}">
+        <c:if test="${fn:length(authenticationProviders) gt 0}">
           switch (strategyName) {
-	          <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+	          <c:forEach var="authenticationProvider" items="${authenticationProviders}">
 	            <c:choose>
-	              <c:when test="${authorizationProvider.active eq true}">
-	                case '${authorizationProvider.name}':
-	                  return ${authorizationProvider.canUpdateCredentials};
+	              <c:when test="${authenticationProvider.active eq true}">
+	                case '${authenticationProvider.name}':
+	                  return ${authenticationProvider.canUpdateCredentials};
 	              </c:when>
 	            </c:choose>
 	          </c:forEach>
@@ -334,22 +334,22 @@
                 </jsp:include>                  
     
                 <select name="authProvider">
-                  <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+                  <c:forEach var="authenticationProvider" items="${authenticationProviders}">
                     <c:choose>
-                      <c:when test="${authorizationProvider.active eq true}">
-                        <c:set var="authorizationProviderName">${authorizationProvider.name}</c:set>
+                      <c:when test="${authenticationProvider.active eq true}">
+                        <c:set var="authenticationProviderName">${authenticationProvider.name}</c:set>
                       </c:when>
                       <c:otherwise>
-                        <c:set var="authorizationProviderName">${authorizationProvider.name} (<fmt:message key="users.createUser.authenticationMethodDisabled"/>)</c:set>
+                        <c:set var="authenticationProviderName">${authenticationProvider.name} (<fmt:message key="users.createUser.authenticationMethodDisabled"/>)</c:set>
                       </c:otherwise>
                     </c:choose>
                     
                     <c:choose>
-                      <c:when test="${authorizationProvider.name eq user.authProvider}">
-                        <option value="${authorizationProvider.name}" selected="selected">${authorizationProviderName}</option>
+                      <c:when test="${authenticationProvider.name eq user.authProvider}">
+                        <option value="${authenticationProvider.name}" selected="selected">${authenticationProviderName}</option>
                       </c:when>
                       <c:otherwise>
-                        <option value="${authorizationProvider.name}">${authorizationProviderName}</option>
+                        <option value="${authenticationProvider.name}">${authenticationProviderName}</option>
                       </c:otherwise>
                     </c:choose>
                   </c:forEach>

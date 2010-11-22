@@ -71,7 +71,7 @@ public class BaseService extends PyramusService {
 
   public EducationalTimeUnitEntity getEducationalTimeUnitById(Long educationalTimeUnitId) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getEducationalTimeUnit(educationalTimeUnitId));
+    return EntityFactoryVault.buildFromDomainObject(baseDAO.findEducationalTimeUnitById(educationalTimeUnitId));
   }
 
   public EducationalTimeUnitEntity[] listEducationalTimeUnits() {

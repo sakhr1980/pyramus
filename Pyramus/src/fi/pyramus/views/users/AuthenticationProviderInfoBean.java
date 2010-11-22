@@ -1,7 +1,7 @@
 package fi.pyramus.views.users;
 
-public class AuthorizationProviderInfoBean {
-  public AuthorizationProviderInfoBean(String name, boolean active, boolean canUpdateCredentials) {
+public class AuthenticationProviderInfoBean {
+  public AuthenticationProviderInfoBean(String name, boolean active, boolean canUpdateCredentials) {
     this.name = name;
     this.active = active;
     this.canUpdateCredentials = canUpdateCredentials;

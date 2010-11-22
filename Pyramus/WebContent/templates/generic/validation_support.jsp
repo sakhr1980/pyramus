@@ -33,7 +33,7 @@
           revalidateAll();  
         });
 
-        tableComponent.addListener("cellValueChanged", function (event) {
+        tableComponent.addListener("cellValueChange", function (event) {
           revalidateTableCell(event.tableComponent, event.row, event.column);
         });
 

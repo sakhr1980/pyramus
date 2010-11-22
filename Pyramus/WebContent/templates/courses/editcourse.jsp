@@ -393,6 +393,7 @@
           resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
 	        nameHeader: '<fmt:message key="courses.editCourse.componentsNameHeader"/>',
 	        lengthHeader: '<fmt:message key="courses.editCourse.componentsLengthHeader"/>',
+          componentUnit: '<fmt:message key="courses.editCourse.componentUnit"/>',
 	        materialResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceMaterialResourceUnit"/>',
 	        workResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceWorkResourceUnit"/>',
 	        descriptionHeader: '<fmt:message key="courses.editCourse.componentsDescriptionHeader"/>',
@@ -729,8 +730,8 @@
 
         var updateOtherCostsFunction = function(event) {
           var sum = 0;
-          for (var row = 0; row < event.tableObject.getRowCount(); row++) {
-            sum += parseInt(event.tableObject.getCellValue(row, otherCostsTable.getNamedColumnIndex('cost')));
+          for (var row = 0; row < event.tableComponent.getRowCount(); row++) {
+            sum += parseInt(event.tableComponent.getCellValue(row, otherCostsTable.getNamedColumnIndex('cost')));
           }
           $('otherCostsTableTotal').innerHTML = sum;
           updateTotalCosts();

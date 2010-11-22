@@ -25,7 +25,7 @@ public class ModulesService extends PyramusService {
     Subject subject = baseDAO.getSubject(subjectId);
     User creatingUser = userDAO.getUser(creatingUserId);
     EducationalTimeUnit moduleLengthTimeUnit = moduleLengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(moduleLengthTimeUnitId);
+        .findEducationalTimeUnitById(moduleLengthTimeUnitId);
 
     Module module = moduleDAO.createModule(name, subject, courseNumber, moduleLength, moduleLengthTimeUnit,
         description, creatingUser);
@@ -45,7 +45,7 @@ public class ModulesService extends PyramusService {
     Subject subject = baseDAO.getSubject(subjectId);
     User modifyingUser = userDAO.getUser(modifyingUserId);
     EducationalTimeUnit moduleLengthTimeUnit = lengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(lengthTimeUnitId);
+        .findEducationalTimeUnitById(lengthTimeUnitId);
 
     moduleDAO.updateModule(module, name, subject, courseNumber, length, moduleLengthTimeUnit, description,
         modifyingUser);
@@ -76,7 +76,7 @@ public class ModulesService extends PyramusService {
 
     Module module = moduleDAO.getModule(moduleId);
     EducationalTimeUnit lengthTimeUnit = lengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(lengthTimeUnitId);
+        .findEducationalTimeUnitById(lengthTimeUnitId);
 
     ModuleComponent moduleComponent = moduleDAO.createModuleComponent(module, length, lengthTimeUnit,
         name, description);
@@ -93,7 +93,7 @@ public class ModulesService extends PyramusService {
 
     ModuleComponent moduleComponent = moduleDAO.getModuleComponent(moduleComponentId);
     EducationalTimeUnit lengthTimeUnit = lengthTimeUnitId == null ? null : baseDAO
-        .getEducationalTimeUnit(lengthTimeUnitId);
+        .findEducationalTimeUnitById(lengthTimeUnitId);
     
     moduleDAO.updateModuleComponent(moduleComponent, length, lengthTimeUnit, name, description);
     

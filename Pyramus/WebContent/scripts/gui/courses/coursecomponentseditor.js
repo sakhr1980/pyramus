@@ -104,6 +104,7 @@ CourseComponentsEditor = Class.create({
       componentName: componentName,
       componentLength: componentLength,
       componentDescription: componentDescription,
+      componentUnit: this._options.componentUnit,
       editButtonTooltip: this._options.editButtonTooltip,
       removeButtonTooltip: this._options.removeButtonTooltip,
       archiveButtonTooltip: this._options.archiveButtonTooltip,

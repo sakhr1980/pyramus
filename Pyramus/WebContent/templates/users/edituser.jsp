@@ -102,13 +102,13 @@
       }
       
       function canUpdateCredentials(strategyName) {
-        <c:if test="${fn:length(authorizationProviders) gt 0}">
+        <c:if test="${fn:length(authenticationProviders) gt 0}">
           switch (strategyName) {
-            <c:forEach var="authorizationProvider" items="${authorizationProviders}">
+            <c:forEach var="authenticationProvider" items="${authenticationProviders}">
               <c:choose>
-                <c:when test="${authorizationProvider.active eq true}">
-                  case '${authorizationProvider.name}':
-                    return ${authorizationProvider.canUpdateCredentials};
+                <c:when test="${authenticationProvider.active eq true}">
+                  case '${authenticationProvider.name}':
+                    return ${authenticationProvider.canUpdateCredentials};
                 </c:when>
               </c:choose>
             </c:forEach>
@@ -471,6 +471,39 @@
               </jsp:include>                  
               <input type="text" name="lastName" value="${fn:escapeXml(user.lastName)}" size="30" class="required">
             </div>
+            
+            <c:choose>
+	            <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
+	              <div class="genericFormSection">  
+	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+	                  <jsp:param name="titleLocale" value="users.editUser.authenticationMethodTitle"/>
+	                  <jsp:param name="helpLocale" value="users.editUser.authenticationMethodHelp"/>
+	                </jsp:include>                  
+	    
+	                <select name="authProvider">
+	                  <c:forEach var="authenticationProvider" items="${authenticationProviders}">
+	                    <c:choose>
+	                      <c:when test="${authenticationProvider.active eq true}">
+	                        <c:set var="authenticationProviderName">${authenticationProvider.name}</c:set>
+	                      </c:when>
+	                      <c:otherwise>
+	                        <c:set var="authenticationProviderName">${authenticationProvider.name} (<fmt:message key="users.editUser.authenticationMethodDisabled"/>)</c:set>
+	                      </c:otherwise>
+	                    </c:choose>
+	                    
+	                    <c:choose>
+	                      <c:when test="${authenticationProvider.name eq user.authProvider}">
+	                        <option value="${authenticationProvider.name}" selected="selected">${authenticationProviderName}</option>
+	                      </c:when>
+	                      <c:otherwise>
+	                        <option value="${authenticationProvider.name}">${authenticationProviderName}</option>
+	                      </c:otherwise>
+	                    </c:choose>
+	                  </c:forEach>
+	                </select>
+	              </div>
+	            </c:when>
+	          </c:choose>
           
             <div id="editUserCredentialsContainer">
               <div class="genericFormSection">  
@@ -480,39 +513,6 @@
                 </jsp:include>                  
                 <input type="text" name="username" value="${username}" size="30">
               </div>
-              
-              <c:choose>
-                <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
-	                <div class="genericFormSection">  
-	                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                    <jsp:param name="titleLocale" value="users.editUser.authenticationMethodTitle"/>
-	                    <jsp:param name="helpLocale" value="users.editUser.authenticationMethodHelp"/>
-	                  </jsp:include>                  
-	      
-	                  <select name="authProvider">
-	                    <c:forEach var="authorizationProvider" items="${authorizationProviders}">
-	                      <c:choose>
-	                        <c:when test="${authorizationProvider.active eq true}">
-	                          <c:set var="authorizationProviderName">${authorizationProvider.name}</c:set>
-	                        </c:when>
-	                        <c:otherwise>
-	                          <c:set var="authorizationProviderName">${authorizationProvider.name} (<fmt:message key="users.editUser.authenticationMethodDisabled"/>)</c:set>
-	                        </c:otherwise>
-	                      </c:choose>
-	                      
-	                      <c:choose>
-	                        <c:when test="${authorizationProvider.name eq user.authProvider}">
-	                          <option value="${authorizationProvider.name}" selected="selected">${authorizationProviderName}</option>
-	                        </c:when>
-	                        <c:otherwise>
-	                          <option value="${authorizationProvider.name}">${authorizationProviderName}</option>
-	                        </c:otherwise>
-	                      </c:choose>
-	                    </c:forEach>
-	                  </select>
-	                </div>
-	              </c:when>
-	            </c:choose>
               
               <div class="genericFormSection">  
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
