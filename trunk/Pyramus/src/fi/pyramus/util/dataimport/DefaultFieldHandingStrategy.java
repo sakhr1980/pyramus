@@ -21,9 +21,13 @@ public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {
     this.fieldName  = fieldName;
   }
   
-  @SuppressWarnings("unchecked")
   @Override
   public void handleField(String fieldName, Object fieldValue, DataImportContext context) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+    DataImportUtils.setValue(getEntity(entityClass, context), this.fieldName != null ? this.fieldName : fieldName, fieldValue);
+  }
+  
+  @SuppressWarnings("unchecked")
+  protected Object getEntity(Class entityClass, DataImportContext context) {
     Object entity = context.getEntity(entityClass);
 
     if (entity == null) {
@@ -37,8 +41,7 @@ public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {
         throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.OK, "Couldn't instantiate entityClass");
       }
     }
-  
-    DataImportUtils.setValue(entity, this.fieldName != null ? this.fieldName : fieldName, fieldValue);
+    
+    return entity;
   }
-
 }
