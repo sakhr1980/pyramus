@@ -4,11 +4,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.pyramus.dao.BaseDAO;
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
+import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.modules.Module;
@@ -87,28 +90,29 @@ public class DataImportStrategyProvider {
     
     entityStrategyName = "Student";
     subClass = Student.class;
-    instance().registerEntityHandler(entityStrategyName, new DefaultEntityHandlingStrategy(Student.class, entityStrategyName) {
-      
-      private ContactInfo getStudentContactInfo(Student student) {
-        ContactInfo result = student.getContactInfo();
-        if (result == null) {
-          result = new ContactInfo();
-          student.setContactInfo(result);
-        }
-        return result;
-      }
+    instance().registerEntityHandler(entityStrategyName, new DefaultEntityHandlingStrategy(Student.class, "Student") {
       
       @Override
       public void initializeContext(DataImportContext context) {
         super.initializeContext(context);
         
+        BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+        StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+        
         if (context.hasField("socialSecurityNumber")) {
           String ssn = context.getFieldValue("socialSecurityNumber");
 
           if (ssn != null) {
-            StudentDAO studentDAO = new StudentDAO();
             AbstractStudent abstractStudent = studentDAO.getAbstractStudentBySSN(ssn);
             context.addEntity(AbstractStudent.class, abstractStudent);
+          }
+        }
+        
+        if (context.hasField("studyProgramme")) {
+          String studyProgramme = context.getFieldValue("studyProgramme");
+          if (studyProgramme != null) {
+            StudyProgramme studentStudyProgramme = baseDAO.findStudyProgammeByName(studyProgramme);
+            context.addEntity(StudyProgramme.class, studentStudyProgramme);
           }
         }
       }
@@ -149,10 +153,29 @@ public class DataImportStrategyProvider {
           contactInfo.addPhoneNumber(phone);
         }
       }
+
+      private ContactInfo getStudentContactInfo(Student student) {
+        ContactInfo result = student.getContactInfo();
+        if (result == null) {
+          result = new ContactInfo();
+          student.setContactInfo(result);
+        }
+        return result;
+      }
     });
+    
+    
     instance().registerFieldHandler(entityStrategyName, "firstName", new DefaultFieldHandingStrategy(subClass));
     instance().registerFieldHandler(entityStrategyName, "lastName", new DefaultFieldHandingStrategy(subClass));
-
+    instance().registerFieldHandler(entityStrategyName, "studyProgramme", new DefaultFieldHandingStrategy(subClass) {
+      @Override
+      public void handleField(String fieldName, Object fieldValue, DataImportContext context) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+        Student student = (Student) getEntity(Student.class, context);
+        StudyProgramme studyProgamme = (StudyProgramme) getEntity(StudyProgramme.class, context);
+        DataImportUtils.setFieldValue(student, DataImportUtils.getField(student, fieldName), studyProgamme);
+      }
+    });
+    
     // Address
     subClass = Address.class;
     instance().registerFieldHandler(entityStrategyName, "city", new DefaultFieldHandingStrategy(subClass));
@@ -204,6 +227,7 @@ public class DataImportStrategyProvider {
         context.addEntity(Module.class, module);
       }
     });
+    
     instance().registerFieldHandler(entityStrategyName, "name", new DefaultFieldHandingStrategy(subClass));
     instance().registerFieldHandler(entityStrategyName, "description", new DefaultFieldHandingStrategy(subClass));
     instance().registerFieldHandler(entityStrategyName, "beginDate", new DefaultFieldHandingStrategy(subClass));
