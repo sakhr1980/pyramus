@@ -8,6 +8,7 @@ import fi.pyramus.PageRequestContext;
 import fi.pyramus.PyramusRuntimeException;
 import fi.pyramus.UserRole;
 import fi.pyramus.util.CSVImporter;
+import fi.pyramus.util.dataimport.EntityImportStrategy;
 import fi.pyramus.views.PyramusFormViewController;
 
 public class ImportCSVViewController extends PyramusFormViewController {
@@ -21,15 +22,15 @@ public class ImportCSVViewController extends PyramusFormViewController {
   @SuppressWarnings("rawtypes")
   @Override
   public void processSend(PageRequestContext requestContext) {
-    String strategyName = requestContext.getString("entity");
+    EntityImportStrategy importStrategy = (EntityImportStrategy) requestContext.getEnum("importStrategy", EntityImportStrategy.class);
     
     CSVImporter dataImporter = new CSVImporter();
-    Class entityClass = dataImporter.getEntityClassForStrategy(strategyName);
+    Class entityClass = dataImporter.getEntityClassForStrategy(importStrategy);
 
     List<Object> list;
     try {
       list = dataImporter.importDataFromStream(requestContext.getFile("file").getInputStream(), 
-          strategyName, requestContext.getLoggedUserId(), requestContext.getRequest().getLocale());
+          importStrategy, requestContext.getLoggedUserId(), requestContext.getRequest().getLocale());
     } catch (IOException e) {
       throw new PyramusRuntimeException(e);
     }
@@ -46,7 +47,7 @@ public class ImportCSVViewController extends PyramusFormViewController {
     requestContext.getRequest().setAttribute("fields", dataImporter.getHeaderFields());
     requestContext.getRequest().setAttribute("entities", list);
     requestContext.getRequest().setAttribute("entityClassEntities", entityList);
-    requestContext.getRequest().setAttribute("strategyName", strategyName);
+    requestContext.getRequest().setAttribute("importStrategy", importStrategy);
     
   }
   

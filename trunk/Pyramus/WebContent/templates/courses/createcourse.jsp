@@ -405,7 +405,8 @@
         });
 
         basicResourcesTable.addListener("cellValueChange", function (event) {
-          updateCosts('basicResourcesTable', event.row, 'basicResourcesTableTotal');
+          if (event.tableComponent.getNamedColumnIndex('total') != event.column)
+            updateCosts('basicResourcesTable', event.row, 'basicResourcesTableTotal');
         });
         basicResourcesTable.addListener("rowAdd", function (event) {
           updateCosts('basicResourcesTable', event.row, 'basicResourcesTableTotal');
@@ -477,7 +478,8 @@
         });
         
         studentResourcesTable.addListener("cellValueChange", function (event) {
-          updateCosts('studentResourcesTable', event.row, 'studentResourcesTableTotal');
+          if (event.tableComponent.getNamedColumnIndex('total') != event.column)
+            updateCosts('studentResourcesTable', event.row, 'studentResourcesTableTotal');
         });
         studentResourcesTable.addListener("rowAdd", function (event) {
           updateCosts('studentResourcesTable', event.row, 'studentResourcesTableTotal');
@@ -549,7 +551,8 @@
         });
         
         gradeResourcesTable.addListener("cellValueChange", function (event) {
-          updateCosts('gradeResourcesTable', event.row, 'gradeResourcesTableTotal');
+          if (event.tableComponent.getNamedColumnIndex('total') != event.column)
+            updateCosts('gradeResourcesTable', event.row, 'gradeResourcesTableTotal');
         });
         gradeResourcesTable.addListener("rowAdd", function (event) {
           updateCosts('gradeResourcesTable', event.row, 'gradeResourcesTableTotal');

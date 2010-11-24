@@ -33,6 +33,7 @@
         if (rowIndex == 0) {
           table.setCellValue(0, table.getNamedColumnIndex("baseUnit"), true);
           table.setCellValue(0, table.getNamedColumnIndex("baseUnits"), 1);
+          table.hideCell(0, table.getNamedColumnIndex("baseUnits"));
         }
         
         $('noTimeUnitsAddedMessageContainer').setStyle({
@@ -160,9 +161,10 @@
 		            for (var i = 0, l = event.tableComponent.getRowCount(); i < l; i++) {
 		              if (i != event.row) {
 		                event.tableComponent.setCellValue(i, baseUnitColumn, false);
-		                event.tableComponent.enableCellEditor(i, baseUnitsColumn);
+		                event.tableComponent.showCell(i, baseUnitsColumn);
 		              } else {
-		                event.tableComponent.disableCellEditor(i, baseUnitsColumn);
+		                event.tableComponent.setCellValue(i, baseUnitColumn, true);
+		                event.tableComponent.hideCell(i, baseUnitsColumn);
 		              }
 		            }
 	            } finally {
@@ -183,6 +185,11 @@
             '',
             ${timeUnit.id}
           ]);
+
+          if (${timeUnit eq baseTimeUnit}) {
+            timeUnitsTable.hideCell(rowIndex, timeUnitsTable.getNamedColumnIndex("baseUnits"));
+          }
+          
           timeUnitsTable.showCell(rowIndex, timeUnitsTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
 

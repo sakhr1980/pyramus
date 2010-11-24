@@ -1,6 +1,9 @@
 package fi.pyramus.json.settings;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
@@ -37,6 +40,9 @@ public class SaveTimeUnitsJSONRequestController implements JSONRequestController
       }
       
       if (baseUnit) {
+        if (baseTimeUnit != null)
+          throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "Two or more baseTimeUnits defined");
+          
         baseTimeUnit = timeUnit;
       }
     }

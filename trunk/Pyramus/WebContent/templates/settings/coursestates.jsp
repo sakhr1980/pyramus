@@ -150,6 +150,8 @@
                 for (var i = 0, l = event.tableComponent.getRowCount(); i < l; i++) {
                   if (i != event.row) {
                     event.tableComponent.setCellValue(i, initialStateColumn, false);
+                  } else {
+                    event.tableComponent.setCellValue(i, initialStateColumn, true);
                   }
                 }
               } finally {

@@ -131,9 +131,14 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
             Date d1 = o1.getCommentDate();
             Date d2 = o2.getCommentDate();
             
-            return d1 == null ? 
+            int val = d1 == null ? 
                 d2 == null ? 0 : 1 :
                   d2 == null ? -1 : d1.compareTo(d2);
+            
+            if (val == 0)
+              return o1.getId().compareTo(o2.getId());
+            else
+              return val;
           }
         });
         
@@ -154,7 +159,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
             if (d == null) {
               d = comment.getCommentDate();
             } else {
-              if (d.compareTo(comment.getCommentDate()) < 0)
+              if (d.before(comment.getCommentDate()))
                 d = comment.getCommentDate();
             }
           }
@@ -166,9 +171,14 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           Date d1 = getDateForEntry(o1);
           Date d2 = getDateForEntry(o2);
 
-          return d1 == null ? 
+          int val = d1 == null ? 
               d2 == null ? 0 : 1 :
                 d2 == null ? -1 : d2.compareTo(d1);
+
+          if (val == 0)
+            return o2.getId().compareTo(o1.getId());
+          else
+            return val;
         }
       });
       

@@ -1,6 +1,9 @@
 package fi.pyramus.json.settings;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -35,6 +38,9 @@ public class SaveCourseStatesJSONRequestController implements JSONRequestControl
       }
       
       if (initialState) {
+        if (initialCourseState != null)
+          throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "Two or more initialCourseStates defined");
+          
         initialCourseState = courseState;
       }
     }
