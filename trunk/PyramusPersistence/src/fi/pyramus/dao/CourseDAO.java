@@ -872,6 +872,15 @@ public class CourseDAO extends PyramusDAO {
     return courseState;
   }
 
+  public CourseState updateCourseState(CourseState courseState, String name) {
+    Session s = getHibernateSession();
+    
+    courseState.setName(name);
+    s.saveOrUpdate(courseState);
+    
+    return courseState;
+  }
+
   public CourseUser createCourseUser(Course course, User user, CourseUserRole role) {
     Session s = getHibernateSession();
 

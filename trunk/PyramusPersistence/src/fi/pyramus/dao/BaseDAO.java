@@ -49,6 +49,7 @@ import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseState;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -1365,6 +1366,14 @@ public class BaseDAO extends PyramusDAO {
 
     return (StudyProgramme) s.load(StudyProgramme.class, id);
   }
+  
+  public StudyProgramme findStudyProgammeByName(String name) {
+    Session s = getHibernateSession();
+
+    return (StudyProgramme) s.createCriteria(StudyProgramme.class)
+      .add(Restrictions.eq("name", name))
+      .uniqueResult();
+  }
 
   public StudyProgramme getStudyProgrammeByCode(String code) {
     Session s = getHibernateSession();
@@ -1561,6 +1570,17 @@ public class BaseDAO extends PyramusDAO {
     
     Defaults defaults = getDefaults();
     defaults.setBaseTimeUnit(defaultEducationalTimeUnit);
+    
+    entityManager.persist(defaults);
+    
+    return defaults;
+  }
+  
+  public Defaults updateDefaultInitialCourseState(CourseState initialCourseState) {
+    EntityManager entityManager = getEntityManager();
+    
+    Defaults defaults = getDefaults();
+    defaults.setInitialCourseState(initialCourseState);
     
     entityManager.persist(defaults);
     
