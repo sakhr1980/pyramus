@@ -42,11 +42,11 @@
                 <jsp:param name="titleLocale" value="system.importcsv.entityTitle"/>
                 <jsp:param name="helpLocale" value="system.importcsv.entityHelp"/>
               </jsp:include>
-              <select name="entity">
+              <select name="importStrategy">
                 <option value=""><fmt:message key="system.importcsv.selectOneOptionCaption"/></option>
-                <option value="Course"><fmt:message key="system.importcsv.optionCourse" /></option>
-                <option value="Student"><fmt:message key="system.importcsv.optionStudent" /></option>
-                <option value="CourseStudent"><fmt:message key="system.importcsv.optionCourseStudent" /></option>
+                <option value="COURSE"><fmt:message key="system.importcsv.optionCourse" /></option>
+                <option value="STUDENT"><fmt:message key="system.importcsv.optionStudent" /></option>
+                <option value="COURSESTUDENT"><fmt:message key="system.importcsv.optionCourseStudent" /></option>
               </select>          
             </div>
 
@@ -58,7 +58,7 @@
 	    	
 	    	<div>
           <c:choose>
-	    	    <c:when test="${strategyName eq 'Student'}">
+	    	    <c:when test="${importStrategy eq 'STUDENT'}">
 	    	      <table>
 	    	        <tr align="left">
 	    	          <th><fmt:message key="system.importcsv.results.studentId" /></th>
@@ -74,7 +74,7 @@
 			    	    </c:forEach>
 		    	    </table>
 		    	  </c:when>
-            <c:when test="${strategyName eq 'Course'}">
+            <c:when test="${importStrategy eq 'COURSE'}">
               <table>
                 <tr align="left">
                   <th><fmt:message key="system.importcsv.results.courseId" /></th>
@@ -88,7 +88,7 @@
 		            </c:forEach>
               </table>
             </c:when>
-            <c:when test="${strategyName eq 'CourseStudent'}">
+            <c:when test="${importStrategy eq 'COURSESTUDENT'}">
               <table>
                 <tr align="left">
                   <th><fmt:message key="system.importcsv.results.courseStudentStudentName" /></th>

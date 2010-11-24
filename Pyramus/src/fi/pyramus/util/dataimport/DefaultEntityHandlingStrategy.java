@@ -11,9 +11,9 @@ import fi.pyramus.dao.SystemDAO;
 @SuppressWarnings("rawtypes")
 public class DefaultEntityHandlingStrategy implements EntityHandlingStrategy {
 
-  private final String entityStrategy;
+  private EntityImportStrategy entityStrategy;
 
-  public DefaultEntityHandlingStrategy(Class entityClass, String entityStrategy) {
+  public DefaultEntityHandlingStrategy(Class entityClass, EntityImportStrategy entityStrategy) {
     this.entityClass = entityClass;
     this.entityStrategy = entityStrategy;
   }

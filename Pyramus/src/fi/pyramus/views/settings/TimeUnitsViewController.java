@@ -48,7 +48,7 @@ public class TimeUnitsViewController implements PyramusViewController, Breadcrum
         if (o2.equals(baseTimeUnit))
           return 1;
         
-        return units1 > units2 ? -1 : 1;
+        return units1 > units2 ? 1 : -1;
       }
     });
     

@@ -151,7 +151,7 @@
       function archiveEntry(entryId, studentId) {
         var entryShort = $("entry." + entryId + ".text").textContent;
         entryShort = entryShort.stripScripts().stripTags().strip();
-        entryShort = entryShort.truncate(20, ["..."]);
+        entryShort = entryShort.truncate(20, "...");
         var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.archiveContactEntryConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
         var dialog = new IxDialog({
           id : 'confirmRemoval',
@@ -237,15 +237,6 @@
             studentId: entryForm.studentId.value
           },
           onSuccess: function (jsonResponse) {
-            var studentId = jsonResponse.results.studentId;
-            var results = jsonResponse.results;
-            var entryDate = new Date(results.timestamp);
-            var entryId = results.id;
-
-            addEntryRow(studentId, entryId, entryDate, results.type, results.creatorName, results.text);
-
-            resetEntryForm(studentId);
-
             window.location.reload();
           } 
         });
@@ -264,25 +255,6 @@
             entryText: CKEDITOR.instances["entryText." + studentId].getData()
           },
           onSuccess: function (jsonResponse) {
-            var results = jsonResponse.results;
-            var entryId = results.id;
-            var studentId = results.studentId;
-            var entryDate = new Date(results.timestamp);
-            var creatorName = results.creatorName;
-            var entryType = results.type;
-            var entryText = results.text;
-
-            var dateStr = getLocale().getDate(entryDate, false);
-            var entryTypeName = getEntryTypeName(entryType);
-            //var entryCaption = dateStr + ' &lt;' + entryTypeName + '&gt; ' + creatorName;
-
-            $("entryDate." + entryId + ".caption").innerHTML = dateStr;
-            $("entryType." + entryId + ".caption").innerHTML = entryTypeName;
-            $("entryCreator." + entryId + ".caption").innerHTML = creatorName;
-            $("entry." + entryId + ".text").innerHTML = entryText;
-                                                
-            resetEntryForm(studentId);
-            
             window.location.reload();
           } 
         });
@@ -352,16 +324,6 @@
             entryId: entryForm.entryId.value
           },
           onSuccess: function (jsonResponse) {
-            var results = jsonResponse.results;
-
-            var commentId = results.id; 
-            var entryDate = new Date(results.timestamp);
-            var entryId = results.entryId;
-
-            addCommentRow(entryId, commentId, studentId, entryDate, results.creatorName, results.text);
-                                    
-            resetEntryForm(studentId);
-
             window.location.reload();
           } 
         });
@@ -379,20 +341,6 @@
             commentText: CKEDITOR.instances["commentText." + studentId].getData()
           },
           onSuccess: function (jsonResponse) {
-            var results = jsonResponse.results;
-            var commentId = results.id;
-            var entryDate = new Date(results.timestamp);
-            var creatorName = results.creatorName;
-            var entryText = results.text;
-
-            var dateStr = getLocale().getDate(entryDate, false);
-
-            $("commentDate." + commentId + ".caption").innerHTML = dateStr;
-            $("commentCreator." + commentId + ".caption").innerHTML = creatorName;
-            $("comment." + commentId + ".text").innerHTML = entryText;
-                                                
-            resetCommentForm(studentId);
-
             window.location.reload();
           } 
         });
@@ -422,6 +370,13 @@
         parentNode.appendChild(container);
 
         container.show();
+
+        var elementBottom = container.cumulativeOffset().top + container.getDimensions().height;
+        var viewportBottom = document.viewport.getScrollOffsets().top + document.viewport.getDimensions().height;
+        
+        if (viewportBottom < elementBottom) {
+          Effect.ScrollTo(container, { duration:'0.2', offset: -20 });
+        }
       }
 
       function hideCommentForm(studentId) {
@@ -462,7 +417,7 @@
       function archiveComment(commentId, entryId) {
         var entryShort = $("entry." + entryId + ".text").textContent;
         entryShort = entryShort.stripScripts().stripTags().strip();
-        entryShort = entryShort.truncate(20, ["..."]);
+        entryShort = entryShort.truncate(20, "...");
         
         var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.manageStudentContactEntries.archiveCommentConfirmDialogContent&localeParams=" + encodeURIComponent(entryShort);
         var dialog = new IxDialog({
