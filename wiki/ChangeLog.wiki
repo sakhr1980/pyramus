@@ -2,27 +2,27 @@
 
 *Version 0.2 (101124.3)
 
-* Implemented help
-* Added related action to user edit view that creates new work resource from user
-* Separated student contact log management from user view to it's own view
-* Added related actions to student's view and edit views for navigating into contact log management
-* Added email addresses and phone types into student view
-* Added commenting support into student contact log
-* Added report categories
-* Added support for downloading reports as MS Word documents
-* Added cancel button into report parameters dialog
-* Changed date input fields into date picker components in report parameter dialogs 
-* Added tagging support for schools, courses, modules, helps, resources, students, student groups and users
-* Added management views for municipalities, time units and course states
-* Reorganized student and course views
-* Support for course component resources
-* CSV import tool
-* Changed student search behavior so that students that have ended their students do not appear in search results anymore by default
-* Removed support for searching archived students from advanced search
-* Added support for searching students who have already ended their studies
-* Added concurrent modification detection to editing views
-* Fixed Issue #1: Unnecessary draft save
-* Fixed report preview container size issues 
+  * Implemented help
+  * Added related action to user edit view that creates new work resource from user
+  * Separated student contact log management from user view to it's own view
+  * Added related actions to student's view and edit views for navigating into contact log management
+  * Added email addresses and phone types into student view
+  * Added commenting support into student contact log
+  * Added report categories
+  * Added support for downloading reports as MS Word documents
+  * Added cancel button into report parameters dialog
+  * Changed date input fields into date picker components in report parameter dialogs 
+  * Added tagging support for schools, courses, modules, helps, resources, students, student groups and users
+  * Added management views for municipalities, time units and course states
+  * Reorganized student and course views
+  * Support for course component resources
+  * CSV import tool
+  * Changed student search behavior so that students that have ended their students do not appear in search results anymore by default
+  * Removed support for searching archived students from advanced search
+  * Added support for searching students who have already ended their studies
+  * Added concurrent modification detection to editing views
+  * Fixed Issue #1: Unnecessary draft save
+  * Fixed report preview container size issues 
 
 *Version 0.11 (100920.2)*
   * JavaScript localization support via FNILocale version 0.1
