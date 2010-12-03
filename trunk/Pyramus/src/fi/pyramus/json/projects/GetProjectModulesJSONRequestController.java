@@ -40,7 +40,7 @@ public class GetProjectModulesJSONRequestController implements JSONRequestContro
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.EVERYONE };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR  };
   }
 
 }

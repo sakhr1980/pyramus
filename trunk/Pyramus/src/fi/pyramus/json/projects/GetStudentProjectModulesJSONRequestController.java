@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
@@ -24,7 +22,7 @@ public class GetStudentProjectModulesJSONRequestController implements JSONReques
   public void process(JSONRequestContext jsonRequestContext) {
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
-    Long studentProjectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("studentProject"));
+    Long studentProjectId = jsonRequestContext.getLong("studentProject");
     StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
 
     List<Map<String, Object>> studentProjectModules = new ArrayList<Map<String, Object>>();
@@ -36,6 +34,8 @@ public class GetStudentProjectModulesJSONRequestController implements JSONReques
       moduleInfo.put("moduleId", studentProjectModule.getModule().getId());
       moduleInfo.put("name", studentProjectModule.getModule().getName());
       moduleInfo.put("optionality", studentProjectModule.getOptionality().getValue());
+      moduleInfo.put("hasCourseEquivalent", studentProjectModule.hasCourseEquivalent());
+      
       studentProjectModules.add(moduleInfo);
     }
 
@@ -43,7 +43,7 @@ public class GetStudentProjectModulesJSONRequestController implements JSONReques
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.EVERYONE };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR  };
   }
 
 }

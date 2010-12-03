@@ -1866,6 +1866,53 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   background-repeat: no-repeat; 
 }
 
+/* Edit Student Project */
+
+.editStudentProjectModuleListTitle .genericFormTitleText,
+.editStudentProjectCourseListTitle .genericFormTitleText {
+  margin-top: 4px;
+  margin-left: 8px;
+  display:inline-block;
+  color:#2e5ec5;
+  font-size: 16px;
+}
+
+/* Student Project Module Course Search Dialog */
+
+.studentProjectModuleCourseWithinTimeFrame {
+  background: #cfffd8;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  border: 1px solid #DFFFe8;
+}
+
+#searchStudentProjectModuleCoursesDialogContainer.modalSearchContainer {
+  right: 8px;
+}
+
+#searchStudentProjectModuleCoursesDialogContainer>.modalSearchResultsContainer {
+  top: 8px;
+}
+
+#searchStudentProjectModuleCoursesDialogContainer .modalSearchResultsTabContent {
+  overflow: auto;
+}
+
+/* Search Modules Dialog*/
+
+#searchModulesDialogSearchContainer .modalSearchResultsContainer {
+  top: 205px;
+}
+
+#searchModulesDialogSearchContainer .modalSearchResultsMessageContainer {
+  bottom: 275px;
+}
+
+#searchModulesDialogSearchContainer .modalSearchResultsPagesContainer {
+  top: 285px;
+}
+
 .fixedSizedContentContainer #GUI_contentContainer{
   position:absolute;
   top:125px;

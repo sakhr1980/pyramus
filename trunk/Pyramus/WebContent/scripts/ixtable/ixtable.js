@@ -119,7 +119,7 @@ IxTable = Class.create({
   },
   addRow : function(values) {
     if (values.length != this.options.columns.length) {
-      throw new Error("Value array length != table column length");
+      throw new Error("Value array length (" + values.length + ") != table column length (" + this.options.columns.length + ")");
     }
     
     var rowNumber = this.getRowCount();
@@ -234,6 +234,12 @@ IxTable = Class.create({
         display: 'none'
       });
     }
+  },
+  hideRow: function (rowNumber) {
+    this.getRowElement(rowNumber).hide();
+  },
+  showRow: function (rowNumber) {
+    this.getRowElement(rowNumber).show();
   },
   getNamedColumnIndex: function (name) {
     for (var i = 0; i < this.options.columns.length; i++) {
@@ -770,7 +776,7 @@ IxHiddenTableEditorController = Class.create(IxTableEditorController, {
     return handlerInstance.value;
   },
   setEditorValue: function ($super, handlerInstance, value) {
-    handlerInstance.value = value;
+    handlerInstance.value = value||'';
   },
   destroyEditor: function ($super, handlerInstance) {
     handlerInstance.remove();
@@ -1183,6 +1189,10 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
       } else {
         handlerInstance._component = replaceDateField(handlerInstance);
       }
+      // TODO: Click support for editor
+    } else {
+      handlerInstance._clickListener = this._onClick.bindAsEventListener(this);
+      Event.observe(handlerInstance, "click", handlerInstance._clickListener); 
     }
   },
   detachContentHandler: function ($super, handlerInstance) {
@@ -1192,7 +1202,10 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
       handlerInstance._column = undefined;
       handlerInstance._table = undefined;
       handlerInstance._component.destroy();
-    } else {
+      // TODO: Click support for editor
+    } else {    
+      Event.stopObserving(handlerInstance, "click", handlerInstance._clickListener);
+      handlerInstance._clickListener = undefined;
       $super(handlerInstance);
     }
   }, 
@@ -1205,6 +1218,27 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   },
   getMode: function ($super) { 
     return IxTableControllers.EDITMODE_EDITABLE;
+  },
+  _onClick: function (event) {
+    // TODO: Click support for editor
+    var handlerInstance = Event.element(event);
+    if (!handlerInstance.hasClassName("ixTableCellViewerDate")) {
+      handlerInstance = handlerInstance.up(".ixTableCellViewerDate");
+    }
+    
+    if (handlerInstance) {
+      if (handlerInstance._columnDefinition.onclick) {
+        Event.stop(event);
+        
+        if (this.isDisabled(handlerInstance) != true) { 
+          handlerInstance._columnDefinition.onclick.call(window, {
+            tableObject: handlerInstance._table,
+            row: handlerInstance._row,
+            column: handlerInstance._column                
+          });
+        }
+      }
+    }
   }
 });
 

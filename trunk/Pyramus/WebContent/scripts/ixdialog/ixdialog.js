@@ -193,12 +193,6 @@ IxDialog = Class.create({
     this._isHideOnly = value;
   },
   clickOk: function () {
-    this._okButton.click();
-  },
-  clickCancel: function () {
-    this._cancelButton.click();
-  },
-  _onOkButtonClick: function (event) {
     var resultsFunc = this._frameWindow.getResults;
     var results;
     if (resultsFunc)
@@ -210,13 +204,19 @@ IxDialog = Class.create({
       this.close();
     }
   },
-  _onCancelButtonClick: function (event) {
+  clickCancel: function () {
     this._fire("cancelClick", { });
     if (this._isHideOnly) {
       this.hide();
     } else {
       this.close();
     }
+  },
+  _onOkButtonClick: function (event) {
+    this.clickOk();
+  },
+  _onCancelButtonClick: function (event) {
+    this.clickCancel();
   },
   _onDialogContentLoad: function (event) {
     if (!this._contentLoaded) {
@@ -225,6 +225,11 @@ IxDialog = Class.create({
       this._frameWindow = this._frameDocument.parentWindow;
       if (!this._frameWindow)
         this._frameWindow = this._frameDocument.defaultView;
+      
+      var _this = this;
+      this._frameWindow.getDialog = function () {
+        return _this;
+      };
       
       Event.observe(window, "mouseup", this._windowMouseUpListener);
       Event.observe(document, "mouseup", this._windowMouseUpListener);

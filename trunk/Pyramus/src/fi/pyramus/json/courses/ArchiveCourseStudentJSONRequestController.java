@@ -12,7 +12,7 @@ public class ArchiveCourseStudentJSONRequestController implements JSONRequestCon
   public void process(JSONRequestContext requestContext) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     Long courseStudentId = requestContext.getLong("courseStudentId"); 
-    CourseStudent courseStudent = courseDAO.getCourseStudent(courseStudentId);
+    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     courseDAO.archiveCourseStudent(courseStudent);
   }
 

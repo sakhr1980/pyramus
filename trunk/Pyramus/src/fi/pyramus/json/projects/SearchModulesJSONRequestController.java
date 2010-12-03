@@ -40,10 +40,11 @@ public class SearchModulesJSONRequestController implements JSONRequestController
 
     String name = requestContext.getString("name");
     String projectName = requestContext.getString("projectName");
-
+    String tags = requestContext.getString("tags");
+    
     // Search via the DAO object
 
-    SearchResult<Module> searchResult = moduleDAO.searchModules(resultsPerPage, page, projectName, name, null, null, null, null, null, true);
+    SearchResult<Module> searchResult = moduleDAO.searchModules(resultsPerPage, page, projectName, name, tags, null, null, null, null, true);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Module> modules = searchResult.getResults();
@@ -59,12 +60,12 @@ public class SearchModulesJSONRequestController implements JSONRequestController
     if (searchResult.getTotalHitCount() > 0) {
       statusMessage = Messages.getInstance().getText(
           locale,
-          "modules.searchModules.searchStatus",
+          "projects.searchModulesDialog.searchStatus",
           new Object[] { searchResult.getFirstResult() + 1, searchResult.getLastResult() + 1,
               searchResult.getTotalHitCount() });
     }
     else {
-      statusMessage = Messages.getInstance().getText(locale, "modules.searchModules.searchStatusNoMatches");
+      statusMessage = Messages.getInstance().getText(locale, "projects.searchModulesDialog.searchStatusNoMatches");
     }
 
     requestContext.addResponseParameter("results", results);
@@ -74,7 +75,7 @@ public class SearchModulesJSONRequestController implements JSONRequestController
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.EVERYONE };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR  };
   }
 
 }

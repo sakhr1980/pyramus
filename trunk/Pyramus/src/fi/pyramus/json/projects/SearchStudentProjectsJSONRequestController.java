@@ -75,7 +75,7 @@ public class SearchStudentProjectsJSONRequestController implements JSONRequestCo
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.EVERYONE };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR  };
   }
 
 }

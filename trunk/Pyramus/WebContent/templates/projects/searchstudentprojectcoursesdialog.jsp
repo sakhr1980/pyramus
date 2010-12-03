@@ -24,20 +24,12 @@
 	      });   
 	    }
 
-      /**
-       * Convenience method to return the row index of the given module in the given module table.
-       *
-       * @param tableId The table identifier
-       * @param moduleId The module identifier
-       *
-       * @return The row index of the given module in the given module table. Returns -1 if not found.
-       */
-      function getModuleRowIndex(tableId, moduleId) {
+      function getCourseRowIndex(tableId, courseId) {
         var table = getIxTableById(tableId);
         if (table) {
           for (var i = 0; i < table.getRowCount(); i++) {
-            var tableModuleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
-            if (tableModuleId == moduleId) {
+            var tableCourseId = table.getCellValue(i, table.getNamedColumnIndex('courseId'));
+            if (tableCourseId == courseId) {
               return i;
             }
           }
@@ -45,28 +37,23 @@
         return -1;
       }
 
-      /**
-       * Performs the search and displays the results of the given page.
-       *
-       * @param page The results page to be shown after the search
-       */
       function doSearch(page) {
-        var searchModulesForm = $("searchModulesForm");
-        JSONRequest.request("projects/searchmodules.json", {
+        var searchCoursesForm = $("searchCoursesForm");
+        JSONRequest.request("projects/searchstudentprojectcourses.json", {
           parameters: {
-            name: searchModulesForm.name.value,
-            projectName: searchModulesForm.project.value,
-            tags: searchModulesForm.tags.value,
+            name: searchCoursesForm.name.value,
+            tags: searchCoursesForm.tags.value,
             page: page,
-            maxResults: 9
+            studentId: ${studentId},
+            maxResults: 10
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].id]);
-              var rowIndex = getModuleRowIndex('modulesTable', results[i].id);
+              resultsTable.addRow([results[i].name, results[i].participationType, results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
+              var rowIndex = getCourseRowIndex('coursesTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
               } 
@@ -84,36 +71,36 @@
        *
        * @param event The search form submit event
        */
-      function onSearchModules(event) {
+      function onSearchCourses(event) {
         Event.stop(event);
         doSearch(0);
       }
 
-      /**
-       * Returns the identifiers of the modules selected in this dialog.
-       *
-       * @return The modules selected in this dialog
-       */
       function getResults() {
         var results = new Array();
-        var table = getIxTableById('modulesTable');
+        var table = getIxTableById('coursesTable');
         for (var i = 0; i < table.getRowCount(); i++) {
-          var moduleName = table.getCellValue(i, table.getNamedColumnIndex('name'));
+          var courseName = table.getCellValue(i, table.getNamedColumnIndex('name'));
+          var courseId = table.getCellValue(i, table.getNamedColumnIndex('courseId'));
+          var participationType = table.getCellValue(i, table.getNamedColumnIndex('participationType'));
+          var beginDate = table.getCellValue(i, table.getNamedColumnIndex('beginDate'));
+          var endDate = table.getCellValue(i, table.getNamedColumnIndex('endDate'));
           var moduleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
+          
           results.push({
-            name: moduleName,
-            id: moduleId});
+            name: courseName,
+            participationType: participationType,
+            beginDate: beginDate,
+            endDate: endDate,
+            moduleId: moduleId,
+            id: courseId
+          });
         }
         return {
-          modules: results
+          courses: results
         };
       }
 
-      /**
-       * Called when this dialog loads. Initializes the search navigation and module tables.
-       *
-       * @param event The page load event
-       */
       function onLoad(event) {
         new IxSearchNavigation($('modalSearchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
@@ -137,19 +124,35 @@
             onclick: function (event) {
               var table = event.tableObject;
               table.disableRow(event.row);
+              var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
+              var participationType = table.getCellValue(event.row, table.getNamedColumnIndex('participationType'));
+              var beginDate = table.getCellValue(event.row, table.getNamedColumnIndex('beginDate'));
+              var endDate = table.getCellValue(event.row, table.getNamedColumnIndex('endDate'));
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
-              var moduleName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              getIxTableById('modulesTable').addRow([moduleName, moduleId]);
+              var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
+              getIxTableById('coursesTable').addRow([courseName, participationType, beginDate, endDate, moduleId, courseId]);
             }
           }, {
             dataType: 'hidden',
+            paramName: 'participationType'
+          }, {
+            dataType: 'hidden',
+            paramName: 'beginDate'
+          }, {
+            dataType: 'hidden',
+            paramName: 'endDate'
+          }, {
+            dataType: 'hidden',
             paramName: 'moduleId'
+          }, {
+            dataType: 'hidden',
+            paramName: 'courseId'
           }]
         });
         searchResultsTable.domNode.addClassName("modalDialogSearchResultsIxTable");
         
-        var modulesTable = new IxTable($('modulesTableContainer'), {
-          id: 'modulesTable',
+        var coursesTable = new IxTable($('coursesTableContainer'), {
+          id: 'coursesTable',
           columns : [ {
             left: 8,
             right: 8,
@@ -159,9 +162,9 @@
             paramName: 'name',
             onclick: function (event) {
               var table = event.tableObject;
-              var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
+              var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               table.deleteRow(event.row);
-              var rowIndex = getModuleRowIndex('searchResultsTable', moduleId);
+              var rowIndex = getCourseRowIndex('searchResultsTable', courseId);
               if (rowIndex != -1) {
                 var resultsTable = getIxTableById('searchResultsTable');
                 resultsTable.enableRow(rowIndex);
@@ -169,52 +172,57 @@
             }
           }, {
             dataType: 'hidden',
+            paramName: 'participationType'
+          }, {
+            dataType: 'hidden',
+            paramName: 'beginDate'
+          }, {
+            dataType: 'hidden',
+            paramName: 'endDate'
+          }, {
+            dataType: 'hidden',
             paramName: 'moduleId'
+          }, {
+            dataType: 'hidden',
+            paramName: 'courseId'
           }]
         });
-        modulesTable.domNode.addClassName("modalDialogModulesIxTable");
+        coursesTable.domNode.addClassName("modalDialogCoursesIxTable");
 
-        $('searchModulesForm').name.focus();
+        $('searchCoursesForm').name.focus();
       }
     </script>
 
   </head>
   <body onload="onLoad(event);">
 
-    <div id="searchModulesDialogSearchContainer" class="modalSearchContainer">
-      <div class="modalSearchTabLabel"><fmt:message key="projects.searchModulesDialog.searchTitle"/></div> 
+    <div id="searchCoursesDialogSearchContainer" class="modalSearchContainer">
+      <div class="modalSearchTabLabel"><fmt:message key="projects.searchStudentProjectCoursesDialog.searchTitle"/></div> 
       <div class="modalSearchTabContent">
 	      <div class="genericFormContainer"> 
 	        
-	        <form id="searchModulesForm" method="post" onsubmit="onSearchModules(event);">
+	        <form id="searchCoursesForm" method="post" onsubmit="onSearchCourses(event);">
 
 	          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="projects.searchModulesDialog.nameTitle"/>
-                  <jsp:param name="helpLocale" value="projects.searchModulesDialog.nameHelp"/>
+                  <jsp:param name="titleLocale" value="projects.searchStudentProjectCoursesDialog.nameTitle"/>
+                  <jsp:param name="helpLocale" value="projects.searchStudentProjectCoursesDialog.nameHelp"/>
                 </jsp:include>
 	            <input type="text" name="name" size="40"/>
 	          </div>
-	          
-            <div class="genericFormSection">
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.searchModulesDialog.projectTitle"/>
-                <jsp:param name="helpLocale" value="projects.searchModulesDialog.projectHelp"/>
-              </jsp:include>
-              <input type="text" name="project" size="40"/>
-            </div>
+
             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.searchModulesDialog.tagsTitle"/>
-                <jsp:param name="helpLocale" value="projects.searchModulesDialog.tagsHelp"/>
+                <jsp:param name="titleLocale" value="projects.searchStudentProjectCoursesDialog.tagsTitle"/>
+                <jsp:param name="helpLocale" value="projects.searchStudentProjectCoursesDialog.tagsHelp"/>
               </jsp:include>
               <input type="text" id="tags" name="tags" size="40"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
 	
 	          <div class="genericFormSubmitSection">
-	            <input type="submit" value="<fmt:message key="projects.searchModulesDialog.searchButton"/>">
+	            <input type="submit" value="<fmt:message key="projects.searchStudentProjectCoursesDialog.searchButton"/>">
 	          </div>
 	    
 	        </form>
@@ -222,7 +230,7 @@
       </div>
       
       <div id="searchResultsContainer" class="modalSearchResultsContainer">
-        <div class="modalSearchResultsTabLabel"><fmt:message key="projects.searchModulesDialog.searchResultsTitle"/></div>
+        <div class="modalSearchResultsTabLabel"><fmt:message key="projects.searchStudentProjectCoursesDialog.searchResultsTitle"/></div>
         <div id="modalSearchResultsStatusMessageContainer" class="modalSearchResultsMessageContainer"></div>    
         <div id="searchResultsTableContainer" class="modalSearchResultsTabContent"></div>
         <div id="modalSearchResultsPagesContainer" class="modalSearchResultsPagesContainer"></div>
@@ -230,9 +238,9 @@
       
     </div>
     
-    <div id="modulesContainer" class="modalSelectedItemsContainer">
-      <div class="modalSelectedItemsTabLabel"><fmt:message key="projects.searchModulesDialog.selectedModulesTitle"/></div>
-      <div id="modulesTableContainer" class="modalSelectedItemsTabContent"></div>
+    <div id="coursesContainer" class="modalSelectedItemsContainer">
+      <div class="modalSelectedItemsTabLabel"><fmt:message key="projects.searchStudentProjectCoursesDialog.selectedCoursesTitle"/></div>
+      <div id="coursesTableContainer" class="modalSelectedItemsTabContent"></div>
     </div>
 
   </body>

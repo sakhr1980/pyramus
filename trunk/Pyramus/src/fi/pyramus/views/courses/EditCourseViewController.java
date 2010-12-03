@@ -61,7 +61,7 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     
     // Various lists of base entities from module, course, and resource DAOs 
 
-    List<CourseStudent> courseStudents = courseDAO.listCourseStudents(course);
+    List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByCourse(course);
     Collections.sort(courseStudents, new Comparator<CourseStudent>() {
       @Override
       public int compare(CourseStudent o1, CourseStudent o2) {

@@ -82,10 +82,12 @@ public class EditStudentJSONRequestController implements JSONRequestController {
 	    if (!StringUtils.isBlank(tagsText)) {
 	      List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
 	      for (String tag : tags) {
-	        Tag tagEntity = baseDAO.findTagByText(tag.trim());
-	        if (tagEntity == null)
-	          tagEntity = baseDAO.createTag(tag);
-	        tagEntities.add(tagEntity);
+	        if (!StringUtils.isBlank(tag)) {
+  	        Tag tagEntity = baseDAO.findTagByText(tag.trim());
+  	        if (tagEntity == null)
+  	          tagEntity = baseDAO.createTag(tag);
+  	        tagEntities.add(tagEntity);
+	        }
 	      }
 	    }
 	    
