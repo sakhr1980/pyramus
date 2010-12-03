@@ -115,7 +115,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
     	
-      courseStudents.put(student.getId(), courseDAO.listStudentCourses(student));
+      courseStudents.put(student.getId(), courseDAO.listCoursesStudentsByStudent(student));
 
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
 

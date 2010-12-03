@@ -79,10 +79,12 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     if (!StringUtils.isBlank(tagsText)) {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
-        Tag tagEntity = baseDAO.findTagByText(tag.trim());
-        if (tagEntity == null)
-          tagEntity = baseDAO.createTag(tag);
-        tagEntities.add(tagEntity);
+        if (!StringUtils.isBlank(tag)) {
+          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          if (tagEntity == null)
+            tagEntity = baseDAO.createTag(tag);
+          tagEntities.add(tagEntity);
+        }
       }
     }
     
@@ -255,7 +257,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       Student student = studentDAO.getStudent(studentId);
       CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
       CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
-      courseDAO.addCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging);
+      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging);
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/courses/editcourse.page?course=" + course.getId();

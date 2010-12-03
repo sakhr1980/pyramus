@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -76,6 +77,18 @@ public class StudentProjectModule {
     return version;
   }
 
+  @Transient
+  public boolean hasCourseEquivalent() {
+    if (getStudentProject() != null) {
+      for (StudentProjectCourse studentProjectCourse : getStudentProject().getStudentProjectCourses()) {
+        if (studentProjectCourse.getCourse().getModule().equals(getModule()))
+          return true;
+      }
+    }
+    
+    return false;
+  }
+  
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentProjectModule")  
   @TableGenerator(name="StudentProjectModule", allocationSize=1)

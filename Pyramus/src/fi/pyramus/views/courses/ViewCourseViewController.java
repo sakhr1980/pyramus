@@ -33,7 +33,7 @@ public class ViewCourseViewController implements PyramusViewController, Breadcru
     Course course = courseDAO.getCourse(pageRequestContext.getLong("course"));
     pageRequestContext.getRequest().setAttribute("course", course);
     
-    List<CourseStudent> courseStudents = courseDAO.listCourseStudents(course);
+    List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByCourse(course);
     Collections.sort(courseStudents, new Comparator<CourseStudent>() {
       @Override
       public int compare(CourseStudent o1, CourseStudent o2) {

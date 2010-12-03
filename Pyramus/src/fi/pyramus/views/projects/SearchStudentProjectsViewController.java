@@ -15,7 +15,7 @@ public class SearchStudentProjectsViewController implements PyramusViewControlle
   }
 
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.GUEST, UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
 
   /**

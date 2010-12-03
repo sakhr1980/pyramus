@@ -660,118 +660,7 @@ public class CourseDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(Course.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
-
-  /**
-   * Adds a course student to the database.
-   * 
-   * @param course The course
-   * @param student The student
-   * @param courseEnrolmentType Student enrolment type
-   * @param participationType Student participation type
-   * @param enrolmentDate The enrolment date
-   * 
-   * @return The created course student
-   */
-  public CourseStudent addCourseStudent(Course course, Student student, CourseEnrolmentType courseEnrolmentType,
-      CourseParticipationType participationType, Date enrolmentDate, Boolean lodging) {
-    Session s = getHibernateSession();
-
-    CourseStudent courseStudent = new CourseStudent();
-    courseStudent.setCourseEnrolmentType(courseEnrolmentType);
-    courseStudent.setEnrolmentTime(enrolmentDate);
-    courseStudent.setParticipationType(participationType);
-    courseStudent.setLodging(lodging);
-    courseStudent.setStudent(student);
-    course.addCourseStudent(courseStudent);
-
-    s.saveOrUpdate(courseStudent);
-
-    return courseStudent;
-  }
-
-  public CourseStudent getCourseStudent(Course course, Student student) {
-    List<CourseStudent> courseStudents = course.getCourseStudents();
-    for (CourseStudent courseStudent : courseStudents) {
-      if (courseStudent.getId().equals(student.getId()))
-        return courseStudent;
-    }
-
-    return null;
-  }
-
-  public void archiveCourseStudent(CourseStudent courseStudent) {
-    Session s = getHibernateSession();
-    courseStudent.setArchived(Boolean.TRUE);
-    s.saveOrUpdate(courseStudent);
-  }
-
-  public void unarchiveCourseStudent(CourseStudent courseStudent) {
-    Session s = getHibernateSession();
-    courseStudent.setArchived(Boolean.FALSE);
-    s.saveOrUpdate(courseStudent);
-  }
-
-  /**
-   * Updates a course student to the database.
-   * 
-   * @param courseStudent The course student to be updated
-   * @param courseEnrolmentType Student enrolment type
-   * @param participationType Student participation type
-   * @param enrolmentDate Student enrolment date
-   */
-  public void updateCourseStudent(CourseStudent courseStudent, Student student, 
-  		CourseEnrolmentType courseEnrolmentType, CourseParticipationType participationType, 
-  		Date enrolmentDate, Boolean lodging) {
-    Session s = getHibernateSession();
-
-    courseStudent.setStudent(student);
-    courseStudent.setCourseEnrolmentType(courseEnrolmentType);
-    courseStudent.setEnrolmentTime(enrolmentDate);
-    courseStudent.setParticipationType(participationType);
-    courseStudent.setLodging(lodging);
-
-    s.saveOrUpdate(courseStudent);
-  }
-
-  public void updateCourseUser(CourseUser courseUser, User user, CourseUserRole role) {
-    Session s = getHibernateSession();
-    courseUser.setUser(user);
-    courseUser.setRole(role);
-    s.saveOrUpdate(courseUser);
-  }
-
-  /**
-   * Returns the course student corresponding to the given identifier.
-   * 
-   * @param courseStudentId The course student identifier
-   * 
-   * @return The course student corresponding to the given identifier
-   */
-  public CourseStudent getCourseStudent(Long courseStudentId) {
-    Session s = getHibernateSession();
-    return (CourseStudent) s.load(CourseStudent.class, courseStudentId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<CourseState> listCourseStates() {
-    Session s = getHibernateSession();
-    return s.createCriteria(CourseState.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-  }
-
-  /**
-   * Returns a list of the students in the given course.
-   * 
-   * @param course The course
-   * 
-   * @return A list of the students in the given course
-   */
-  @SuppressWarnings("unchecked")
-  public List<CourseStudent> listCourseStudents(Course course) {
-    Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class).add(Restrictions.eq("course", course)).add(
-        Restrictions.eq("archived", Boolean.FALSE)).list();
-  }
-
+  
   /**
    * Returns a list of all course user roles in the system.
    * 
@@ -782,25 +671,19 @@ public class CourseDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(CourseUserRole.class).list();
   }
+  
+  public void updateCourseUser(CourseUser courseUser, User user, CourseUserRole role) {
+    Session s = getHibernateSession();
+    courseUser.setUser(user);
+    courseUser.setRole(role);
+    s.saveOrUpdate(courseUser);
+  }
 
   @SuppressWarnings("unchecked")
-  public List<CourseStudent> listStudentCourses(Student student) {
+  public List<CourseState> listCourseStates() {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class).add(Restrictions.eq("student", student)).list();
+    return s.createCriteria(CourseState.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
-
-  /**
-   * Deletes the given course student from the database.
-   * 
-   * @param courseStudent The course student to be deleted
-   */
-  public void deleteCourseStudent(CourseStudent courseStudent) {
-    Session s = getHibernateSession();
-    Course course = courseStudent.getCourse();
-    course.removeCourseStudent(courseStudent);
-    s.delete(courseStudent);
-  }
-
   public void deleteCourseUser(CourseUser courseUser) {
     Session s = getHibernateSession();
     Course course = courseUser.getCourse();
@@ -1157,6 +1040,16 @@ public class CourseDAO extends PyramusDAO {
         .add(Restrictions.eq("value", value)).setProjection(Projections.property("courseBase")).list();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<Course> listCoursesByModule(Module module) {
+    Session s = getHibernateSession();
+    
+    return (List<Course>) s.createCriteria(Course.class)
+      .add(Restrictions.eq("module", module))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
+  }
+
   private CourseBaseVariable getCourseBaseVariable(Course course, CourseBaseVariableKey key) {
     Session s = getHibernateSession();
     CourseBaseVariable courseBaseVariable = (CourseBaseVariable) s.createCriteria(CourseBaseVariable.class).add(
@@ -1282,4 +1175,134 @@ public class CourseDAO extends PyramusDAO {
     
     entityManager.remove(courseComponentResource);
   }
+  
+  /* CourseStudent */
+
+  /**
+   * Returns the course student corresponding to the given identifier.
+   * 
+   * @param courseStudentId The course student identifier
+   * 
+   * @return The course student corresponding to the given identifier
+   */
+  public CourseStudent findCourseStudentById(Long courseStudentId) {
+    Session s = getHibernateSession();
+    return (CourseStudent) s.load(CourseStudent.class, courseStudentId);
+  }
+
+  public CourseStudent findCourseStudentByCourseAndStudent(Course course, Student student) {
+    Session s = getHibernateSession();
+
+    return (CourseStudent) s.createCriteria(CourseStudent.class)
+      .add(Restrictions.eq("course", course))
+      .add(Restrictions.eq("student", student))
+      .uniqueResult();
+  }
+
+  /**
+   * Adds a course student to the database.
+   * 
+   * @param course The course
+   * @param student The student
+   * @param courseEnrolmentType Student enrolment type
+   * @param participationType Student participation type
+   * @param enrolmentDate The enrolment date
+   * 
+   * @return The created course student
+   */
+  public CourseStudent createCourseStudent(Course course, Student student, CourseEnrolmentType courseEnrolmentType,
+      CourseParticipationType participationType, Date enrolmentDate, Boolean lodging) {
+    Session s = getHibernateSession();
+
+    CourseStudent courseStudent = new CourseStudent();
+    courseStudent.setCourseEnrolmentType(courseEnrolmentType);
+    courseStudent.setEnrolmentTime(enrolmentDate);
+    courseStudent.setParticipationType(participationType);
+    courseStudent.setLodging(lodging);
+    courseStudent.setStudent(student);
+    s.saveOrUpdate(courseStudent);
+    
+    course.addCourseStudent(courseStudent);
+    s.saveOrUpdate(course);
+
+    return courseStudent;
+  }
+  
+  /**
+   * Updates a course student to the database.
+   * 
+   * @param courseStudent The course student to be updated
+   * @param courseEnrolmentType Student enrolment type
+   * @param participationType Student participation type
+   * @param enrolmentDate Student enrolment date
+   */
+  public CourseStudent updateCourseStudent(CourseStudent courseStudent, Student student, 
+      CourseEnrolmentType courseEnrolmentType, CourseParticipationType participationType, 
+      Date enrolmentDate, Boolean lodging) {
+    Session s = getHibernateSession();
+
+    courseStudent.setStudent(student);
+    courseStudent.setCourseEnrolmentType(courseEnrolmentType);
+    courseStudent.setEnrolmentTime(enrolmentDate);
+    courseStudent.setParticipationType(participationType);
+    courseStudent.setLodging(lodging);
+
+    s.saveOrUpdate(courseStudent);
+
+    return courseStudent;
+  }
+
+  public void archiveCourseStudent(CourseStudent courseStudent) {
+    Session s = getHibernateSession();
+    courseStudent.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(courseStudent);
+  }
+
+  public void unarchiveCourseStudent(CourseStudent courseStudent) {
+    Session s = getHibernateSession();
+    courseStudent.setArchived(Boolean.FALSE);
+    s.saveOrUpdate(courseStudent);
+  }
+
+  /**
+   * Returns a list of the students in the given course.
+   * 
+   * @param course The course
+   * 
+   * @return A list of the students in the given course
+   */
+  @SuppressWarnings("unchecked")
+  public List<CourseStudent> listCourseStudentsByCourse(Course course) {
+    Session s = getHibernateSession();
+    return s.createCriteria(CourseStudent.class)
+      .add(Restrictions.eq("course", course))
+      .add(Restrictions.eq("archived", Boolean.FALSE)).list();
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<CourseStudent> listCoursesStudentsByStudent(Student student) {
+    Session s = getHibernateSession();
+    return s.createCriteria(CourseStudent.class)
+      .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
+  }
+
+  /**
+   * Deletes the given course student from the database.
+   * 
+   * @param courseStudent The course student to be deleted
+   */
+  public void deleteCourseStudent(CourseStudent courseStudent) {
+    Session s = getHibernateSession();
+    
+    Course course = courseStudent.getCourse();
+    if (course != null) {
+      course.removeCourseStudent(courseStudent);
+      s.saveOrUpdate(course);
+    }
+    
+    s.delete(courseStudent);
+  }
+
 }

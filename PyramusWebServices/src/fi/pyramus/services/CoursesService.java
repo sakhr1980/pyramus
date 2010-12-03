@@ -230,7 +230,7 @@ public class CoursesService extends PyramusService {
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
 
-    CourseStudent courseStudent = courseDAO.addCourseStudent(course, student, courseEnrolmentType,
+    CourseStudent courseStudent = courseDAO.createCourseStudent(course, student, courseEnrolmentType,
             participationType, enrolmentDate, lodging);
 
     validateEntity(courseStudent);
@@ -243,7 +243,7 @@ public class CoursesService extends PyramusService {
 
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     
-    CourseStudent courseStudent = courseDAO.getCourseStudent(courseStudentId);
+    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
 
@@ -254,13 +254,13 @@ public class CoursesService extends PyramusService {
 
   public CourseStudentEntity getCourseStudentById(Long courseStudentId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourseStudent(courseStudentId));
+    return EntityFactoryVault.buildFromDomainObject(courseDAO.findCourseStudentById(courseStudentId));
   }
 
   public CourseStudentEntity[] listCourseStudentsByCourse(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     Course course = courseDAO.getCourse(courseId);
-    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseStudents(course));
+    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseStudentsByCourse(course));
   }
 
   public CourseStudentEntity[] listCourseStudentsByStudent(Long studentId) {
@@ -268,7 +268,7 @@ public class CoursesService extends PyramusService {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
     Student student = studentDAO.getStudent(studentId);
-    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listStudentCourses(student));
+    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCoursesStudentsByStudent(student));
   }
 
   public CourseEntity getCourseById(Long courseId) {
@@ -361,7 +361,7 @@ public class CoursesService extends PyramusService {
 
     Course course = courseDAO.getCourse(courseId);
     Student student = studentDAO.getStudent(studentId);
-    CourseStudent courseStudent = courseDAO.getCourseStudent(course, student);
+    CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
     courseDAO.archiveCourseStudent(courseStudent);
   }
 
@@ -371,7 +371,7 @@ public class CoursesService extends PyramusService {
 
     Course course = courseDAO.getCourse(courseId);
     Student student = studentDAO.getStudent(studentId);
-    CourseStudent courseStudent = courseDAO.getCourseStudent(course, student);
+    CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
     courseDAO.unarchiveCourseStudent(courseStudent);
   }
 

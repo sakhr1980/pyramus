@@ -110,6 +110,7 @@ public class Course extends CourseBase implements ArchivableEntity {
   }
   
   public void addCourseStudent(CourseStudent courseStudent) {
+    // TODO: Check if student already is in this course
     if (courseStudent.getCourse() != null)
       courseStudent.getCourse().removeCourseStudent(courseStudent);
     courseStudent.setCourse(this);
@@ -117,6 +118,7 @@ public class Course extends CourseBase implements ArchivableEntity {
   }
   
   public void removeCourseStudent(CourseStudent courseStudent) {
+    // TODO: Check if student is in this course
     courseStudent.setCourse(null);
     courseStudents.remove(courseStudent);
   }
