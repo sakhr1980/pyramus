@@ -63,5 +63,20 @@
   <entity package="fi.pyramus.domainmodel.base" class="Defaults">
     <e id="1"/>
   </entity>
+  
+  <entity package="fi.pyramus.domainmodel.system" class="SettingKey">
+    <e name="authentication.enabledStrategies" storeVariable="enabledAuth"/>
+    <e name="reports.contextPath" storeVariable="reportsPath"/>
+  </entity>
+
+  <entity package="fi.pyramus.domainmodel.system" class="Setting">
+    <e value="internal">
+      <j name="key" class="fi.pyramus.domainmodel.system.SettingKey">{enabledAuth}</j>
+    </e>
+    <e value="/PyramusReports">
+      <j name="key" class="fi.pyramus.domainmodel.system.SettingKey">{reportsPath}</j>
+    </e>
+  </entity>
+
 
 </initialData>
