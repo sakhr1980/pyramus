@@ -36,7 +36,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
-import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 /**
  * The Data Access Object for project related operations.  
@@ -408,7 +408,7 @@ public class ProjectDAO extends PyramusDAO {
   }
   
   public StudentProjectModule createStudentProjectModule(StudentProject studentProject, Module module,
-      AcademicTerm academicTerm, StudentProjectModuleOptionality optionality) {
+      AcademicTerm academicTerm, CourseOptionality optionality) {
     Session s = getHibernateSession();
 
     StudentProjectModule studentProjectModule = new StudentProjectModule();
@@ -424,7 +424,7 @@ public class ProjectDAO extends PyramusDAO {
   }
 
   public void updateStudentProjectModule(StudentProjectModule studentProjectModule,
-      AcademicTerm academicTerm, StudentProjectModuleOptionality optionality) {
+      AcademicTerm academicTerm, CourseOptionality optionality) {
     Session s = getHibernateSession();
 
     studentProjectModule.setAcademicTerm(academicTerm);

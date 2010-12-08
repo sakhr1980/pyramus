@@ -18,6 +18,7 @@ import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 /**
  * The Data Access Object for grading related operations.  
@@ -254,13 +255,12 @@ public class GradingDAO extends PyramusDAO {
     return (CourseAssessment) s.load(CourseAssessment.class, courseAssessmentId);
   }
   
-  public TransferCredit createTransferCredit(String courseName, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
+  public TransferCredit createTransferCredit(String courseName, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, CourseOptionality optionality, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
     TransferCredit transferCredit = new TransferCredit();
     
     EducationalLength length = new EducationalLength();
     length.setUnits(courseLength);
     length.setUnit(courseLengthUnit);
-    
     
     transferCredit.setAssessingUser(assessingUser);
     transferCredit.setDate(date);
@@ -270,6 +270,7 @@ public class GradingDAO extends PyramusDAO {
     transferCredit.setSchool(school);
     transferCredit.setStudent(student);
     transferCredit.setSubject(subject);
+    transferCredit.setOptionality(optionality);
     transferCredit.setVerbalAssessment(verbalAssessment);
     
     Session s = getHibernateSession();

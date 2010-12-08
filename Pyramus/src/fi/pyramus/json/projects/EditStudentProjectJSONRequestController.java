@@ -26,7 +26,7 @@ import fi.pyramus.domainmodel.projects.StudentProjectCourse;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
-import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class EditStudentProjectJSONRequestController implements JSONRequestController {
 
@@ -83,7 +83,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
       String colPrefix = "modulesTable." + i;
       
       Long studentProjectModuleId = jsonRequestContext.getLong(colPrefix + ".studentProjectModuleId");
-      StudentProjectModuleOptionality optionality = (StudentProjectModuleOptionality) jsonRequestContext.getEnum(colPrefix + ".optionality", StudentProjectModuleOptionality.class);
+      CourseOptionality optionality = (CourseOptionality) jsonRequestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
       Long studyTermId = jsonRequestContext.getLong(colPrefix + ".academicTerm");
       AcademicTerm academicTerm = studyTermId == -1 ? null : baseDAO.getAcademicTerm(studyTermId);
       

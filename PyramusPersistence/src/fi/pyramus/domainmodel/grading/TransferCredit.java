@@ -8,14 +8,22 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 import fi.pyramus.persistence.usertypes.CreditType;
 
 @Entity
+@TypeDefs ({
+  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
+})
 @PrimaryKeyJoinColumn(name = "id")
 public class TransferCredit extends Credit {
 
@@ -55,6 +63,14 @@ public class TransferCredit extends Credit {
   public void setSubject(Subject subject) {
     this.subject = subject;
   }
+  
+  public CourseOptionality getOptionality() {
+    return optionality;
+  }
+  
+  public void setOptionality(CourseOptionality optionality) {
+    this.optionality = optionality;
+  }
 
   @Override
   public CreditType getCreditType() {
@@ -69,6 +85,11 @@ public class TransferCredit extends Credit {
   @OneToOne
   @JoinColumn(name = "courseLength")
   private EducationalLength courseLength;
+  
+  @NotNull
+  @Column (nullable = false)
+  @Type (type="CourseOptionality")
+  private CourseOptionality optionality;
 
   @ManyToOne
   @JoinColumn(name = "school")
