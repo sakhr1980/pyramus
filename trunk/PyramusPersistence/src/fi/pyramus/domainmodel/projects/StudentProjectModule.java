@@ -18,12 +18,12 @@ import org.hibernate.annotations.TypeDefs;
 
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionality;
-import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionalityUserType;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 
 @Entity
 @TypeDefs ({
-  @TypeDef (name="StudentProjectModuleOptionality", typeClass=StudentProjectModuleOptionalityUserType.class)
+  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
 })
 public class StudentProjectModule {
 
@@ -52,11 +52,11 @@ public class StudentProjectModule {
     return studentProject;
   }
 
-  public void setOptionality(StudentProjectModuleOptionality optionality) {
+  public void setOptionality(CourseOptionality optionality) {
     this.optionality = optionality;
   }
 
-  public StudentProjectModuleOptionality getOptionality() {
+  public CourseOptionality getOptionality() {
     return optionality;
   }
 
@@ -104,8 +104,8 @@ public class StudentProjectModule {
 
   @NotNull
   @Column (nullable = false)
-  @Type (type="StudentProjectModuleOptionality")  
-  private StudentProjectModuleOptionality optionality;
+  @Type (type="CourseOptionality")  
+  private CourseOptionality optionality;
   
   @ManyToOne
   @JoinColumn(name="academicTerm")

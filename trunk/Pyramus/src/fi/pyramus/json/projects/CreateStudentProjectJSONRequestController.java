@@ -24,7 +24,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
-import fi.pyramus.persistence.usertypes.StudentProjectModuleOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class CreateStudentProjectJSONRequestController implements JSONRequestController {
 
@@ -81,7 +81,7 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       List<ProjectModule> projectModules = project.getProjectModules();
       for (ProjectModule projectModule : projectModules) {
         projectDAO.createStudentProjectModule(studentProject, projectModule.getModule(), null,
-            StudentProjectModuleOptionality.getOptionality(projectModule.getOptionality().getValue()));
+            CourseOptionality.getOptionality(projectModule.getOptionality().getValue()));
       }
     }
     

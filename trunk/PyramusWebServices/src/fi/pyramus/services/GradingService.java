@@ -18,6 +18,7 @@ import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.grading.CourseAssessmentEntity;
 import fi.pyramus.services.entities.grading.CreditEntity;
@@ -106,7 +107,7 @@ public class GradingService extends PyramusService {
     return EntityFactoryVault.buildFromDomainObject(courseAssessment);
   }
   
-  public TransferCreditEntity createTransferCredit(String courseName, Double courseLength, Long courseLengthUnitId, Long schoolId, Long subjectId, Long studentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
+  public TransferCreditEntity createTransferCredit(String courseName, Double courseLength, Long courseLengthUnitId, Long schoolId, Long subjectId, Boolean optional, Long studentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
@@ -118,8 +119,9 @@ public class GradingService extends PyramusService {
     Student student = studentDAO.getStudent(studentId);
     User assessingUser = userDAO.getUser(assessingUserId);
     Grade grade = gradingDAO.getGrade(gradeId);
+    CourseOptionality courseOptionality = optional != null ? optional == false ? CourseOptionality.MANDATORY : CourseOptionality.OPTIONAL : null;
     
-    TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseLength, courseLengthUnit, school, subject, student, assessingUser, grade, date, verbalAssessment);
+    TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
     
     validateEntity(transferCredit);
     

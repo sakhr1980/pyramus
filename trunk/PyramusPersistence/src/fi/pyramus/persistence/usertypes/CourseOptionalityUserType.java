@@ -9,7 +9,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
-public class StudentProjectModuleOptionalityUserType implements UserType {
+public class CourseOptionalityUserType implements UserType {
 
   public Object assemble(Serializable cached, Object owner) throws HibernateException {
     return cached;
@@ -38,7 +38,7 @@ public class StudentProjectModuleOptionalityUserType implements UserType {
   }
 
   public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-    StudentProjectModuleOptionality optionality = StudentProjectModuleOptionality.getOptionality(rs.getInt(names[0]));
+    CourseOptionality optionality = CourseOptionality.getOptionality(rs.getInt(names[0]));
     if (rs.wasNull()) {
       return null;
     }
@@ -50,7 +50,7 @@ public class StudentProjectModuleOptionalityUserType implements UserType {
       st.setNull(index, Hibernate.INTEGER.sqlType());
     }
     else {
-      st.setLong(index, ((StudentProjectModuleOptionality) value).getValue());
+      st.setLong(index, ((CourseOptionality) value).getValue());
     }
   }
 
@@ -60,7 +60,7 @@ public class StudentProjectModuleOptionalityUserType implements UserType {
 
   @SuppressWarnings("rawtypes")
   public Class returnedClass() {
-    return StudentProjectModuleOptionality.class;
+    return CourseOptionality.class;
   }
 
   public int[] sqlTypes() {

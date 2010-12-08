@@ -15,10 +15,19 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.students.Student;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 
 @Entity
+@TypeDefs ({
+  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
+})
 public class CourseStudent implements ArchivableEntity {
   
   public Long getId() {
@@ -90,6 +99,14 @@ public class CourseStudent implements ArchivableEntity {
   public Boolean getLodging() {
     return lodging;
   }
+  
+  public CourseOptionality getOptionality() {
+    return optionality;
+  }
+  
+  public void setOptionality(CourseOptionality optionality) {
+    this.optionality = optionality;
+  }
 
   @SuppressWarnings("unused")
   private void setVersion(Long version) {
@@ -132,6 +149,11 @@ public class CourseStudent implements ArchivableEntity {
   @NotNull
   @Column(nullable = false)
   private Boolean lodging = Boolean.FALSE;
+  
+  @NotNull
+  @Column (nullable = false)
+  @Type (type="CourseOptionality")
+  private CourseOptionality optionality;
 
   @Version
   @Column(nullable = false)
