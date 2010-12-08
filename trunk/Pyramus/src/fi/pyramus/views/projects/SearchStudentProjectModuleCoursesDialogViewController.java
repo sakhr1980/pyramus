@@ -48,7 +48,7 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
 
     Module module = moduleDAO.getModule(moduleId);
     AcademicTerm academicTerm = null;
-    if (academicTermId != null)
+    if (academicTermId != null && academicTermId >= 0)
       academicTerm = baseDAO.getAcademicTerm(academicTermId);
     Student student = studentDAO.getStudent(studentId);
     

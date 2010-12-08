@@ -218,7 +218,7 @@
             width: 22,
             right: 8 + 22 + 8 + 22 + 8,
             dataType: 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableEditModuleRowTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
@@ -328,7 +328,7 @@
             width: 22,
             right: 8 + 22 + 8,
             dataType: 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableEditCourseRowTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
@@ -436,7 +436,7 @@
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsLabel"/>'
         });
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
-          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsEditStudentLabel"/>',
           link: '../students/editstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}'  
         }));
