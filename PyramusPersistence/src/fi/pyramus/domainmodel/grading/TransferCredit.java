@@ -39,6 +39,14 @@ public class TransferCredit extends Credit {
   public void setCourseName(String courseName) {
     this.courseName = courseName;
   }
+  
+  public Integer getCourseNumber() {
+    return courseNumber;
+  }
+  
+  public void setCourseNumber(Integer courseNumber) {
+    this.courseNumber = courseNumber;
+  }
 
   public EducationalLength getCourseLength() {
     return courseLength;
@@ -82,6 +90,8 @@ public class TransferCredit extends Credit {
   @NotEmpty
   private String courseName;
 
+  private Integer courseNumber;
+  
   @OneToOne
   @JoinColumn(name = "courseLength")
   private EducationalLength courseLength;
