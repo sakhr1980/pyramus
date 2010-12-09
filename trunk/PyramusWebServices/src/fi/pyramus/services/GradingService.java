@@ -107,7 +107,7 @@ public class GradingService extends PyramusService {
     return EntityFactoryVault.buildFromDomainObject(courseAssessment);
   }
   
-  public TransferCreditEntity createTransferCredit(String courseName, Double courseLength, Long courseLengthUnitId, Long schoolId, Long subjectId, Boolean optional, Long studentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
+  public TransferCreditEntity createTransferCredit(String courseName, Integer courseNumber, Double courseLength, Long courseLengthUnitId, Long schoolId, Long subjectId, String optinality, Long studentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
@@ -119,9 +119,9 @@ public class GradingService extends PyramusService {
     Student student = studentDAO.getStudent(studentId);
     User assessingUser = userDAO.getUser(assessingUserId);
     Grade grade = gradingDAO.getGrade(gradeId);
-    CourseOptionality courseOptionality = optional != null ? optional == false ? CourseOptionality.MANDATORY : CourseOptionality.OPTIONAL : null;
-    
-    TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
+    CourseOptionality courseOptionality = CourseOptionality.valueOf(optinality);
+      
+    TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseNumber, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
     
     validateEntity(transferCredit);
     

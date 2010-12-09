@@ -255,7 +255,7 @@ public class GradingDAO extends PyramusDAO {
     return (CourseAssessment) s.load(CourseAssessment.class, courseAssessmentId);
   }
   
-  public TransferCredit createTransferCredit(String courseName, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, CourseOptionality optionality, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
+  public TransferCredit createTransferCredit(String courseName, Integer courseNumber, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, CourseOptionality optionality, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
     TransferCredit transferCredit = new TransferCredit();
     
     EducationalLength length = new EducationalLength();
@@ -267,6 +267,7 @@ public class GradingDAO extends PyramusDAO {
     transferCredit.setGrade(grade);
     transferCredit.setCourseLength(length);
     transferCredit.setCourseName(courseName);
+    transferCredit.setCourseNumber(courseNumber);
     transferCredit.setSchool(school);
     transferCredit.setStudent(student);
     transferCredit.setSubject(subject);
