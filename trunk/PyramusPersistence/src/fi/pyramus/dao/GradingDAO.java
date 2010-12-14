@@ -297,4 +297,12 @@ public class GradingDAO extends PyramusDAO {
     credit.setArchived(Boolean.FALSE);
     s.saveOrUpdate(credit);
   }
+
+  public CourseAssessment findCourseAssessment(Course course, Student student) {
+    Session s = getHibernateSession();
+    
+    return (CourseAssessment) s.createCriteria(CourseAssessment.class)
+      .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("course", course)).uniqueResult();
+  }
 }
