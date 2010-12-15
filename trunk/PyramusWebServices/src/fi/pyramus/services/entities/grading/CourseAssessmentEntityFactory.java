@@ -13,7 +13,7 @@ public class CourseAssessmentEntityFactory implements EntityFactory<CourseAssess
 
     return new CourseAssessmentEntity(courseAssessment.getId(), courseAssessment.getStudent().getId(), courseAssessment.getDate(), courseAssessment.getGrade()
         .getId(), courseAssessment.getVerbalAssessment(), courseAssessment.getAssessingUser().getId(), courseAssessment.getArchived(), courseAssessment
-        .getCourse().getId());
+        .getCourseStudent().getCourse().getId(), courseAssessment.getCourseStudent().getId());
   }
 
 }

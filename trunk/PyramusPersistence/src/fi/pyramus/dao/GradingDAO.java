@@ -10,7 +10,7 @@ import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
-import fi.pyramus.domainmodel.courses.Course;
+import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.grading.Grade;
@@ -46,23 +46,12 @@ public class GradingDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<CourseAssessment> listStudentsCourseAssessments(Student student) {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseAssessment.class)
-      .add(Restrictions.eq("student", student))
-      .add(Restrictions.eq("archived", Boolean.FALSE)).list();
+    
+    return s.createQuery("from CourseAssessment " +
+    		"where courseStudent.student=:student and archived=:archived")
+    		.setEntity("student", student)
+    		.setBoolean("archived", Boolean.FALSE).list();
   }  
-  
-  /**
-   * Lists all student's credits excluding archived ones
-   * 
-   * @return list of all students credits
-   */
-  @SuppressWarnings("unchecked")
-  public List<Credit> listStudentsCredits(Student student) {
-    Session s = getHibernateSession();
-    return s.createCriteria(Credit.class)
-      .add(Restrictions.eq("student", student))
-      .add(Restrictions.eq("archived", Boolean.FALSE)).list();
-  }
 
   /**
    * Archives a Grade
@@ -235,16 +224,16 @@ public class GradingDAO extends PyramusDAO {
     return gradingScale;
   }
   
-  public CourseAssessment createCourseAssessment(Course course, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
+  public CourseAssessment createCourseAssessment(CourseStudent courseStudent, User assessingUser, Grade grade, Date date, String verbalAssessment) {
+    Session s = getHibernateSession();
+
     CourseAssessment courseAssessment = new CourseAssessment();
     courseAssessment.setAssessingUser(assessingUser);
-    courseAssessment.setCourse(course);
+    courseAssessment.setCourseStudent(courseStudent);
     courseAssessment.setDate(date);
     courseAssessment.setGrade(grade);
-    courseAssessment.setStudent(student);
     courseAssessment.setVerbalAssessment(verbalAssessment);
     
-    Session s = getHibernateSession();
     s.saveOrUpdate(courseAssessment);
     
     return courseAssessment;
@@ -298,11 +287,10 @@ public class GradingDAO extends PyramusDAO {
     s.saveOrUpdate(credit);
   }
 
-  public CourseAssessment findCourseAssessment(Course course, Student student) {
+  public CourseAssessment findCourseAssessmentByCourseStudent(CourseStudent courseStudent) {
     Session s = getHibernateSession();
     
     return (CourseAssessment) s.createCriteria(CourseAssessment.class)
-      .add(Restrictions.eq("student", student))
-      .add(Restrictions.eq("course", course)).uniqueResult();
+      .add(Restrictions.eq("courseStudent", courseStudent)).uniqueResult();
   }
 }
