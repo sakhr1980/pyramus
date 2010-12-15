@@ -29,7 +29,7 @@ public class CourseAssessment extends Credit {
 
   @Transient
   public Student getStudent() {
-    return courseStudent.getStudent();
+    return courseStudent != null ? courseStudent.getStudent() : null;
   }
   
   @Override
