@@ -4,7 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
-import fi.pyramus.domainmodel.courses.Course;
+import javax.persistence.Transient;
+
+import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.persistence.usertypes.CreditType;
 
 @Entity
@@ -16,12 +19,17 @@ public class CourseAssessment extends Credit {
     setCreditType(CreditType.CourseAssessment);
   }
   
-  public void setCourse(Course course) {
-    this.course = course;
+  public void setCourseStudent(CourseStudent courseStudent) {
+    this.courseStudent = courseStudent;
   }
   
-  public Course getCourse() {
-    return course;
+  public CourseStudent getCourseStudent() {
+    return courseStudent;
+  }
+
+  @Transient
+  public Student getStudent() {
+    return courseStudent.getStudent();
   }
   
   @Override
@@ -29,7 +37,7 @@ public class CourseAssessment extends Credit {
     return CreditType.CourseAssessment;
   }
   
-  @ManyToOne (optional = false)
-  @JoinColumn(name="course")
-  private Course course;
+  @ManyToOne
+  @JoinColumn(unique=true, name="courseStudent")
+  private CourseStudent courseStudent;
 }

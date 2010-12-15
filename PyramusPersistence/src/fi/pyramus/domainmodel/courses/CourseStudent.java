@@ -150,8 +150,7 @@ public class CourseStudent implements ArchivableEntity {
   @Column(nullable = false)
   private Boolean lodging = Boolean.FALSE;
   
-  @NotNull
-  @Column (nullable = false)
+  @Column
   @Type (type="CourseOptionality")
   private CourseOptionality optionality;
 

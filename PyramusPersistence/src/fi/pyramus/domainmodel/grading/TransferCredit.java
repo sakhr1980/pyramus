@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 import fi.pyramus.persistence.usertypes.CreditType;
@@ -80,11 +81,23 @@ public class TransferCredit extends Credit {
     this.optionality = optionality;
   }
 
+  public Student getStudent() {
+    return student;
+  }
+  
+  public void setStudent(Student student) {
+    this.student = student;
+  }
+
   @Override
   public CreditType getCreditType() {
     return CreditType.TransferCredit;
   }
 
+  @ManyToOne  
+  @JoinColumn(name="student")
+  private Student student;
+  
   @NotNull
   @Column(nullable = false)
   @NotEmpty
@@ -96,8 +109,7 @@ public class TransferCredit extends Credit {
   @JoinColumn(name = "courseLength")
   private EducationalLength courseLength;
   
-  @NotNull
-  @Column (nullable = false)
+  @Column
   @Type (type="CourseOptionality")
   private CourseOptionality optionality;
 

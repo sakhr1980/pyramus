@@ -703,12 +703,13 @@ public class StudentDAO extends PyramusDAO {
   public List<Student> listStudentsByStudentVariable(String key, String value) {
     Session s = getHibernateSession();
 
-    StudentVariableKey studentVariableKey = getStudentVariableKey(key);
-    return (List<Student>) s.createCriteria(StudentVariable.class)
-        .add(Restrictions.eq("key", studentVariableKey))
-        .add(Restrictions.eq("value", value))
-        .add(Restrictions.eq("student.archived", Boolean.FALSE))
-        .setProjection(Projections.property("student")).list();
+    return s.createQuery(
+        "select student " +
+    		"from StudentVariable " +
+    		"where key.variableKey=:key and value=:value and student.archived=:archived")
+    		.setEntity("key", key)
+    		.setString("value", value)
+    		.setBoolean("archived", Boolean.FALSE).list();
   }
 
   public StudentStudyEndReason getStudentStudyEndReason(Long studyEndReasonId) {

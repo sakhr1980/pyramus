@@ -14,10 +14,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -37,14 +40,6 @@ public class Credit implements ArchivableEntity {
 
   public Long getId() {
     return id;
-  }
-  
-  public Student getStudent() {
-    return student;
-  }
-  
-  public void setStudent(Student student) {
-    this.student = student;
   }
   
   public Date getDate() {
@@ -104,14 +99,15 @@ public class Credit implements ArchivableEntity {
     return version;
   }
 
+  @Transient
+  public Student getStudent() {
+    throw new PersistenceException("Credit.getStudent() not implemented");
+  }
+  
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Credit")  
   @TableGenerator(name="Credit", allocationSize=1)
   private Long id;
-  
-  @ManyToOne  
-  @JoinColumn(name="student")
-  private Student student;
   
   @Column (nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)

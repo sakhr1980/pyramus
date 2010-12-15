@@ -85,7 +85,7 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
     for (Course course : courses) {
       boolean withinTimeFrame = false;
       
-      if (academicTerm != null && course.getBeginDate() != null && course.getEndDate() != null) {
+      if ((academicTerm != null) && (academicTerm.getStartDate() != null) && (academicTerm.getEndDate() != null) && (course.getBeginDate() != null) && (course.getEndDate() != null)) {
         withinTimeFrame = isWithinTimeFrame(academicTerm.getStartDate(), academicTerm.getEndDate(), course.getBeginDate(), course.getEndDate());
         if (withinTimeFrame)
           coursesInTimeFrame++;
@@ -131,12 +131,8 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
     long endTime = frameEnd.getTime();
     long t1 = timeStart.getTime();
     long t2 = timeEnd.getTime();
-    
-    return (
-        ((t1 >= startTime) && (t1 <= endTime))|| // t1 overlaps frame
-        ((t2 >= startTime)) && (t2 <= endTime))|| // t2 overlaps frame
-        ((t1 <= startTime)&&(t2 >= endTime) // t1 before, t2 after the frame 
-      ); 
+
+    return ((t1 <= endTime) && (t2 >= startTime));
   }
 
   public class StudentProjectModuleCourseBean {
