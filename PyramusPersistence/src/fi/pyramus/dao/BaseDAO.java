@@ -49,6 +49,7 @@ import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
 import fi.pyramus.persistence.search.SearchResult;
 
@@ -806,6 +807,53 @@ public class BaseDAO extends PyramusDAO {
     // implementation is for MySQL?
     return (Subject) s.createCriteria(Subject.class).add(Restrictions.sqlRestriction("binary code = '" + code + "'")).uniqueResult();
   }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<Subject> searchSubjectsBasic(int resultsPerPage, int page, String text) {
+
+    int firstResult = page * resultsPerPage;
+
+    StringBuilder queryBuilder = new StringBuilder();
+
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "name", text, false);
+      queryBuilder.append(")");
+    }
+
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    try {
+      String queryString = queryBuilder.toString();
+      Query luceneQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      } else {
+        luceneQuery = parser.parse(queryString);
+      }
+
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Subject.class)
+        .setFirstResult(firstResult)
+        .setMaxResults(resultsPerPage);
+      query.enableFullTextFilter("ArchivedSubject").setParameter("archived", Boolean.FALSE);
+
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+
+      return new SearchResult<Subject>(page, pages, hits, firstResult, lastResult, query.list());
+
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
 
   /**
    * Returns a list of all non-archived academic terms from the database, sorted by their beginning date.
@@ -1570,6 +1618,17 @@ public class BaseDAO extends PyramusDAO {
     
     Defaults defaults = getDefaults();
     defaults.setBaseTimeUnit(defaultEducationalTimeUnit);
+    
+    entityManager.persist(defaults);
+    
+    return defaults;
+  }
+  
+  public Defaults updateInitialCourseParticipationType(CourseParticipationType initialCourseParticipationType) {
+    EntityManager entityManager = getEntityManager();
+    
+    Defaults defaults = getDefaults();
+    defaults.setInitialCourseParticipationType(initialCourseParticipationType);
     
     entityManager.persist(defaults);
     

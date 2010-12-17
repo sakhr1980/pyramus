@@ -1,20 +1,26 @@
 package fi.pyramus.views.projects;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.lang.math.NumberUtils;
+import java.util.Set;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
+import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.projects.StudentProject;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.projects.StudentProjectModule;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -31,9 +37,12 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
 
-    Long studentProjectId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("studentproject"));
+    Long studentProjectId = pageRequestContext.getLong("studentproject");
+
     StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
+    List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByStudent(studentProject.getStudent());
     
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = studentProject.getTags().iterator();
@@ -44,6 +53,20 @@ public class EditStudentProjectViewController implements PyramusViewController, 
         tagsBuilder.append(' ');
     }
     
+    Set<Long> studentProjectCourseModuleIds = new HashSet<Long>(); 
+    for (CourseStudent courseStudent : courseStudents) {
+      studentProjectCourseModuleIds.add(courseStudent.getCourse().getModule().getId());
+    }
+    
+    List<StudentProjectModuleBean> studentProjectModules = new ArrayList<StudentProjectModuleBean>();
+    
+    for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
+      StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
+      studentProjectModules.add(studentProjectModuleBean);
+    }
+
+    pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
+    pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
@@ -74,4 +97,22 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     return Messages.getInstance().getText(locale, "projects.editStudentProject.pageTitle");
   }
 
+  public class StudentProjectModuleBean {
+    
+    public StudentProjectModuleBean(StudentProjectModule studentProjectModule, Boolean hasCourseEquivalent) {
+      this.studentProjectModule = studentProjectModule;
+      this.hasCourseEquivalent = hasCourseEquivalent;
+    }
+    
+    public Boolean getHasCourseEquivalent() {
+      return hasCourseEquivalent;
+    }
+    
+    public StudentProjectModule getStudentProjectModule() {
+      return studentProjectModule;
+    }
+    
+    private StudentProjectModule studentProjectModule;
+    private Boolean hasCourseEquivalent;
+  }
 }

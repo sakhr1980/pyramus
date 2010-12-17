@@ -31,7 +31,7 @@ public class EditGradingScaleViewController implements PyramusViewController, Br
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
 
     Long gradingScaleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("gradingScaleId"));
-    GradingScale gradingScale = gradingDAO.getGradingScale(gradingScaleId);
+    GradingScale gradingScale = gradingDAO.findGradingScaleById(gradingScaleId);
     pageRequestContext.getRequest().setAttribute("gradingScale", gradingScale);
     
     pageRequestContext.setIncludeJSP("/templates/settings/editgradingscale.jsp");

@@ -25,13 +25,17 @@
         });
         
         tableComponent.addListener("beforeRowDelete", function (event) {
-          deinitializeValidation(event.tableObject.domNode); 
+          deinitializeValidation(event.tableObject.getRowElement(event.row)); 
         });
 
-        tableComponent.addListener("rowDelete", function (event) {
-          initializeValidation(event.tableObject.domNode); 
-          revalidateAll();  
-        });
+        // tableComponent.addListener("beforeRowDelete", function (event) {
+        //  deinitializeValidation(event.tableObject.domNode); 
+        // });
+
+        // tableComponent.addListener("rowDelete", function (event) {
+        //  initializeValidation(event.tableObject.domNode); 
+        //  revalidateAll();  
+        // });
 
         tableComponent.addListener("cellValueChange", function (event) {
           revalidateTableCell(event.tableComponent, event.row, event.column);

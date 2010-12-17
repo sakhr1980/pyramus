@@ -37,7 +37,7 @@
 	        centered : true,
 	        showOk : true,
 	        showCancel : true,
-	        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialogTitle"/>',
+	        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialog.dialogTitle"/>',
 	        okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
 	        cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
 	      });
@@ -69,18 +69,6 @@
 	    }
       
       function openSearchCoursesDialog() {
-        
-        var selectedCourses = new Array();
-        var coursesTable = getIxTableById('coursesTable');
-        for (var i = 0; i < coursesTable.getRowCount() - 1; i++) {
-          var courseName = coursesTable.getCellValue(i, coursesTable.getNamedColumnIndex('name'));
-          var courseId = coursesTable.getCellValue(i, coursesTable.getNamedColumnIndex('courseId'));
-          selectedCourses.push({
-            name: courseName,
-            id: courseId
-          });
-        }
-        
         var studentId = ${studentProject.student.id}; 
   
         var dialog = new IxDialog({
@@ -89,7 +77,7 @@
           centered : true,
           showOk : true,
           showCancel : true,
-          title : '<fmt:message key="projects.searchStudentProjectCoursesDialogTitle"/>',
+          title : '<fmt:message key="projects.searchStudentProjectCoursesDialog.dialogTitle"/>',
           okLabel : '<fmt:message key="projects.searchStudentProjectCoursesDialog.okLabel"/>', 
           cancelLabel : '<fmt:message key="projects.searchStudentProjectCoursesDialog.cancelLabel"/>' 
         });
@@ -105,12 +93,9 @@
                 var courseId = event.results.courses[i].id;
                 var moduleId = event.results.courses[i].moduleId;
                 var courseName = event.results.courses[i].name;
-                var participationType = event.results.courses[i].participationType;
+                var participationType = '<fmt:message key="projects.editStudentProject.unsavedStudentParticipationType"/>' ;
                 var beginDate = event.results.courses[i].beginDate;
                 var endDate = event.results.courses[i].endDate;
-                
-                if (!participationType)
-                  participationType = '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeNone"/>';
                 
                 var index = getCourseRowIndex(coursesTable, courseId);
                 if (index == -1) {
@@ -261,7 +246,7 @@
                     var name = event.results.name;
                     var beginDate = event.results.beginDate;
                     var endDate = event.results.endDate;
-                    var participationType = event.results.participationType;
+                    var participationType = '<fmt:message key="projects.editStudentProject.unsavedStudentParticipationType"/>' ;
 
                     getIxTableById('coursesTable').addRow([name, participationType, beginDate, endDate, '', '', moduleId, courseId, -1]);
                   
@@ -339,6 +324,7 @@
             width: 22,
             right: 8,
             dataType: 'button',
+            paramName: 'removeButton',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
             onclick: function (event) {
@@ -369,68 +355,58 @@
           }]
         });
         
-        JSONRequest.request("projects/getstudentprojectmodules.json", {
-          parameters: {
-            studentProject: ${studentProject.id}
-          },
-          onSuccess: function (jsonResponse) {
-            var studentProjectModules = jsonResponse.studentProjectModules;
-            for (var i = 0; i < studentProjectModules.length; i++) {
-              var rowId = modulesTable.addRow([
-                  studentProjectModules[i].name,
-                  studentProjectModules[i].academicTermId,
-                  studentProjectModules[i].optionality,
-                  '',
-                  '',
-                  '',
-                  studentProjectModules[i].moduleId,
-                  studentProjectModules[i].id]);
-              
-              if (studentProjectModules[i].hasCourseEquivalent) {
-                modulesTable.hideRow(rowId);
-              }
-            }
-            
-            if(modulesTable.getRowCount() > 0){
-              $('noModulesAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
-          } 
-        });
+        var rowId;
+        <c:forEach var="studentProjectModule" items="${studentProjectModules}">
+          rowId = modulesTable.addRow([
+            '${fn:replace(studentProjectModule.studentProjectModule.module.name, "'", "\\'")}',
+            ${studentProjectModule.studentProjectModule.academicTerm.id},
+            '${studentProjectModule.studentProjectModule.optionality}',
+            '',
+            '',
+            '',
+            ${studentProjectModule.studentProjectModule.module.id},
+            ${studentProjectModule.studentProjectModule.id}]);
+          
+          if (${studentProjectModule.hasCourseEquivalent}) {
+            modulesTable.hideRow(rowId);
+          }
+        </c:forEach>
         
-        JSONRequest.request("projects/getstudentprojectcourses.json", {
-          parameters: {
-            studentProject: ${studentProject.id}
-          },
-          onSuccess: function (jsonResponse) {
-            var studentProjectCourses = jsonResponse.studentProjectCourses;
-            
-            for (var i = 0; i < studentProjectCourses.length; i++) {
-              var participationType = studentProjectCourses[i].participationType;
-              if (!participationType) {
-                participationType = '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeNone"/>';
-              }
-              
-              coursesTable.addRow([
-                  studentProjectCourses[i].name,
-                  participationType,
-                  studentProjectCourses[i].beginDate,
-                  studentProjectCourses[i].endDate,
-                  '',
-                  '',
-                  studentProjectCourses[i].moduleId,
-                  studentProjectCourses[i].courseId,
-                  studentProjectCourses[i].id]);
-            }
-            
-            if(coursesTable.getRowCount() > 0){
-              $('noCoursesAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
-          } 
-        });
+        if (modulesTable.getRowCount() > 0){
+          $('noModulesAddedMessageContainer').setStyle({
+            display: 'none'
+          });
+        }
+        
+        <c:forEach var="courseStudent" items="${courseStudents}">
+	        <c:choose>
+		        <c:when test="${fn:length(courseStudent.course.nameExtension) gt 0}">
+		          <c:set var="courseName">${courseStudent.course.name} (${courseStudent.course.nameExtension})</c:set>  
+		        </c:when>
+		        <c:otherwise>
+              <c:set var="courseName">${courseStudent.course.name}</c:set>  
+		        </c:otherwise>
+		      </c:choose>
+        
+	        rowId = coursesTable.addRow([
+	          '${fn:replace(courseName, "'", "\\'")}',
+	          '${courseStudent.participationType.name}',
+	          ${courseStudent.course.beginDate.time},
+	          ${courseStudent.course.endDate.time},
+	          '',
+	          '',
+	          ${courseStudent.course.module.id},
+	          ${courseStudent.course.id},
+	          ${courseStudent.id}]);
+	        
+	        coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
+	      </c:forEach>
+      
+	      if (coursesTable.getRowCount() > 0) {
+	        $('noCoursesAddedMessageContainer').setStyle({
+	          display: 'none'
+	        });
+	      }
         
         var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer'), {
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsLabel"/>'

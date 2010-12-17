@@ -21,7 +21,7 @@ public class ArchiveGradingScaleJSONRequestController implements JSONRequestCont
   public void process(JSONRequestContext jsonRequestContext) {
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     Long gradingScaleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("gradingScaleId"));
-    gradingDAO.archiveGradingScale(gradingDAO.getGradingScale(gradingScaleId));
+    gradingDAO.archiveGradingScale(gradingDAO.findGradingScaleById(gradingScaleId));
   }
 
   public UserRole[] getAllowedRoles() {

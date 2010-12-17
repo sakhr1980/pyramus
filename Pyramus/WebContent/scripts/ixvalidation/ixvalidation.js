@@ -229,6 +229,29 @@ IxNumberValidValidator = Class.create(IxFieldValidator, {
   className: 'number'
 });
 
+IxTableAutoCompleteFieldValidator = Class.create(IxFieldValidator, {
+  initialize : function($super) {
+    $super();
+  },
+  validate: function ($super, field) {
+    var idField = field.down('input.ixTableCellEditorAutoCompleteId');
+    var textField = field.down('input.ixTableCellEditorAutoCompleteText');
+    
+    if (idField.value && textField.value) {
+      if ((idField.value && (parseInt(idField.value) >= 0))) 
+        return IxFieldValidator.STATUS_VALID;
+      else 
+        return IxFieldValidator.STATUS_INVALID;
+    } else {
+      return IxFieldValidator.STATUS_UNKNOWN;
+    }
+  },
+  getType: function ($super) {
+    return IxFieldValidator.TYPE_NORMAL;
+  },
+  className: 'tableAutoComplete'
+});
+
 Object.extend(IxFieldValidator, {
   STATUS_UNKNOWN: 0,
   STATUS_INVALID: 1,
@@ -420,9 +443,10 @@ IxFieldValidatorVault.registerValidator(new IxDateFieldDayValidator());
 IxFieldValidatorVault.registerValidator(new IxFloatValidValidator());
 IxFieldValidatorVault.registerValidator(new IxNumberValidValidator());
 IxFieldValidatorVault.registerValidator(new IxEqualsFieldValidator());
+IxFieldValidatorVault.registerValidator(new IxTableAutoCompleteFieldValidator());
 
 function initializeValidation(container) {
-   var delegators = new Array();
+  var delegators = new Array();
   var c = $(container||document.body);
   var validators = IxFieldValidatorVault.getValidators();
   for (var i = 0, l = validators.length; i < l; i++) {

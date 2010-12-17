@@ -38,7 +38,7 @@
           centered : true,
           showOk : true,
           showCancel : true,
-          title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialogTitle"/>',
+          title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialog.dialogTitle"/>',
           okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
           cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
         });

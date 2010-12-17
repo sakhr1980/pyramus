@@ -73,10 +73,9 @@ IxTable = Class.create({
           while (columnNode = columnNode.previousSibling) {
             ++index;
           }
-          if (_this.getRowCount() > 1) {
-            var value = _this.getCellValue(0, index);
-            _this.overwriteColumnValue(index, value);
-          }
+
+          for (var rowIndex = 1, rowCount = _this.getRowCount(); rowIndex < rowCount; rowIndex++)
+            _this.copyCellValue(index, 0, rowIndex);
         });
         headerCell.appendChild(copyNode);
       }
@@ -117,86 +116,97 @@ IxTable = Class.create({
       this.domNode.setAttribute("ix:tableid", options.id);
     } 
   },
-  addRow : function(values) {
-    if (values.length != this.options.columns.length) {
-      throw new Error("Value array length (" + values.length + ") != table column length (" + this.options.columns.length + ")");
-    }
+  addRow : function(values, editable) {
+    return this.addRows([values], editable);
+  },
+  addRows: function (rowDatas, editable) {
+    var rowNumber = this.getRowCount() - 1;
+    var rowElements = new Array(); 
     
-    var rowNumber = this.getRowCount();
-    
-    var rowContent = Builder.node("div", {
-      className : "ixTableRowContent"
-    }, []);
-    
-    var row = Builder.node("div", {
-      className : "ixTableRow"
-    }, [ rowContent ]);
-    
-    if (this.options.rowClasses) {
-      for (var i = 0, l = this.options.rowClasses.length; i < l; i++) {
-        row.addClassName(this.options.rowClasses[i]);
-      }
-    }
-    
-    this._content.appendChild(row);
-
-    for (var i = 0; i < this.options.columns.length; i++) {
-      var column = this.options.columns[i];
-      var name = this.options.id ? this.options.id + '.' + rowNumber + '.' + (column.paramName ? column.paramName : i) : '';
+    for (var rowIndex = 0, rowCount = rowDatas.length; rowIndex < rowCount; rowIndex++) {
+      rowNumber++;
       
-      var cell = Builder.node("div", {
-        className : "ixTableCell"
+      var values = rowDatas[rowIndex];
+      
+      if (values.length != this.options.columns.length) {
+        throw new Error("Value array length (" + values.length + ") != table column length (" + this.options.columns.length + ")");
+      }
+      
+      var rowContent = new Element("div", { className : "ixTableRowContent" });
+      var row = new Element("div", { className : "ixTableRow" });
+      
+      if (this.options.rowClasses) {
+        for (var i = 0, l = this.options.rowClasses.length; i < l; i++) {
+          row.addClassName(this.options.rowClasses[i]);
+        }
+      }
+
+      for (var i = 0; i < this.options.columns.length; i++) {
+        var column = this.options.columns[i];
+        var name = this.options.id ? this.options.id + '.' + rowNumber + '.' + (column.paramName ? column.paramName : i) : '';
+        
+        var cell = new Element("div", { className : "ixTableCell" });
+        var cellStyles = {};
+        var hasStyles = false;
+
+        if ((column.left != undefined) && (column.left != NaN)) {
+          cellStyles.left = column.left + 'px';
+          hasStyles = true;
+        }
+        
+        if ((column.right != undefined) && (column.right != NaN)) {
+          cellStyles.right = column.right + 'px';
+          hasStyles = true;
+        }
+        
+        if ((column.width != undefined) && (column.width != NaN)) {
+          cellStyles.width = column.width + 'px';
+          hasStyles = true;
+        }
+        
+        if (hasStyles)
+          cell.setStyle(cellStyles);
+        
+        IxTableControllers.getController(column.dataType).attachContentHandler(this, i, rowNumber, cell, this._createCellContentHandler(name, column, editable));
+        rowContent.appendChild(cell);
+        
+        this.setCellValue(rowNumber, i, values[i]);
+
+        if (this._hasHeader == true) {
+          this._headerRow.setStyle({
+            display: ''
+          });
+        }
+      }    
+      
+      if (this.options.removeRowBtns == true) {
+        var delRowButton = new Element("div", {className: "ixTableDelRowButton ixTableRowButton"});
+        rowContent.appendChild(delRowButton);
+        
+        var _this = this;
+        Event.observe(delRowButton, "click", function (event) {
+          _this.deleteRow(row._rowNumber);
+        });
+      }
+      
+      row._rowNumber = rowNumber;
+      this._setRowCount(this.getRowCount() + 1);
+      
+      Event.observe(row, "click", this._rowClickListener);
+      
+      row.appendChild(rowContent);
+      
+      rowElements.push(row);
+    }
+    
+    for (var i = 0, l = rowElements.length; i < l; i++) {
+      this._content.appendChild(rowElements[i]);
+      
+      this.fire("rowAdd", {
+        tableObject: this,
+        row: rowElements[i]._rowNumber
       });
-
-      if ((column.left != undefined) && (column.left != NaN)) {
-        cell.setStyle( {
-          left : column.left + 'px'
-        });
-      }
-      
-      if ((column.right != undefined) && (column.right != NaN)) {
-        cell.setStyle( {
-          right : column.right + 'px'
-        });
-      }
-      
-      if ((column.width != undefined) && (column.width != NaN)) {
-        cell.setStyle( {
-          width : column.width + 'px'
-        });
-      }
-      
-      IxTableControllers.getController(column.dataType).attachContentHandler(this, i, rowNumber, cell, this._createCellContentHandler(name, column));
-      rowContent.appendChild(cell);
-      
-      this.setCellValue(rowNumber, i, values[i]);
-
-      if (this._hasHeader == true) {
-        this._headerRow.setStyle({
-          display: ''
-        });
-      }
     }
-    
-    if (this.options.removeRowBtns == true) {
-      var delRowButton = Builder.node("div", {className: "ixTableDelRowButton ixTableRowButton"});
-      rowContent.appendChild(delRowButton);
-      
-      var _this = this;
-      Event.observe(delRowButton, "click", function (event) {
-        _this.deleteRow(row._rowNumber);
-      });
-    }
-    
-    row._rowNumber = rowNumber;
-    this._setRowCount(this.getRowCount() + 1);
-    
-    this.fire("rowAdd", {
-      tableObject: this,
-      row: rowNumber
-    });
-    
-    Event.observe(row, "click", this._rowClickListener);
     
     return rowNumber;
   },
@@ -271,10 +281,11 @@ IxTable = Class.create({
       value: value
     });
   },
-  overwriteColumnValue: function(column, value) {
-    for (var i = 0; i < this.getRowCount(); i++) {
-      this.setCellValue(i, column, value);
-    }
+  copyCellValue: function(column, fromRow, toRow) {
+    var fromInstance = this.getCellEditor(fromRow, column);
+    var toInstance = this.getCellEditor(toRow, column);
+    
+    IxTableControllers.getController(toInstance._dataType).copyCellValue(toInstance, fromInstance);
   },
   disableCellEditor: function (row, column) {
     var handlerInstance = this.getCellEditor(row, column);
@@ -457,15 +468,17 @@ IxTable = Class.create({
       });
     }
   },
-  _createCellContentHandler: function (name, columnDefinition) {
+  _createCellContentHandler: function (name, columnDefinition, editable) {
     var controller = IxTableControllers.getController(columnDefinition.dataType);
-    var editable = columnDefinition.editable;
-    if (controller.getMode() == IxTableControllers.EDITMODE_NOT_EDITABLE)
-      editable = false;
-    else if (controller.getMode() == IxTableControllers.EDITMODE_ONLY_EDITABLE)
-      editable = true;
     
-    if (editable) {
+    var cellEditable = editable||columnDefinition.editable;
+    
+    if (controller.getMode() == IxTableControllers.EDITMODE_NOT_EDITABLE)
+      cellEditable = false;
+    else if (controller.getMode() == IxTableControllers.EDITMODE_ONLY_EDITABLE)
+      cellEditable = true;
+    
+    if (cellEditable) {
       var editor = controller.buildEditor(name, columnDefinition);
       return editor;
     } else {
@@ -693,11 +706,14 @@ IxTableEditorController = Class.create({
       handlerInstance._disabledHiddenElement.value = value;
     }
   },
-  isDynamicOptions: function ($super, handlerInstance) {
+  isDynamicOptions: function (handlerInstance) {
     return false;
   },
-  _copyState: function (target, source) {
+  copyCellValue: function(target, source) {
     this.setEditorValue(target, this.getEditorValue(source));
+  },
+  _copyState: function (target, source) {
+    this.copyCellValue(target, source);
     this.setEditable(target, this.getEditable(source));
     // TODO: disabled, datatype yms tiedot
   }
@@ -805,21 +821,28 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     
     if (columnDefinition.options) {
       var options = columnDefinition.options;
+      var elements = new Array();
 
       for (var j = 0, l = options.length; j < l; j++) {
         var option = options[j];
         if (option.optionGroup == true) {
           
-          var optionGroup = this.addOptionGroup(cellEditor, option.text);
+          var optionGroup = this._createOptionGroup(option.text);//this.addOptionGroup(cellEditor, option.text);
 
           var groupOptions = option.options;
           for (var groupIndex = 0; groupIndex < groupOptions.length; groupIndex++) {
-            var optionElement = this.addOption(cellEditor, groupOptions[groupIndex].value, groupOptions[groupIndex].text);
+            var optionElement = this._createOption(groupOptions[groupIndex].value, groupOptions[groupIndex].text, false);
             optionGroup.appendChild(optionElement);
           }
+          
+          elements.push(optionGroup);
         } else {
-          this.addOption(cellEditor, option.value, option.text);
+          elements.push(this._createOption(option.value, option.text, false));
         }
+      }
+
+      for (var i = 0, l = elements.length; i < l;i++) {
+        cellEditor.appendChild(elements[i]);
       }
     }
     
@@ -834,7 +857,7 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
   },
   addOptionGroup: function (handlerInstance, text) {
     if (handlerInstance._editable) {
-      var optGroupElement = new Element("optgroup", {label:text});
+      var optGroupElement = this._createOptionGroup(text);
       
       handlerInstance.appendChild(optGroupElement);
       return optGroupElement;
@@ -845,18 +868,26 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
   },
   addOption: function (handlerInstance, value, text, selected) {
     if (handlerInstance._editable) {
-      var optionNode;
-      if (!selected)
-        optionNode = new Element("option", {value: value})
-      else
-        optionNode = new Element("option", {value: value, selected: "selected"});
-      if (text)
-        optionNode.update(text);
-      
+      var optionNode = this._createOption(value, text, selected);
       handlerInstance.appendChild(optionNode);
-    
       return optionNode;
     }
+  },
+  _createOptionGroup: function (text) {
+    return new Element("optgroup", {label:text});
+  },
+  _createOption: function (value, text, selected) {
+    var optionNode;
+    
+    if (!selected)
+      optionNode = new Element("option", {value: value});
+    else
+      optionNode = new Element("option", {value: value, selected: "selected"});
+    
+    if (text)
+      optionNode.update(text);
+    
+    return optionNode;
   },
   buildViewer: function ($super, name, columnDefinition) {
     return this._createViewerElement("div", name, "ixTableCellViewerSelect", {}, columnDefinition);
@@ -888,9 +919,18 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
       var displayValue = value;
       var options = handlerInstance._columnDefinition.options;
       for (var i = 0; i < options.length; i++) {
-        if (options[i].value == value) {
-          displayValue = options[i].text;
-          break;
+        if (options[i].optionGroup == true) {
+          for (var j = 0; j < options[i].options.length;j++) {
+            if (options[i].options[j].value == value) {
+              displayValue = options[i].options[j].text;
+              break;
+            }
+          }
+        } else {
+          if (options[i].value == value) {
+            displayValue = options[i].text;
+            break;
+          }
         }
       }
       this._setViewerValue(handlerInstance, value, displayValue);
@@ -1412,3 +1452,138 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
 });
 
 IxTableControllers.registerController(new IxTextTableEditorController());
+
+IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
+  buildEditor: function ($super, name, columnDefinition) {
+    var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoComplete tableAutoComplete", {}, columnDefinition);
+    
+    var inputElement = new Element("input", {type: "text", className: "ixTableCellEditorAutoCompleteText"});
+    var idElement = new Element("input", {type: "hidden", name: name, className: "ixTableCellEditorAutoCompleteId"});
+    var indicatorElement = new Element("span", {className: "autocomplete_progress_indicator", style: "display: none"}).update('<img src="' + columnDefinition.autoCompleteProgressUrl + '"/>');
+    var choicesElement = new Element("div", {className: "autocomplete_choices"});  
+    
+    if (columnDefinition.displayValue)
+      inputElement.value = columnDefinition.displayValue;
+     
+    cellEditor.appendChild(inputElement);
+    cellEditor.appendChild(idElement);
+    cellEditor.appendChild(indicatorElement);
+    cellEditor.appendChild(choicesElement);
+    
+    var _this = this;
+    new Ajax.Autocompleter(inputElement, choicesElement, columnDefinition.autoCompleteUrl, {
+      paramName: 'text', 
+      minChars: 1, 
+      indicator: indicatorElement,
+      afterUpdateElement : function getSelectionId(text, li) {
+        var li = $(li);
+        idElement.value = li.down('input[name="id"]').value;
+      }
+    });
+    
+    return cellEditor;
+  },
+  buildViewer: function ($super, name, columnDefinition) {
+    return this._createViewerElement("div", name, "ixTableCellViewerAutoComplete", {}, columnDefinition);
+  },
+  attachContentHandler: function ($super, table, column, row, parentNode, handlerInstance) {
+    var handlerInstance = $super(table, column, row, parentNode, handlerInstance);
+    
+    if (handlerInstance._editable == true) {
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      textInput._keyUpListener = this._onTextInputKeyUp.bindAsEventListener(this);
+      Event.observe(textInput, "keyup", textInput._keyUpListener);
+    } 
+  },
+  detachContentHandler: function ($super, handlerInstance) {
+    if (handlerInstance._editable == true) {
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      Event.stopObserving(textInput, "keyup", textInput._keyUpListener);
+      textInput._keyUpListener = undefined;
+    } 
+
+    $super(handlerInstance);
+  }, 
+  disableEditor: function ($super, handlerInstance) {
+    if (handlerInstance._editable != true)
+      handlerInstance.addClassName("ixTableCellViewerDisabled");
+    else {
+      this._addDisabledHiddenElement(handlerInstance);
+      handlerInstance.disabled = true;
+    }
+  },
+  enableEditor: function ($super, handlerInstance) {
+    if (handlerInstance._editable != true)
+      handlerInstance.removeClassName("ixTableCellViewerDisabled");
+    else {
+      handlerInstance.disabled = false;
+      this._removeDisabledHiddenElement(handlerInstance);
+    }
+  },
+  getEditorValue: function ($super, handlerInstance) {
+    if (handlerInstance._editable != true) 
+      return this._getViewerValue(handlerInstance);
+    else {
+      return handlerInstance.down('input.ixTableCellEditorAutoCompleteId').value;
+    }
+  },
+  setEditorValue: function ($super, handlerInstance, value) {
+    if (handlerInstance._editable != true) {
+      this._setViewerValue(handlerInstance, value);
+    } else {
+      if (this.isDisabled(handlerInstance))
+        this._updateDisabledHiddenElement(handlerInstance, value);
+      
+      var idInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteId');
+      
+      idInput.value = value;
+    }
+  },
+  getDisplayValue: function (handlerInstance) {
+    if (handlerInstance._editable != true) {
+      return handlerInstance._fieldContent.innerHTML;
+    } else {
+      return handlerInstance.down('input.ixTableCellEditorAutoCompleteText').value;
+    }
+  },
+  setDisplayValue: function (handlerInstance, displayValue) {
+    if (handlerInstance._editable) {
+      handlerInstance.down('input.ixTableCellEditorAutoCompleteText').value = displayValue;
+    } else {
+      this._setViewerValue(handlerInstance, this.getEditorValue(handlerInstance), displayValue); 
+    }
+  },
+  destroyEditor: function ($super, handlerInstance) {
+    handlerInstance.remove();
+  },
+  isDisabled: function ($super, handlerInstance) {
+    // TODO: 
+    return false;
+//     return handlerInstance.disabled;
+  },
+  getDataType: function ($super) {
+    return "autoComplete";  
+  },
+  getMode: function ($super) { 
+    return IxTableControllers.EDITMODE_EDITABLE;
+  },
+  copyCellValue: function($super, target, source) {
+    this.setEditorValue(target, this.getEditorValue(source));
+    this.setDisplayValue(target, this.getDisplayValue(source));
+  },
+  setEditable: function ($super, handlerInstance, editable) {
+    var displayValue = this.getDisplayValue(handlerInstance);
+    
+    $super(handlerInstance, editable);
+    
+    // this.setDisplayValue(handlerInstance, displayValue);
+  },
+  _onTextInputKeyUp: function (event) {
+    var textInput = Event.element(event);
+    var handlerInstance = textInput.parentNode;
+    var hiddenInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteId');
+    hiddenInput.value = -1;
+  }
+});
+
+IxTableControllers.registerController(new IxAutoCompleteTableEditorController());

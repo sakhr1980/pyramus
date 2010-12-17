@@ -47,6 +47,10 @@
   width: 100%;
 }
 
+.ixTableCellEditorAutoComplete>input.ixTableCellEditorAutoCompleteText {
+  width: 100%;
+}
+
 .ixTableCellEditorClickable {
   cursor: pointer;
 }
@@ -56,12 +60,27 @@
   text-align: right; 
 }
 
+.ixTableCellViewer {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .ixTableCellViewerDate {
   width: 100%;
   padding-top:3px;
 }
 
 .ixTableCellViewerText {
+  width: 100%;
+  padding-top:3px;
+}
+
+.ixTableCellViewerSelect {
+  width: 100%;
+  padding-top:3px;
+}
+
+.ixTableCellViewerAutoComplete {
   width: 100%;
   padding-top:3px;
 }
@@ -116,8 +135,8 @@ div.ixTableRowButton:hover{
   -moz-border-radius:3px 3px 3px 3px;
   -webkit-border-radius:3px 3px 3px 3px;
   border-radius:3px 3px 3px 3px;
-  padding-top:1px;
-  padding-bottom:1px;
+  padding-top:2px;
+  padding-bottom:2px;
   padding-left:1px;
   padding-right:1px;
   width:inherit;
@@ -126,6 +145,7 @@ div.ixTableRowButton:hover{
 .ixTableCellViewerDisabled, .ixTableButtonDisabled {
   opacity: 0.33;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=33)";
+  cursor: default;
 }
 
 .ixTableViewerCheckboxChecked {

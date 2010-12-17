@@ -115,7 +115,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
     	
-      courseStudents.put(student.getId(), courseDAO.listCoursesStudentsByStudent(student));
+      courseStudents.put(student.getId(), courseDAO.listCourseStudentsByStudent(student));
 
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
 
@@ -183,8 +183,8 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       });
       
       contactEntries.put(student.getId(), listStudentContactEntries);
-      transferCredits.put(student.getId(), gradingDAO.listStudentsTransferCredits(student));
-      courseAssesments.put(student.getId(), gradingDAO.listStudentsCourseAssessments(student));
+      transferCredits.put(student.getId(), gradingDAO.listTransferCreditsByStudent(student));
+      courseAssesments.put(student.getId(), gradingDAO.listCourseAssessmentsByStudent(student));
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
     }
     

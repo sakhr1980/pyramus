@@ -268,7 +268,7 @@ public class CoursesService extends PyramusService {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
     Student student = studentDAO.getStudent(studentId);
-    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCoursesStudentsByStudent(student));
+    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseStudentsByStudent(student));
   }
 
   public CourseEntity getCourseById(Long courseId) {
