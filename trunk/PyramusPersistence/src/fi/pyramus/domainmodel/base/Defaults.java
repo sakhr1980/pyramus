@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
+
+import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
 
 @Entity
@@ -30,6 +32,14 @@ public class Defaults {
   public EducationalTimeUnit getBaseTimeUnit() {
     return baseTimeUnit;
   }
+  
+  public CourseParticipationType getInitialCourseParticipationType() {
+    return initialCourseParticipationType;
+  }
+  
+  public void setInitialCourseParticipationType(CourseParticipationType initialCourseParticipationType) {
+    this.initialCourseParticipationType = initialCourseParticipationType;
+  }
 
   @SuppressWarnings("unused")
   private void setVersion(Long version) {
@@ -50,6 +60,10 @@ public class Defaults {
   @ManyToOne 
   @JoinColumn (name = "courseState")
   private CourseState initialCourseState;
+  
+  @ManyToOne 
+  @JoinColumn (name = "courseParticipationType")
+  private CourseParticipationType initialCourseParticipationType;
 
   @Version
   @Column(nullable = false)

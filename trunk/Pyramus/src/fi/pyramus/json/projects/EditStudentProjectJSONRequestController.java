@@ -1,6 +1,7 @@
 package fi.pyramus.json.projects;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,12 +18,15 @@ import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.pyramus.domainmodel.base.Defaults;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
+import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
+import fi.pyramus.domainmodel.courses.CourseParticipationType;
+import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.StudentProject;
-import fi.pyramus.domainmodel.projects.StudentProjectCourse;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
@@ -36,6 +40,9 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    
+    
+    Defaults defaults = baseDAO.getDefaults();
 
     // Project
 
@@ -109,27 +116,20 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     
     // Student project courses
 
-    Set<Long> existingCourseIds = new HashSet<Long>();
     rowCount = jsonRequestContext.getInteger("coursesTable.rowCount").intValue();
     for (int i = 0; i < rowCount; i++) {
       String colPrefix = "coursesTable." + i;
       
       Long courseId = jsonRequestContext.getLong(colPrefix + ".courseId");
       Course course = courseId == -1 ? null : courseDAO.getCourse(courseId);
-      StudentProjectCourse studentProjectCourse = projectDAO.findStudentProjectCourseByProjectAndCourse(studentProject, course);
-      if (studentProjectCourse == null) {
-        studentProjectCourse = projectDAO.createStudentProjectCourse(studentProject, course);
-      }
-      
-      existingCourseIds.add(studentProjectCourse.getId());
-    }
-    
-    // Removed Student project courses 
-    
-    List<StudentProjectCourse> studentProjectCourses = projectDAO.listStudentProjectCoursesByStudentProject(studentProject);
-    for (StudentProjectCourse studentProjectCourse : studentProjectCourses) {
-      if (!existingCourseIds.contains(studentProjectCourse.getId())) {
-        projectDAO.deleteStudentProjectCourse(studentProjectCourse);
+      CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, studentProject.getStudent());
+      if (courseStudent == null) {
+        CourseEnrolmentType courseEnrolmentType = null;
+        CourseParticipationType participationType = defaults.getInitialCourseParticipationType();
+        Date enrolmentDate = new Date(System.currentTimeMillis());
+        Boolean lodging = Boolean.FALSE;
+        
+        courseStudent = courseDAO.createCourseStudent(course, studentProject.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging);
       }
     }
     

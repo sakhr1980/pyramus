@@ -288,6 +288,52 @@ public class UserDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
+  public SearchResult<User> searchUsersBasic(int resultsPerPage, int page, String text) {
+
+    int firstResult = page * resultsPerPage;
+
+    StringBuilder queryBuilder = new StringBuilder();
+    queryBuilder.append("+(");
+    addTokenizedSearchCriteria(queryBuilder, "firstName", text, false);
+    addTokenizedSearchCriteria(queryBuilder, "lastName", text, false);
+    addTokenizedSearchCriteria(queryBuilder, "tags.text", text, false);
+    addTokenizedSearchCriteria(queryBuilder, "contactInfo.emails.address", text, false);
+    queryBuilder.append(")");
+  
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    try {
+      String queryString = queryBuilder.toString();
+      org.apache.lucene.search.Query luceneQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      }
+      else {
+        luceneQuery = parser.parse(queryString);
+      }
+
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class)
+        .setFirstResult(firstResult)
+        .setMaxResults(resultsPerPage);
+
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+
+      return new SearchResult<User>(page, pages, hits, firstResult, lastResult, query.list());
+
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
   public SearchResult<User> searchUsers(int resultsPerPage, int page, String firstName, String lastName, String tags,
       String email, Role role) {
 

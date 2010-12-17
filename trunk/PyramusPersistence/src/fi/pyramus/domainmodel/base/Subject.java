@@ -13,14 +13,24 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
+
 @Entity
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@FullTextFilterDefs (
+    @FullTextFilterDef (
+       name="ArchivedSubject",
+       impl=ArchivedEntityFilterFactory.class
+    )
+  )
 public class Subject implements ArchivableEntity {
 
   public Long getId() {
@@ -81,7 +91,8 @@ public class Subject implements ArchivableEntity {
   @TableGenerator(name="Subject", allocationSize=1)
   @DocumentId
   private Long id;
-  
+
+  @Field (index=Index.TOKENIZED)
   private String code;
 
   @NotNull
@@ -92,6 +103,7 @@ public class Subject implements ArchivableEntity {
   
   @NotNull
   @Column(nullable = false)
+  @Field (index = Index.TOKENIZED)
   private Boolean archived = Boolean.FALSE;
 
   @Version

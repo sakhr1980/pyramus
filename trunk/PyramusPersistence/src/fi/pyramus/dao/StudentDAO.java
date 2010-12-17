@@ -69,7 +69,7 @@ public class StudentDAO extends PyramusDAO {
     
     // Also archive course students of the archived student
     
-    List<CourseStudent> courseStudents = listCourseStudents(student);
+    List<CourseStudent> courseStudents = listCourseStudentsByStudent(student);
     if (courseStudents.size() > 0) {
       CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
       for (CourseStudent courseStudent : courseStudents) {
@@ -321,10 +321,12 @@ public class StudentDAO extends PyramusDAO {
    * @return A list of the course students of the given student
    */
   @SuppressWarnings("unchecked")
-  public List<CourseStudent> listCourseStudents(Student student) {
+  public List<CourseStudent> listCourseStudentsByStudent(Student student) {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class).add(Restrictions.eq("student", student)).add(
-        Restrictions.eq("archived", Boolean.FALSE)).list();
+    return s.createCriteria(CourseStudent.class)
+      .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
   }
 
   @SuppressWarnings("unchecked")

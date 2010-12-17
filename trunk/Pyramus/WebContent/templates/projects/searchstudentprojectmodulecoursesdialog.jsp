@@ -31,14 +31,12 @@
         var name = table.getCellValue(rowId, table.getNamedColumnIndex('name'));
         var beginDate = table.getCellValue(rowId, table.getNamedColumnIndex('beginDate'));
         var endDate = table.getCellValue(rowId, table.getNamedColumnIndex('endDate'));
-        var participationType = table.getCellValue(rowId, table.getNamedColumnIndex('participationType'));
         
         return {
           courseId: selectedCourseId,
           name: name,
           beginDate: beginDate,
-          endDate: endDate,
-          participationType: participationType
+          endDate: endDate
         };
       }
 
@@ -54,14 +52,14 @@
           columns : [ {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableNameHeader"/>',
             left: 8,
-            right: 150 + 8 + 150 + 8 + 150 + 8,
+            right: 8 + 150 + 8 + 150 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'name',
             onclick: onCellClick
           }, {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableBeginDateHeader"/>',
-            right: 150 + 8 + 150 + 8,
+            right: 8 + 150 + 8,
             width : 150,
             dataType : 'date',
             editable: false,
@@ -70,18 +68,10 @@
           }, {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableEndDateHeader"/>',
             width: 150,
-            right : 150 + 8,
+            right : 8,
             dataType : 'date',
             editable: false,
             paramName: 'endDate',
-            onclick: onCellClick
-          }, {
-            header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableParticipationTypeHeader"/>',
-            width: 150,
-            right : 8,
-            dataType : 'text',
-            editable: false,
-            paramName: 'participationType',
             onclick: onCellClick
           }, {
             dataType: 'hidden',
@@ -90,23 +80,12 @@
         });
         
         var name;
-        var participationType;
         var rowId;
         <c:forEach var="studentProjectModuleCourse" items="${studentProjectModuleCourses}">
-          <c:choose>
-            <c:when test="${studentProjectModuleCourse.participationType eq null}">
-              participationType = '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableParticipationNone"/>';
-            </c:when>
-            <c:otherwise>
-              participationType = '${fn:replace(studentProjectModuleCourse.participationType.name, "'", "\\'")}';
-            </c:otherwise>
-          </c:choose>
-          
           rowId = searchResultsTable.addRow([
             '${fn:replace(studentProjectModuleCourse.courseName, "'", "\\'")}', 
             ${studentProjectModuleCourse.courseBeginDate.time}, 
             ${studentProjectModuleCourse.courseEndDate.time},  
-            participationType, 
             ${studentProjectModuleCourse.courseId}]);
           
           <c:if test="${studentProjectModuleCourse.withinTimeFrame}">

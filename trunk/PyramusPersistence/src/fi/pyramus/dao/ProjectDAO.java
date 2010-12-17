@@ -25,12 +25,10 @@ import org.hibernate.search.Search;
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
-import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProject;
-import fi.pyramus.domainmodel.projects.StudentProjectCourse;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
@@ -450,55 +448,6 @@ public class ProjectDAO extends PyramusDAO {
     }
 
     s.delete(studentProjectModule);
-  }
-  
-  /* StudentProjectCourse */
-  
-  public StudentProjectCourse findStudentProjectCourseById(Long id) {
-    EntityManager entityManager = getEntityManager();
-    return entityManager.find(StudentProjectCourse.class, id);
-  }
-  
-  public StudentProjectCourse findStudentProjectCourseByProjectAndCourse(StudentProject studentProject, Course course) {
-    Session session = getHibernateSession();
-    
-    return (StudentProjectCourse) session.createCriteria(StudentProjectCourse.class)
-      .add(Restrictions.eq("studentProject", studentProject))
-      .add(Restrictions.eq("course", course))
-      .uniqueResult();
-  }
-  
-  public StudentProjectCourse createStudentProjectCourse(StudentProject studentProject, Course course) {
-    EntityManager entityManager = getEntityManager();
-    
-    StudentProjectCourse studentProjectCourse = new StudentProjectCourse(); 
-    studentProjectCourse.setCourse(course);
-    entityManager.persist(studentProjectCourse);
-
-    studentProject.addStudentProjectCourse(studentProjectCourse);
-    entityManager.persist(studentProject);
-    
-    return studentProjectCourse;
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<StudentProjectCourse> listStudentProjectCoursesByStudentProject(StudentProject studentProject) {
-    Session s = getHibernateSession();
-    return s.createCriteria(StudentProjectCourse.class)
-      .add(Restrictions.eq("studentProject", studentProject))
-      .list();
-  }
-  
-  public void deleteStudentProjectCourse(StudentProjectCourse studentProjectCourse) {
-    EntityManager entityManager = getEntityManager();
-  
-    StudentProject studentProject = studentProjectCourse.getStudentProject();
-    if (studentProject != null) {
-      studentProject.removeStudentProjectCourse(studentProjectCourse);
-      entityManager.persist(studentProject);
-    }
-    
-    entityManager.remove(studentProjectCourse);
   }
   
 }

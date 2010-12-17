@@ -747,6 +747,16 @@ public class CourseDAO extends PyramusDAO {
     return courseParticipationType;
   }
 
+  public CourseParticipationType updateCourseParticipationType(CourseParticipationType courseParticipationType, String name) {
+    Session s = getHibernateSession();
+
+    courseParticipationType.setName(name);
+
+    s.saveOrUpdate(courseParticipationType);
+
+    return courseParticipationType;
+  }
+
   public CourseState createCourseState(String name) {
     Session s = getHibernateSession();
     CourseState courseState = new CourseState();
@@ -1280,7 +1290,7 @@ public class CourseDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
-  public List<CourseStudent> listCoursesStudentsByStudent(Student student) {
+  public List<CourseStudent> listCourseStudentsByStudent(Student student) {
     Session s = getHibernateSession();
     return s.createCriteria(CourseStudent.class)
       .add(Restrictions.eq("student", student))

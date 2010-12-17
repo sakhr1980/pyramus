@@ -240,38 +240,6 @@ public class StudentProject implements ArchivableEntity {
     }
   }
 
-  public List<StudentProjectCourse> getStudentProjectCourses() {
-    return studentProjectCourses;
-  }
-
-  @SuppressWarnings("unused")
-  private void setStudentProjectCourses(List<StudentProjectCourse> studentProjectCourses) {
-    this.studentProjectCourses = studentProjectCourses;
-  }
-  
-  @Transient
-  public void addStudentProjectCourse(StudentProjectCourse studentProjectCourse) {
-    if (!studentProjectCourses.contains(studentProjectCourse)) {
-      if (studentProjectCourse.getStudentProject() != null) {
-        studentProjectCourse.getStudentProject().removeStudentProjectCourse(studentProjectCourse);
-      }
-      studentProjectCourse.setStudentProject(this);
-      studentProjectCourses.add(studentProjectCourse);
-    } else {
-      throw new PersistenceException("StudentProject already contains this course");
-    }
-  }
-
-  @Transient
-  public void removeStudentProjectCourse(StudentProjectCourse studentProjectCourse) {
-    if (studentProjectCourses.contains(studentProjectCourse)) {
-      studentProjectCourse.setStudentProject(null);
-      studentProjectCourses.remove(studentProjectCourse);
-    } else {
-      throw new PersistenceException("StudentProject does not contain this course");
-    }
-  }
-
   public Set<Tag> getTags() {
     return tags;
   }
@@ -342,12 +310,6 @@ public class StudentProject implements ArchivableEntity {
   @JoinColumn (name="studentProject")
   @IndexedEmbedded
   private List<StudentProjectModule> studentProjectModules = new Vector<StudentProjectModule>();
-
-  @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
-  @IndexColumn (name = "indexColumn")
-  @JoinColumn (name="studentProject")
-  @IndexedEmbedded
-  private List<StudentProjectCourse> studentProjectCourses = new Vector<StudentProjectCourse>();
 
   @ManyToOne 
   @JoinColumn(name="creator")

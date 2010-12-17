@@ -17,9 +17,9 @@ public class CreditEntityFactory implements EntityFactory<CreditEntity> {
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     switch (credit.getCreditType()) {
       case CourseAssessment:
-        return EntityFactoryVault.buildFromDomainObject(gradingDAO.getCourseAssessment(credit.getId()));
+        return EntityFactoryVault.buildFromDomainObject(gradingDAO.findCourseAssessmentById(credit.getId()));
       case TransferCredit:
-        return EntityFactoryVault.buildFromDomainObject(gradingDAO.getTransferCredit(credit.getId()));
+        return EntityFactoryVault.buildFromDomainObject(gradingDAO.findTransferCreditById(credit.getId()));
     }
     
     return null;

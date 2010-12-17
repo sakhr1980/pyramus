@@ -24,7 +24,7 @@ public class EditGradingScaleJSONRequestController implements JSONRequestControl
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
     
-    GradingScale gradingScale = gradingDAO.getGradingScale(gradingScaleId);
+    GradingScale gradingScale = gradingDAO.findGradingScaleById(gradingScaleId);
     gradingDAO.updateGradingScale(gradingScale, name, description);
     
     Set<Long> existingGrades = new HashSet<Long>();
@@ -43,7 +43,7 @@ public class EditGradingScaleJSONRequestController implements JSONRequestControl
       Double gradeGPA = StringUtils.isBlank(gradeGPAParam) ? null : NumberUtils.createDouble(gradeGPAParam);
       
       if (gradeId != null) {
-        Grade grade = gradingDAO.getGrade(gradeId);
+        Grade grade = gradingDAO.findGradeById(gradeId);
         gradingDAO.updateGrade(grade, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
         existingGrades.add(grade.getId());
       } else {
