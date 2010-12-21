@@ -40,6 +40,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
 public class CreateCourseJSONRequestController implements JSONRequestController {
@@ -257,7 +258,8 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       Student student = studentDAO.getStudent(studentId);
       CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
       CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
-      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging);
+      CourseOptionality optionality = null;
+      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality );
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/courses/editcourse.page?course=" + course.getId();

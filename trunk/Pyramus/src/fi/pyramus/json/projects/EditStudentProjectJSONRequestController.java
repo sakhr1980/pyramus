@@ -128,8 +128,9 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
         CourseParticipationType participationType = defaults.getInitialCourseParticipationType();
         Date enrolmentDate = new Date(System.currentTimeMillis());
         Boolean lodging = Boolean.FALSE;
+        CourseOptionality optionality = null;
         
-        courseStudent = courseDAO.createCourseStudent(course, studentProject.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging);
+        courseStudent = courseDAO.createCourseStudent(course, studentProject.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, optionality);
       }
     }
     

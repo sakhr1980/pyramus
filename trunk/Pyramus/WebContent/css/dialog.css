@@ -83,3 +83,7 @@
   cursor:pointer;
 }
 
+.IxDialogButton[disabled='disabled'] {
+  background-color:#c5c5c5;
+	cursor:default;
+}

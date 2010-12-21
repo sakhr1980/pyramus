@@ -28,6 +28,7 @@ import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.courses.CourseComponentEntity;
 import fi.pyramus.services.entities.courses.CourseEducationSubtypeEntity;
@@ -220,7 +221,7 @@ public class CoursesService extends PyramusService {
   }
 
   public CourseStudentEntity addCourseStudent(Long courseId, Long studentId, Long courseEnrolmentTypeId,
-      Long participationTypeId, Date enrolmentDate, Boolean lodging) {
+      Long participationTypeId, Date enrolmentDate, Boolean lodging, String optionality) {
     
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
@@ -229,9 +230,10 @@ public class CoursesService extends PyramusService {
     Student student = studentDAO.getStudent(studentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
+    CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
 
     CourseStudent courseStudent = courseDAO.createCourseStudent(course, student, courseEnrolmentType,
-            participationType, enrolmentDate, lodging);
+            participationType, enrolmentDate, lodging, cOptionality);
 
     validateEntity(courseStudent);
     
@@ -239,16 +241,17 @@ public class CoursesService extends PyramusService {
   }
 
   public void updateCourseStudent(Long courseStudentId, Long courseEnrolmentTypeId, Long participationTypeId,
-      Date enrolmentDate, Boolean lodging) {
+      Date enrolmentDate, Boolean lodging, String optionality) {
 
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
-
+    CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
+    
     // TODO: student-parameter (?)
-    courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging);
+    courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, cOptionality);
     validateEntity(courseStudent);
   }
 

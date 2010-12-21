@@ -71,6 +71,10 @@ IxDialog = Class.create({
       this._buttonsContainer.appendChild(this._okButton);
       this._okButtonClickListener = this._onOkButtonClick.bindAsEventListener(this);
       Event.observe(this._okButton, "click", this._okButtonClickListener);
+
+      if (options.disableOk) {
+        this.disableOkButton();
+      }
     }
     
     if (options.showCancel) {
@@ -78,6 +82,10 @@ IxDialog = Class.create({
       this._buttonsContainer.appendChild(this._cancelButton);
       this._cancelButtonClickListener = this._onCancelButtonClick.bindAsEventListener(this);
       Event.observe(this._cancelButton, "click", this._cancelButtonClickListener);
+
+      if (options.disableCancel) {
+        this.disableCancelButton();
+      }
     }
     
     this._dialogNode.appendChild(this._buttonsContainer);
@@ -211,6 +219,24 @@ IxDialog = Class.create({
     } else {
       this.close();
     }
+  },
+  getOkButtonElement: function () {
+    return this._okButton;
+  },
+  getCancelButtonElement: function () {
+    return this._cancelButton;
+  },
+  enableOkButton: function () {
+    this._okButton.removeAttribute("disabled");
+  },
+  disableOkButton: function () {
+    this._okButton.setAttribute("disabled", "disabled");
+  },
+  enableCancelButton: function () {
+    this._cancelButton.removeAttribute("disabled");
+  },
+  disableCancelButton: function () {
+    this._cancelButton.setAttribute("disabled", "disabled");
   },
   _onOkButtonClick: function (event) {
     this.clickOk();

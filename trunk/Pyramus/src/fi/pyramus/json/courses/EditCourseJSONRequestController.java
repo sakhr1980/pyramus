@@ -46,6 +46,7 @@ import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
 /**
@@ -389,17 +390,19 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
       CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
       CourseStudent courseStudent;
+      CourseOptionality optionality = null;
 
       if (courseStudentId == -1) {
         /* New student */
         Student student = studentDAO.getStudent(studentId);
-        courseStudent = courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging);
+        courseStudent = courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
       }
       else {
         /* Existing student */
         Student student = studentDAO.getStudent(studentId);
         courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-        courseDAO.updateCourseStudent(courseStudent, student, enrolmentType, participationType, enrolmentDate, lodging);
+        optionality = courseStudent.getOptionality();
+        courseDAO.updateCourseStudent(courseStudent, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
       }
     }
     requestContext.setRedirectURL(requestContext.getReferer(true));
