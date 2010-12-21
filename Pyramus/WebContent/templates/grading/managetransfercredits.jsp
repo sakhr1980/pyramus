@@ -27,9 +27,22 @@
         var table = getIxTableById('transferCreditsTable');
         
         rowIndex = table.addRow(['', '', -1, -1, 0, -1, 0, -1, -1, ${loggedUserId}, new Date().getTime(), '', '', -1], true);
+        
+        var subjectColumnIndex = table.getNamedColumnIndex('subject');
+        var schoolColumnIndex = table.getNamedColumnIndex('school');
+        var userColumnIndex = table.getNamedColumnIndex('user');
+
+        
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
+        
+        
         $('noTransferCreditsAddedMessageContainer').setStyle({
           display: 'none'
         });
+        
+        updateTransferCreditsCount();
       }
       
       function onAddTemplateButtonClick(event) {
@@ -37,6 +50,11 @@
         
         var transferCreditTemplateId = $('transferCreditTemplateSelect').value;
         loadTransferCreditTemplates(transferCreditTemplateId);
+      }
+      
+      function updateTransferCreditsCount() {
+        var table = getIxTableById('transferCreditsTable');
+        $('transferCreditsCount').update(table.getRowCount());
       }
       
       function loadTransferCreditTemplates(transferCreditTemplateId) {
@@ -94,6 +112,8 @@
               });
             }
             
+            updateTransferCreditsCount();
+            
             glassPane.hide();
             delete glassPane;
           }
@@ -120,14 +140,14 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNameHeader"/>',
             left: 4 + 22 + 4,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 60 + 3 + 120 + 3 + 70 + 4 + 87 + 3 + 90 + 4,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 90 + 4,
             dataType: 'text',
             editable: false,
             paramName: 'courseName'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
             width: 90,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 60 + 3 + 120 + 3 + 70 + 4 + 87 + 3,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
             dataType: 'select',
             editable: false,
             overwriteColumnValues : true,
@@ -139,14 +159,14 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNumberHeader"/>',
             width : 87,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 60 + 3 + 120 + 3 + 70 + 4,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4,
             dataType: 'number',
             editable: false,
             paramName: 'courseNumber'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableGradeHeader"/>',
-            width : 70,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 60 + 3 + 120 + 3, 
+            width : 72,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3, 
             dataType: 'select',
             editable: false,
             paramName: 'grade',
@@ -167,7 +187,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSubjectHeader"/>',
             width : 120,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 60 + 3,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3,
             dataType: 'autoComplete',
             editable: false,
             overwriteColumnValues : true,
@@ -176,7 +196,7 @@
             autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthHeader"/>',
-            width : 60,
+            width : 62,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4,
             dataType: 'number',
             editable: false,
@@ -283,6 +303,8 @@
                   display: ''
                 });
               }
+              
+              updateTransferCreditsCount();
             },
             paramName: 'removeButton',
             hidden: false
@@ -330,6 +352,8 @@
             display: 'none'
           });
         }
+        
+        updateTransferCreditsCount();
       }
         
     </script>
@@ -355,6 +379,14 @@
           
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="grading.manageTransferCredits.studentTitle"/>
+                <jsp:param name="helpLocale" value="grading.manageTransferCredits.studentHelp"/>
+              </jsp:include>
+              <div> ${student.fullName} </div>
+            </div>
+          
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="grading.manageTransferCredits.templateTitle"/>
                 <jsp:param name="helpLocale" value="grading.manageTransferCredits.templateHelp"/>
               </jsp:include>
@@ -368,9 +400,7 @@
                 <fmt:message key="grading.manageTransferCredits.addTemplateButton"/>
               </button>   
             </div>
-          
-            
-            
+
             <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="addTransferCreditsTableRow();"><fmt:message key="grading.manageTransferCredits.addTransferCreditLink"/></span>
             </div>
@@ -380,6 +410,10 @@
             </div>
             
             <div id="transferCreditsTable"></div>
+            
+            <div id="transferCreditsCountContainer">
+              <div><fmt:message key="grading.manageTransferCredits.transferCreditCountLabel"/></div> <div id="transferCreditsCount"> 0 </div>
+            </div>
           </div>
 	  
           <div class="genericFormSubmitSectionOffTab">

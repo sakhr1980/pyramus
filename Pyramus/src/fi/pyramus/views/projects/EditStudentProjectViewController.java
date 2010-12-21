@@ -20,6 +20,7 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
+import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
@@ -64,11 +65,14 @@ public class EditStudentProjectViewController implements PyramusViewController, 
       StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
       studentProjectModules.add(studentProjectModuleBean);
     }
+    
+    List<Student> students = studentProject.getStudent().getAbstractStudent().getStudents();
 
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
+    pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("academicTerms", baseDAO.listAcademicTerms());
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());

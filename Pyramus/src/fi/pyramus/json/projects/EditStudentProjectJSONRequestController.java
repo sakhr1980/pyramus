@@ -16,6 +16,7 @@ import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.Defaults;
@@ -28,6 +29,7 @@ import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
+import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
@@ -40,7 +42,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     
     Defaults defaults = baseDAO.getDefaults();
 
@@ -61,6 +63,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     EducationalTimeUnit optionalStudiesLengthTimeUnit = baseDAO.findEducationalTimeUnitById(optionalStudiesLengthTimeUnitId);
     Double optionalStudiesLength = jsonRequestContext.getDouble("optionalStudiesLength");
     String tagsText = jsonRequestContext.getString("tags");
+    Long studentId = jsonRequestContext.getLong("student");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {
@@ -73,6 +76,14 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
           tagEntities.add(tagEntity);
         }
       }
+    }
+    
+    Student student = studentDAO.getStudent(studentId);
+    
+    // Student
+    
+    if (!studentProject.getStudent().equals(student)) {
+      projectDAO.updateStudentProjectStudent(studentProject, student, user);
     }
     
     projectDAO.updateStudentProject(studentProject, name, description, optionalStudiesLength,

@@ -1922,6 +1922,22 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   min-height:0;
 }
 
+/* manage transfer credits */
+
+#manageTransferCredits .genericFormSection {
+  margin-left:8px;
+}
+
+#transferCreditsCountContainer {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+#transferCreditsCountContainer div {
+  display: inline-block;   
+  font-weight: bold;
+}
+
 /* Search User Dialog */
 
 #searchUserDialogSearchContainer.modalSearchContainer {
