@@ -1572,11 +1572,34 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
     this.setDisplayValue(target, this.getDisplayValue(source));
   },
   setEditable: function ($super, handlerInstance, editable) {
+    if (handlerInstance._editable == editable)
+      return;
+    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_ONLY_EDITABLE) && (editable == false))
+      return;
+    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_NOT_EDITABLE) && (editable == true))
+      return;
+    
+    var table = handlerInstance._table;
+    var column = handlerInstance._column;
+    var row = handlerInstance._row;
+    var parentNode = handlerInstance._cell;
+    var visible = this.isVisible(handlerInstance); 
     var displayValue = this.getDisplayValue(handlerInstance);
     
-    $super(handlerInstance, editable);
+    this.detachContentHandler(handlerInstance);
     
-    // this.setDisplayValue(handlerInstance, displayValue);
+    var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
+    this.attachContentHandler(table, column, row, parentNode, newHandler);
+    
+    if (visible) 
+      this.show(newHandler);
+    else 
+      this.hide(newHandler);
+    
+    this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
+    this.destroyHandler(handlerInstance);
+    
+    this.setDisplayValue(newHandler, displayValue);
   },
   _onTextInputKeyUp: function (event) {
     var textInput = Event.element(event);

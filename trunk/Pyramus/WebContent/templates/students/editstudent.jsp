@@ -467,7 +467,13 @@
               }
             });   
           }
-        }));         
+        }));       
+    
+        studentRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.editStudent.studentTabRelatedActionsManageTransferCreditsLabel"/>',
+          link: GLOBAL_contextPath + '/grading/managetransfercredits.page?studentId=' + studentId  
+        }));      
 
         studentRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
           iconURL: GLOBAL_contextPath + '/gfx/edit-delete.png',
