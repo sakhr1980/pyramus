@@ -445,4 +445,17 @@ public class GradingDAO extends PyramusDAO {
     return (CourseAssessment) s.createCriteria(CourseAssessment.class)
       .add(Restrictions.eq("courseStudent", courseStudent)).uniqueResult();
   }
+
+  public CourseAssessment updateCourseAssessment(CourseAssessment assessment, User assessingUser, Grade grade, Date assessmentDate, String verbalAssessment) {
+    EntityManager entityManager = getEntityManager();
+
+    assessment.setAssessingUser(assessingUser);
+    assessment.setGrade(grade);
+    assessment.setDate(assessmentDate);
+    assessment.setVerbalAssessment(verbalAssessment);
+    
+    entityManager.persist(assessment);
+    
+    return assessment;
+  }
 }

@@ -1921,3 +1921,16 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   bottom:5px; 
   min-height:0;
 }
+
+/* Search User Dialog */
+
+#searchUserDialogSearchContainer.modalSearchContainer {
+  right:5px;
+}
+.searchUserDialogTableSelectedRow {
+  background-color:#739de7;
+  color:#fff;
+  border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border:3px;
+}

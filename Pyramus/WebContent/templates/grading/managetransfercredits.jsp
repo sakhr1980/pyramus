@@ -261,7 +261,7 @@
                         getIxTableById('transferCreditsTable').deleteRow(archivedRowIndex);
                         saveFormDraft();
                       }
-                    });   
+                    });
                   break;
                 }
               });

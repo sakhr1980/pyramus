@@ -54,6 +54,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.SearchTimeFilterMode;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
 /**
@@ -1217,11 +1218,12 @@ public class CourseDAO extends PyramusDAO {
    * @param courseEnrolmentType Student enrolment type
    * @param participationType Student participation type
    * @param enrolmentDate The enrolment date
+   * @param optionality 
    * 
    * @return The created course student
    */
   public CourseStudent createCourseStudent(Course course, Student student, CourseEnrolmentType courseEnrolmentType,
-      CourseParticipationType participationType, Date enrolmentDate, Boolean lodging) {
+      CourseParticipationType participationType, Date enrolmentDate, Boolean lodging, CourseOptionality optionality) {
     Session s = getHibernateSession();
 
     CourseStudent courseStudent = new CourseStudent();
@@ -1229,6 +1231,7 @@ public class CourseDAO extends PyramusDAO {
     courseStudent.setEnrolmentTime(enrolmentDate);
     courseStudent.setParticipationType(participationType);
     courseStudent.setLodging(lodging);
+    courseStudent.setOptionality(optionality);
     courseStudent.setStudent(student);
     s.saveOrUpdate(courseStudent);
     
@@ -1245,10 +1248,11 @@ public class CourseDAO extends PyramusDAO {
    * @param courseEnrolmentType Student enrolment type
    * @param participationType Student participation type
    * @param enrolmentDate Student enrolment date
+   * @param optionality 
    */
   public CourseStudent updateCourseStudent(CourseStudent courseStudent, Student student, 
       CourseEnrolmentType courseEnrolmentType, CourseParticipationType participationType, 
-      Date enrolmentDate, Boolean lodging) {
+      Date enrolmentDate, Boolean lodging, CourseOptionality optionality) {
     Session s = getHibernateSession();
 
     courseStudent.setStudent(student);
@@ -1256,6 +1260,7 @@ public class CourseDAO extends PyramusDAO {
     courseStudent.setEnrolmentTime(enrolmentDate);
     courseStudent.setParticipationType(participationType);
     courseStudent.setLodging(lodging);
+    courseStudent.setOptionality(optionality);
 
     s.saveOrUpdate(courseStudent);
 
