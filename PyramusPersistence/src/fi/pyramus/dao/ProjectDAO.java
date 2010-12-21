@@ -167,6 +167,18 @@ public class ProjectDAO extends PyramusDAO {
     s.saveOrUpdate(studentProject);
   }
 
+  public void updateStudentProjectStudent(StudentProject studentProject, Student student, User modifier) {
+    Session s = getHibernateSession();
+
+    Date now = new Date(System.currentTimeMillis());
+
+    studentProject.setStudent(student);
+    studentProject.setLastModifier(modifier);
+    studentProject.setLastModified(now);
+
+    s.saveOrUpdate(studentProject);
+  }
+
   @SuppressWarnings("unchecked")
   public SearchResult<Project> searchProjectsBasic(int resultsPerPage, int page, String text) {
     int firstResult = page * resultsPerPage;

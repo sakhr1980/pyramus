@@ -452,6 +452,29 @@
                 </jsp:include>
 	            <div>${studentProject.student.firstName} ${studentProject.student.lastName}</div>
 	          </div>
+  
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.studyProgrammeTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.studyProgrammeHelp"/>
+              </jsp:include>     
+              
+              <select name="student">
+                <c:forEach var="student" items="${students}">
+                  <c:choose>
+                    <c:when test="${student.studyProgramme.id == studentProject.student.studyProgramme.id}">
+                      <option value="${student.id}" selected="selected">${student.studyProgramme.name}</option> 
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${student.id}">${student.studyProgramme.name}</option> 
+                    </c:otherwise>
+                  </c:choose>
+                </c:forEach>
+                <c:if test="${studentProject.student.studyProgramme.archived == true}">
+                  <option value="${studentProject.student.id}" selected="selected">${studentProject.student.studyProgramme.name}*</option>
+                </c:if>
+              </select>
+            </div>
 	
 	          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">

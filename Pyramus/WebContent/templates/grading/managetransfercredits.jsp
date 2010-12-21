@@ -26,15 +26,15 @@
       function addTransferCreditsTableRow() {
         var table = getIxTableById('transferCreditsTable');
         
-        rowIndex = table.addRow(['', '', -1, -1, 0, -1, 0, -1, -1, ${loggedUserId}, new Date().getTime(), '', '', -1], true);
+        rowIndex = table.addRow(['', '', -1, 0, 0, -1, 0, -1, -1, ${loggedUserId}, new Date().getTime(), '', '', -1], true);
         
         var subjectColumnIndex = table.getNamedColumnIndex('subject');
         var schoolColumnIndex = table.getNamedColumnIndex('school');
         var userColumnIndex = table.getNamedColumnIndex('user');
 
         
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), ' ');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), ' ');
         IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
         
         
@@ -140,14 +140,14 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNameHeader"/>',
             left: 4 + 22 + 4,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 90 + 4,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 90 + 4,
             dataType: 'text',
             editable: false,
             paramName: 'courseName'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
             width: 90,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
             dataType: 'select',
             editable: false,
             overwriteColumnValues : true,
@@ -159,14 +159,14 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNumberHeader"/>',
             width : 87,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3 + 72 + 4,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4,
             dataType: 'number',
             editable: false,
             paramName: 'courseNumber'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableGradeHeader"/>',
             width : 72,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3 + 120 + 3, 
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3, 
             dataType: 'select',
             editable: false,
             paramName: 'grade',
@@ -187,7 +187,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSubjectHeader"/>',
             width : 120,
-            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 62 + 3,
+            right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3,
             dataType: 'autoComplete',
             editable: false,
             overwriteColumnValues : true,
@@ -196,7 +196,7 @@
             autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthHeader"/>',
-            width : 62,
+            width : 64,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4,
             dataType: 'number',
             editable: false,
