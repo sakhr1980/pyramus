@@ -38,18 +38,21 @@
           link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
         }));
         
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsManageTransferCreditsLabel"/>',
+          link: GLOBAL_contextPath + '/grading/managetransfercredits.page?studentId=' + studentId  
+        }));
+        
         var gradesTabRelatedActionsHoverMenu = new IxHoverMenu($('gradesTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsLabel"/>'
         });
         
-        gradesTabRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
-          iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
-          text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsAddTransferCreditLabel"/>',
-          onclick: function (event) {
-            alert("TODO");
-          }
+        gradesTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsManageTransferCreditsLabel"/>',
+          link: GLOBAL_contextPath + '/grading/managetransfercredits.page?studentId=' + studentId  
         }));
-
 
         var contactLogTabRelatedActionsHoverMenu = new IxHoverMenu($('contactLogTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsLabel"/>'
