@@ -65,7 +65,8 @@
             dataType: 'text',
             editable: true,
             paramName: 'email',
-            editorClassNames: 'required email'
+            required: true,
+            editorClassNames: 'email'
           }, {
             width: 30,
             left: 396,

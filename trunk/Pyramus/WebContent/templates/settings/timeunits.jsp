@@ -73,7 +73,7 @@
             dataType: 'number',
             editable: false,
             paramName: 'baseUnits',
-            editorClassNames: 'required'
+            required: true
           }, {
             header : '<fmt:message key="settings.timeUnits.timeUnitsTableNameHeader"/>',
             left: 234,
@@ -81,7 +81,7 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            editorClassNames: 'required'
+            required: true
           }, {
             right: 8,
             width: 30,

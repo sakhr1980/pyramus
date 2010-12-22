@@ -724,6 +724,10 @@ Object.extend(IxTableEditorController.prototype,fni.events.FNIEventSupport);
 IxNumberTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var editor = this._createEditorElement("input", name, "ixTableCellEditorNumber", {type: "text", name: name}, columnDefinition);
+    
+    if (columnDefinition.required)
+      editor.addClassName("required");
+    
     this._editorValueChangeListener = this._onEditorValueChange.bindAsEventListener(this);
     Event.observe(editor, "change", this._editorValueChangeListener);
     return editor;
@@ -813,6 +817,9 @@ IxTableControllers.registerController(new IxHiddenTableEditorController());
 IxSelectTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var cellEditor = this._createEditorElement("select", name, "ixTableCellEditorSelect", {name: name}, columnDefinition);
+    
+    if (columnDefinition.required)
+      cellEditor.addClassName("required");
     
     this._editorValueChangeListener = this._onEditorValueChange.bindAsEventListener(this);
     Event.observe(cellEditor, "change", this._editorValueChangeListener);
@@ -1157,6 +1164,8 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var cellEditor = this._createEditorElement("input", name, "ixTableCellEditorDate", {name: name, type: "text"}, columnDefinition);
     
+    // TODO: implement columnDefinition.required
+    
     /***
      * TODO: Change listener !!!
      ***/
@@ -1218,6 +1227,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
             event.tableObject.removeListener("rowAdd", this);
             this._onRowAdd = undefined;
             this._component = replaceDateField(this);
+
             if (this._pendingValue) {
               _this.setEditorValue(this, this._pendingValue);
               this._pendingValue = undefined;
@@ -1360,6 +1370,10 @@ IxTableControllers.registerController(new IxButtonTableEditorButtonController())
 IxTextTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var editor = this._createEditorElement("input", name, "ixTableCellEditorText", {name: name, type: "text"}, columnDefinition);
+
+    if (columnDefinition.required)
+      editor.addClassName("required");
+
     this._editorValueChangeListener = this._onEditorValueChange.bindAsEventListener(this);
     Event.observe(editor, "change", this._editorValueChangeListener);
     return editor;
@@ -1457,7 +1471,11 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoComplete tableAutoComplete", {}, columnDefinition);
     
-    var inputElement = new Element("input", {type: "text", className: "ixTableCellEditorAutoCompleteText"});
+    var classNames = "ixTableCellEditorAutoCompleteText";
+    if (columnDefinition.required)
+      classNames += ' required';
+    
+    var inputElement = new Element("input", {type: "text", className: classNames, name: name + '.text'});
     var idElement = new Element("input", {type: "hidden", name: name, className: "ixTableCellEditorAutoCompleteId"});
     var indicatorElement = new Element("span", {className: "autocomplete_progress_indicator", style: "display: none"}).update('<img src="' + columnDefinition.autoCompleteProgressUrl + '"/>');
     var choicesElement = new Element("div", {className: "autocomplete_choices"});  
@@ -1478,6 +1496,7 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
       afterUpdateElement : function getSelectionId(text, li) {
         var li = $(li);
         idElement.value = li.down('input[name="id"]').value;
+        inputElement.validate(false);
       }
     });
     
@@ -1535,7 +1554,6 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
         this._updateDisabledHiddenElement(handlerInstance, value);
       
       var idInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteId');
-      
       idInput.value = value;
     }
   },
@@ -1548,7 +1566,9 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
   },
   setDisplayValue: function (handlerInstance, displayValue) {
     if (handlerInstance._editable) {
-      handlerInstance.down('input.ixTableCellEditorAutoCompleteText').value = displayValue;
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      textInput.value = displayValue;
+      textInput.validate(true);
     } else {
       this._setViewerValue(handlerInstance, this.getEditorValue(handlerInstance), displayValue); 
     }

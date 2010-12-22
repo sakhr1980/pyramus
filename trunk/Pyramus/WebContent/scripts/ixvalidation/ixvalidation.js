@@ -234,10 +234,9 @@ IxTableAutoCompleteFieldValidator = Class.create(IxFieldValidator, {
     $super();
   },
   validate: function ($super, field) {
-    var idField = field.down('input.ixTableCellEditorAutoCompleteId');
-    var textField = field.down('input.ixTableCellEditorAutoCompleteText');
+    var idField = $(field.parentNode).down('input.ixTableCellEditorAutoCompleteId');
     
-    if (idField.value && textField.value) {
+    if (field.value) {
       if ((idField.value && (parseInt(idField.value) >= 0))) 
         return IxFieldValidator.STATUS_VALID;
       else 
@@ -249,7 +248,7 @@ IxTableAutoCompleteFieldValidator = Class.create(IxFieldValidator, {
   getType: function ($super) {
     return IxFieldValidator.TYPE_NORMAL;
   },
-  className: 'tableAutoComplete'
+  className: 'ixTableCellEditorAutoCompleteText'
 });
 
 Object.extend(IxFieldValidator, {
@@ -404,7 +403,7 @@ IxValidationDelegatorVault = {
   setDelegator: function (field, validationDelegator) {
     if (!this.getDelegator(field)) {
       this._delegators.set(this._generateFieldName(field), validationDelegator);
-    }
+    } 
   },
   releaseDelegator: function (field) {
     var delegator = this.getDelegator(field);
@@ -460,7 +459,7 @@ function initializeValidation(container) {
       } 
         
       delegator.addValidator(validators[i]);
-       delegators.push(delegator);
+      delegators.push(delegator);
     }
   };
 
@@ -521,3 +520,13 @@ function formValidationHook(formElement) {
     }
   }
 };
+
+
+Element.addMethods({
+  validate: function (element, requiredCheckAsUnknown) {
+    var delegator = IxValidationDelegatorVault.getDelegator(element);
+    if (delegator) {
+      delegator.validate(requiredCheckAsUnknown);
+    }
+  }
+});

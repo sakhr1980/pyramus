@@ -119,13 +119,13 @@ CourseComponentEditor = Class.create({
         editable: false,
         hidden: true,
         paramName: 'usage',
-        editorClassNames: 'required'
+        required: true
       }, {
         dataType : 'number',
         editable: false,
         hidden: true,
         paramName: 'quantity',
-        editorClassNames: 'required'
+        required: true
       }, {
         dataType : 'text',
         editable: false,
@@ -427,12 +427,12 @@ CourseComponentEditor = Class.create({
         dataType: 'text',
         editable: false,
         paramName: 'name',
-        editorClassNames: 'required'
+        required: true
       }, {
         dataType : 'number',
         editable: false,
         paramName: 'length',
-        editorClassNames: 'required'
+        required: true
       }, {
         dataType : 'text',
         editable: false,

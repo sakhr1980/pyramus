@@ -45,7 +45,7 @@
              dataType: 'text',
              editable: true,
              paramName: 'name',
-             editorClassNames: 'required'
+             required: true
            }, {
              header : '<fmt:message key="settings.createGradingScale.gradesTableQualificationHeader"/>',
              left : 338,
