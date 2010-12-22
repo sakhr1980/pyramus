@@ -19,6 +19,28 @@
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
     <script type="text/javascript">
+      function checkModulesMessage() {
+        var table = getIxTableById('modulesTable');
+        var allMessageVisible = false;
+        var noMessageVisible = false;
+	      
+        if (table.getRowCount() > 0) {
+          if (table.getVisibleRowCount() == 0) {
+	          allMessageVisible = true;
+	        }
+	      } else {
+	        noMessageVisible = true;
+	      }
+        
+        $('noModulesAddedMessageContainer').setStyle({
+          display: noMessageVisible ? '' : 'none'
+        });
+	      
+        $('allModulesAddedMessageContainer').setStyle({
+          display: allMessageVisible ? '' : 'none'
+        });
+      }
+    
       function openSearchModulesDialog() {
 	
 	      var selectedModules = new Array();
@@ -28,7 +50,8 @@
 	        var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
 	        selectedModules.push({
 	          name: moduleName,
-	          id: moduleId});
+	          id: moduleId
+	        });
 	      }
 	
 	      var dialog = new IxDialog({
@@ -48,20 +71,25 @@
 	        switch (event.name) {
 	          case 'okClick':
 	            var modulesTable = getIxTableById('modulesTable');
-	            
+	            var coursesTable = getIxTableById('coursesTable');
+              
 	            for (var i = 0, len = event.results.modules.length; i < len; i++) {
 	              var moduleId = event.results.modules[i].id;
 	              var moduleName = event.results.modules[i].name;
-	              var index = getModuleRowIndex(modulesTable, moduleId);
+	              var index = getModuleTableModuleRowIndex(modulesTable, moduleId);
 	              if (index == -1) {
-	                modulesTable.addRow([moduleName, -1, 0, '', '', '', moduleId, -1]);
+	                var rowNumber = modulesTable.addRow([moduleName, -1, 0, '', '', '', moduleId, -1]);
+	                
+	                if (getCourseTableModuleRowIndex(coursesTable, moduleId) > 0) {
+	                  modulesTable.hideRow(rowNumber);
+	                }
 	              }
 	            }
-	            if (getIxTableById('modulesTable').getRowCount() > 0) {
-	              $('noModulesAddedMessageContainer').setStyle({
-	                display: 'none'
-	              });
-	            }
+	            
+	            
+	            
+	            checkModulesMessage();
+	            
 	          break;
 	        }
 	      });
@@ -97,7 +125,7 @@
                 var beginDate = event.results.courses[i].beginDate;
                 var endDate = event.results.courses[i].endDate;
                 
-                var index = getCourseRowIndex(coursesTable, courseId);
+                var index = getCourseTableCourseRowIndex(coursesTable, courseId);
                 if (index == -1) {
                   coursesTable.addRow([
 	                  courseName,
@@ -112,12 +140,15 @@
                 }
                 
                 var moduleTables = getIxTableById('modulesTable');
-                var moduleTablesRow = getModuleRowIndex(moduleTables, moduleId);
+                var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
                 if (moduleTablesRow >= 0) { 
                   moduleTables.hideRow(moduleTablesRow);
                 }
 
               }
+              
+              checkModulesMessage();
+              
               if (getIxTableById('coursesTable').getRowCount() > 0) {
                 $('noCoursesAddedMessageContainer').setStyle({
                   display: 'none'
@@ -129,7 +160,7 @@
         dialog.open();
       }
   
-      function getCourseRowIndex(table, courseId) {
+      function getCourseTableCourseRowIndex(table, courseId) {
         for (var i = 0; i < table.getRowCount(); i++) {
           var tableCourseId = table.getCellValue(i, table.getNamedColumnIndex('courseId'));
           if (tableCourseId == courseId) {
@@ -139,7 +170,7 @@
         return -1;
       }
   
-      function getModuleRowIndex(table, moduleId) {
+      function getModuleTableModuleRowIndex(table, moduleId) {
         for (var i = 0; i < table.getRowCount(); i++) {
           var tableModuleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
           if (tableModuleId == moduleId) {
@@ -148,7 +179,17 @@
         }
         return -1;
       }
-      
+
+      function getCourseTableModuleRowIndex(table, moduleId) {
+        for (var i = 0; i < table.getRowCount(); i++) {
+          var tableModuleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
+          if (tableModuleId == moduleId) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
       function setupTags() {
         JSONRequest.request("tags/getalltags.json", {
           onSuccess: function (jsonResponse) {
@@ -253,6 +294,8 @@
                     $('noCoursesAddedMessageContainer').setStyle({
                       display: 'none'
                     });
+                    
+                    checkModulesMessage();
                   break;
                 }
               });
@@ -266,11 +309,7 @@
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
               event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
-                $('noModulesAddedMessageContainer').setStyle({
-                  display: ''
-                });
-              }
+              checkModulesMessage();
             } 
           }, {
             dataType: 'hidden',
@@ -330,7 +369,7 @@
             onclick: function (event) {
               var moduleId = event.tableObject.getCellValue(event.row, event.tableObject.getNamedColumnIndex('moduleId'));
               var moduleTables = getIxTableById('modulesTable');
-              var moduleTablesRow = getModuleRowIndex(moduleTables, moduleId);
+              var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
               if (moduleTablesRow >= 0) { 
                 moduleTables.showRow(moduleTablesRow);
               }
@@ -342,6 +381,8 @@
                   display: ''
                 });
               }
+              
+              checkModulesMessage();
             } 
           }, {
             dataType: 'hidden',
@@ -372,11 +413,7 @@
           }
         </c:forEach>
         
-        if (modulesTable.getRowCount() > 0){
-          $('noModulesAddedMessageContainer').setStyle({
-            display: 'none'
-          });
-        }
+        checkModulesMessage();
         
         <c:forEach var="courseStudent" items="${courseStudents}">
 	        <c:choose>
@@ -532,6 +569,10 @@
 	          <div id="noModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
 	            <span><fmt:message key="projects.editStudentProject.noModulesAddedPreFix"/> <span onclick="openSearchModulesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noModulesAddedClickHereLink"/></span>.</span>
 	          </div>
+
+            <div id="allModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+              <span><fmt:message key="projects.editStudentProject.allModulesAddedPreFix"/></span>
+            </div>
 	          
 	          <div id="modulesContainer">
 	            <div id="modulesTableContainer"></div>
