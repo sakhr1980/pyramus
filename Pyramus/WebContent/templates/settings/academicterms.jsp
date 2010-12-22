@@ -61,7 +61,7 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            editorClassNames: 'required'
+            required: true
           }, {
             header : '<fmt:message key="settings.academicTerms.termsTableStartDateHeader"/>',
             left : 296,
@@ -69,7 +69,7 @@
             dataType : 'date',
             editable: false,
             paramName: 'startDate',
-            editorClassNames: 'required'
+            required: true
           }, {
             header : '<fmt:message key="settings.academicTerms.termsTableEndDateHeader"/>',
             left: 438,
@@ -77,7 +77,7 @@
             dataType: 'date',
             editable: false,
             paramName: 'endDate',
-            editorClassNames: 'required'
+            required: true
           }, {
             right: 8,
             width: 30,

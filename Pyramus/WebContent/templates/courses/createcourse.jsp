@@ -574,7 +574,7 @@
             left : 0,
             right : 120,
             paramName : 'name',
-            editorClassNames: 'required'
+            required: true
           }, {
             header : '<fmt:message key="courses.createCourse.otherCostsTableCostHeader"/>',
             dataType : 'number',

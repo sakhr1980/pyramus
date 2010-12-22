@@ -71,7 +71,7 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            editorClassNames: 'required'
+            required: true
           }, {
             right: 8,
             width: 30,

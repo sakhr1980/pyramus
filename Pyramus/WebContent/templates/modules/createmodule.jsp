@@ -63,7 +63,7 @@
              dataType: 'text',
              editable: true,
              paramName: 'name',
-             editorClassNames: 'required'
+             required: true
            }, {
              header : '<fmt:message key="modules.createModule.componentsTableLengthHeader"/>',
              left : 248,
@@ -71,7 +71,7 @@
              dataType : 'number',
              editable: true,
              paramName: 'length',
-             editorClassNames: 'required'
+             required: true
            }, {
              header : '<fmt:message key="modules.createModule.componentsTableDescriptionHeader"/>',
              left: 312,

@@ -33,8 +33,8 @@
         var userColumnIndex = table.getNamedColumnIndex('user');
 
         
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), ' ');
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), ' ');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
+        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
         IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
         
         
@@ -67,6 +67,7 @@
           },
           onSuccess: function (jsonResponse) {
             var table = getIxTableById('transferCreditsTable');
+            var rowCountBefore = table.getRowCount();
             var results = jsonResponse.results;
             var rowDatas = new Array();
             
@@ -96,11 +97,11 @@
             var userColumnIndex = table.getNamedColumnIndex('user');
             var subjectColumnIndex = table.getNamedColumnIndex('subject');
             
-            for (var i = table.getRowCount() - 1 , l = table.getRowCount() - 1 - results.length; i > l; i--) {
+            for (var i = 0, l = results.length; i < l; i++) {
               var template = results[i];
               
-              var userCellEditor = table.getCellEditor(i, userColumnIndex);
-              var subjectCellEditor = table.getCellEditor(i, subjectColumnIndex);
+              var userCellEditor = table.getCellEditor(i + rowCountBefore, userColumnIndex);
+              var subjectCellEditor = table.getCellEditor(i + rowCountBefore, subjectColumnIndex);
               
               IxTableControllers.getController('autoComplete').setDisplayValue(userCellEditor, '${fn:replace(loggedUserName, "'", "\\'")}');
               IxTableControllers.getController('autoComplete').setDisplayValue(subjectCellEditor, template.subjectName);
@@ -142,6 +143,7 @@
             left: 4 + 22 + 4,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 90 + 4,
             dataType: 'text',
+            required: true,
             editable: false,
             paramName: 'courseName'
           }, {
@@ -149,6 +151,7 @@
             width: 90,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
             dataType: 'select',
+            required: true,
             editable: false,
             overwriteColumnValues : true,
             paramName: 'courseOptionality',
@@ -161,6 +164,7 @@
             width : 87,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4,
             dataType: 'number',
+            editorClassNames: "number",
             editable: false,
             paramName: 'courseNumber'
           }, {
@@ -169,6 +173,7 @@
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3, 
             dataType: 'select',
             editable: false,
+            required: true,
             paramName: 'grade',
             overwriteColumnValues : true,
             options: [
@@ -190,6 +195,7 @@
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3,
             dataType: 'autoComplete',
             editable: false,
+            required: true,
             overwriteColumnValues : true,
             paramName: 'subject',
             autoCompleteUrl: GLOBAL_contextPath + '/settings/subjectsautocomplete.binary',
@@ -199,6 +205,7 @@
             width : 64,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4,
             dataType: 'number',
+            required: true,
             editable: false,
             overwriteColumnValues : true,
             paramName: 'courseLength'
@@ -207,6 +214,7 @@
             width : 100,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3,
             dataType: 'select',
+            required: true,
             editable: false,
             overwriteColumnValues : true,
             paramName: 'courseLengthUnit',
@@ -221,6 +229,7 @@
             width : 120,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3,
             dataType: 'autoComplete',
+            required: true,
             editable: false,
             paramName: 'school',
             overwriteColumnValues : true,
@@ -231,6 +240,7 @@
             width : 100,
             right: 4 + 22 + 4 + 110 + 4,
             dataType: 'autoComplete',
+            required: true,
             editable: false,
             paramName: 'user',
             overwriteColumnValues : true,
@@ -241,6 +251,7 @@
             width : 110,
             right: 4 + 22 + 4,
             dataType: 'date',
+            required: true,
             overwriteColumnValues : true,
             editable: false,
             paramName: 'date'

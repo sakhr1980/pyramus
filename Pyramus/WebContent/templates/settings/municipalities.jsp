@@ -61,7 +61,7 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            editorClassNames: 'required'
+            required: true
           }, {
             header : '<fmt:message key="settings.municipalities.municipalitiesTableCodeHeader"/>',
             left: 346,
@@ -69,7 +69,7 @@
             dataType: 'text',
             editable: false,
             paramName: 'code',
-            editorClassNames: 'required'
+            required: true
           }, {
             right: 8,
             width: 30,
