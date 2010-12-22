@@ -239,7 +239,7 @@ IxTable = Class.create({
       row: rowNumber
     });
 
-    if (this.getRowCount() == 0 && this._hasHeader == true) {
+    if (this.getVisibleRowCount() == 0 && this._hasHeader == true) {
       this._headerRow.setStyle({
         display: 'none'
       });
@@ -247,9 +247,32 @@ IxTable = Class.create({
   },
   hideRow: function (rowNumber) {
     this.getRowElement(rowNumber).hide();
+
+    if (this.getVisibleRowCount() == 0 && this._hasHeader == true) {
+      this._headerRow.setStyle({
+        display: 'none'
+      });
+    }
   },
   showRow: function (rowNumber) {
     this.getRowElement(rowNumber).show();
+
+    this._headerRow.setStyle({
+      display: ''
+    });
+  },
+  isRowVisible: function (rowNumber) {
+    return this.getRowElement(rowNumber).visible();
+  },
+  getVisibleRowCount: function () {
+    var result = 0;
+    
+    for (var i = 0, l = this.getRowCount(); i < l; i++) {
+      if (this.isRowVisible(i))
+        result++;
+    }
+    
+    return result;
   },
   getNamedColumnIndex: function (name) {
     for (var i = 0; i < this.options.columns.length; i++) {
