@@ -330,7 +330,7 @@
         var value;
         
         <c:forEach var="student" items="${students}">
-          setupRelatedCommands(${student.id}, '${student.fullName}');
+          setupRelatedCommands(${student.id}, '${fn:replace(student.fullName, "'", "\\'")}');
 
           // Addresses
 
