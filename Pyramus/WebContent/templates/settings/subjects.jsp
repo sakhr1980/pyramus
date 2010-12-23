@@ -43,7 +43,7 @@
           id : "subjectsTable",
           columns : [ {
             left: 8,
-            width: 30,
+            width: 22,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.subjects.subjectsTableEditTooltip"/>',
@@ -56,22 +56,22 @@
             }
           }, {
             header : '<fmt:message key="settings.subjects.subjectsTableCodeHeader"/>',
-            left : 38,
-            width : 50,
+            left : 8 + 22 + 8,
+            width : 100,
             dataType: 'text',
             editable: false,
             paramName: 'code'
           }, {
             header : '<fmt:message key="settings.subjects.subjectsTableNameHeader"/>',
-            left : 96,
-            width : 750,
+            left : 8 + 22 + 8 + 100 + 8,
+            right : 8 + 22 + 8,
             dataType: 'text',
             editable: false,
             paramName: 'name',
             required: true
           }, {
             right: 8,
-            width: 30,
+            width: 22,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.subjects.subjectsTableArchiveTooltip"/>',
