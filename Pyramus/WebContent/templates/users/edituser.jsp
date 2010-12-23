@@ -119,9 +119,15 @@
       
       function updateCredentialsVisibility() {
         var inputElement = $$('select[name="authProvider"]')[0];
+        var authProvider;
+        
+        if (!inputElement)
+          authProvider = "${user.authProvider}";
+        else
+          authProvider = inputElement.value;
         
         $('editUserCredentialsContainer').setStyle({
-          display: canUpdateCredentials(inputElement.value) ? 'block' : 'none'
+          display: canUpdateCredentials(authProvider) ? 'block' : 'none'
         });     
       }
       
@@ -137,9 +143,15 @@
         
         setupTags();
         setupRelatedCommandsBasic();
-        setupAuthSelect();
-        updateCredentialsVisibility();
+        
+        <c:choose>
+          <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
+		        setupAuthSelect();
+		      </c:when>
+		    </c:choose>
 
+		    updateCredentialsVisibility();
+		        
         var addressTable = new IxTable($('addressTable'), {
           id : "addressTable",
           columns : [{
