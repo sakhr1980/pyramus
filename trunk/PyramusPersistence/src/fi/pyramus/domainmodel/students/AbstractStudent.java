@@ -1,6 +1,8 @@
 package fi.pyramus.domainmodel.students;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -147,8 +149,37 @@ public class AbstractStudent {
 
   @Transient
   public Student getLatestStudent() {
-    // TODO: This is a last student in a list not a latest student
-    return students.size() > 0 ? students.get(students.size() - 1) : null;
+    List<Student> students = new ArrayList<Student>();
+    
+    for (Student student : this.students) {
+      if (!student.getArchived())
+        students.add(student);
+    }
+    
+    Collections.sort(students, new Comparator<Student>() {
+      @Override
+      public int compare(Student student1, Student student2) {
+        int student1Value = getValue(student1);
+        int student2Value = getValue(student2);
+
+        if (student1Value == student2Value) {
+          if ((student1.getStudyStartDate() == null)||(student2.getStudyStartDate() == null))
+            return 0;
+          return student1.getStudyStartDate().compareTo(student2.getStudyStartDate());
+        } else {
+          return student1Value < student2Value ? -1 : student1Value == student2Value ? 0 : 1;
+        }
+      }
+      
+      private int getValue(Student student) {
+        Date startDate = student.getStudyStartDate();
+        Date endDate = student.getStudyEndDate();
+
+        return (startDate != null && endDate == null) ? 0 : (startDate == null && endDate == null) ? 1 : (endDate != null) ? 2 : 3;
+      }
+    });
+
+    return students.size() > 0 ? students.get(0) : null;
   }
 
   public void setBasicInfo(String basicInfo) {
