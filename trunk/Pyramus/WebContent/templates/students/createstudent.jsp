@@ -588,16 +588,38 @@
               </jsp:include>                                           
               <input type="text" name="studyEndDate" ix:datefield="true"/>
             </div>
-
-            <div class="genericFormSection">  
+            
+            <div class="genericFormSection">      
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="students.createStudent.studyEndReasonTitle"/>
                 <jsp:param name="helpLocale" value="students.createStudent.studyEndReasonHelp"/>
               </jsp:include>
               <select name="studyEndReason">
-                <option></option>           
+                <option></option>  
                 <c:forEach var="reason" items="${studyEndReasons}">
-                  <option value="${reason.id}">${reason.name}</option> 
+                  <c:choose>
+                    <c:when test="${reason.id == student.studyEndReason.id}">
+                      <option value="${reason.id}" selected="selected">${reason.name}</option> 
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${reason.id}">${reason.name}</option> 
+                    </c:otherwise>
+                  </c:choose>
+  
+                  <c:if test="${fn:length(reason.childEndReasons) gt 0}">
+                    <optgroup>
+                      <c:forEach var="childReason" items="${reason.childEndReasons}">
+                        <c:choose>
+                          <c:when test="${childReason.id == student.studyEndReason.id}">
+                            <option value="${childReason.id}" selected="selected">${childReason.name}</option> 
+                          </c:when>
+                          <c:otherwise>
+                            <option value="${childReason.id}">${childReason.name}</option> 
+                          </c:otherwise>
+                        </c:choose>
+                      </c:forEach>
+                  </optgroup>
+                  </c:if>
                 </c:forEach>
               </select>
             </div>
