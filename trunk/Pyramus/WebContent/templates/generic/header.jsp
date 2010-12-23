@@ -153,7 +153,7 @@
 	<div id="GUI_headerLoginInformationContainer">   
 	  <c:choose>
 	    <c:when test="${loggedUserId != null}">
-	       <span id="GUI_headerLoggedInAs"><fmt:message key="generic.loggedInAs"/></span><b>${loggedUserName}</b>           
+	       <span id="GUI_headerLoggedInAs"><fmt:message key="generic.loggedInAs"/></span><a href="${pageContext.request.contextPath}/users/edituser.page?userId=${loggedUserId}" class="GUI_headerEditUserLink">${loggedUserName}</a>           
 	       <a href="${pageContext.request.contextPath}/users/logout.page" class="GUI_headerLogoutLoginLink"><fmt:message key="generic.logoutLink"/></a>
 	    </c:when>
 	    <c:otherwise>
