@@ -28,7 +28,7 @@ public class CreateStudentViewController implements PyramusViewController, Bread
     pageRequestContext.getRequest().setAttribute("languages", baseDAO.listLanguages());
     pageRequestContext.getRequest().setAttribute("studyProgrammes", baseDAO.listStudyProgrammes());
     pageRequestContext.getRequest().setAttribute("variableKeys", studentDAO.listUserEditableStudentVariableKeys());
-    pageRequestContext.getRequest().setAttribute("studyEndReasons", studentDAO.listStudentStudyEndReasons());
+    pageRequestContext.getRequest().setAttribute("studyEndReasons", studentDAO.listTopLevelStudentStudyEndReasons());
     
     pageRequestContext.setIncludeJSP("/templates/students/createstudent.jsp");
   }
