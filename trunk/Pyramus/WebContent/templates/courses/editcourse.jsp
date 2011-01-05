@@ -87,7 +87,7 @@
             abstractStudentId: abstractStudentId
           },
           onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, 'false', abstractStudentId, -1, '', '']);
+            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, 'false', abstractStudentId, -1, '', '', '']);
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
@@ -767,14 +767,14 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableNameHeader"/>',
             left : 38,
-            right : 860,
+            right : 890,
             dataType : 'text',
             paramName: 'studentName',
             editable: false
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableStudyProgrammeHeader"/>',
             width: 100,
-            right : 752,
+            right : 782,
             dataType : 'select',
             editable: true,
             dynamicOptions: true,
@@ -784,7 +784,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
-            right : 546,
+            right : 576,
             dataType : 'select',
             editable: true,
             overwriteColumnValues : true,
@@ -798,7 +798,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentDateHeader"/>',
             width: 200,
-            right : 338,
+            right : 368,
             dataType: 'date',
             editable: true,
             overwriteColumnValues : true,
@@ -806,7 +806,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 174,
-            right : 146,
+            right : 176,
             dataType: 'select', 
             editable: true,
             paramName: 'enrolmentType',
@@ -819,7 +819,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableLodgingHeader"/>',
             width: 100,
-            right : 38,
+            right : 68,
             dataType: 'select', 
             editable: true,
             overwriteColumnValues : true,
@@ -834,6 +834,18 @@
           }, {
             dataType: 'hidden', 
             paramName: 'courseStudentId'
+          }, {
+            width: 30,
+            right: 30,
+            dataType: 'button',
+            paramName: 'evaluateButton',
+            imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
+            tooltip: '<fmt:message key="courses.editCourse.studentsTableEvaluateStudentTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableObject;
+              var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+              redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
+            } 
           }, {
             width: 30,
             right: 0,
@@ -948,6 +960,7 @@
               lodging,
               abstractStudentId, 
               courseStudentId,
+              '',
               '',
               '']);
 

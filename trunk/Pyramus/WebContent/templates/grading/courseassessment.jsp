@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="users.editUser.pageTitle"></fmt:message></title>
+    <title><fmt:message key="grading.courseAssessment.pageTitle"></fmt:message></title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
@@ -22,6 +22,11 @@
         var tabControl = new IxProtoTabs($('tabs'));
         
         setupRelatedCommandsBasic();
+        
+        var entryForm = $("courseAssessmentForm");
+        var dField = getIxDateField("assessmentDate");
+        if ((dField != null) && (entryForm.assessmentDate.value == ""))
+          dField.setTimestamp(new Date().getTime());
       }
 
       function setupRelatedCommandsBasic() {
@@ -69,15 +74,15 @@
   <body onload="onLoad(event);">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
   
-    <h1 class="genericPageHeader"><fmt:message key="users.editUser.pageTitle" /></h1>
+    <h1 class="genericPageHeader"><fmt:message key="grading.courseAssessment.pageTitle" /></h1>
   
     <div id="editUserEditFormContainer"> 
       <div class="genericFormContainer"> 
 
-        <form action="savecourseassessment.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+        <form action="savecourseassessment.json" id="courseAssessmentForm" method="post" ix:jsonform="true" ix:useglasspane="true">
           <div class="tabLabelsContainer" id="tabs">
             <a class="tabLabel" href="#basic">
-              <fmt:message key="users.editUser.tabLabelEditUser"/>
+              <fmt:message key="grading.courseAssessment.tabLabelBasic"/>
             </a>
           </div>
     
@@ -88,16 +93,16 @@
             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.firstNameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.firstNameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.studentNameTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.studentNameHelp"/>
               </jsp:include>                  
               ${fn:escapeXml(courseStudent.student.fullName)}
             </div>
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.lastNameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.lastNameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.courseNameTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.courseNameHelp"/>
               </jsp:include>                  
               ${fn:escapeXml(courseStudent.course.name)}
             </div>
@@ -121,8 +126,8 @@
             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.lastNameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.lastNameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.assessingUserTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.assessingUserHelp"/>
               </jsp:include>
               <input type="hidden" id="assessingUserId" name="assessingUserId" value="${assessingUserId}"/>
               <span id="assessingUserName">${assessingUserName}</span>
@@ -131,19 +136,19 @@
             
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.usernameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.usernameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.assessmentDateTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.assessmentDateHelp"/>
               </jsp:include>
-              <input type="text" name="assessmentDate" ix:datefieldid="assessmentDate" ix:datefield="true" value="${gradeDate}"/>
+              <input type="text" class="required" name="assessmentDate" ix:datefieldid="assessmentDate" ix:datefield="true" value="${gradeDate}"/>
             </div>
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.usernameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.usernameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.gradeTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.gradeHelp"/>
               </jsp:include>
-              <select name="gradeId">
-                <option value="-1"></option>
+              <select class="required" name="gradeId">
+                <option value=""></option>
               
                 <c:forEach var="gradingScale" items="${gradingScales}">
 	                <optgroup label="${fn:escapeXml(gradingScale.name)}">
@@ -164,15 +169,15 @@
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="users.editUser.usernameTitle"/>
-                <jsp:param name="helpLocale" value="users.editUser.usernameHelp"/>
+                <jsp:param name="titleLocale" value="grading.courseAssessment.verbalAssessmentTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.verbalAssessmentHelp"/>
               </jsp:include>
               <textarea name="verbalAssessment" cols="60" rows="6" ix:cktoolbar="courseGradeText" ix:ckeditor="true">${verbalAssessment}</textarea>
             </div>
           </div>
 
           <div class="genericFormSubmitSectionOffTab">
-            <input type="submit" value="<fmt:message key="users.editUser.saveButton"/>" class="formvalid">
+            <input type="submit" class="formvalid" value="<fmt:message key="grading.courseAssessment.saveButton"/>">
           </div>
 
         </form>
