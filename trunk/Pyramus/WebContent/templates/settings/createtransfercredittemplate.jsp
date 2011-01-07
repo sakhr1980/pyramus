@@ -7,7 +7,7 @@
 
 <html>
   <head>
-    <title><fmt:message key="settings.manageTransferCreditTemplate.pageTitle"/></title>
+    <title><fmt:message key="settings.createTransferCreditTemplate.pageTitle"/></title>
 
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -25,7 +25,7 @@
 
       function addCoursesTableRow() {
         var table = getIxTableById('coursesTable');
-        rowIndex = table.addRow(['', -1, 0, -1, 0, -1, '', -1]);
+        rowIndex = table.addRow(['', -1, 0, -1, 0, -1, '']);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -42,14 +42,14 @@
         var coursesTable = new IxTable($('coursesTable'), {
           id : "coursesTable",
           columns : [{
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableCourseNameHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableCourseNameHeader"/>',
             left: 8,
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 200 + 8 + 100 + 8 + 100 + 8,
             dataType: 'text',
             editable: true,
             paramName: 'courseName'
           }, {
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableCourseOptionalityHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableCourseOptionalityHeader"/>',
             width : 100,
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 200 + 8 + 100 + 8,
             dataType: 'select',
@@ -57,18 +57,18 @@
             overwriteColumnValues : true,
             paramName: 'courseOptionality',
             options: [
-              {text: '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableCourseOptionalityOptional"/>', value: 'OPTIONAL'},
-              {text: '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableCourseOptionalityMandatory"/>', value: 'MANDATORY'}
+              {text: '<fmt:message key="settings.createTransferCreditTemplate.coursesTableCourseOptionalityOptional"/>', value: 'OPTIONAL'},
+              {text: '<fmt:message key="settings.createTransferCreditTemplate.coursesTableCourseOptionalityMandatory"/>', value: 'MANDATORY'}
             ]
           }, {
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableCourseNumberHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableCourseNumberHeader"/>',
             width : 100,
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 200 + 8,
             dataType: 'number',
             editable: true,
             paramName: 'courseNumber' 
           }, {
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableSubjectHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableSubjectHeader"/>',
             width : 200,
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8,
             dataType: 'select',
@@ -82,7 +82,7 @@
               </c:forEach>
             ]
           }, {
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableLengthHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableLengthHeader"/>',
             width : 100,
             right: 8 + 22 + 8 + 100 + 8,
             dataType: 'number',
@@ -90,7 +90,7 @@
             overwriteColumnValues : true,
             paramName: 'courseLength'
           }, {
-            header : '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableLengthUnitHeader"/>',
+            header : '<fmt:message key="settings.createTransferCreditTemplate.coursesTableLengthUnitHeader"/>',
             width : 100,
             right: 8 + 22 + 8,
             dataType: 'select',
@@ -108,7 +108,7 @@
             width: 22,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="settings.manageTransferCreditTemplate.coursesTableRemoveTooltip"/>',
+            tooltip: '<fmt:message key="settings.createTransferCreditTemplate.coursesTableRemoveTooltip"/>',
             onclick: function (event) {
               event.tableObject.deleteRow(event.row);
               if (event.tableObject.getRowCount() == 0) {
@@ -119,31 +119,8 @@
             },
             paramName: 'removeButton',
             hidden: true
-          }, {
-            dataType: 'hidden',
-            paramName: 'courseId'
           }]
         });
-
-        var rowIndex;
-        <c:forEach var="course" items="${transferCreditTemplate.courses}">
-          rowIndex = coursesTable.addRow([
-	          '${fn:replace(course.courseName, "'", "\\'")}',
-	          '${course.optionality}',
-	          ${course.courseNumber},
-	          ${course.subject.id},
-	          ${course.courseLength.units},
-	          ${course.courseLength.unit.id},
-	          '',
-	          ${course.id}
-	        ]);
-        </c:forEach>
-
-        if (coursesTable.getRowCount() > 0) {
-          $('noCoursesAddedMessageContainer').setStyle({
-            display: 'none'
-          });
-        }
       }
         
     </script>
@@ -152,16 +129,14 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="settings.manageTransferCreditTemplate.pageTitle"/></h1>
+    <h1 class="genericPageHeader"><fmt:message key="settings.createTransferCreditTemplate.pageTitle"/></h1>
     
-    <div id="editTransferCreditTemplateFormContainer"> 
+    <div id="createTransferCreditTemplateFormContainer"> 
 	    <div class="genericFormContainer"> 
-	      <form action="savetransfercredittemplate.json" method="post" ix:jsonform="true" ix:useglasspane="true">
-	        <input type="hidden" value="${transferCreditTemplate.id}" name="transferCreditTemplateId"/>
-	  
+	      <form action="createtransfercredittemplate.json" method="post" ix:jsonform="true" ix:useglasspane="true">
 	        <div class="tabLabelsContainer" id="tabs">
 	          <a class="tabLabel" href="#transferCreditTemplate">
-	            <fmt:message key="settings.manageTransferCreditTemplate.tabLabelTransferCreditTemplate"/>
+	            <fmt:message key="settings.createTransferCreditTemplate.tabLabelTransferCreditTemplate"/>
 	          </a>
 	        </div>
           
@@ -169,26 +144,26 @@
           
 	          <div class="genericFormSection">
 	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	              <jsp:param name="titleLocale" value="settings.manageTransferCreditTemplate.nameTitle"/>
-	              <jsp:param name="helpLocale" value="settings.manageTransferCreditTemplate.nameHelp"/>
+	              <jsp:param name="titleLocale" value="settings.createTransferCreditTemplate.nameTitle"/>
+	              <jsp:param name="helpLocale" value="settings.createTransferCreditTemplate.nameHelp"/>
 	            </jsp:include>
 	                    
-	            <input type="text" name="name" class="required" value="${transferCreditTemplate.name}" size="40">
+	            <input type="text" name="name" class="required" size="40">
 	          </div>
           
             <div class="genericTableAddRowContainer">
-              <span class="genericTableAddRowLinkContainer" onclick="addCoursesTableRow();"><fmt:message key="settings.manageTransferCreditTemplate.addCourseLink"/></span>
+              <span class="genericTableAddRowLinkContainer" onclick="addCoursesTableRow();"><fmt:message key="settings.createTransferCreditTemplate.addCourseLink"/></span>
             </div>
               
             <div id="noCoursesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.manageTransferCreditTemplate.noCoursesAddedPreFix"/> <span onclick="addCoursesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.manageTransferCreditTemplate.noCoursesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.createTransferCreditTemplate.noCoursesAddedPreFix"/> <span onclick="addCoursesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.createTransferCreditTemplate.noCoursesAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="coursesTable"></div>
           </div>
 	  
           <div class="genericFormSubmitSectionOffTab">
-            <input type="submit" class="formvalid" value="<fmt:message key="settings.manageTransferCreditTemplate.saveButton"/>">
+            <input type="submit" class="formvalid" value="<fmt:message key="settings.createTransferCreditTemplate.saveButton"/>">
           </div>
 
 	      </form>

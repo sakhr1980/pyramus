@@ -13,7 +13,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
@@ -113,7 +112,7 @@ public class Credit implements ArchivableEntity {
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date date;
   
-  @OneToOne  
+  @ManyToOne
   @JoinColumn(name="grade")
   private Grade grade;
   

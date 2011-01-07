@@ -15,6 +15,7 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
@@ -39,7 +40,8 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
     Long studentProjectId = pageRequestContext.getLong("studentproject");
 
     StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
@@ -66,7 +68,7 @@ public class EditStudentProjectViewController implements PyramusViewController, 
       studentProjectModules.add(studentProjectModuleBean);
     }
     
-    List<Student> students = studentProject.getStudent().getAbstractStudent().getStudents();
+    List<Student> students = studentDAO.listStudentsByAbstractStudent(studentProject.getStudent().getAbstractStudent());
 
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);

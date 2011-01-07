@@ -132,6 +132,8 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
       String colPrefix = "coursesTable." + i;
       
       Long courseId = jsonRequestContext.getLong(colPrefix + ".courseId");
+      CourseOptionality optionality = (CourseOptionality) jsonRequestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
+      
       Course course = courseId == -1 ? null : courseDAO.getCourse(courseId);
       CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, studentProject.getStudent());
       if (courseStudent == null) {
@@ -139,9 +141,9 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
         CourseParticipationType participationType = defaults.getInitialCourseParticipationType();
         Date enrolmentDate = new Date(System.currentTimeMillis());
         Boolean lodging = Boolean.FALSE;
-        CourseOptionality optionality = null;
-        
         courseStudent = courseDAO.createCourseStudent(course, studentProject.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, optionality);
+      } else {
+        courseStudent = courseDAO.updateCourseStudent(courseStudent, studentProject.getStudent(), courseStudent.getCourseEnrolmentType(), courseStudent.getParticipationType(), courseStudent.getEnrolmentTime(), courseStudent.getLodging(), optionality);
       }
     }
     

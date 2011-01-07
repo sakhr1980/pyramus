@@ -86,8 +86,6 @@
 	              }
 	            }
 	            
-	            
-	            
 	            checkModulesMessage();
 	            
 	          break;
@@ -97,11 +95,9 @@
 	    }
       
       function openSearchCoursesDialog() {
-        var studentId = ${studentProject.student.id}; 
-  
         var dialog = new IxDialog({
           id : 'searchCoursesDialog',
-          contentURL : GLOBAL_contextPath + '/projects/searchstudentprojectcoursesdialog.page?studentId=' + studentId,
+          contentURL : GLOBAL_contextPath + '/projects/searchstudentprojectcoursesdialog.page',
           centered : true,
           showOk : true,
           showCancel : true,
@@ -132,6 +128,7 @@
 	                  participationType,
 	                  beginDate||'',
 	                  endDate||'',
+	                  'OPTIONAL',
 	                  '',
 	                  '',
 	                  moduleId,
@@ -287,9 +284,10 @@
                     var name = event.results.name;
                     var beginDate = event.results.beginDate;
                     var endDate = event.results.endDate;
+                    var optionality = table.getCellValue(row, table.getNamedColumnIndex('optionality'));
                     var participationType = '<fmt:message key="projects.editStudentProject.unsavedStudentParticipationType"/>' ;
 
-                    getIxTableById('coursesTable').addRow([name, participationType, beginDate, endDate, '', '', moduleId, courseId, -1]);
+                    getIxTableById('coursesTable').addRow([name, participationType, beginDate, endDate, optionality, '', '', moduleId, courseId, -1]);
                   
                     $('noCoursesAddedMessageContainer').setStyle({
                       display: 'none'
@@ -325,29 +323,41 @@
           columns : [ {
             header : '<fmt:message key="projects.editStudentProject.coursesTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'name'
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeHeader"/>',
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8,
             width : 150,
             dataType : 'text',
             editable: false,
             paramName: 'name'
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableBeginDateHeader"/>',
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8,
             width : 150,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableEndDateHeader"/>',
             width: 150,
-            right : 8 + 22 + 8 + 22 + 8,
+            right : 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8,
             dataType : 'date',
             editable: false
+          }, {
+            header : '<fmt:message key="projects.editStudentProject.coursesTableOptionalityHeader"/>',
+            right : 8 + 22 + 8 + 22 + 8,
+            width: 100,
+            dataType : 'select',
+            paramName: 'optionality',
+            editable: true,
+            options: [
+              {text: '', value: ''},
+              {text: '<fmt:message key="projects.editStudentProject.optionalityMandatory"/>', value: 'MANDATORY'},
+              {text: '<fmt:message key="projects.editStudentProject.optionalityOptional"/>', value: 'OPTIONAL'}
+            ]
           }, {
             width: 22,
             right: 8 + 22 + 8,
@@ -430,6 +440,7 @@
 	          '${courseStudent.participationType.name}',
 	          ${courseStudent.course.beginDate.time},
 	          ${courseStudent.course.endDate.time},
+            '${courseStudent.optionality}',
 	          '',
 	          '',
 	          ${courseStudent.course.module.id},
@@ -508,7 +519,7 @@
                   </c:choose>
                 </c:forEach>
                 <c:if test="${studentProject.student.studyProgramme.archived == true}">
-                  <option value="${studentProject.student.id}" selected="selected">${studentProject.student.studyProgramme.name}*</option>
+                  <option value="${studentProject.student.id}" selected="selected">${studentProject.student.studyProgramme.name}***</option>
                 </c:if>
               </select>
             </div>

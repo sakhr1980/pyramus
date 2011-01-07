@@ -119,6 +119,7 @@
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/municipalities.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageMunicipalities"/></a></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/timeunits.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageTimeUnits"/></a></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/coursestates.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageCourseStates"/></a></li>
+          <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/managetransfercredittemplates.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageTransferCreditTemplates"/></a></li>
           <ix:extensionHook name="generic.navigation.settingsMenu"/>
         </ul>
       </li>

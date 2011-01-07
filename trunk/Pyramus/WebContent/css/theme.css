@@ -1922,6 +1922,18 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   min-height:0;
 }
 
+/* Create transfer credit template */
+
+#createTransferCreditTemplateFormContainer .genericFormSection {
+  margin-left:8px;
+}
+
+/* Edit transfer credit template */
+
+#editTransferCreditTemplateFormContainer .genericFormSection {
+  margin-left:8px;
+}
+
 /* manage transfer credits */
 
 #manageTransferCredits .genericFormSection {
