@@ -15,6 +15,7 @@
     <jsp:include page="/templates/generic/jsonform_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     
     <script type="text/javascript">
 
@@ -31,14 +32,14 @@
 
       function setupRelatedCommandsBasic() {
         var relatedActionsHoverMenu = new IxHoverMenu($('basicRelatedActionsHoverMenuContainer'), {
-          text: '<fmt:message key="users.editUser.basicTabRelatedActionsLabel"/>'
+          text: '<fmt:message key="grading.courseAssessment.basicTabRelatedActionsLabel"/>'
         });
     
         relatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
-          iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/edit-work-resource.png',
-          text: '<fmt:message key="users.editUser.basicTabRelatedActionCreateResourceLabel"/>',
+          iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
+          text: '<fmt:message key="grading.courseAssessment.basicTabRelatedActionEditCourse"/>',
           onclick: function (event) {
-            redirectTo(GLOBAL_contextPath + '/resources/createworkresource.page?name=' + encodeURIComponent('${user.lastName}, ${user.firstName}'));
+            redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + encodeURIComponent('${courseStudent.course.id}') + '#at-students');
           }
         }));
       }
@@ -96,7 +97,7 @@
                 <jsp:param name="titleLocale" value="grading.courseAssessment.studentNameTitle"/>
                 <jsp:param name="helpLocale" value="grading.courseAssessment.studentNameHelp"/>
               </jsp:include>                  
-              ${fn:escapeXml(courseStudent.student.fullName)}
+              <span>${fn:escapeXml(courseStudent.student.fullName)}</span>
             </div>
   
             <div class="genericFormSection">  
@@ -104,7 +105,7 @@
                 <jsp:param name="titleLocale" value="grading.courseAssessment.courseNameTitle"/>
                 <jsp:param name="helpLocale" value="grading.courseAssessment.courseNameHelp"/>
               </jsp:include>                  
-              ${fn:escapeXml(courseStudent.course.name)}
+              <span>${fn:escapeXml(courseStudent.course.name)}</span>
             </div>
           
             <c:choose>

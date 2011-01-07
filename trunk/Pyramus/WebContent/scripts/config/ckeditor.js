@@ -45,3 +45,4 @@ CKEDITOR.config.toolbar_gradingScaleDescription = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_studentAdditionalInformation = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_studentGroupDescription = defaultDescriptionToolbar;
 CKEDITOR.config.toolbar_studentContactEntryText = simpleToolbar;
+CKEDITOR.config.toolbar_courseGradeText = simpleToolbar;
