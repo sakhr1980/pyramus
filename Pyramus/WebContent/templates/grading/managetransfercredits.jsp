@@ -263,7 +263,7 @@
             tooltip: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableArchiveTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
-              var gradeId = table.getCellValue(event.row, table.getNamedColumnIndex('gradeId'));
+              var creditId = table.getCellValue(event.row, table.getNamedColumnIndex('creditId'));
               var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('courseName'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=grading.manageTransferCredits.transferCreditArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(courseName);
 
@@ -284,9 +284,9 @@
               dialog.addDialogListener(function(event) {
                 switch (event.name) {
                   case 'okClick':
-                    JSONRequest.request("grading/archivegrade.json", {
+                    JSONRequest.request("grading/archivetransfercredit.json", {
                       parameters: {
-                        gradeId: gradeId
+                        transferCreditId: creditId
                       },
                       onSuccess: function (jsonResponse) {
                         getIxTableById('transferCreditsTable').deleteRow(archivedRowIndex);

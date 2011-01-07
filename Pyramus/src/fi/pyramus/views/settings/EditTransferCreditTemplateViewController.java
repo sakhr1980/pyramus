@@ -19,7 +19,7 @@ import fi.pyramus.views.PyramusViewController;
 /**
  * The controller responsible of the Manage Transfer Credit Template view of the application.
  */
-public class ManageTransferCreditTemplateViewController implements PyramusViewController, Breadcrumbable {
+public class EditTransferCreditTemplateViewController implements PyramusViewController, Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -32,9 +32,7 @@ public class ManageTransferCreditTemplateViewController implements PyramusViewCo
     
     Long transferCreditTemplateId = pageRequestContext.getLong("transferCreditTemplate");
 
-    TransferCreditTemplate transferCreditTemplate = null;
-    if (transferCreditTemplateId != null)
-      transferCreditTemplate = gradingDAO.findTransferCreditTemplateById(transferCreditTemplateId);
+    TransferCreditTemplate transferCreditTemplate = gradingDAO.findTransferCreditTemplateById(transferCreditTemplateId);
     List<Subject> subjects = baseDAO.listSubjects();
     List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
     List<School> schools = baseDAO.listSchools();
@@ -44,7 +42,7 @@ public class ManageTransferCreditTemplateViewController implements PyramusViewCo
     pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);
     pageRequestContext.getRequest().setAttribute("schools", schools);
     
-    pageRequestContext.setIncludeJSP("/templates/settings/transfercredittemplate.jsp");
+    pageRequestContext.setIncludeJSP("/templates/settings/edittransfercredittemplate.jsp");
   }
 
   /**
@@ -64,7 +62,7 @@ public class ManageTransferCreditTemplateViewController implements PyramusViewCo
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "settings.manageTransferCreditTemplate.pageTitle");
+    return Messages.getInstance().getText(locale, "settings.editTransferCreditTemplate.pageTitle");
   }
 
 }

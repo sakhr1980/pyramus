@@ -414,8 +414,11 @@ public class GradingDAO extends PyramusDAO {
   public TransferCreditTemplateCourse updateTransferCreditTemplateCourse(TransferCreditTemplateCourse transferCreditTemplateCourse, String courseName, Integer courseNumber, CourseOptionality optionality, Double courseLength, EducationalTimeUnit courseLengthUnit, Subject subject) {
     EntityManager entityManager = getEntityManager();
     
-    transferCreditTemplateCourse.getCourseLength().setUnits(courseLength);
-    transferCreditTemplateCourse.getCourseLength().setUnit(courseLengthUnit);
+    EducationalLength educationalLength = transferCreditTemplateCourse.getCourseLength();
+    educationalLength.setUnits(courseLength);
+    educationalLength.setUnit(courseLengthUnit);
+    entityManager.persist(educationalLength);
+    
     transferCreditTemplateCourse.setCourseName(courseName);
     transferCreditTemplateCourse.setCourseNumber(courseNumber);
     transferCreditTemplateCourse.setOptionality(optionality);

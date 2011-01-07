@@ -10,15 +10,11 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.GradingDAO;
 import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
-import fi.pyramus.domainmodel.base.School;
-import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -36,26 +32,19 @@ public class ManageTransferCreditsViewController implements PyramusViewControlle
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
     Long studentId = pageRequestContext.getLong("studentId");
     
     Student student = studentDAO.getStudent(studentId);
     List<TransferCredit> transferCredits = gradingDAO.listTransferCreditsByStudent(student);
     List<GradingScale> gradingScales = gradingDAO.listGradingScales();
-    List<Subject> subjects = baseDAO.listSubjects();
     List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
-    List<School> schools = baseDAO.listSchools();
-    List<User> users = userDAO.listUsers();
     List<TransferCreditTemplate> transferCreditTemplates = gradingDAO.listTransferCreditTemplates();
 
     pageRequestContext.getRequest().setAttribute("student", student);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
     pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);
-    pageRequestContext.getRequest().setAttribute("subjects", subjects);
     pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);
-    pageRequestContext.getRequest().setAttribute("schools", schools);
-    pageRequestContext.getRequest().setAttribute("users", users);
     pageRequestContext.getRequest().setAttribute("transferCreditTemplates", transferCreditTemplates);
     
     pageRequestContext.setIncludeJSP("/templates/grading/managetransfercredits.jsp");

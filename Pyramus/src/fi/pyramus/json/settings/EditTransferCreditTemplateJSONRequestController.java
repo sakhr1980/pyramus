@@ -12,7 +12,7 @@ import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
-public class SaveTransferCreditTemplateJSONRequestController implements JSONRequestController {
+public class EditTransferCreditTemplateJSONRequestController implements JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();

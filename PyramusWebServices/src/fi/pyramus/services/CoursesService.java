@@ -225,11 +225,12 @@ public class CoursesService extends PyramusService {
     
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
 
     Course course = courseDAO.getCourse(courseId);
     Student student = studentDAO.getStudent(studentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
-    CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
+    CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
     CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
 
     CourseStudent courseStudent = courseDAO.createCourseStudent(course, student, courseEnrolmentType,
@@ -244,10 +245,11 @@ public class CoursesService extends PyramusService {
       Date enrolmentDate, Boolean lodging, String optionality) {
 
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
-    CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
+    CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
     CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
     
     // TODO: student-parameter (?)

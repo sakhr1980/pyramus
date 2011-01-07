@@ -44,7 +44,6 @@
             name: searchCoursesForm.name.value,
             tags: searchCoursesForm.tags.value,
             page: page,
-            studentId: ${studentId},
             maxResults: 10
           },
           onSuccess: function (jsonResponse) {
@@ -52,7 +51,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].participationType, results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
+              resultsTable.addRow([results[i].name, results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
               var rowIndex = getCourseRowIndex('coursesTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
@@ -82,14 +81,12 @@
         for (var i = 0; i < table.getRowCount(); i++) {
           var courseName = table.getCellValue(i, table.getNamedColumnIndex('name'));
           var courseId = table.getCellValue(i, table.getNamedColumnIndex('courseId'));
-          var participationType = table.getCellValue(i, table.getNamedColumnIndex('participationType'));
           var beginDate = table.getCellValue(i, table.getNamedColumnIndex('beginDate'));
           var endDate = table.getCellValue(i, table.getNamedColumnIndex('endDate'));
           var moduleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
           
           results.push({
             name: courseName,
-            participationType: participationType,
             beginDate: beginDate,
             endDate: endDate,
             moduleId: moduleId,
@@ -125,16 +122,12 @@
               var table = event.tableObject;
               table.disableRow(event.row);
               var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              var participationType = table.getCellValue(event.row, table.getNamedColumnIndex('participationType'));
               var beginDate = table.getCellValue(event.row, table.getNamedColumnIndex('beginDate'));
               var endDate = table.getCellValue(event.row, table.getNamedColumnIndex('endDate'));
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
-              getIxTableById('coursesTable').addRow([courseName, participationType, beginDate, endDate, moduleId, courseId]);
+              getIxTableById('coursesTable').addRow([courseName, beginDate, endDate, moduleId, courseId]);
             }
-          }, {
-            dataType: 'hidden',
-            paramName: 'participationType'
           }, {
             dataType: 'hidden',
             paramName: 'beginDate'
@@ -170,9 +163,6 @@
                 resultsTable.enableRow(rowIndex);
               }
             }
-          }, {
-            dataType: 'hidden',
-            paramName: 'participationType'
           }, {
             dataType: 'hidden',
             paramName: 'beginDate'

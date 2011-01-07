@@ -127,7 +127,8 @@ IxDialog = Class.create({
     Event.stopObserving(window, "mouseup", this._windowMouseUpListener);
     Event.stopObserving(document, "mouseup", this._windowMouseUpListener);
     Event.stopObserving(this._frameDocument , "mouseup", this._windowMouseUpListener);
-    Event.stopObserving(this._frameWindow, "mouseup", this._windowMouseUpListener);
+   
+    // Event.stopObserving(this._frameWindow, "mouseup", this._windowMouseUpListener);
     Event.stopObserving(this._titleBar, "mousedown", this._titleBarMouseDownListener);
     _Dialogs.unset(this._id);
 

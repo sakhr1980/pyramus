@@ -857,7 +857,7 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
         var option = options[j];
         if (option.optionGroup == true) {
           
-          var optionGroup = this._createOptionGroup(option.text);//this.addOptionGroup(cellEditor, option.text);
+          var optionGroup = this._createOptionGroup(option.text);
 
           var groupOptions = option.options;
           for (var groupIndex = 0; groupIndex < groupOptions.length; groupIndex++) {
@@ -1547,20 +1547,26 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
     $super(handlerInstance);
   }, 
   disableEditor: function ($super, handlerInstance) {
+    // TODO: Implement this
+    /*
     if (handlerInstance._editable != true)
       handlerInstance.addClassName("ixTableCellViewerDisabled");
     else {
       this._addDisabledHiddenElement(handlerInstance);
       handlerInstance.disabled = true;
     }
+    */
   },
   enableEditor: function ($super, handlerInstance) {
+    // TODO: Implement this
+    /*
     if (handlerInstance._editable != true)
       handlerInstance.removeClassName("ixTableCellViewerDisabled");
     else {
       handlerInstance.disabled = false;
       this._removeDisabledHiddenElement(handlerInstance);
     }
+    */
   },
   getEditorValue: function ($super, handlerInstance) {
     if (handlerInstance._editable != true) 
