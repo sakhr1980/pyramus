@@ -151,35 +151,97 @@ public class AbstractStudent {
   public Student getLatestStudent() {
     List<Student> students = new ArrayList<Student>();
     
-    for (Student student : this.students) {
+    List<Student> oldStudents = this.getStudents();
+    
+    for (Student student : oldStudents) {
       if (!student.getArchived())
         students.add(student);
     }
-    
-    Collections.sort(students, new Comparator<Student>() {
-      @Override
-      public int compare(Student student1, Student student2) {
-        int student1Value = getValue(student1);
-        int student2Value = getValue(student2);
 
-        if (student1Value == student2Value) {
-          if ((student1.getStudyStartDate() == null)||(student2.getStudyStartDate() == null))
-            return 0;
-          return student1.getStudyStartDate().compareTo(student2.getStudyStartDate());
-        } else {
-          return student1Value < student2Value ? -1 : student1Value == student2Value ? 0 : 1;
-        }
+    if (students.size() > 0) {
+      Student stu = null;
+
+      for (Student stu2 : students) {
+        /**
+        * Ordering study programmes as follows
+        *  1. studies that have start date but no end date (ongoing)
+        *  2. studies that have no start nor end date
+        *  3. studies that have ended
+        *  4. studies that are archived
+        *  5. other
+        */
+
+       // First item
+       if (stu == null) {
+         stu = stu2;
+         continue;
+       }
+       
+       int o1class =
+         (stu.getArchived()) ? 4:
+           (stu.getStudyStartDate() != null && stu.getStudyEndDate() == null) ? 1:
+             (stu.getStudyStartDate() == null && stu.getStudyEndDate() == null) ? 2:
+               (stu.getStudyEndDate() != null) ? 3:
+                 5;
+       int o2class =
+         (stu2.getArchived()) ? 4:
+           (stu2.getStudyStartDate() != null && stu2.getStudyEndDate() == null) ? 1:
+             (stu2.getStudyStartDate() == null && stu2.getStudyEndDate() == null) ? 2:
+               (stu2.getStudyEndDate() != null) ? 3:
+                 5;
+    
+       int cmp = 0;
+       if (o1class == o2class) {
+         // classes are the same, we try to do last comparison from the start dates
+         cmp = ((stu.getStudyStartDate() != null) && (stu2.getStudyStartDate() != null)) ? 
+             stu2.getStudyStartDate().compareTo(stu.getStudyStartDate()) : 0; 
+       } else
+         cmp = o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
+
+       // If the new evaluated Student is more recent, we swap that in place
+       if (cmp > 0)
+         stu = stu2;
       }
       
-      private int getValue(Student student) {
-        Date startDate = student.getStudyStartDate();
-        Date endDate = student.getStudyEndDate();
-
-        return (startDate != null && endDate == null) ? 0 : (startDate == null && endDate == null) ? 1 : (endDate != null) ? 2 : 3;
-      }
-    });
-
-    return students.size() > 0 ? students.get(0) : null;
+      return stu;
+      
+//      Collections.sort(students, new Comparator<Student>() {
+//        @Override
+//        public int compare(Student o1, Student o2) {
+//          /**
+//           * Ordering study programmes as follows
+//           *  1. studies that have start date but no end date (ongoing)
+//           *  2. studies that have no start nor end date
+//           *  3. studies that have ended
+//           *  4. studies that are archived
+//           *  5. other
+//           */
+//          
+//          int o1class =
+//            (o1.getArchived()) ? 4:
+//              (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
+//                (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
+//                  (o1.getStudyEndDate() != null) ? 3:
+//                    5;
+//          int o2class =
+//            (o2.getArchived()) ? 4:
+//              (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
+//                (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
+//                  (o2.getStudyEndDate() != null) ? 3:
+//                    5;
+//  
+//          if (o1class == o2class) {
+//            // classes are the same, we try to do last comparison from the start dates
+//            return ((o1.getStudyStartDate() != null) && (o2.getStudyStartDate() != null)) ? 
+//                o2.getStudyStartDate().compareTo(o1.getStudyStartDate()) : 0; 
+//          } else
+//            return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
+//        }
+//      });
+//
+//      return students.get(0);
+    } else
+      return null;
   }
 
   public void setBasicInfo(String basicInfo) {

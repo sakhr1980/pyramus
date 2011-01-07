@@ -80,6 +80,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
          *  2. studies that have no start nor end date
          *  3. studies that have ended
          *  4. studies that are archived
+         *  5. other
          */
         
         int o1class =
@@ -98,7 +99,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
         if (o1class == o2class) {
           // classes are the same, we try to do last comparison from the start dates
           return ((o1.getStudyStartDate() != null) && (o2.getStudyStartDate() != null)) ? 
-              o1.getStudyStartDate().compareTo(o2.getStudyStartDate()) : 0; 
+              o2.getStudyStartDate().compareTo(o1.getStudyStartDate()) : 0; 
         } else
           return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
       }

@@ -3,6 +3,8 @@ package fi.pyramus.services;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -231,7 +233,9 @@ public class CoursesService extends PyramusService {
     Student student = studentDAO.getStudent(studentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
-    CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
+    CourseOptionality cOptionality = null; 
+    if (!StringUtils.isBlank(optionality))
+      cOptionality = CourseOptionality.valueOf(optionality);
 
     CourseStudent courseStudent = courseDAO.createCourseStudent(course, student, courseEnrolmentType,
             participationType, enrolmentDate, lodging, cOptionality);
@@ -250,7 +254,9 @@ public class CoursesService extends PyramusService {
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
     CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
-    CourseOptionality cOptionality = CourseOptionality.valueOf(optionality);
+    CourseOptionality cOptionality = null; 
+    if (!StringUtils.isBlank(optionality))
+      cOptionality = CourseOptionality.valueOf(optionality);
     
     // TODO: student-parameter (?)
     courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, cOptionality);
