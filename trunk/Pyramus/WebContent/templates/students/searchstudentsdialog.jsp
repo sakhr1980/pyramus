@@ -43,9 +43,10 @@
        */
       function doSearch(page) {
         var searchStudentsForm = $("searchStudentsForm");
-        JSONRequest.request("students/searchstudents.json", {
+        JSONRequest.request("students/searchstudentsdialog.json", {
           parameters: {
             query: searchStudentsForm.name.value,
+            studentFilter: searchStudentsForm.studentFilter.value,
             page: page
           },
           onSuccess: function (jsonResponse) {
@@ -207,6 +208,18 @@
                 </jsp:include>            
 	            <input type="text" name="name" size="40"/>
 	          </div>
+	          
+	          <div class="genericFormSection">  
+		          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+		            <jsp:param name="titleLocale" value="students.searchStudentsDialog.studentFilterTitle"/>
+		            <jsp:param name="helpLocale" value="students.searchStudentsDialog.studentFilterHelp"/>
+		          </jsp:include>                                     
+		          <select name="studentFilter">
+		            <option value="SKIP_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterSkipInactiveOption"/></option>
+		            <option value="INCLUDE_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterIncludeInactiveOption"/></option>
+		            <option value="ONLY_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterOnlyInactiveOption"/></option>
+		          </select>
+		        </div>
   
 	          <div class="genericFormSubmitSection">
 	            <input type="submit" value="<fmt:message key="students.searchStudentsDialog.searchButton"/>"/>
