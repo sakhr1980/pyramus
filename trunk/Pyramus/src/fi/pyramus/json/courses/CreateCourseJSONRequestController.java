@@ -258,7 +258,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       Student student = studentDAO.getStudent(studentId);
       CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
       CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
-      CourseOptionality optionality = null;
+      CourseOptionality optionality = (CourseOptionality) requestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
       courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality );
     }
     

@@ -81,7 +81,7 @@
             abstractStudentId: abstractStudentId
           },
           onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, 'false', abstractStudentId, '']);
+            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, '']);
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
@@ -614,7 +614,7 @@
         var studentsTable = new IxTable($('courseStudentsTable'), {
           id : "studentsTable",
           columns : [{
-            width: 30,
+            width: 22,
             left: 8,
             dataType: 'button',
             paramName: 'studentInfoButton',
@@ -628,15 +628,15 @@
             } 
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableNameHeader"/>',
-            left : 38,
-            right : 860,
+            left : 8 + 22 + 8,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 100 + 8,
             dataType : 'text',
             paramName: 'studentName',
             editable: false
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableStudyProgrammeHeader"/>',
             width: 100,
-            right : 752,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8,
             dataType : 'select',
             editable: true,
             dynamicOptions: true,
@@ -646,7 +646,7 @@
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
-            right : 546,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8,
             dataType : 'select',
             editable: true,
             overwriteColumnValues : true,
@@ -659,16 +659,16 @@
             ]
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableEnrolmentDateHeader"/>',
-            width: 200,
-            right : 338,
+            width: 140,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8,
             dataType: 'date',
             editable: true,
             overwriteColumnValues : true,
             paramName: 'enrolmentDate'
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableEnrolmentTypeHeader"/>',
-            width: 200,
-            right : 130,
+            width: 140,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8,
             dataType: 'select', 
             editable: true,
             paramName: 'enrolmentType',
@@ -679,9 +679,21 @@
             </c:forEach>
             ]
           }, {
+            header : '<fmt:message key="courses.createCourse.studentsTableOptionalityHeader"/>',
+            right :  8 + 22 + 8 + 100 + 8,
+            width: 140,
+            dataType : 'select',
+            paramName: 'optionality',
+            editable: true,
+            options: [
+              {text: '', value: ''},
+              {text: '<fmt:message key="courses.createCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
+              {text: '<fmt:message key="courses.createCourse.studentsTableOptionalityOptional"/>', value: 'OPTIONAL'}
+            ]
+          }, {
             header : '<fmt:message key="courses.createCourse.studentsTableLodgingHeader"/>',
             width: 100,
-            right : 30,
+            right : 8 + 22 + 8,
             dataType: 'select', 
             editable: true,
             overwriteColumnValues : true,
@@ -694,8 +706,8 @@
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
           }, {
-            right: 0,
-            width: 30,
+            right: 8,
+            width: 22,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.studentsTableRemoveRowTooltip"/>',

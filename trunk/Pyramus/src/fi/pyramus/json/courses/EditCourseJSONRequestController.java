@@ -386,11 +386,11 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       Long enrolmentTypeId = requestContext.getLong(colPrefix + ".enrolmentType");
       Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
       Boolean lodging = requestContext.getBoolean(colPrefix + ".lodging");
-
+      
       CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
       CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
       CourseStudent courseStudent;
-      CourseOptionality optionality = null;
+      CourseOptionality optionality = (CourseOptionality) requestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
 
       if (courseStudentId == -1) {
         /* New student */
@@ -401,7 +401,6 @@ public class EditCourseJSONRequestController implements JSONRequestController {
         /* Existing student */
         Student student = studentDAO.getStudent(studentId);
         courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-        optionality = courseStudent.getOptionality();
         courseDAO.updateCourseStudent(courseStudent, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
       }
     }

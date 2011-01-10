@@ -87,7 +87,7 @@
             abstractStudentId: abstractStudentId
           },
           onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, 'false', abstractStudentId, -1, '', '', '']);
+            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, '', '', '']);
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
@@ -752,7 +752,7 @@
         var studentsTable = new IxTable($('courseStudentsTable'), {
           id : "studentsTable",
           columns : [{
-            width: 30,
+            width: 22,
             left: 8,
             dataType: 'button',
             paramName: 'studentInfoButton',
@@ -766,15 +766,15 @@
             } 
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableNameHeader"/>',
-            left : 38,
-            right : 890,
+            left : 8 + 22 + 8,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 100,
             dataType : 'text',
             paramName: 'studentName',
             editable: false
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableStudyProgrammeHeader"/>',
             width: 100,
-            right : 782,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200,
             dataType : 'select',
             editable: true,
             dynamicOptions: true,
@@ -784,7 +784,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
-            right : 576,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
             dataType : 'select',
             editable: true,
             overwriteColumnValues : true,
@@ -797,16 +797,16 @@
             ]
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentDateHeader"/>',
-            width: 200,
-            right : 368,
+            width: 140,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
             editable: true,
             overwriteColumnValues : true,
             paramName: 'enrolmentDate'
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
-            width: 174,
-            right : 176,
+            width: 140,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140,
             dataType: 'select', 
             editable: true,
             paramName: 'enrolmentType',
@@ -817,9 +817,21 @@
             </c:forEach>
             ]
           }, {
+            header : '<fmt:message key="courses.editCourse.studentsTableOptionalityHeader"/>',
+            right :  8 + 22 + 8 + 8 + 22 + 8 + 100,
+            width: 140,
+            dataType : 'select',
+            paramName: 'optionality',
+            editable: true,
+            options: [
+              {text: '', value: ''},
+              {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
+              {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityOptional"/>', value: 'OPTIONAL'}
+            ]
+          }, {
             header : '<fmt:message key="courses.editCourse.studentsTableLodgingHeader"/>',
             width: 100,
-            right : 68,
+            right : 8 + 22 + 8 + 8 + 22,
             dataType: 'select', 
             editable: true,
             overwriteColumnValues : true,
@@ -835,8 +847,8 @@
             dataType: 'hidden', 
             paramName: 'courseStudentId'
           }, {
-            width: 30,
-            right: 30,
+            width: 22,
+            right: 8 + 22 + 8,
             dataType: 'button',
             paramName: 'evaluateButton',
             imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
@@ -847,8 +859,8 @@
               redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             } 
           }, {
-            width: 30,
-            right: 0,
+            width: 22,
+            right: 8,
             dataType: 'button',
             paramName: 'removeButton',
             hidden: true,
@@ -863,8 +875,8 @@
               }
             } 
           }, {
-            width: 30,
-            right: 0,
+            width: 22,
+            right: 8,
             dataType: 'button',
             paramName: 'archiveButton',
             hidden: true,
@@ -925,6 +937,7 @@
               ${courseStudent.participationType.id}, 
               ${courseStudent.enrolmentTime.time}, 
               ${courseStudent.courseEnrolmentType.id},
+              '${courseStudent.optionality}',
               ${courseStudent.lodging},
               ${courseStudent.id}
           );
@@ -943,7 +956,7 @@
       }
 
       function loadStudentStudyProgrammes(studentsTable, abstractStudentId, fullName, studentId, participationTypeId, enrolmentTime,
-          courseEnrolmentTypeId, lodging, courseStudentId) {
+          courseEnrolmentTypeId, optionality, lodging, courseStudentId) {
         JSONRequest.request("students/getstudentstudyprogrammes.json", {
           asynchronous: false,
           parameters: {
@@ -957,6 +970,7 @@
               participationTypeId, 
               enrolmentTime, 
               courseEnrolmentTypeId,
+              optionality,
               lodging,
               abstractStudentId, 
               courseStudentId,
