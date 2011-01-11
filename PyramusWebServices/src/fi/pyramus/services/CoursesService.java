@@ -253,7 +253,7 @@ public class CoursesService extends PyramusService {
     
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
-    CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
+    CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
     CourseOptionality cOptionality = null; 
     if (!StringUtils.isBlank(optionality))
       cOptionality = CourseOptionality.valueOf(optionality);
