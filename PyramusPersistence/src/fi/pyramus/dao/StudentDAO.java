@@ -385,31 +385,89 @@ public class StudentDAO extends PyramusDAO {
 
     s.saveOrUpdate(student);
   }
+  
+  public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText) {
+    return searchAbstractStudentsBasic(resultsPerPage, page, queryText, StudentFilter.SKIP_INACTIVE);
+  }
 
   @SuppressWarnings("unchecked")
-  public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText) {
+  public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText, StudentFilter studentFilter) {
 
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
-    if (!StringUtils.isBlank(queryText)) {
-      queryBuilder.append("+(");
-      addTokenizedSearchCriteria(queryBuilder, "activeFirstNames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "activeNicknames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "activeLastNames", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "activeEmails", queryText, false);
-      addTokenizedSearchCriteria(queryBuilder, "activeTags", queryText, false);
-      queryBuilder.append(")");
+    switch (studentFilter) {
+      case INCLUDE_INACTIVE:
+
+        // Search should find past students as well, so an abstract student is considered
+        // a match if it contains at least one non-archived student, no matter whether
+        // their study end date has been set or not
+        
+        if (!StringUtils.isBlank(queryText)) {
+          queryBuilder.append("+(");
+          addTokenizedSearchCriteria(queryBuilder, "activeFirstNames", "inactiveFirstNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeNicknames", "inactiveNicknames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeLastNames", "inactiveLastNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeEmails", "inactiveEmails", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeTags", "inactiveTags", queryText, false);
+          queryBuilder.append(")");
+        }
+        
+        queryBuilder.append("+(");
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", false);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", false);
+        queryBuilder.append(")");
+        
+        // Other search terms
+      break;
+      case ONLY_INACTIVE:
+
+        // Search should only find past students, so an abstract student is considered
+        // a match if it only contains non-archived students who have their study end date
+        // set and that date is in the past
+        
+        // Other search terms
+        
+        if (!StringUtils.isBlank(queryText)) {
+          queryBuilder.append("+(");
+          addTokenizedSearchCriteria(queryBuilder, "inactiveFirstNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveNicknames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveLastNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveEmails", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveTags", queryText, false);
+          queryBuilder.append(")");
+          
+          addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
+          addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
+        }
+      break;
+      case SKIP_INACTIVE:
+        
+        // Search should skip past students, so an abstract student is considered a match
+        // if it contains at least one non-archived student who hasn't got his study end
+        // date set or the date is in the future
+
+        if (!StringUtils.isBlank(queryText)) {
+          queryBuilder.append("+(");
+          addTokenizedSearchCriteria(queryBuilder, "activeFirstNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeNicknames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeLastNames", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeEmails", queryText, false);
+          addTokenizedSearchCriteria(queryBuilder, "activeTags", queryText, false);
+          queryBuilder.append(")");
+        }
+
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
+        
+      break;
     }
-   
-    addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
-    
+      
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
       String queryString = queryBuilder.toString();
-
+      
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       Query luceneQuery = parser.parse(queryString);
     
