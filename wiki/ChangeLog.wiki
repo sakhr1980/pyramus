@@ -1,4 +1,49 @@
 #summary ChangeLog of Pyramus
+#labels Featured
+
+*Version 0.3 (110111.4)
+
+  * Added tags to several search views
+  * Added courses to student projects
+  * Added related actions menu to student project editor (contains link to student editor)
+  * Added default system settings for report context path and authentication provider to initialdata
+  * Added optionality property to CourseStudent and TransferCredit entities
+  * Added courseNumber property into TransferCredit entity
+  * Added management views for transfer credits, transfer credit templates and course participation types
+  * Added initial course participation type to Defaults entity
+  * Added generic auto complete request controllers for schools, subjects and users
+  * Added search indexes to Subject entity
+  * Added optimizations, showRow/hideRow methods, support for required parameters and onclick support for date types to ixtable
+  * Added study programme selection support to student projects
+  * Added archiving support for TransferCredit and TransferCreditTemplate
+  * Added validation support to ixtable / auto complete field
+  * Added Course Assessment for giving course grades to students on courses. View is accessed through button on student list in edit course view
+  * Added Transfer Credits management view
+
+  * Changed BIRT version to 2.6.1
+  * Changed editor links to use better icon
+  * Changed create student project to use default time unit instead of timeunit id 1
+  * Changed clickOk method in dialog so that it would work even when the dialog does not have an ok button
+  * Changed StudentDAO.listStudentsByStudentVariable to not list archived students
+  * Changed student project editor to use course student data instead of student project course data for determining project courses
+  * Changed ixtable to hide column headers when no rows are visible
+  * Changed Credit entity's grade join into ManyToOne from OneToOne
+  * Changed course participation type to initial participation type in CourseService when undefined participation type was defined
+  * Changed student study programme sorting in viewstudent, editstudent and getstudentstudyprogrammesjson, now 'latest' study programme is sorted as first tab also AbstractStudent getLatestStudent now uses same sorting method 
+  * Changed name for StudentProjectModuleOptionality to CourseOptionality
+
+  * Fixed bug in all editors with tags where user could cause editor to crash when adding tags separated by both spaces and commas
+  * Fixed broken listCourseStudents DAO method
+  * Fixed minor style errors in ixtable.css
+  * Fixed bug in ixtable's autocomplete field that caused setEditable method calls to drop visible values
+  * Fix to  Issue #11 
+  * Fix for  issue #12 
+  * Fix for  Issue #14 
+  * Fix for  Issue #15 Added link to user's own user edit view
+  * Fix for  Issue #16 
+  * Fix for  Issue #18 
+  * Fix for  Issue #20 Added student search filter select into student search dialog
+
 
 *Version 0.2 (101124.3)
 
