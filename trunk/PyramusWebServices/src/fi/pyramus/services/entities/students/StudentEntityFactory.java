@@ -53,6 +53,7 @@ public class StudentEntityFactory implements EntityFactory<StudentEntity> {
     
     String parentalInfo = student.getContactInfo().getAdditionalInfo();
     
+    i = 0;
     String[] tags = new String[student.getTags().size()];
     for (Tag tag : student.getTags()) {
       tags[i++] = tag.getText();
