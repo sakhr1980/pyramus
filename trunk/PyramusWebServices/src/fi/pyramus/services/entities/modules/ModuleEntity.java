@@ -8,7 +8,7 @@ import fi.pyramus.services.entities.users.UserEntity;
 
 public class ModuleEntity {
 
-  public ModuleEntity(Long id, String name, UserEntity creator, Date created,
+  public ModuleEntity(Long id, String name, String[] tags, UserEntity creator, Date created,
       UserEntity lastModifier, Date lastModified, String description,
       SubjectEntity subject, Integer courseNumber, Double courseLength, Long courseLengthUnitId,
       CourseEducationTypeEntity[] courseEducationTypes, Boolean archived,
@@ -16,6 +16,7 @@ public class ModuleEntity {
     super();
     this.id = id;
     this.name = name;
+    this.tags = tags;
     this.creator = creator;
     this.created = created;
     this.lastModifier = lastModifier;
@@ -85,6 +86,10 @@ public class ModuleEntity {
   public Integer getCourseNumber() {
     return courseNumber;
   }
+  
+  public String[] getTags() {
+    return tags;
+  }
 
   private Long id;
   private String name;
@@ -100,4 +105,5 @@ public class ModuleEntity {
   private CourseEducationTypeEntity[] courseEducationTypes;
   private Boolean archived;
   private ModuleComponentEntity[] moduleComponents;
+  private String[] tags;
 }

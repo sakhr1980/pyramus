@@ -3,6 +3,7 @@ package fi.pyramus.services.entities.students;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.services.entities.EntityFactory;
 import fi.pyramus.services.entities.EntityFactoryVault;
@@ -49,10 +50,16 @@ public class StudentEntityFactory implements EntityFactory<StudentEntity> {
         break;
       }
     }
+    
     String parentalInfo = student.getContactInfo().getAdditionalInfo();
     
+    String[] tags = new String[student.getTags().size()];
+    for (Tag tag : student.getTags()) {
+      tags[i++] = tag.getText();
+    }
+    
     return new StudentEntity(student.getId(), abstractStudentEntity, emails, student.getFirstName(), student.getLastName(),
-        addresses, phoneNumberStr, student.getAdditionalInfo(), parentalInfo, student.getStudyTimeEnd(), nationalityEntity, 
-        languageEntity, municipalityEntity, schoolEntity, studyProgramme, student.getArchived());
+        tags, addresses, phoneNumberStr, student.getAdditionalInfo(), parentalInfo, student.getStudyTimeEnd(), 
+        nationalityEntity, languageEntity, municipalityEntity, schoolEntity, studyProgramme, student.getArchived());
   }
 }

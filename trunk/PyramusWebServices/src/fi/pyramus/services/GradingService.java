@@ -2,6 +2,8 @@ package fi.pyramus.services;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -121,7 +123,9 @@ public class GradingService extends PyramusService {
     Student student = studentDAO.getStudent(studentId);
     User assessingUser = userDAO.getUser(assessingUserId);
     Grade grade = gradingDAO.findGradeById(gradeId);
-    CourseOptionality courseOptionality = CourseOptionality.valueOf(optionality);
+    CourseOptionality courseOptionality = null;
+    if (!StringUtils.isBlank(optionality))
+      CourseOptionality.valueOf(optionality);
       
     TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseNumber, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
     

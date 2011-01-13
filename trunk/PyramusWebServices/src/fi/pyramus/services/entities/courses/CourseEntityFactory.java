@@ -1,5 +1,6 @@
 package fi.pyramus.services.entities.courses;
 
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.services.entities.EntityFactory;
 import fi.pyramus.services.entities.EntityFactoryVault;
@@ -26,8 +27,14 @@ public class CourseEntityFactory implements EntityFactory<CourseEntity> {
       if (course.getCourseLength().getUnit() != null)
         courseLengthUnitId = course.getCourseLength().getUnit().getId();
     }
-
-    return new CourseEntity(course.getId(), course.getName(), course.getNameExtension(), creator, course.getCreated(), lastModifier, course.getLastModified(), course.getDescription(),
+    
+    int i = 0;
+    String[] tags = new String[course.getTags().size()];
+    for (Tag tag : course.getTags()) {
+      tags[i++] = tag.getText();
+    }
+    
+    return new CourseEntity(course.getId(), course.getName(), course.getNameExtension(), tags, creator, course.getCreated(), lastModifier, course.getLastModified(), course.getDescription(),
         subject, course.getCourseNumber(), courseLengthUnits, courseLengthUnitId, educationTypes, course.getArchived(), components, course
             .getModule().getId(), course.getBeginDate(), course.getEndDate());
   }

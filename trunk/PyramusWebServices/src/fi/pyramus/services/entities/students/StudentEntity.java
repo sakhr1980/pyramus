@@ -11,7 +11,7 @@ import fi.pyramus.services.entities.base.StudyProgrammeEntity;
 
 public class StudentEntity {
   
-  public StudentEntity(Long id, AbstractStudentEntity abstractStudent, String[] emails, String firstName, String lastName, AddressEntity[] addresses,
+  public StudentEntity(Long id, AbstractStudentEntity abstractStudent, String[] emails, String firstName, String lastName, String[] tags, AddressEntity[] addresses,
       String phone, String additionalInfo, String parentalInfo, Date studyTimeEnd, NationalityEntity nationality, LanguageEntity language,
       MunicipalityEntity municipality, SchoolEntity school, StudyProgrammeEntity studyProgramme, Boolean archived) {
     super();
@@ -20,6 +20,7 @@ public class StudentEntity {
     this.emails = emails;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.tags = tags;
     this.addresses = addresses;
     this.phone = phone;
     this.additionalInfo = additionalInfo;
@@ -97,6 +98,10 @@ public class StudentEntity {
     return archived;
   }
   
+  public String[] getTags() {
+    return tags;
+  }
+
   private Long id;
   private AbstractStudentEntity abstractStudent;
   private String[] emails;
@@ -113,4 +118,5 @@ public class StudentEntity {
   private StudyProgrammeEntity studyProgramme;
   private Boolean archived;
   private AddressEntity[] addresses;
+  private String[] tags;
 }

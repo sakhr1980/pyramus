@@ -1,6 +1,7 @@
 package fi.pyramus.services.entities.base;
 
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.services.entities.EntityFactory;
 
 public class SchoolEntityFactory implements EntityFactory<SchoolEntity> {
@@ -10,7 +11,14 @@ public class SchoolEntityFactory implements EntityFactory<SchoolEntity> {
       return null;
     
     School school = (School) domainObject;
-    return new SchoolEntity(school.getId(), school.getCode(), school.getName(), school.getArchived());
+    
+    int i = 0;
+    String[] tags = new String[school.getTags().size()];
+    for (Tag tag : school.getTags()) {
+      tags[i++] = tag.getText();
+    }
+    
+    return new SchoolEntity(school.getId(), school.getCode(), school.getName(), tags, school.getArchived());
   }
 
 }
