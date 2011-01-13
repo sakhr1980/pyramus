@@ -765,9 +765,9 @@ public class StudentDAO extends PyramusDAO {
 
     return s.createQuery(
         "select student " +
-    		"from StudentVariable " +
-    		"where key.variableKey=:key and value=:value and student.archived=:archived")
-    		.setEntity("key", key)
+    		"from StudentVariable sv " +
+    		"where sv.key.variableKey=:key and sv.value=:value and sv.student.archived=:archived")
+    		.setString("key", key)
     		.setString("value", value)
     		.setBoolean("archived", Boolean.FALSE).list();
   }
