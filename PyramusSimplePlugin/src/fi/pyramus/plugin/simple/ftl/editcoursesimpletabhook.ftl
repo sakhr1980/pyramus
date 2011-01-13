@@ -1,1 +1,0 @@
-<#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
