@@ -258,10 +258,10 @@
 
           <c:forEach var="studentCourseAssesment" items="${courseAssesments[student.id]}">
              courseAssesmentsTable.addRow([
-              '${studentCourseAssesment.course.name}',
-              '${studentCourseAssesment.course.subject.name}',
+              '${studentCourseAssesment.courseStudent.course.name}',
+              '${studentCourseAssesment.courseStudent.course.subject.name}',
               '${studentCourseAssesment.date.time}',
-              '${studentCourseAssesment.course.courseLength.units}',
+              '${studentCourseAssesment.courseStudent.course.courseLength.units}',
               '${studentCourseAssesment.grade.name}',
               '${studentCourseAssesment.grade.gradingScale.name}',
               '${studentCourseAssesment.assessingUser.fullName}',
