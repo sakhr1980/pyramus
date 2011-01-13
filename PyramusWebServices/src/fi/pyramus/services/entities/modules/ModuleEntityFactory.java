@@ -1,5 +1,6 @@
 package fi.pyramus.services.entities.modules;
 
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.services.entities.EntityFactory;
 import fi.pyramus.services.entities.EntityFactoryVault;
@@ -30,7 +31,13 @@ public class ModuleEntityFactory implements EntityFactory<ModuleEntity> {
     CourseEducationTypeEntity[] courseEducationTypes = (CourseEducationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(module.getCourseEducationTypes());
     ModuleComponentEntity[] moduleComponents = (ModuleComponentEntity[]) EntityFactoryVault.buildFromDomainObjects(module.getModuleComponents());
 
-    return new ModuleEntity(module.getId(), module.getName(), creator, module.getCreated(), lastModifier, module.getLastModified(), 
+    int i = 0;
+    String[] tags = new String[module.getTags().size()];
+    for (Tag tag : module.getTags()) {
+      tags[i++] = tag.getText();
+    }  
+    
+    return new ModuleEntity(module.getId(), module.getName(), tags, creator, module.getCreated(), lastModifier, module.getLastModified(), 
         module.getDescription(), subject, module.getCourseNumber(), courseLengthUnits, courseLengthUnitId, courseEducationTypes, module.getArchived(), moduleComponents);
   }
 

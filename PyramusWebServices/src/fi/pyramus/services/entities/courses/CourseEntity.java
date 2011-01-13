@@ -1,13 +1,12 @@
 package fi.pyramus.services.entities.courses;
 
 import java.util.Date;
-
 import fi.pyramus.services.entities.base.SubjectEntity;
 import fi.pyramus.services.entities.users.UserEntity;
 
 public class CourseEntity {
 
-  public CourseEntity(Long id, String name, String nameExtension, UserEntity creator, Date created, UserEntity lastModifier, Date lastModified, String description,
+  public CourseEntity(Long id, String name, String nameExtension, String[] tags, UserEntity creator, Date created, UserEntity lastModifier, Date lastModified, String description,
       SubjectEntity subject, Integer courseNumber, Double courseLength, Long courseLengthUnitId, CourseEducationTypeEntity[] educationTypes, Boolean archived,
       CourseComponentEntity[] courseComponents, Long moduleId, Date beginDate, Date endDate) {
     super();
@@ -29,6 +28,7 @@ public class CourseEntity {
     this.moduleId = moduleId;
     this.beginDate = beginDate;
     this.endDate = endDate;
+    this.tags = tags;
   }
 
   public Long getId() {
@@ -102,6 +102,10 @@ public class CourseEntity {
   public Integer getCourseNumber() {
     return courseNumber;
   }
+  
+  public String[] getTags() {
+    return tags;
+  }
 
   private Long id;
   private String name;
@@ -121,4 +125,5 @@ public class CourseEntity {
   private Long moduleId;
   private Date beginDate;
   private Date endDate;
+  private String[] tags;
 }

@@ -30,6 +30,8 @@ import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.persistence.search.SearchResult;
+import fi.pyramus.persistence.search.SearchTimeFilterMode;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.courses.CourseComponentEntity;
@@ -37,6 +39,7 @@ import fi.pyramus.services.entities.courses.CourseEducationSubtypeEntity;
 import fi.pyramus.services.entities.courses.CourseEducationTypeEntity;
 import fi.pyramus.services.entities.courses.CourseEnrolmentTypeEntity;
 import fi.pyramus.services.entities.courses.CourseEntity;
+import fi.pyramus.services.entities.courses.CourseEntitySearchResult;
 import fi.pyramus.services.entities.courses.CourseParticipationTypeEntity;
 import fi.pyramus.services.entities.courses.CourseStudentEntity;
 import fi.pyramus.services.entities.courses.CourseUserEntity;
@@ -249,7 +252,6 @@ public class CoursesService extends PyramusService {
       Date enrolmentDate, Boolean lodging, String optionality) {
 
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
@@ -395,6 +397,19 @@ public class CoursesService extends PyramusService {
     CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
 
     return EntityFactoryVault.buildFromDomainObject(courseStudent);
+  }
+  
+  public CourseEntitySearchResult searchCourses(Integer resultsPerPage, Integer page, String name, String tags, String nameExtension, String description, Long courseStateId, Long subjectId, String timeFilterMode, Date timeframeStart, Date timeframeEnd) {
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    
+    CourseState courseState = courseStateId != null ? courseDAO.getCourseState(courseStateId) : null;
+    Subject subject = subjectId != null ? baseDAO.getSubject(subjectId) : null;
+    SearchTimeFilterMode tFilterMode = timeFilterMode != null ? SearchTimeFilterMode.valueOf(timeFilterMode) : null;
+    
+    SearchResult<Course> searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState, subject, tFilterMode, timeframeStart, timeframeEnd, true);
+    
+    return new CourseEntitySearchResult(searchResult.getPage(), searchResult.getPages(), searchResult.getTotalHitCount(), (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(searchResult.getResults()));
   }
   
 }

@@ -1,7 +1,6 @@
 package fi.pyramus.services.entities.courses;
 
 import java.util.Date;
-
 import fi.pyramus.services.entities.students.StudentEntity;
 
 public class CourseStudentEntity {
@@ -50,7 +49,7 @@ public class CourseStudentEntity {
   public Boolean getArchived() {
   	return archived;
   }
-
+  
   private Long id;
   private Date enrolmentTime;
   private StudentEntity student;
