@@ -264,10 +264,13 @@ public class GradingDAO extends PyramusDAO {
   public List<CourseAssessment> listCourseAssessmentsByStudent(Student student) {
     Session s = getHibernateSession();
     
-    return s.createQuery("from CourseAssessment " +
-      "where courseStudent.student=:student and archived=:archived")
+    return s.createQuery(
+        "from CourseAssessment ca " +
+        "where ca.courseStudent.student=:student and ca.archived=:archived and ca.courseStudent.archived=:archived2")
       .setEntity("student", student)
-      .setBoolean("archived", Boolean.FALSE).list();
+      .setBoolean("archived", Boolean.FALSE)
+      .setBoolean("archived2", Boolean.FALSE)
+      .list();
   }  
   
   /* TransferCredit */

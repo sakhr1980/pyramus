@@ -59,24 +59,22 @@
     <c:set var="archivedStudyProgrammes"/>
     
     <c:forEach var="student" items="${students}" varStatus="sl">
-      <c:choose>
-        <c:when test="${student.active}">
-          <c:if test="${student.studyProgramme != null}">
+      <c:if test="${student.studyProgramme != null}">
+        <c:choose>
+          <c:when test="${student.active}">
             <c:if test="${fn:length(activeStudyProgrammes) gt 0}">
               <c:set var="activeStudyProgrammes">${activeStudyProgrammes},&nbsp;</c:set>
-            </c:if>        
+            </c:if>
             <c:set var="activeStudyProgrammes">${activeStudyProgrammes}${student.studyProgramme.name}</c:set>
-          </c:if>
-        </c:when>
-        <c:otherwise>
-          <c:if test="${student.studyProgramme != null}">
-            <c:if test="${fn:length(arhivedStudyProgrammes) gt 0}">
+          </c:when>
+          <c:otherwise>
+            <c:if test="${fn:length(archivedStudyProgrammes) gt 0}">
               <c:set var="archivedStudyProgrammes">${archivedStudyProgrammes},&nbsp;</c:set>
-            </c:if>        
+            </c:if>
             <c:set var="archivedStudyProgrammes">${archivedStudyProgrammes}${student.studyProgramme.name}</c:set>
-          </c:if>
-        </c:otherwise>
-      </c:choose>
+          </c:otherwise>
+        </c:choose>
+      </c:if>
     </c:forEach>
 
     <div class="studentInfoPopupStudyProgrammeContainer">
