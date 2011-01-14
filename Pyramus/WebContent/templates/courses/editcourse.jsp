@@ -88,6 +88,7 @@
           },
           onSuccess: function (jsonResponse) {
             var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, '', '', '']);
+            studentsTable.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
