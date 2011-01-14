@@ -1,6 +1,15 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.4 (110113.5)
+
+  * Added tags to SchoolEntities, CourseEntities, ModuleEntities, StudentEntities and UserEntities (webservices)
+  * Added course search to CourseService (webservices)
+  * Fix to viewstudent crash when student has assessments
+  * Fix to  issue #23 (report category management crashed when adding new category)
+  * Fix to StudentDAO listStudentsByStudentVariable query
+
+
 *Version 0.3 (110111.4)
 
   * Added tags to several search views
