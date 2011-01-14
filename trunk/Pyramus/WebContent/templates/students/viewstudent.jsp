@@ -110,32 +110,32 @@
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableSubjectHeader"/>',
-            right: 592, 
+            right: 604, 
             width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingDateHeader"/>',
-            right: 484, 
+            right: 496, 
             width: 100,
             dataType: 'date',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthHeader"/>',
-            right: 376, 
+            right: 388, 
             width: 100,
             dataType: 'number',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradeHeader"/>',
-            right: 268, 
-            width: 100,
+            right: 300, 
+            width: 80,
             dataType: 'number',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingScaleHeader"/>',
-            right: 160, 
-            width: 100,
+            right: 172, 
+            width: 120,
             dataType: 'text',
             editable: false
           }, {
@@ -172,32 +172,32 @@
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableSubjectHeader"/>',
-            right: 592, 
+            right: 604, 
             width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingDateHeader"/>',
-            right: 484, 
+            right: 496, 
             width: 100,
             dataType: 'date',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthHeader"/>',
-            right: 376, 
+            right: 388, 
             width: 100,
             dataType: 'number',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradeHeader"/>',
-            right: 268, 
-            width: 100,
+            right: 300, 
+            width: 80,
             dataType: 'number',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingScaleHeader"/>',
-            right: 160, 
-            width: 100,
+            right: 172, 
+            width: 120,
             dataType: 'text',
             editable: false
           }, {
@@ -207,15 +207,18 @@
             dataType: 'text',
             editable: false
           }, {
+            dataType: 'hidden',
+            paramName: 'courseStudentId'
+          }, {
             width: 30,
             right: 00,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-            tooltip: '<fmt:message key="students.viewStudent.studentTableEditTooltip"/>',
+            tooltip: '<fmt:message key="students.viewStudent.courseAssessmentsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
-              var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
-              alert("TODO: modify assesments");
+              var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+              redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             }
           }]
         });
@@ -265,6 +268,7 @@
               '${studentCourseAssesment.grade.name}',
               '${studentCourseAssesment.grade.gradingScale.name}',
               '${studentCourseAssesment.assessingUser.fullName}',
+              '${studentCourseAssesment.courseStudent.id}',
               '']);
           </c:forEach>
         </c:forEach>
