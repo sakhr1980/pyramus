@@ -185,7 +185,7 @@
             </div>
               
             <div id="noEducationTypesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.educationTypes.noEducationTypesAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.educationTypes.noEducationTypesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.educationTypes.noEducationTypesAddedPreFix"/> <span onclick="addEducationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.educationTypes.noEducationTypesAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="educationTypesTable"></div>

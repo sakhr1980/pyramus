@@ -206,7 +206,7 @@
             </div>
               
             <div id="noEducationSubtypesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.educationSubtypes.noEducationSubtypesAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.educationSubtypes.noEducationSubtypesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.educationSubtypes.noEducationSubtypesAddedPreFix"/> <span onclick="addEducationSubtypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.educationSubtypes.noEducationSubtypesAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="educationSubtypesTable"></div>
