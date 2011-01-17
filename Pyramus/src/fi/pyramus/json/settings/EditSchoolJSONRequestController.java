@@ -42,7 +42,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     Long schoolFieldId = requestContext.getLong("schoolFieldId");
     SchoolField schoolField = null;
     if ((schoolFieldId != null) && (schoolFieldId.intValue() >= 0))
-      baseDAO.findSchoolFieldById(schoolFieldId);
+      schoolField = baseDAO.findSchoolFieldById(schoolFieldId);
     
     String schoolCode = requestContext.getString("code");
     String schoolName = requestContext.getString("name");
