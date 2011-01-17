@@ -7,6 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 
+import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
 
@@ -40,6 +41,14 @@ public class Defaults {
   public void setInitialCourseParticipationType(CourseParticipationType initialCourseParticipationType) {
     this.initialCourseParticipationType = initialCourseParticipationType;
   }
+  
+  public CourseEnrolmentType getInitialCourseEnrolmentType() {
+    return initialCourseEnrolmentType;
+  }
+  
+  public void setInitialCourseEnrolmentType(CourseEnrolmentType initialCourseEnrolmentType) {
+    this.initialCourseEnrolmentType = initialCourseEnrolmentType;
+  }
 
   @SuppressWarnings("unused")
   private void setVersion(Long version) {
@@ -65,6 +74,10 @@ public class Defaults {
   @JoinColumn (name = "courseParticipationType")
   private CourseParticipationType initialCourseParticipationType;
 
+  @ManyToOne 
+  @JoinColumn (name = "courseEnrolmentType")
+  private CourseEnrolmentType initialCourseEnrolmentType;
+  
   @Version
   @Column(nullable = false)
   private Long version;

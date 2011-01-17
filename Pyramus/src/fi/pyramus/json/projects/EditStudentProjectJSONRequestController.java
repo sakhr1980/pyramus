@@ -137,7 +137,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
       Course course = courseId == -1 ? null : courseDAO.getCourse(courseId);
       CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, studentProject.getStudent());
       if (courseStudent == null) {
-        CourseEnrolmentType courseEnrolmentType = null;
+        CourseEnrolmentType courseEnrolmentType = defaults.getInitialCourseEnrolmentType();
         CourseParticipationType participationType = defaults.getInitialCourseParticipationType();
         Date enrolmentDate = new Date(System.currentTimeMillis());
         Boolean lodging = Boolean.FALSE;
