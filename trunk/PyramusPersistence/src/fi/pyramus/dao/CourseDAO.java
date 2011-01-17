@@ -18,9 +18,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
@@ -1219,6 +1217,7 @@ public class CourseDAO extends PyramusDAO {
     return (CourseStudent) s.createCriteria(CourseStudent.class)
       .add(Restrictions.eq("course", course))
       .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
       .uniqueResult();
   }
 
