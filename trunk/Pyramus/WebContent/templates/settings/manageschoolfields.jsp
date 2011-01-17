@@ -26,7 +26,7 @@
 
       function addRow() {
         var table = getIxTableById('schoolFieldsTable');
-        var rowIndex = table.addRow(['', '', '', '', '', -1, 1]);
+        var rowIndex = table.addRow(['', '', '', '', -1, 1]);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -55,7 +55,7 @@
               table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
             }
           }, {
-            header : '<fmt:message key="settings.manageSchoolFields.municipalitiesTableNameHeader"/>',
+            header : '<fmt:message key="settings.manageSchoolFields.schoolFieldsTableNameHeader"/>',
             left : 38,
             width : 300,
             dataType: 'text',
@@ -67,12 +67,12 @@
             width: 30,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
-            tooltip: '<fmt:message key="settings.manageSchoolFields.municipalitiesTableArchiveTooltip"/>',
+            tooltip: '<fmt:message key="settings.manageSchoolFields.schoolFieldsTableArchiveTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
-              var municipalityId = table.getCellValue(event.row, table.getNamedColumnIndex('id'));
-              var municipalityName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.manageSchoolFields.municipalityArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(municipalityName);
+              var schoolFieldId = table.getCellValue(event.row, table.getNamedColumnIndex('id'));
+              var name = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
+              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.manageSchoolFields.schoolFieldsArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(name);
 
               archivedRowIndex = event.row; 
                  
@@ -83,9 +83,9 @@
                 showOk : true,  
                 showCancel : true,
                 autoEvaluateSize: true,
-                title : '<fmt:message key="settings.manageSchoolFields.municipalityArchiveConfirmDialogTitle"/>',
-                okLabel : '<fmt:message key="settings.manageSchoolFields.municipalityArchiveConfirmDialogOkLabel"/>',
-                cancelLabel : '<fmt:message key="settings.manageSchoolFields.municipalityArchiveConfirmDialogCancelLabel"/>'
+                title : '<fmt:message key="settings.manageSchoolFields.archiveConfirmDialogTitle"/>',
+                okLabel : '<fmt:message key="settings.manageSchoolFields.archiveConfirmDialogOkLabel"/>',
+                cancelLabel : '<fmt:message key="settings.manageSchoolFields.archiveConfirmDialogCancelLabel"/>'
               });
             
               dialog.addDialogListener(function(event) {
@@ -93,7 +93,7 @@
                   case 'okClick':
                     JSONRequest.request("settings/archiveschoolfield.json", {
                       parameters: {
-                        municipalityId: municipalityId
+                        schoolFieldId: schoolFieldId
                       },
                       onSuccess: function (jsonResponse) {
                         getIxTableById('schoolFieldsTable').deleteRow(archivedRowIndex);
@@ -112,7 +112,7 @@
             width: 30,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="settings.manageSchoolFields.municipalitiesTableRemoveTooltip"/>',
+            tooltip: '<fmt:message key="settings.manageSchoolFields.schoolFieldsTableRemoveTooltip"/>',
             onclick: function (event) {
               event.tableObject.deleteRow(event.row);
               if (event.tableObject.getRowCount() == 0) {
@@ -142,7 +142,7 @@
             ${field.id},
             0
           ]);
-          table.showCell(rowIndex, municipalitiesTable.getNamedColumnIndex('archiveButton'));
+          table.showCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
         </c:forEach>
 
         if (table.getRowCount() > 0) {
@@ -160,26 +160,26 @@
     
     <h1 class="genericPageHeader"><fmt:message key="settings.manageSchoolFields.pageTitle"/></h1>
     
-    <div id="manageMunicipalitiesFormContainer"> 
+    <div id="manageSchoolFieldsFormContainer"> 
 	    <div class="genericFormContainer"> 
 	      <form action="saveschoolfields.json" method="post" ix:jsonform="true" ix:useglasspane="true">
 	  
 	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#manageMunicipalities">
-	            <fmt:message key="settings.manageSchoolFields.tabLabelMunicipalities"/>
+	          <a class="tabLabel" href="#manageSchoolFields">
+	            <fmt:message key="settings.manageSchoolFields.tabLabelSchoolFields"/>
 	          </a>
 	        </div>
 	        
-          <div id="manageMunicipalities" class="tabContentixTableFormattedData">
+          <div id="manageSchoolFields" class="tabContentixTableFormattedData">
             <div class="genericTableAddRowContainer">
-              <span class="genericTableAddRowLinkContainer" onclick="addMunicipalityTableRow();"><fmt:message key="settings.municipalities.addMunicipalityLink"/></span>
+              <span class="genericTableAddRowLinkContainer" onclick="addRow();"><fmt:message key="settings.manageSchoolFields.addSchoolFieldLink"/></span>
             </div>
               
             <div id="noSchoolFieldsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.manageSchoolFields.noMunicipalitiesAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.municipalities.noMunicipalitiesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedClickHereLink"/></span>.</span>
             </div>
             
-            <div id="table"></div>
+            <div id="schoolFieldsTable"></div>
           </div>
 	  
           <div class="genericFormSubmitSectionOffTab">

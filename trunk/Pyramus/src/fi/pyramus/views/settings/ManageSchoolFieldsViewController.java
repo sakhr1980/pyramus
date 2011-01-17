@@ -45,7 +45,7 @@ public class ManageSchoolFieldsViewController implements PyramusViewController, 
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "settings.manageschoolfields.pageTitle");
+    return Messages.getInstance().getText(locale, "settings.manageSchoolFields.pageTitle");
   }
 
 }
