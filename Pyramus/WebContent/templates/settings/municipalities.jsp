@@ -185,7 +185,7 @@
             </div>
               
             <div id="noMunicipalitiesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.municipalities.noMunicipalitiesAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.municipalities.noMunicipalitiesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.municipalities.noMunicipalitiesAddedPreFix"/> <span onclick="addMunicipalityTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.municipalities.noMunicipalitiesAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="municipalitiesTable"></div>
