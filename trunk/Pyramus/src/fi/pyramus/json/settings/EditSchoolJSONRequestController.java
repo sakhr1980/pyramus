@@ -16,6 +16,7 @@ import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.SchoolField;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
@@ -38,6 +39,9 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     Long schoolId = NumberUtils.createLong(requestContext.getRequest().getParameter("schoolId"));
     School school = baseDAO.getSchool(schoolId);
 
+    Long schoolFieldId = requestContext.getLong("schoolFieldId");
+    SchoolField schoolField = baseDAO.findSchoolFieldById(schoolFieldId);
+    
     String schoolCode = requestContext.getString("code");
     String schoolName = requestContext.getString("name");
     String tagsText = requestContext.getString("tags");
@@ -55,7 +59,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
       }
     }
     
-    baseDAO.updateSchool(school, schoolCode, schoolName);
+    baseDAO.updateSchool(school, schoolCode, schoolName, schoolField);
 
     // Tags
 

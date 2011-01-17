@@ -414,6 +414,20 @@
 
           <div class="genericFormSection">
             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+              <jsp:param name="titleLocale" value="settings.editSchool.fieldTitle"/>
+              <jsp:param name="helpLocale" value="settings.editSchool.fieldHelp"/>
+            </jsp:include> 
+
+            <select name="schoolFieldId">
+              <option value="-1"></option>
+              <c:forEach var="field" items="${schoolFields}">
+                <option value="${field.id}">${fn:escapeXml(field.name)}</option>
+              </c:forEach>
+            </select>
+          </div>
+
+          <div class="genericFormSection">
+            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
               <jsp:param name="titleLocale" value="settings.editSchool.tagsTitle"/>
               <jsp:param name="helpLocale" value="settings.editSchool.tagsHelp"/>
             </jsp:include>

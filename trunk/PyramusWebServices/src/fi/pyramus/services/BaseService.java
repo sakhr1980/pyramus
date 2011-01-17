@@ -230,7 +230,7 @@ public class BaseService extends PyramusService {
   public void updateSchool(Long schoolId, String code, String name) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     School school = baseDAO.getSchool(schoolId);
-    baseDAO.updateSchool(school, code, name);
+    baseDAO.updateSchool(school, code, name, school.getField());
     validateEntity(school);
   }
 
