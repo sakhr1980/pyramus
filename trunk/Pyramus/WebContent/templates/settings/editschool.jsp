@@ -431,7 +431,7 @@
                 </c:choose>
               </c:forEach>
               <c:if test="${school.field.archived}">
-                <option value="${school.field.id}" selected="selected">${fn:escapeXml(school.field.name)}</option>
+                <option value="${school.field.id}" selected="selected">${fn:escapeXml(school.field.name)} ***</option>
               </c:if>
             </select>
           </div>

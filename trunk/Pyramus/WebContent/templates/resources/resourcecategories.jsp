@@ -175,7 +175,7 @@
             </div>
               
             <div id="noResourceCategoriesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="resources.resourceCategories.noResourceCategoriesAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="resources.resourceCategories.noResourceCategoriesAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="resources.resourceCategories.noResourceCategoriesAddedPreFix"/> <span onclick="addResourceCategoriesTableRow();" class="genericTableAddRowLink"><fmt:message key="resources.resourceCategories.noResourceCategoriesAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="resourceCategoriesTable"></div>

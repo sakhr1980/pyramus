@@ -5,7 +5,7 @@
     <table name="SchoolField" primaryKeys="id">
       <fields>
         <field name="id" type="java.lang.Long" nullable="false" unique="false" />
-        <field name="name" type="java.lang.String" nullable="true" unique="false" />
+        <field name="name" type="java.lang.String" nullable="false" unique="false" />
         <field name="archived" type="java.lang.Boolean" nullable="false" unique="false" />
       </fields>
     </table>

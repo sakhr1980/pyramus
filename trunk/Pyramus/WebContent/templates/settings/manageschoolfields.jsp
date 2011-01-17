@@ -176,7 +176,7 @@
             </div>
               
             <div id="noSchoolFieldsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-              <span><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedPreFix"/> <span onclick="addeEucationTypesTableRow();" class="genericTableAddRowLink"><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedClickHereLink"/></span>.</span>
+              <span><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedPreFix"/> <span onclick="addRow();" class="genericTableAddRowLink"><fmt:message key="settings.manageSchoolFields.noSchoolFieldsAddedClickHereLink"/></span>.</span>
             </div>
             
             <div id="schoolFieldsTable"></div>
