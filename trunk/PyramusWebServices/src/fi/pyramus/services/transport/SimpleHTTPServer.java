@@ -27,13 +27,13 @@ public class SimpleHTTPServer extends org.apache.axis2.transport.http.SimpleHTTP
   
   @Override
   public void init(ConfigurationContext axisConf, TransportInDescription transprtIn) throws AxisFault {
-    String method = getSetting("reports.method");
+    String protocol = getSetting("reports.protocol");
     String host = getSetting("reports.host");
     String port = getSetting("reports.port");
     
-    if (method != null && !"".equals(method) && !"".equals(host) && !"".equals(host) && port != null && !"".equals(port)) {
+    if (protocol != null && !"".equals(protocol) && !"".equals(host) && !"".equals(host) && port != null && !"".equals(port)) {
       String hostAddress = new StringBuilder()
-        .append(method)
+        .append(protocol)
         .append("://")
         .append(host)
         .append(':')
