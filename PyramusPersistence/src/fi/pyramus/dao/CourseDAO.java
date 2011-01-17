@@ -18,7 +18,9 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
@@ -739,9 +741,19 @@ public class CourseDAO extends PyramusDAO {
 
   public CourseParticipationType createCourseParticipationType(String name) {
     Session s = getHibernateSession();
-
+    
+    Integer indexColumn = (Integer) s.createCriteria(CourseParticipationType.class)
+      .setProjection(Projections.max("indexColumn"))
+      .uniqueResult();
+    
+    if (indexColumn == null)
+      indexColumn = new Integer(0);
+    else
+      indexColumn++;
+    
     CourseParticipationType courseParticipationType = new CourseParticipationType();
     courseParticipationType.setName(name);
+    courseParticipationType.setIndexColumn(indexColumn);
 
     s.save(courseParticipationType);
 
