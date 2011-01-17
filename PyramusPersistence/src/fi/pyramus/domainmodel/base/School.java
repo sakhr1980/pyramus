@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceException;
@@ -150,6 +151,24 @@ public class School implements ArchivableEntity {
     return version;
   }
 
+  /**
+   * Sets the field of this school
+   * 
+   * @param field new field
+   */
+  public void setField(SchoolField field) {
+    this.field = field;
+  }
+
+  /**
+   * Returns the field of this school
+   * 
+   * @return field
+   */
+  public SchoolField getField() {
+    return field;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="School")  
   @TableGenerator(name="School", allocationSize=1)
@@ -187,6 +206,10 @@ public class School implements ArchivableEntity {
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
 
+  @ManyToOne
+  @JoinColumn (name = "field")
+  private SchoolField field;
+  
   @Version
   @Column(nullable = false)
   private Long version;

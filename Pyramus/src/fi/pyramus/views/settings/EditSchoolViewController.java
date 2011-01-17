@@ -47,6 +47,7 @@ public class EditSchoolViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
     pageRequestContext.getRequest().setAttribute("variableKeys", baseDAO.listSchoolUserEditableVariableKeys());
+    pageRequestContext.getRequest().setAttribute("schoolFields", baseDAO.listSchoolFields());
 
     pageRequestContext.setIncludeJSP("/templates/settings/editschool.jsp");
   }

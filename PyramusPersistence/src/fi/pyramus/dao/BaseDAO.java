@@ -43,6 +43,7 @@ import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.SchoolField;
 import fi.pyramus.domainmodel.base.SchoolVariable;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.domainmodel.base.StudyProgramme;
@@ -1335,12 +1336,14 @@ public class BaseDAO extends PyramusDAO {
    *          The school code
    * @param name
    *          The school name
+   * @param schoolField 
    */
-  public void updateSchool(School school, String code, String name) {
+  public void updateSchool(School school, String code, String name, SchoolField schoolField) {
     Session s = getHibernateSession();
 
     school.setCode(code);
     school.setName(name);
+    school.setField(schoolField);
     s.saveOrUpdate(school);
   }
 
@@ -1736,5 +1739,38 @@ public class BaseDAO extends PyramusDAO {
   public void deleteEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit) {
     Session s = getHibernateSession();
     s.delete(educationalTimeUnit);
+  }
+
+  /* SchoolField */
+  
+  @SuppressWarnings("unchecked")
+  public List<SchoolField> listSchoolFields() {
+    Session s = getHibernateSession();
+    return s.createCriteria(SchoolField.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
+  }
+
+  public SchoolField findSchoolFieldById(Long schoolFieldId) {
+    EntityManager entityManager = getEntityManager();
+    
+    return entityManager.find(SchoolField.class, schoolFieldId);
+  }
+
+  public SchoolField createSchoolField(String name) {
+    Session s = getHibernateSession();
+
+    SchoolField schoolField = new SchoolField();
+    schoolField.setName(name);
+    s.saveOrUpdate(schoolField);
+
+    return schoolField;
+  }
+
+  public SchoolField updateSchoolField(SchoolField schoolField, String name) {
+    Session s = getHibernateSession();
+
+    schoolField.setName(name);
+    s.saveOrUpdate(schoolField);
+
+    return schoolField;
   }
 }
