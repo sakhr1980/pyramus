@@ -1773,4 +1773,10 @@ public class BaseDAO extends PyramusDAO {
 
     return schoolField;
   }
+
+  public void archiveSchoolField(SchoolField schoolField) {
+    Session s = getHibernateSession();
+    schoolField.setArchived(true);
+    s.saveOrUpdate(schoolField);
+  }
 }

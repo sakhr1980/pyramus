@@ -421,8 +421,18 @@
             <select name="schoolFieldId">
               <option value="-1"></option>
               <c:forEach var="field" items="${schoolFields}">
-                <option value="${field.id}">${fn:escapeXml(field.name)}</option>
+                <c:choose>
+                  <c:when test="${field.id eq school.field.id}">
+                    <option value="${field.id}" selected="selected">${fn:escapeXml(field.name)}</option>
+                  </c:when>
+                  <c:otherwise>
+                    <option value="${field.id}">${fn:escapeXml(field.name)}</option>
+                  </c:otherwise>
+                </c:choose>
               </c:forEach>
+              <c:if test="${school.field.archived}">
+                <option value="${school.field.id}" selected="selected">${fn:escapeXml(school.field.name)}</option>
+              </c:if>
             </select>
           </div>
 
