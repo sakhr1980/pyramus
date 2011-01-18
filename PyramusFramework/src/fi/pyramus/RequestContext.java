@@ -159,6 +159,17 @@ public abstract class RequestContext {
   }
 
   /**
+   * Sets an error status to this context.
+   * 
+   * @param errorLevel The level of the error
+   * @param code The error code
+   * @param message The error message
+   */
+  public void setErrorStatus(ErrorLevel errorLevel, StatusCode code, String message) {
+    setErrorStatus(errorLevel, code, message, null);
+  }
+
+  /**
    * Returns the error message of this context.
    * 
    * @return The error message of this context

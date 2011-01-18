@@ -52,7 +52,15 @@ public enum StatusCode {
   /**
    * External authentication service has accepted login but local user is missing
    */
-  LOCAL_USER_MISSING (6004);
+  LOCAL_USER_MISSING (6004),
+  /**
+   * Anonymous user tries to use feature that is not authorized for anonymous users
+   */
+   NOT_LOGGED_IN (6005),
+   /**
+    * User does not have enough permissions to perform requested operation
+    */
+   PERMISSION_DENIED (6006);
   
   /**
    * Constructor specifying the status code.
