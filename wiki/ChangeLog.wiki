@@ -7,8 +7,7 @@
   * Added functionality and localization support to edit course assessment button in viewstudent - course assessments table
   * Added SOAP end point configuration to system variables
   * Added property initialCourseEnrolmentType to Defaults entity (required to fix issue #28)
-  * Added default course enrolment type setting to course service's
-addCourseStudent method
+  * Added default course enrolment type setting to course service's addCourseStudent method
   * Changed GradingDAO.listCourseAssessmentsByStudent to not list assessments that are on archived CourseStudents (affects viewstudent)
   * Changed editcourse to not show course student assessment button for added students until first save
   * Rearranged table for student assessments in viewstudent
