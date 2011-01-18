@@ -1,7 +1,25 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
-*Version 0.4 (110113.5)
+*Version 0.32 (110118.6)
+  * Added SchoolField entity which can be used to determine which field of education the school is of. Addition includes management view for SchoolFields and inclusion to School editor
+  * Added functionality and localization support to edit course assessment button in viewstudent - course assessments table
+  * Added SOAP end point configuration to system variables
+  * Added property initialCourseEnrolmentType to Defaults entity (required to fix issue #28)
+  * Added default course enrolment type setting to course service's
+addCourseStudent method
+  * Changed GradingDAO.listCourseAssessmentsByStudent to not list assessments that are on archived CourseStudents (affects viewstudent)
+  * Changed editcourse to not show course student assessment button for added students until first save
+  * Rearranged table for student assessments in viewstudent
+  * Fix for Issue #26
+  * Fix to Issue #27
+  * Fix for Issue #28
+  * Fix for Issue #29
+  * Fixed a typo in studentinfopopup which prevented comma separation of old study programmes
+  * Fixed broken links in several management JSPs (i.e. municipality management)
+  * Fixed version numbering in ChangeLog
+
+*Version 0.31 (110113.5)
 
   * Added tags to SchoolEntities, CourseEntities, ModuleEntities, StudentEntities and UserEntities (webservices)
   * Added course search to CourseService (webservices)
