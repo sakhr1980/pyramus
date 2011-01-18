@@ -70,8 +70,16 @@ public class BinaryRequestContext extends RequestContext {
       finally {
         responseWriter.close();
       }
-
-      getResponse().sendError(500);
+      
+      switch (getStatusCode()) {
+        case PERMISSION_DENIED:
+        case NOT_LOGGED_IN:          
+          getResponse().setStatus(403);
+        break;
+        default:
+          getResponse().setStatus(500);
+        break;
+      }
     }
   }
   

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.breadcrumbs.BreadcrumbHandler;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -87,13 +88,16 @@ public class Servlet extends HttpServlet {
       // redirect them to the login page 
 
       if (!authorized) {
-        if (requestController instanceof PyramusViewController && !requestContext.isLoggedIn()) {
-          HttpSession session = requestContext.getRequest().getSession(true);
-          session.setAttribute("loginFollowupURL", getURL(requestContext.getRequest()));
-          response.sendRedirect(request.getContextPath() + "/users/login.page");
-        }
-        else {
-          response.setStatus(403);
+        if (!requestContext.isLoggedIn()) { 
+          if (requestController instanceof PyramusViewController) {
+            HttpSession session = requestContext.getRequest().getSession(true);
+            session.setAttribute("loginFollowupURL", getURL(requestContext.getRequest()));
+            response.sendRedirect(request.getContextPath() + "/users/login.page");
+          } else {
+            requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.notLoggedIn"));
+          }
+        } else {
+          requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.permissionDenied"));
         }
       }
       else {
