@@ -50,6 +50,7 @@ public class SearchSchoolsJSONRequestController implements JSONRequestController
       Map<String, Object> schoolInfo = new HashMap<String, Object>();
       schoolInfo.put("id", school.getId());
       schoolInfo.put("name", school.getName());
+      schoolInfo.put("fieldName", school.getField() != null ? school.getField().getName() : "");
       results.add(schoolInfo);
     }
 

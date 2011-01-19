@@ -16,6 +16,8 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
@@ -531,14 +533,16 @@ public class BaseDAO extends PyramusDAO {
    *          The school code
    * @param name
    *          The school name
+   * @param schoolField 
    * 
    * @return The created school
    */
-  public School createSchool(String code, String name) {
+  public School createSchool(String code, String name, SchoolField schoolField) {
     Session s = getHibernateSession();
     School school = new School();
     school.setCode(code);
     school.setName(name);
+    school.setField(schoolField);
     s.saveOrUpdate(school);
     return school;
   }
@@ -1107,7 +1111,12 @@ public class BaseDAO extends PyramusDAO {
         luceneQuery = parser.parse(queryString);
       }
 
-      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class).setFirstResult(firstResult).setMaxResults(resultsPerPage);
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class)
+        .setSort(new Sort(new SortField[] { 
+            SortField.FIELD_SCORE, 
+            new SortField("nameSortable", SortField.STRING) }))
+        .setFirstResult(firstResult)
+        .setMaxResults(resultsPerPage);
       query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
@@ -1172,7 +1181,12 @@ public class BaseDAO extends PyramusDAO {
         luceneQuery = parser.parse(queryString);
       }
 
-      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class).setFirstResult(firstResult).setMaxResults(resultsPerPage);
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class)
+        .setSort(new Sort(new SortField[] { 
+            SortField.FIELD_SCORE, 
+            new SortField("nameSortable", SortField.STRING) }))
+        .setFirstResult(firstResult)
+        .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
         query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);

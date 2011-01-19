@@ -36,7 +36,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, '', '', results[i].id]);
+              resultsTable.addRow([results[i].name, results[i].fieldName, '', '', results[i].id]);
             }
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
@@ -73,6 +73,12 @@
           columns : [ {
             paramName: 'name',
             left: 8,
+            dataType: 'text',
+            editable: false
+          }, {
+            paramName: 'schoolFieldName',
+            right: 38,
+            width: 180,
             dataType: 'text',
             editable: false
           }, {

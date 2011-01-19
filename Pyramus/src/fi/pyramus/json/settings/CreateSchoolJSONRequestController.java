@@ -11,6 +11,7 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.SchoolField;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
@@ -34,6 +35,11 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
     String schoolName = requestContext.getString("name");
     String tagsText = requestContext.getString("tags");
     
+    Long schoolFieldId = requestContext.getLong("schoolFieldId");
+    SchoolField schoolField = null;
+    if ((schoolFieldId != null) && (schoolFieldId.intValue() >= 0))
+      schoolField = baseDAO.findSchoolFieldById(schoolFieldId);
+
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
@@ -47,7 +53,7 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
       }
     }
     
-    School school = baseDAO.createSchool(schoolCode, schoolName);
+    School school = baseDAO.createSchool(schoolCode, schoolName, schoolField);
     
     // Tags
     
