@@ -217,7 +217,8 @@ public class BaseService extends PyramusService {
 
   public SchoolEntity createSchool(String code, String name) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    School school = baseDAO.createSchool(code, name);
+    // TODO: schoolField parameter
+    School school = baseDAO.createSchool(code, name, null);
     validateEntity(school);
     return EntityFactoryVault.buildFromDomainObject(school);
   }
@@ -230,6 +231,7 @@ public class BaseService extends PyramusService {
   public void updateSchool(Long schoolId, String code, String name) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     School school = baseDAO.getSchool(schoolId);
+    // TODO: schoolField parameter
     baseDAO.updateSchool(school, code, name, school.getField());
     validateEntity(school);
   }

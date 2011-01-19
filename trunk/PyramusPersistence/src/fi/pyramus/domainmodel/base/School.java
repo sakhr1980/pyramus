@@ -35,6 +35,7 @@ import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
@@ -77,6 +78,12 @@ public class School implements ArchivableEntity {
     return name;
   }
 
+  @Transient
+  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  public String getNameSortable() {
+    return name;
+  }
+  
   public List<SchoolVariable> getVariables() {
     return variables;
   }
