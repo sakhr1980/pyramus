@@ -160,6 +160,14 @@
             redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=${course.id}');
           }
         }));          
+
+        basicRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="courses.viewCourse.manageCourseAssessmentsRelatedActionLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/courses/managecourseassessments.page?course=${course.id}');
+          }
+        }));          
       }
       
       // onLoad
