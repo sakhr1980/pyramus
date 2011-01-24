@@ -12,13 +12,19 @@ public class CourseStudentEntityFactory implements EntityFactory<CourseStudentEn
       return null;
 
     CourseStudent courseStudent = (CourseStudent) domainObject;
-  
+
     StudentEntity student = EntityFactoryVault.buildFromDomainObject(courseStudent.getStudent());
     CourseEntity course = EntityFactoryVault.buildFromDomainObject(courseStudent.getCourse());
     CourseParticipationTypeEntity participationType = EntityFactoryVault.buildFromDomainObject(courseStudent.getParticipationType());
     CourseEnrolmentTypeEntity enrolmentType = EntityFactoryVault.buildFromDomainObject(courseStudent.getCourseEnrolmentType());
-    
-    return new CourseStudentEntity(courseStudent.getId(), courseStudent.getEnrolmentTime(), student, course, participationType, enrolmentType, courseStudent.getLodging(), courseStudent.getArchived());
+
+    String optionality = null;
+    if (courseStudent.getOptionality() != null) {
+      optionality = courseStudent.getOptionality().name();
+    }
+
+    return new CourseStudentEntity(courseStudent.getId(), courseStudent.getEnrolmentTime(), student, course, participationType, enrolmentType,
+        courseStudent.getLodging(), optionality, courseStudent.getArchived());
   }
 
 }

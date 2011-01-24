@@ -6,7 +6,7 @@ import fi.pyramus.services.entities.students.StudentEntity;
 public class CourseStudentEntity {
 
   public CourseStudentEntity(Long id, Date enrolmentTime, StudentEntity student, CourseEntity course, CourseParticipationTypeEntity participationType,
-      CourseEnrolmentTypeEntity courseEnrolmentType, Boolean lodging, Boolean archived) {
+      CourseEnrolmentTypeEntity courseEnrolmentType, Boolean lodging, String optionality, Boolean archived) {
     super();
     this.id = id;
     this.enrolmentTime = enrolmentTime;
@@ -15,6 +15,7 @@ public class CourseStudentEntity {
     this.participationType = participationType;
     this.courseEnrolmentType = courseEnrolmentType;
     this.lodging = lodging;
+    this.optionality = optionality;
     this.archived = archived;
   }
 
@@ -46,6 +47,10 @@ public class CourseStudentEntity {
     return lodging;
   }
 
+  public String getOptionality() {
+    return optionality;
+  }
+
   public Boolean getArchived() {
   	return archived;
   }
@@ -57,5 +62,6 @@ public class CourseStudentEntity {
   private CourseParticipationTypeEntity participationType;
   private CourseEnrolmentTypeEntity courseEnrolmentType;
   private Boolean lodging;
+  private String optionality;
   private Boolean archived;
 }
