@@ -2,7 +2,10 @@ package fi.pyramus.json.courses;
 
 import java.util.Date;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -43,16 +46,16 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
       Long courseStudentId = requestContext.getLong(colPrefix + ".courseStudentId");
       CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
 
-      Long assessingUserId = requestContext.getLong(colPrefix + ".assessingUserId");
-      User assessingUser = userDAO.getUser(assessingUserId);
-      Long gradeId = requestContext.getLong(colPrefix + ".gradeId");
-      Grade grade = gradingDAO.findGradeById(gradeId);
-      Date assessmentDate = requestContext.getDate(colPrefix + ".assessmentDate");
-
-      Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
-      CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
-
       if (courseStudent != null) {
+        Long assessingUserId = requestContext.getLong(colPrefix + ".assessingUserId");
+        User assessingUser = userDAO.getUser(assessingUserId);
+        Long gradeId = requestContext.getLong(colPrefix + ".gradeId");
+        Grade grade = gradingDAO.findGradeById(gradeId);
+        Date assessmentDate = requestContext.getDate(colPrefix + ".assessmentDate");
+
+        Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
+        CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
+
         CourseAssessment assessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
 
         if (assessment != null) {
@@ -60,13 +63,13 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
         } else {
           assessment = gradingDAO.createCourseAssessment(courseStudent, assessingUser, grade, assessmentDate, null);
         }
-      }
 
-      // Update Participation type
-      
-      courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), 
-          courseStudent.getCourseEnrolmentType(), participationType, courseStudent.getEnrolmentTime(), 
-          courseStudent.getLodging(), courseStudent.getOptionality());
+        // Update Participation type
+        courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), 
+            courseStudent.getCourseEnrolmentType(), participationType, courseStudent.getEnrolmentTime(), 
+            courseStudent.getLodging(), courseStudent.getOptionality());
+      } else
+        throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "CourseStudent was not defined");
     }
     requestContext.setRedirectURL(requestContext.getReferer(true));
   }

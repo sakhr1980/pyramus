@@ -23,41 +23,6 @@
 
     <script type="text/javascript">
 
-      function addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName) {
-        JSONRequest.request("students/getstudentstudyprogrammes.json", {
-          parameters: {
-            abstractStudentId: abstractStudentId
-          },
-          onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, '', '', '']);
-            studentsTable.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
-            var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
-            for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
-              IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
-            }
-
-            if (studentsTable.getRowCount() > 0) {
-              $('noStudentsAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
-          }
-        });   
-      };
-
-      function getStudentRowIndex(studentId) {
-        var table = getIxTableById('studentsTable');
-        if (table) {
-          for (var i = 0; i < table.getRowCount(); i++) {
-            var tableStudentId = table.getCellValue(i, table.getNamedColumnIndex('studentId'));
-            if (tableStudentId == studentId) {
-              return i;
-            }
-          }
-        }
-        return -1;
-      }
-
       function setupStudentsTable() {
         var studentsTable = new IxTable($('studentsTable'), {
           id : "studentsTable",
@@ -82,18 +47,28 @@
             tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
-              var gradeCol = studentsTable.getNamedColumnIndex('gradeId');
-              var participationCol = studentsTable.getNamedColumnIndex('participationType');
-              var assessingUserCol = studentsTable.getNamedColumnIndex('assessingUserId');
-              var assessmentDateCol = studentsTable.getNamedColumnIndex('assessmentDate');
-              table.setCellEditable(event.row, gradeCol, table.isCellEditable(event.row, gradeCol) == false);
-              table.setCellEditable(event.row, participationCol, table.isCellEditable(event.row, participationCol) == false);
-              table.setCellEditable(event.row, assessingUserCol, table.isCellEditable(event.row, assessingUserCol) == false);
-              table.setCellEditable(event.row, assessmentDateCol, table.isCellEditable(event.row, assessmentDateCol) == false);
+              var modifiedCol = studentsTable.getNamedColumnIndex('modified');
+              
+              if (table.getCellValue(event.row, modifiedCol) == 0) {
+                var gradeCol = studentsTable.getNamedColumnIndex('gradeId');
+                var participationCol = studentsTable.getNamedColumnIndex('participationType');
+                var assessingUserCol = studentsTable.getNamedColumnIndex('assessingUserId');
+                var assessmentDateCol = studentsTable.getNamedColumnIndex('assessmentDate');
+  
+                table.setCellEditable(event.row, gradeCol, table.isCellEditable(event.row, gradeCol) == false);
+                table.setCellEditable(event.row, participationCol, table.isCellEditable(event.row, participationCol) == false);
+                table.setCellEditable(event.row, assessingUserCol, table.isCellEditable(event.row, assessingUserCol) == false);
+                table.setCellEditable(event.row, assessmentDateCol, table.isCellEditable(event.row, assessmentDateCol) == false);
 
-              if (table.getCellValue(event.row, table.getNamedColumnIndex('assessmentDate')) == '')
-                table.setCellValue(event.row, table.getNamedColumnIndex('assessmentDate'), new Date().getTime());
-              table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+                if (table.getCellValue(event.row, assessmentDateCol) == '')
+                  table.setCellValue(event.row, assessmentDateCol, new Date().getTime());
+                if (table.getCellValue(event.row, assessingUserCol) == '') {
+                  table.setCellValue(event.row, assessingUserCol, '${loggedUserId}');
+                  IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:replace(loggedUserName, "'", "\\'")}');
+                }
+
+                table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+              }
             }
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableNameHeader"/>',
@@ -208,7 +183,15 @@
           onclick: function (event) {
             redirectTo(GLOBAL_contextPath + '/courses/viewcourse.page?course=${course.id}');
           }
-        }));          
+        }));
+        
+        basicRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="courses.manageCourseAssessments.editCourseRelatedActionLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=${course.id}');
+          }
+        }));
       }
             
       // onLoad
