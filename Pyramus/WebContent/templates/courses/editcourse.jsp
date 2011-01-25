@@ -148,8 +148,9 @@
       function getResourceRowIndex(tableId, resourceId) {
         var table = getIxTableById(tableId);
         if (table) {
+          var columnIndex = table.getNamedColumnIndex('resourceId');
           for (var i = 0; i < table.getRowCount(); i++) {
-            var tableResourceId = table.getCellValue(i, table.getNamedColumnIndex('resourceId'));
+            var tableResourceId = table.getCellValue(i, columnIndex);
             if (tableResourceId == resourceId) {
               return i;
             }
@@ -161,8 +162,9 @@
       function getStudentRowIndex(studentId) {
         var table = getIxTableById('studentsTable');
         if (table) {
+          var columnIndex = table.getNamedColumnIndex('studentId');
           for (var i = 0; i < table.getRowCount(); i++) {
-            var tableStudentId = table.getCellValue(i, table.getNamedColumnIndex('studentId'));
+            var tableStudentId = table.getCellValue(i, columnIndex);
             if (tableStudentId == studentId) {
               return i;
             }
@@ -373,8 +375,9 @@
       function getUserRowIndex(userId) {
         var table = getIxTableById('personnelTable');
         if (table) {
+          var columnIndex = table.getNamedColumnIndex('userId');
           for (var i = 0; i < table.getRowCount(); i++) {
-            var tableUserId = table.getCellValue(i, table.getNamedColumnIndex('userId'));
+            var tableUserId = table.getCellValue(i, columnIndex);
             if (tableUserId == userId) {
               return i;
             }
