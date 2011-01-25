@@ -47,7 +47,7 @@
             tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableObject;
-              var modifiedCol = studentsTable.getNamedColumnIndex('modified');
+              var modifiedCol = table.getNamedColumnIndex('modified');
               
               if (table.getCellValue(event.row, modifiedCol) == 0) {
                 var gradeCol = studentsTable.getNamedColumnIndex('gradeId');
@@ -67,7 +67,7 @@
                   IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:replace(loggedUserName, "'", "\\'")}');
                 }
 
-                table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+                table.setCellValue(event.row, modifiedCol, 1);
               }
             }
           }, {
