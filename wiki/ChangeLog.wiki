@@ -1,6 +1,19 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.33 (110125.7)
+
+  * Added Manage Course Assessments view, which is accessed through view course or edit course. View can be used to enter assessments to multiple course students at once.
+  * Added School Field field to createschool view
+  * Added School Field name to school search results
+  * Added school sorting by name to school search
+  * Added missing optionality to CourseStudentEntity in WebServices
+  * Added additional field help texts
+  * Fix for issue #9
+  * Minor optimizations to findRowIndex -methods in editcourse
+  * Renamed finnish name for School Field management link in menu
+
+
 *Version 0.32 (110118.6)
 
   * Added SchoolField entity which can be used to determine which field of education the school is of. Addition includes management view for SchoolFields and inclusion to School editor
