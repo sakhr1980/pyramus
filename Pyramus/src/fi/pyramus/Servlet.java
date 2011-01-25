@@ -97,7 +97,7 @@ public class Servlet extends HttpServlet {
             requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.notLoggedIn"));
           }
         } else {
-          requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.permissionDenied"));
+          requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.PERMISSION_DENIED, Messages.getInstance().getText(request.getLocale(), "generic.errors.permissionDenied"));
         }
       }
       else {
