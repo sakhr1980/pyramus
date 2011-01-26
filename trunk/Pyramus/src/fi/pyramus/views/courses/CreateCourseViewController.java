@@ -1,6 +1,7 @@
 package fi.pyramus.views.courses;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
@@ -53,6 +55,18 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
       }
     }
     pageRequestContext.getRequest().setAttribute("enabledEducationTypes", enabledEducationTypes);
+    
+    // Module tags for the new course
+    
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = module.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     
     // Various lists of base entities from module, course, and resource DAOs 
 
