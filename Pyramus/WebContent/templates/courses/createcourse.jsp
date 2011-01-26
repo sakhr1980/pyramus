@@ -25,11 +25,11 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/courses/coursecomponenteditordrafttask.js"></script>
     
     <script type="text/javascript">
-	    var componentsEditor;
-	
-	    function getCourseComponentsEditor() {
-	      return componentsEditor;
-	    }
+      var componentsEditor;
+  
+      function getCourseComponentsEditor() {
+        return componentsEditor;
+      }
 
       // Generic resource related functions
 
@@ -755,54 +755,54 @@
     <h1 class="genericPageHeader"><fmt:message key="courses.createCourse.pageTitle" /></h1>
     
     <div id="createCourseCreateFormContainer">
-	    <div class="genericFormContainer">
-	      <form action="createcourse.json" method="post" ix:jsonform="true" ix:useglasspane="true">
-	    
-	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#basic"><fmt:message key="courses.createCourse.basicTabTitle" /></a>
-	          <a class="tabLabel" href="#components"><fmt:message key="courses.createCourse.componentsTabTitle" /></a>
-	          <a class="tabLabel" href="#costplan"><fmt:message key="courses.createCourse.costPlanTabTitle" /></a>
-	          <a class="tabLabel" href="#students"><fmt:message key="courses.createCourse.studentsTabTitle" /></a>
+      <div class="genericFormContainer">
+        <form action="createcourse.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+      
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#basic"><fmt:message key="courses.createCourse.basicTabTitle" /></a>
+            <a class="tabLabel" href="#components"><fmt:message key="courses.createCourse.componentsTabTitle" /></a>
+            <a class="tabLabel" href="#costplan"><fmt:message key="courses.createCourse.costPlanTabTitle" /></a>
+            <a class="tabLabel" href="#students"><fmt:message key="courses.createCourse.studentsTabTitle" /></a>
             <ix:extensionHook name="courses.createCourse.tabLabels"/>
-	        </div>
-	
-	        <div id="basic" class="tabContent">
-	      
-	          <div class="genericFormSection">
+          </div>
+  
+          <div id="basic" class="tabContent">
+        
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="courses.createCourse.moduleTitle"/>
                   <jsp:param name="helpLocale" value="courses.createCourse.moduleHelp"/>
                 </jsp:include>
 
-	            <input type="hidden" name="module" value="${module.id}" /> <i> ${module.name} </i>
-	          </div>
-	
-	          <div class="genericFormSection">
+              <input type="hidden" name="module" value="${module.id}" /> <i> ${module.name} </i>
+            </div>
+  
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="courses.createCourse.nameTitle"/>
                   <jsp:param name="helpLocale" value="courses.createCourse.nameHelp"/>
                 </jsp:include>
 
-	            <input type="text" class="required" name="name" value="${fn:escapeXml(module.name)}" size="40">
-	          </div>
-	          
-	          <div class="genericFormSection">
+              <input type="text" class="required" name="name" value="${fn:escapeXml(module.name)}" size="40">
+            </div>
+            
+            <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.createCourse.tagsTitle"/>
                 <jsp:param name="helpLocale" value="courses.createCourse.tagsHelp"/>
               </jsp:include>
-              <input type="text" id="tags" name="tags" size="40"/>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
-	          
-	          <div class="genericFormSection">
+            
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="courses.createCourse.nameExtensionTitle"/>
                   <jsp:param name="helpLocale" value="courses.createCourse.nameExtensionHelp"/>
                 </jsp:include>
-	            <input type="text" name="nameExtension" size="40">
-	          </div>
-	    
+              <input type="text" name="nameExtension" size="40">
+            </div>
+      
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.createCourse.stateTitle"/>
@@ -820,7 +820,7 @@
                 <jsp:param name="titleLocale" value="courses.createCourse.educationTypesTitle"/>
                 <jsp:param name="helpLocale" value="courses.createCourse.educationTypesHelp"/>
               </jsp:include>
-    	        <div class="createCourseFormSectionEducationType">
+              <div class="createCourseFormSectionEducationType">
                 <c:forEach var="educationType" items="${educationTypes}">
                   <div class="createCourseFormSectionEducationTypeCell">
                     <div class="createCourseFormSectionEducationTypeTitle">
@@ -840,17 +840,17 @@
                     </c:forEach>
                   </div>
                 </c:forEach>
-  	          </div>
+              </div>
             </div>
-	
-	          <div class="genericFormSection">  
+  
+            <div class="genericFormSection">  
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="courses.createCourse.subjectTitle"/>
                   <jsp:param name="helpLocale" value="courses.createCourse.subjectHelp"/>
                 </jsp:include>
-	            
-	            <select name="subject">           
-	              <c:forEach var="subject" items="${subjects}">
+              
+              <select name="subject">           
+                <c:forEach var="subject" items="${subjects}">
                   <c:choose>
                     <c:when test="${empty subject.code}">
                       <c:choose>
@@ -873,9 +873,9 @@
                       </c:choose>
                     </c:otherwise>
                   </c:choose>
-	              </c:forEach>
-	            </select>
-	          </div>
+                </c:forEach>
+              </select>
+            </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -886,47 +886,47 @@
               <input type="text" name="courseNumber" value="${module.courseNumber}" size="2">
             </div>
 
-	          <!-- 
-	            TODO: Remove table
-	          -->
-	          <table>
-	            <tr>
-	              <td>
+            <!-- 
+              TODO: Remove table
+            -->
+            <table>
+              <tr>
+                <td>
                     <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                       <jsp:param name="titleLocale" value="courses.createCourse.beginsTitle"/>
                       <jsp:param name="helpLocale" value="courses.createCourse.beginsHelp"/>
                     </jsp:include>    
                   </td>
-	              <td>
+                <td>
                     <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                       <jsp:param name="titleLocale" value="courses.createCourse.endsTitle"/>
                       <jsp:param name="helpLocale" value="courses.createCourse.endsHelp"/>
                     </jsp:include>    
                   </td>
-	              <td>
+                <td>
                     <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                       <jsp:param name="titleLocale" value="courses.createCourse.lengthTitle"/>
                       <jsp:param name="helpLocale" value="courses.createCourse.lengthHelp"/>
                     </jsp:include>    
                   </td>
-	            </tr>
-	            <tr>
-	              <td>
-	                <input type="text" name="beginDate" ix:datefield="true"/>
-	              </td>
-	              <td>
-	                <input type="text" name="endDate" ix:datefield="true"/>
-	              </td>
-	              <td>
-	                <input type="text" class="required" name="courseLength" value="${fn:escapeXml(module.courseLength.units)}" class="required" size="15"/>
-	                <select name="courseLengthTimeUnit">           
+              </tr>
+              <tr>
+                <td>
+                  <input type="text" name="beginDate" ix:datefield="true"/>
+                </td>
+                <td>
+                  <input type="text" name="endDate" ix:datefield="true"/>
+                </td>
+                <td>
+                  <input type="text" class="required" name="courseLength" value="${fn:escapeXml(module.courseLength.units)}" class="required" size="15"/>
+                  <select name="courseLengthTimeUnit">           
                     <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
                       <option value="${courseLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
                     </c:forEach>
-	                </select>   
-	              </td>
-	            </tr>
-	          </table>
+                  </select>   
+                </td>
+              </tr>
+            </table>
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -980,7 +980,7 @@
               </jsp:include>
 
               <textarea ix:cktoolbar="courseDescription" name="description" ix:ckeditor="true">${module.description}</textarea>
-  	        </div>
+            </div>
 
             <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="openSearchUsersDialog();"><fmt:message key="courses.createCourse.addPersonLink"/></span>
@@ -988,17 +988,17 @@
             <div id="personnelTable"> </div>
 
             <ix:extensionHook name="courses.createCourse.tabs.basic"/>
-	        </div>
-	    
-	        <div id="components" class="tabContentixTableFormattedData hiddenTab">
-	          <div class="genericTableAddRowContainer">
+          </div>
+      
+          <div id="components" class="tabContentixTableFormattedData hiddenTab">
+            <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="addNewComponent();"><fmt:message key="courses.createCourse.addComponentLink"/></span>
             </div>
               
             <div id="noComponentsAddedMessageContainer" class="genericTableAddRowContainer">
               <span><fmt:message key="courses.createCourse.noComponentsAddedPreFix"/> <span onclick="addNewComponent();" class="genericTableAddRowLink"><fmt:message key="courses.createCourse.noComponentsAddedClickHereLink"/></span>.</span>
             </div>
-	          
+            
             <div id="createCourseComponentsList">
               
             </div>
@@ -1009,9 +1009,9 @@
               <span id="componentHoursTotalValueContainer">0</span>
             </div>
             <ix:extensionHook name="courses.createCourse.tabs.components"/>
-	        </div>
-	    
-	        <div id="costplan" class="tabContent hiddenTab">
+          </div>
+      
+          <div id="costplan" class="tabContent hiddenTab">
       
             <div id="courseIncomeContainer">
               <div id="courseIncomesTitle" class="genericFormTitle">
@@ -1171,29 +1171,29 @@
             
             <ix:extensionHook name="courses.createCourse.tabs.costPlan"/>
           </div>
-	    
-	        <div id="students" class="tabContentixTableFormattedData hiddenTab">
-	          <div class="courseStudentsTableContainer">
-	            <div class="genericTableAddRowContainer">
+      
+          <div id="students" class="tabContentixTableFormattedData hiddenTab">
+            <div class="courseStudentsTableContainer">
+              <div class="genericTableAddRowContainer">
                 <span class="genericTableAddRowLinkContainer" onclick="openSearchStudentsDialog();"><fmt:message key="courses.createCourse.addStudentLink"/></span>
               </div>
                 
               <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
                 <span><fmt:message key="courses.createCourse.noStudentsAddedPreFix"/> <span onclick="openSearchStudentsDialog();" class="genericTableAddRowLink"><fmt:message key="courses.createCourse.noStudentsAddedClickHereLink"/></span>.</span>
               </div>
-	          
-	            <div id="courseStudentsTable"> </div>
-	          </div>
+            
+              <div id="courseStudentsTable"> </div>
+            </div>
             <ix:extensionHook name="courses.createCourse.tabs.students"/>
-	        </div>
+          </div>
 
           <ix:extensionHook name="courses.createCourse.tabs"/>
       
-	        <div class="genericFormSubmitSectionOffTab"><input type="submit" class="formvalid" value="<fmt:message key="courses.createCourse.saveButton"/>"></div>
-	
-	      </form>
-	    </div>
-	  </div>
+          <div class="genericFormSubmitSectionOffTab"><input type="submit" class="formvalid" value="<fmt:message key="courses.createCourse.saveButton"/>"></div>
+  
+        </form>
+      </div>
+    </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>
