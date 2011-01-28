@@ -100,7 +100,22 @@ public class GradingService extends PyramusService {
     
     return EntityFactoryVault.buildFromDomainObject(courseAssessment);
   }
+  
+  public CourseAssessmentEntity updateCourseAssessment(Long courseAssessmentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
 
+    User assessingUser = userDAO.getUser(assessingUserId);
+    Grade grade = gradingDAO.findGradeById(gradeId);
+    CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentById(courseAssessmentId);
+    
+    courseAssessment = gradingDAO.updateCourseAssessment(courseAssessment, assessingUser, grade, date, verbalAssessment);
+    
+    validateEntity(courseAssessment);
+    
+    return EntityFactoryVault.buildFromDomainObject(courseAssessment);
+  }
+  
   public CourseAssessmentEntity getCourseAssessmentByCourseStudentId(Long courseStudentId) {
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
