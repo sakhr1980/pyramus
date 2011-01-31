@@ -4,12 +4,13 @@ import java.util.Date;
 
 public class CreditEntity {
 
-  public CreditEntity(Long id, Long studentId, Date date, Long gradeId, String verbalAssessment, Long assessingUserId, Boolean archived) {
+  public CreditEntity(Long id, Long studentId, Date date, Long gradeId, Long gradingScaleId, String verbalAssessment, Long assessingUserId, Boolean archived) {
     super();
     this.id = id;
     this.studentId = studentId;
     this.date = date;
     this.gradeId = gradeId;
+    this.gradingScaleId = gradingScaleId;
     this.verbalAssessment = verbalAssessment;
     this.assessingUserId = assessingUserId;
     this.archived = archived;
@@ -30,6 +31,10 @@ public class CreditEntity {
   public Long getGradeId() {
     return gradeId;
   }
+  
+  public Long getGradingScaleId() {
+    return gradingScaleId;
+  }
 
   public String getVerbalAssessment() {
     return verbalAssessment;
@@ -47,6 +52,7 @@ public class CreditEntity {
   private Long studentId;
   private Date date;
   private Long gradeId;
+  private Long gradingScaleId;
   private String verbalAssessment;
   private Long assessingUserId;
   private Boolean archived;

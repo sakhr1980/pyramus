@@ -326,6 +326,25 @@
           resourceArchiveButtonTooltip: '<fmt:message key="courses.createCourse.componentsResourceArchiveButtonTooltip"/>',
           noResourcesMessage: "<fmt:message key="courses.createCourse.componentsNoResourcesMessage" />"
         });   
+        
+        <c:if test="${fn:length(moduleComponents) gt 0}">
+	        
+	        $('noComponentsAddedMessageContainer').setStyle({
+	          display: 'none'
+	        });
+	        $('componentHoursTotalContainer').setStyle({
+	          display: ''
+	        });
+	        
+	        <c:forEach var="component" items="${moduleComponents}" varStatus="componentsVs">
+	          componentsEditor.addCourseComponent(
+	            -1, 
+	            '${fn:escapeXml(component.name)}', 
+	            ${component.length.units}, 
+	            '${fn:escapeXml(component.description)}'
+	          );
+	        </c:forEach>
+	      </c:if>
       }
       
       function addNewComponent() {
