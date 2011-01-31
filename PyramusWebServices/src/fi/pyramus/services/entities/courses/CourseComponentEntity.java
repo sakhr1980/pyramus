@@ -2,13 +2,13 @@ package fi.pyramus.services.entities.courses;
 
 public class CourseComponentEntity {
 
-  public CourseComponentEntity(Long id, String name, String description, Double length, Long lenghtUnitId) {
+  public CourseComponentEntity(Long id, String name, String description, Double length, Long lengthUnitId) {
     super();
     this.id = id;
     this.name = name;
     this.description = description;
     this.length = length;
-    this.lenghtUnitId = lenghtUnitId;
+    this.lengthUnitId = lengthUnitId;
   }
 
   public Long getId() {
@@ -27,13 +27,13 @@ public class CourseComponentEntity {
     return length;
   }
 
-  public Long getLenghtUnitId() {
-    return lenghtUnitId;
+  public Long getLengthUnitId() {
+    return lengthUnitId;
   }
 
   private Long id;
   private String name;
   private String description;
   private Double length;
-  private Long lenghtUnitId;
+  private Long lengthUnitId;
 }
