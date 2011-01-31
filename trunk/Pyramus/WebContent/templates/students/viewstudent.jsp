@@ -105,56 +105,51 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.transferCreditsTableNameHeader"/>',
             left: 8,
-            right: 800, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 200 + 8, 
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableSubjectHeader"/>',
-            right: 604, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingDateHeader"/>',
-            right: 496, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
             dataType: 'date',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthHeader"/>',
-            right: 388, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
-            dataType: 'number',
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthUnitHeader"/>',
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8, 
+            width: 100,
+            dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradeHeader"/>',
-            right: 300, 
-            width: 80,
-            dataType: 'number',
+            right: 8 + 230 + 8 + 200 + 8, 
+            width: 100,
+            dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingScaleHeader"/>',
-            right: 172, 
-            width: 120,
+            right: 8 + 230 + 8, 
+            width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableAssessingUserHeader"/>',
-            right: 38,
-            width: 126,
+            right: 8,
+            width: 230,
             dataType: 'text',
             editable: false
-          }, {
-            width: 30,
-            right: 00,
-            dataType: 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-            tooltip: '<fmt:message key="students.viewStudent.studentTableEditTooltip"/>',
-            onclick: function (event) {
-              var table = event.tableObject;
-              var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
-              alert("TODO: modify transfer credits");
-            }
           }]
         });
 
@@ -167,51 +162,57 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableNameHeader"/>',
             left: 8,
-            right: 800, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 200 + 8, 
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableSubjectHeader"/>',
-            right: 604, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingDateHeader"/>',
-            right: 496, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
             dataType: 'date',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthHeader"/>',
-            right: 388, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
-            dataType: 'number',
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthUnitHeader"/>',
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8, 
+            width: 100,
+            dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradeHeader"/>',
-            right: 300, 
-            width: 80,
-            dataType: 'number',
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8, 
+            width: 100,
+            dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingScaleHeader"/>',
-            right: 172, 
-            width: 120,
+            right: 8 + 22 + 8 + 200 + 8, 
+            width: 200,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableAssessingUserHeader"/>',
-            right: 38,
-            width: 126,
+            right: 8 + 22 + 8,
+            width: 200,
             dataType: 'text',
             editable: false
           }, {
             dataType: 'hidden',
             paramName: 'courseStudentId'
           }, {
-            width: 30,
-            right: 00,
+            width: 22,
+            right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="students.viewStudent.courseAssessmentsTableEditTooltip"/>',
@@ -247,14 +248,14 @@
 
           <c:forEach var="studentTransferCredit" items="${transferCredits[student.id]}">
             transferCreditsTable.addRow([
-              '${studentTransferCredit.name}',
+              '${studentTransferCredit.courseName}',
               '${studentTransferCredit.subject.name}',
               '${studentTransferCredit.date.time}',
-              '${studentTransferCredit.length.units}',
+              '${studentTransferCredit.courseLength.units}',
+              '${studentTransferCredit.courseLength.unit.name}',
               '${studentTransferCredit.grade.name}',
               '${studentTransferCredit.grade.gradingScale.name}',
-              '${studentTransferCredit.assessingUser.fullName}',
-              '']);
+              '${studentTransferCredit.assessingUser.fullName}']);
           </c:forEach>
 
           courseAssesmentsTable = setupCourseAssessmentsTab(${student.id});
@@ -265,6 +266,7 @@
               '${studentCourseAssesment.courseStudent.course.subject.name}',
               '${studentCourseAssesment.date.time}',
               '${studentCourseAssesment.courseStudent.course.courseLength.units}',
+              '${studentCourseAssesment.courseStudent.course.courseLength.unit.name}',
               '${studentCourseAssesment.grade.name}',
               '${studentCourseAssesment.grade.gradingScale.name}',
               '${studentCourseAssesment.assessingUser.fullName}',
