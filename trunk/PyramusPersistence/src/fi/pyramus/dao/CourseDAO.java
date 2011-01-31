@@ -269,12 +269,12 @@ public class CourseDAO extends PyramusDAO {
    * @param name Component name
    * @param description Component description
    */
-  public CourseComponent updateCourseComponent(CourseComponent courseComponent, Double length, EducationalTimeUnit lenghtTimeUnit,
+  public CourseComponent updateCourseComponent(CourseComponent courseComponent, Double length, EducationalTimeUnit lengthTimeUnit,
       String name, String description) {
     Session s = getHibernateSession();
 
     courseComponent.setName(name);
-    courseComponent.getLength().setUnit(lenghtTimeUnit);
+    courseComponent.getLength().setUnit(lengthTimeUnit);
     courseComponent.getLength().setUnits(length);
     courseComponent.setDescription(description);
 
