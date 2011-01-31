@@ -2,6 +2,7 @@ package fi.pyramus.views.courses;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
+import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -68,6 +70,8 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     }
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     
+    List<ModuleComponent> moduleComponents = moduleDAO.listModuleComponents(module);
+    
     // Various lists of base entities from module, course, and resource DAOs 
 
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
@@ -76,6 +80,7 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("moduleComponents", moduleComponents);
     
     pageRequestContext.setIncludeJSP("/templates/courses/createcourse.jsp");
   }

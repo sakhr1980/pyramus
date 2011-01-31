@@ -11,8 +11,10 @@ public class TransferCreditEntityFactory implements EntityFactory<TransferCredit
     
     TransferCredit transferCredit = (TransferCredit) domainObject;
     
-    return new TransferCreditEntity(transferCredit.getId(), transferCredit.getStudent().getId(), transferCredit.getDate(), transferCredit.getGrade().getId(),
-        transferCredit.getVerbalAssessment(), transferCredit.getAssessingUser().getId(), transferCredit.getArchived(), transferCredit.getCourseName(), transferCredit.getCourseNumber(), 
-        transferCredit.getCourseLength().getUnits(), transferCredit.getCourseLength().getUnit().getId(), transferCredit.getSchool().getId(), transferCredit.getSubject().getId(), transferCredit.getOptionality().toString());
+    return new TransferCreditEntity(transferCredit.getId(), transferCredit.getStudent().getId(), transferCredit.getDate(), 
+        transferCredit.getGrade().getId(), transferCredit.getGrade().getGradingScale().getId(), transferCredit.getVerbalAssessment(), 
+        transferCredit.getAssessingUser().getId(), transferCredit.getArchived(), transferCredit.getCourseName(), transferCredit.getCourseNumber(), 
+        transferCredit.getCourseLength().getUnits(), transferCredit.getCourseLength().getUnit().getId(), transferCredit.getSchool().getId(), 
+        transferCredit.getSubject().getId(), transferCredit.getOptionality().toString());
   }
 }

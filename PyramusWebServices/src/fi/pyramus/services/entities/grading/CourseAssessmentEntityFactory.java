@@ -11,9 +11,10 @@ public class CourseAssessmentEntityFactory implements EntityFactory<CourseAssess
     
     CourseAssessment courseAssessment = (CourseAssessment) domainObject;
 
-    return new CourseAssessmentEntity(courseAssessment.getId(), courseAssessment.getStudent().getId(), courseAssessment.getDate(), courseAssessment.getGrade()
-        .getId(), courseAssessment.getVerbalAssessment(), courseAssessment.getAssessingUser().getId(), courseAssessment.getArchived(), courseAssessment
-        .getCourseStudent().getCourse().getId(), courseAssessment.getCourseStudent().getId());
+    return new CourseAssessmentEntity(courseAssessment.getId(), courseAssessment.getStudent().getId(), courseAssessment.getDate(), 
+        courseAssessment.getGrade().getId(), courseAssessment.getGrade().getGradingScale().getId(), courseAssessment.getVerbalAssessment(), 
+        courseAssessment.getAssessingUser().getId(), courseAssessment.getArchived(), courseAssessment.getCourseStudent().getCourse().getId(), 
+        courseAssessment.getCourseStudent().getId());
   }
 
 }
