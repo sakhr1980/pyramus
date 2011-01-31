@@ -5,11 +5,11 @@ import java.util.Date;
 public class TransferCreditEntity extends CreditEntity {
 
   public TransferCreditEntity(Long id, Long studentId, Date date, Long gradeId, String verbalAssessment, Long assessingUserId, boolean archived,
-      String courseName, Integer courseNumber, Double length, Long lenghtUnitId, Long schoolId, Long subjectId, String optionality) {
+      String courseName, Integer courseNumber, Double length, Long lengthUnitId, Long schoolId, Long subjectId, String optionality) {
     super(id, studentId, date, gradeId, verbalAssessment, assessingUserId, archived);
     this.courseName = courseName;
     this.length = length;
-    this.lenghtUnitId = lenghtUnitId;
+    this.lengthUnitId = lengthUnitId;
     this.schoolId = schoolId;
     this.subjectId = subjectId;
     this.optionality = optionality;
@@ -27,8 +27,8 @@ public class TransferCreditEntity extends CreditEntity {
     return length;
   }
 
-  public Long getLenghtUnitId() {
-    return lenghtUnitId;
+  public Long getLengthUnitId() {
+    return lengthUnitId;
   }
 
   public Long getSchoolId() {
@@ -46,7 +46,7 @@ public class TransferCreditEntity extends CreditEntity {
   private String courseName;
   private Integer courseNumber;
   private Double length;
-  private Long lenghtUnitId;
+  private Long lengthUnitId;
   private Long schoolId;
   private Long subjectId;
   private String optionality;
