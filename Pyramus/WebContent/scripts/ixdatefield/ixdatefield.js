@@ -154,9 +154,7 @@ IxDateField = Class.create({
       }
       else {
         var date = new Date();
-        date.setUTCFullYear(this.getYear());
-        date.setUTCMonth(this.getMonth() - 1);
-        date.setUTCDate(this.getDay());
+        date.setUTCFullYear(this.getYear(), this.getMonth() - 1, this.getDay());
         date.setUTCHours(0);
         date.setUTCMilliseconds(0);
         date.setUTCMinutes(0);
