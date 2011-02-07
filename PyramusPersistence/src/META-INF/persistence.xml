@@ -10,8 +10,8 @@
       <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" />
       <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
       <property name="hibernate.current_session_context_class" value="jta" />
-      <property name="hibernate.generate_statistics" value="true" />
-      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.generate_statistics" value="false" />
+      <property name="hibernate.show_sql" value="false" />
     </properties>
   </persistence-unit>
 
