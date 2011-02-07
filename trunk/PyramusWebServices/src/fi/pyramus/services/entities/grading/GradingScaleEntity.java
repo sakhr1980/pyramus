@@ -3,13 +3,12 @@ package fi.pyramus.services.entities.grading;
 
 public class GradingScaleEntity {
 
-  public GradingScaleEntity(Long id, String name, String description, Boolean archived, GradeEntity[] grades) {
+  public GradingScaleEntity(Long id, String name, String description, Boolean archived) {
     super();
     this.id = id;
     this.name = name;
     this.description = description;
     this.archived = archived;
-    this.grades = grades;
   }
 
   public Long getId() {
@@ -28,13 +27,9 @@ public class GradingScaleEntity {
     return archived;
   }
 
-  public GradeEntity[] getGrades() {
-    return grades;
-  }
-
   private Long id;
   private String name;
   private String description;
   private Boolean archived;
-  private GradeEntity[] grades;
+
 }

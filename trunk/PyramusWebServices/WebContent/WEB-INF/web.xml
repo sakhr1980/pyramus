@@ -44,7 +44,7 @@
     <servlet-name>AxisAdminServlet</servlet-name>
     <url-pattern>/axis2-admin/*</url-pattern>
   </servlet-mapping>
-  
+
   <filter>
     <filter-name>IpLoggingFilter</filter-name>
     <filter-class>fi.pyramus.services.utils.IpLoggingFilter</filter-class>
@@ -54,21 +54,7 @@
     <filter-name>IpLoggingFilter</filter-name>
     <url-pattern>/services/*</url-pattern>
   </filter-mapping>
-  <!-- 
-  <filter>
-    <filter-name>IpFilter</filter-name>
-    <filter-class>fi.pyramus.services.utils.IpFilter</filter-class>
-    <init-param>
-      <param-name>allowedIPs</param-name>
-      <param-value>127.0.0.1,10.0.32.40,82.197.1.192,82.197.1.190,82.197.1.174</param-value>
-    </init-param>
-  </filter>
-  
-  <filter-mapping>
-    <filter-name>IpFilter</filter-name>
-    <url-pattern>/services/*</url-pattern>
-  </filter-mapping>
-   -->
+
   <filter>
     <filter-name>TransactionFilter</filter-name>
     <filter-class>fi.pyramus.services.utils.TransactionFilter</filter-class>
@@ -83,7 +69,7 @@
     <servlet-name>AxisServlet</servlet-name>
     <url-pattern>/services/*</url-pattern>
   </servlet-mapping>
-  
+
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>webservices</web-resource-name>
@@ -104,5 +90,5 @@
   </security-constraint>
  
   <login-config><auth-method>BASIC</auth-method><realm-name>webservices</realm-name></login-config>
-  
+
 </web-app>
