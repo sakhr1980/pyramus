@@ -2,6 +2,8 @@ package fi.pyramus.services.entities.grading;
 
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.services.entities.EntityFactory;
+import fi.pyramus.services.entities.EntityFactoryVault;
+import fi.pyramus.services.entities.users.UserEntity;
 
 public class TransferCreditEntityFactory implements EntityFactory<TransferCreditEntity> {
 
@@ -10,11 +12,13 @@ public class TransferCreditEntityFactory implements EntityFactory<TransferCredit
       return null;
     
     TransferCredit transferCredit = (TransferCredit) domainObject;
+    GradeEntity grade = EntityFactoryVault.buildFromDomainObject(transferCredit.getGrade());
+    UserEntity assessingUser = EntityFactoryVault.buildFromDomainObject(transferCredit.getAssessingUser());
     
     return new TransferCreditEntity(transferCredit.getId(), transferCredit.getStudent().getId(), transferCredit.getDate(), 
-        transferCredit.getGrade().getId(), transferCredit.getGrade().getGradingScale().getId(), transferCredit.getVerbalAssessment(), 
-        transferCredit.getAssessingUser().getId(), transferCredit.getArchived(), transferCredit.getCourseName(), transferCredit.getCourseNumber(), 
-        transferCredit.getCourseLength().getUnits(), transferCredit.getCourseLength().getUnit().getId(), transferCredit.getSchool().getId(), 
-        transferCredit.getSubject().getId(), transferCredit.getOptionality().toString());
+        grade, transferCredit.getVerbalAssessment(), assessingUser, transferCredit.getArchived(),
+        transferCredit.getCourseName(), transferCredit.getCourseNumber(), transferCredit.getCourseLength().getUnits(),
+        transferCredit.getCourseLength().getUnit().getId(), transferCredit.getSchool().getId(), transferCredit.getSubject().getId(),
+        transferCredit.getOptionality().toString());
   }
 }

@@ -2,17 +2,18 @@ package fi.pyramus.services.entities.grading;
 
 import java.util.Date;
 
+import fi.pyramus.services.entities.users.UserEntity;
+
 public class CreditEntity {
 
-  public CreditEntity(Long id, Long studentId, Date date, Long gradeId, Long gradingScaleId, String verbalAssessment, Long assessingUserId, Boolean archived) {
+  public CreditEntity(Long id, Long studentId, Date date, GradeEntity grade, String verbalAssessment, UserEntity assessingUser, Boolean archived) {
     super();
     this.id = id;
     this.studentId = studentId;
     this.date = date;
-    this.gradeId = gradeId;
-    this.gradingScaleId = gradingScaleId;
+    this.grade = grade;
     this.verbalAssessment = verbalAssessment;
-    this.assessingUserId = assessingUserId;
+    this.assessingUser = assessingUser;
     this.archived = archived;
   }
 
@@ -28,20 +29,16 @@ public class CreditEntity {
     return date;
   }
 
-  public Long getGradeId() {
-    return gradeId;
+  public GradeEntity getGrade() {
+    return grade;
   }
   
-  public Long getGradingScaleId() {
-    return gradingScaleId;
-  }
-
   public String getVerbalAssessment() {
     return verbalAssessment;
   }
 
-  public Long getAssessingUserId() {
-    return assessingUserId;
+  public UserEntity getAssessingUser() {
+    return assessingUser;
   }
 
   public Boolean getArchived() {
@@ -51,9 +48,8 @@ public class CreditEntity {
   private Long id;
   private Long studentId;
   private Date date;
-  private Long gradeId;
-  private Long gradingScaleId;
+  private GradeEntity grade;
   private String verbalAssessment;
-  private Long assessingUserId;
+  private UserEntity assessingUser;
   private Boolean archived;
 }

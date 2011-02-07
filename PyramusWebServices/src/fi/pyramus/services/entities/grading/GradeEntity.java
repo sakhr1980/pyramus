@@ -2,16 +2,16 @@ package fi.pyramus.services.entities.grading;
 
 public class GradeEntity {
 
-  public GradeEntity(Long id, String name, String description, Long gradingScaleId, Boolean passingGrade, Boolean archived, String qualification, Double gpa) {
+  public GradeEntity(Long id, String name, String description, GradingScaleEntity gradingScale, Boolean passingGrade, Boolean archived, String qualification, Double gpa) {
     super();
     this.id = id;
     this.name = name;
     this.description = description;
-    this.gradingScaleId = gradingScaleId;
+    this.gradingScale = gradingScale;
     this.passingGrade = passingGrade;
     this.archived = archived;
     this.qualification = qualification;
-    GPA = gpa;
+    this.GPA = gpa;
   }
 
   public Long getId() {
@@ -26,8 +26,8 @@ public class GradeEntity {
     return description;
   }
 
-  public Long getGradingScaleId() {
-    return gradingScaleId;
+  public GradingScaleEntity getGradingScale() {
+    return gradingScale;
   }
 
   public Boolean getPassingGrade() {
@@ -49,7 +49,7 @@ public class GradeEntity {
   private Long id;
   private String name;
   private String description;
-  private Long gradingScaleId;
+  private GradingScaleEntity gradingScale;
   private Boolean passingGrade;
   private Boolean archived;
   private String qualification;

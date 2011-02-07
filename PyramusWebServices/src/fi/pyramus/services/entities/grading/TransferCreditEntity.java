@@ -2,12 +2,14 @@ package fi.pyramus.services.entities.grading;
 
 import java.util.Date;
 
+import fi.pyramus.services.entities.users.UserEntity;
+
 public class TransferCreditEntity extends CreditEntity {
 
-  public TransferCreditEntity(Long id, Long studentId, Date date, Long gradeId, Long gradingScaleId, String verbalAssessment, Long assessingUserId, boolean archived,
+  public TransferCreditEntity(Long id, Long studentId, Date date, GradeEntity grade, String verbalAssessment, UserEntity assessingUser, boolean archived,
       String courseName, Integer courseNumber, Double length, Long lengthUnitId, Long schoolId, Long subjectId, String optionality) {
     
-    super(id, studentId, date, gradeId, gradingScaleId, verbalAssessment, assessingUserId, archived);
+    super(id, studentId, date, grade, verbalAssessment, assessingUser, archived);
     this.courseName = courseName;
     this.courseNumber = courseNumber;
     this.length = length;

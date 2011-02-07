@@ -2,19 +2,23 @@ package fi.pyramus.services.entities.grading;
 
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.services.entities.EntityFactory;
+import fi.pyramus.services.entities.EntityFactoryVault;
+import fi.pyramus.services.entities.users.UserEntity;
 
 public class CourseAssessmentEntityFactory implements EntityFactory<CourseAssessmentEntity> {
 
   public CourseAssessmentEntity buildFromDomainObject(Object domainObject) {
-    if (domainObject == null)
+    if (domainObject == null) {
       return null;
+    }
     
     CourseAssessment courseAssessment = (CourseAssessment) domainObject;
+    GradeEntity grade = EntityFactoryVault.buildFromDomainObject(courseAssessment.getGrade());
+    UserEntity assessingUser = EntityFactoryVault.buildFromDomainObject(courseAssessment.getAssessingUser());
 
     return new CourseAssessmentEntity(courseAssessment.getId(), courseAssessment.getStudent().getId(), courseAssessment.getDate(), 
-        courseAssessment.getGrade().getId(), courseAssessment.getGrade().getGradingScale().getId(), courseAssessment.getVerbalAssessment(), 
-        courseAssessment.getAssessingUser().getId(), courseAssessment.getArchived(), courseAssessment.getCourseStudent().getCourse().getId(), 
-        courseAssessment.getCourseStudent().getId());
+        grade, courseAssessment.getVerbalAssessment(), assessingUser, courseAssessment.getArchived(),
+        courseAssessment.getCourseStudent().getCourse().getId(), courseAssessment.getCourseStudent().getId());
   }
 
 }
