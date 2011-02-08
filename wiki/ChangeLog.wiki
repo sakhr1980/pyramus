@@ -2,6 +2,7 @@
 #labels Featured
 
 *Version 0.35 (110207.9)
+
   * Minor optimizations to PyramusWebServices
   * Disabled Hibernate statistics and SQL logging
 
