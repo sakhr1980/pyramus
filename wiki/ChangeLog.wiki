@@ -1,6 +1,11 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.35 (110207.9)
+  * Minor optimizations to PyramusWebServices
+  * Disabled Hibernate statistics and SQL logging
+
+
 *Version 0.33 (110125.7)
 
   * Added Manage Course Assessments view, which is accessed through view course or edit course. View can be used to enter assessments to multiple course students at once.
