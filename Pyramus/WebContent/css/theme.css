@@ -214,6 +214,33 @@ h1.genericPageHeader{
 
 }
 
+/* View Student - Courses tab */
+
+#viewStudentStudentCoursesTableContainer .ixTableRow:hover{
+  background:#D7E3F9;
+  color:#2351B1;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
+
+#viewStudentCourseAssessmentsTableContainer .ixTableRow:hover{
+  background:#D7E3F9;
+  color:#2351B1;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
+
+#viewStudentTransferCreditsTableContainer .ixTableRow:hover{
+  background:#D7E3F9;
+  color:#2351B1;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
+
+
 /* View Course - Basic Info */
 
 #courseViewBasicInfoWrapper .genericFormTitle, #courseViewDetailedInfoWrapper .genericFormTitle{

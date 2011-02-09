@@ -116,8 +116,37 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
     	
-      courseStudents.put(student.getId(), courseDAO.listCourseStudentsByStudent(student));
+    	/**
+    	 * Fetch courses this student is part of and sort the courses by course name
+    	 */
+    	
+    	List<CourseStudent> courseStudentsByStudent = courseDAO.listCourseStudentsByStudent(student);
 
+    	Collections.sort(courseStudentsByStudent, new Comparator<CourseStudent>() {
+        private String getCourseAssessmentCompareStr(CourseStudent courseStudent) {
+          String result = "";
+          if (courseStudent != null)
+            if (courseStudent.getCourse() != null)
+              result = courseStudent.getCourse().getName();
+            
+          return result;
+        }
+        
+        @Override
+        public int compare(CourseStudent o1, CourseStudent o2) {
+          String s1 = getCourseAssessmentCompareStr(o1);
+          String s2 = getCourseAssessmentCompareStr(o2);
+          
+          return s1.compareTo(s2);
+        }
+      });
+
+    	courseStudents.put(student.getId(), courseStudentsByStudent);
+
+    	/**
+    	 * Contact log entries
+    	 */
+    	
       List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
 
       // Firstly populate comments
@@ -182,10 +211,61 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
             return val;
         }
       });
+
+
+      /**
+       * Students Course Assessments, sorted by course name
+       */
       
+      List<CourseAssessment> courseAssessmentsByStudent = gradingDAO.listCourseAssessmentsByStudent(student);
+      
+      Collections.sort(courseAssessmentsByStudent, new Comparator<CourseAssessment>() {
+        private String getCourseAssessmentCompareStr(CourseAssessment courseAssessment) {
+          String result = "";
+          if (courseAssessment != null)
+            if (courseAssessment.getCourseStudent() != null)
+              if (courseAssessment.getCourseStudent().getCourse() != null)
+                result = courseAssessment.getCourseStudent().getCourse().getName();
+            
+          return result;
+        }
+        
+        @Override
+        public int compare(CourseAssessment o1, CourseAssessment o2) {
+          String s1 = getCourseAssessmentCompareStr(o1);
+          String s2 = getCourseAssessmentCompareStr(o2);
+          
+          return s1.compareTo(s2);
+        }
+      });
+      
+      /**
+       * Fetching and sorting of Transfer Credits 
+       */
+      
+      List<TransferCredit> transferCreditsByStudent = gradingDAO.listTransferCreditsByStudent(student);
+      Collections.sort(transferCreditsByStudent, new Comparator<TransferCredit>() {
+        private String getCourseAssessmentCompareStr(TransferCredit tCredit) {
+          String result = "";
+         
+          if (tCredit != null)
+            result = tCredit.getCourseName();
+           
+          return result;
+        }
+        
+        @Override
+        public int compare(TransferCredit o1, TransferCredit o2) {
+          String s1 = getCourseAssessmentCompareStr(o1);
+          String s2 = getCourseAssessmentCompareStr(o2);
+          
+          return s1.compareTo(s2);
+        }
+      });
+      
+      courseAssesments.put(student.getId(), courseAssessmentsByStudent);
       contactEntries.put(student.getId(), listStudentContactEntries);
-      transferCredits.put(student.getId(), gradingDAO.listTransferCreditsByStudent(student));
-      courseAssesments.put(student.getId(), gradingDAO.listCourseAssessmentsByStudent(student));
+      transferCredits.put(student.getId(), transferCreditsByStudent);
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
     }
     
