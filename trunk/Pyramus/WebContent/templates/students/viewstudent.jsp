@@ -74,12 +74,33 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.coursesTableNameHeader"/>',
             left: 8,
-            right: 38, 
+            right: 400, 
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.viewStudent.coursesTableCourseStateHeader"/>',
+            left: 408,
+            right: 8 + 22 + 8 + 22 + 8,
             dataType: 'text',
             editable: false
           }, {
             dataType: 'hidden',
+            paramName: 'courseStudentId'
+          }, {
+            dataType: 'hidden',
             paramName: 'courseId'
+          }, {
+            width: 22,
+            right: 8 + 22 + 8,
+            dataType: 'button',
+            paramName: 'evaluateButton',
+            imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
+            tooltip: '<fmt:message key="students.viewStudent.coursesTableEvaluateStudentTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableObject;
+              var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+              redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
+            } 
           }, {
             width: 30,
             right: 00,
@@ -240,7 +261,7 @@
           coursesTable = setupCoursesTab(${student.id});
 
           <c:forEach var="studentCourse" items="${courses[student.id]}">
-            coursesTable.addRow(['${studentCourse.course.name}', ${studentCourse.course.id}, '']);
+            coursesTable.addRow(['${studentCourse.course.name}', '${studentCourse.participationType.name}', ${studentCourse.id}, ${studentCourse.course.id}, '', '']);
           </c:forEach>
 
           // Setup grade tabs
@@ -757,7 +778,7 @@
                       <jsp:param name="titleLocale" value="students.viewStudent.coursesTitle"/>
                       <jsp:param name="helpLocale" value="students.viewStudent.coursesHelp"/>
                     </jsp:include> 
-                    <div><div id="coursesTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentStudentCoursesTableContainer"><div id="coursesTableContainer.${student.id}"></div></div>
                   </div>
                 </div>
   
@@ -769,7 +790,7 @@
                       <jsp:param name="titleLocale" value="students.viewStudent.courseAssessmentsTitle"/>
                       <jsp:param name="helpLocale" value="students.viewStudent.courseAssessmentsHelp"/>
                     </jsp:include> 
-                    <div><div id="courseAssessmentsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentCourseAssessmentsTableContainer"><div id="courseAssessmentsTableContainer.${student.id}"></div></div>
                   </div>
                   
                   <div class="genericFormSection">                                  
@@ -777,7 +798,7 @@
                       <jsp:param name="titleLocale" value="students.viewStudent.transferCreditsTitle"/>
                       <jsp:param name="helpLocale" value="students.viewStudent.transferCreditsHelp"/>
                     </jsp:include> 
-                    <div><div id="transferCreditsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentTransferCreditsTableContainer"><div id="transferCreditsTableContainer.${student.id}"></div></div>
                   </div>
                 </div> 
 
