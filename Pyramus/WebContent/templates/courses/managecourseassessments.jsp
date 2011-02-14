@@ -64,7 +64,7 @@
                   table.setCellValue(event.row, assessmentDateCol, new Date().getTime());
                 if (table.getCellValue(event.row, assessingUserCol) == '') {
                   table.setCellValue(event.row, assessingUserCol, '${loggedUserId}');
-                  IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:replace(loggedUserName, "'", "\\'")}');
+                  IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:replace(loggedUserName, "'", "\\'")}');
                 }
 
                 table.setCellValue(event.row, modifiedCol, 1);
@@ -125,7 +125,7 @@
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessingUserHeader"/>',
             width : 180,
             right: 8 + 140 + 8,
-            dataType: 'autoComplete',
+            dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
             paramName: 'assessingUserId',
@@ -168,7 +168,7 @@
             '${courseStudent.id}',
             '${courseStudent.student.abstractStudent.id}',
             0]);
-          IxTableControllers.getController('autoComplete').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(assessments[courseStudent.id].assessingUser.fullName, "'", "\\'")}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(assessments[courseStudent.id].assessingUser.fullName, "'", "\\'")}');
         </c:forEach>
       }
       
@@ -230,7 +230,7 @@
               <div>${course.name}</div>
             </div>
 
-	          <div class="courseStudentsTableContainer">
+	          <div id="manageCourseAssessmentsStudentsTableContainer">
               <c:if test="${fn:length(courseStudents) eq 0}">
   	            <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
   	              <span><fmt:message key="courses.manageCourseAssessments.noStudentsAddedMessage"/></span>

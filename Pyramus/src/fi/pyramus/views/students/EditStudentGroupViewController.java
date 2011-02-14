@@ -45,9 +45,9 @@ public class EditStudentGroupViewController implements PyramusViewController, Br
     Collections.sort(studentGroupStudents, new Comparator<StudentGroupStudent>() {
       @Override
       public int compare(StudentGroupStudent o1, StudentGroupStudent o2) {
-        int cmp = o1.getStudent().getLastName().compareTo(o2.getStudent().getLastName());
+        int cmp = o1.getStudent().getLastName().compareToIgnoreCase(o2.getStudent().getLastName());
         if (cmp == 0)
-          cmp = o1.getStudent().getFirstName().compareTo(o2.getStudent().getFirstName());
+          cmp = o1.getStudent().getFirstName().compareToIgnoreCase(o2.getStudent().getFirstName());
         return cmp;
       }
     });

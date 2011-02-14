@@ -13,6 +13,10 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.EducationalLength;
@@ -20,6 +24,7 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Entity
+@Indexed
 public class TransferCreditTemplateCourse {
   
   public Long getId() {
@@ -84,6 +89,7 @@ public class TransferCreditTemplateCourse {
   }
 
   @Id 
+  @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="TransferCreditTemplateCourse")  
   @TableGenerator(name="TransferCreditTemplateCourse", allocationSize=1)
   private Long id;
@@ -95,6 +101,7 @@ public class TransferCreditTemplateCourse {
   @NotNull
   @Column(nullable = false)
   @NotEmpty
+  @Field (index=Index.TOKENIZED)
   private String courseName;
 
   private Integer courseNumber;

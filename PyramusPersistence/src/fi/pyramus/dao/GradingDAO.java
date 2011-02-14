@@ -4,9 +4,20 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Version;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
@@ -23,6 +34,7 @@ import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.search.SearchResult;
 
 /**
  * The Data Access Object for grading related operations.  
@@ -381,6 +393,50 @@ public class GradingDAO extends PyramusDAO {
   public void deleteTransferCreditTemplate(TransferCreditTemplate transferCreditTemplate) {
     EntityManager entityManager = getEntityManager();
     entityManager.remove(transferCreditTemplate);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<TransferCreditTemplateCourse> searchTransferCreditTemplateCoursesBasic(int resultsPerPage, int page, String text) {
+    int firstResult = page * resultsPerPage;
+
+    StringBuilder queryBuilder = new StringBuilder();
+
+    if (!StringUtils.isBlank(text)) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "courseName", text, false);
+      queryBuilder.append(")");
+    }
+
+    Session s = getHibernateSession();
+    FullTextSession fullTextSession = Search.getFullTextSession(s);
+
+    try {
+      String queryString = queryBuilder.toString();
+      Query luceneQuery;
+      QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
+      if (StringUtils.isBlank(queryString)) {
+        luceneQuery = new MatchAllDocsQuery();
+      } else {
+        luceneQuery = parser.parse(queryString);
+      }
+
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, TransferCreditTemplateCourse.class)
+        .setFirstResult(firstResult)
+        .setMaxResults(resultsPerPage);
+
+      int hits = query.getResultSize();
+      int pages = hits / resultsPerPage;
+      if (hits % resultsPerPage > 0) {
+        pages++;
+      }
+
+      int lastResult = Math.min(firstResult + resultsPerPage, hits) - 1;
+
+      return new SearchResult<TransferCreditTemplateCourse>(page, pages, hits, firstResult, lastResult, query.list());
+
+    } catch (ParseException e) {
+      throw new PersistenceException(e);
+    }
   }
   
   /* TransferCreditTemplateCourse */

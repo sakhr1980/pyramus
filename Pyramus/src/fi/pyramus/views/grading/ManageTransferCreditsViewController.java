@@ -1,5 +1,7 @@
 package fi.pyramus.views.grading;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +43,14 @@ public class ManageTransferCreditsViewController implements PyramusViewControlle
     List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
     List<TransferCreditTemplate> transferCreditTemplates = gradingDAO.listTransferCreditTemplates();
 
+    Collections.sort(transferCredits, new Comparator<TransferCredit>() {
+
+      @Override
+      public int compare(TransferCredit o1, TransferCredit o2) {
+        return o1.getCourseName().compareToIgnoreCase(o2.getCourseName());
+      }
+    });
+    
     pageRequestContext.getRequest().setAttribute("student", student);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
     pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);
