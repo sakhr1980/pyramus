@@ -31,12 +31,14 @@
         var subjectColumnIndex = table.getNamedColumnIndex('subject');
         var schoolColumnIndex = table.getNamedColumnIndex('school');
         var userColumnIndex = table.getNamedColumnIndex('user');
+        var modifyColumnIndex = table.getNamedColumnIndex('modifyButton');
 
-        
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
-        IxTableControllers.getController('autoComplete').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
-        
+        IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
+        IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
+        IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
+
+        // Hide modify button for new entries
+        table.hideCell(rowIndex, modifyColumnIndex);
         
         $('noTransferCreditsAddedMessageContainer').setStyle({
           display: 'none'
@@ -103,8 +105,8 @@
               var userCellEditor = table.getCellEditor(i + rowCountBefore, userColumnIndex);
               var subjectCellEditor = table.getCellEditor(i + rowCountBefore, subjectColumnIndex);
               
-              IxTableControllers.getController('autoComplete').setDisplayValue(userCellEditor, '${fn:replace(loggedUserName, "'", "\\'")}');
-              IxTableControllers.getController('autoComplete').setDisplayValue(subjectCellEditor, template.subjectName);
+              IxTableControllers.getController('autoCompleteSelect').setDisplayValue(userCellEditor, '${fn:replace(loggedUserName, "'", "\\'")}');
+              IxTableControllers.getController('autoCompleteSelect').setDisplayValue(subjectCellEditor, template.subjectName);
             }
             
             if (table.getRowCount() > 0) {
@@ -130,6 +132,7 @@
             left: 4,
             width: 22,
             dataType: 'button',
+            paramName: 'modifyButton',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableEditTooltip"/>',
             onclick: function (event) {
@@ -142,10 +145,12 @@
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNameHeader"/>',
             left: 4 + 22 + 4,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 90 + 4,
-            dataType: 'text',
+            dataType: 'autoComplete',
             required: true,
             editable: false,
-            paramName: 'courseName'
+            paramName: 'courseName',
+            autoCompleteUrl: GLOBAL_contextPath + '/settings/transfercreditcoursenameautocomplete.binary',
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
             width: 90,
@@ -193,7 +198,7 @@
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSubjectHeader"/>',
             width : 120,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 64 + 3,
-            dataType: 'autoComplete',
+            dataType: 'autoCompleteSelect',
             editable: false,
             required: true,
             overwriteColumnValues : true,
@@ -228,7 +233,7 @@
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSchoolHeader"/>',
             width : 120,
             right: 4 + 22 + 4 + 100 + 4 + 110 + 3,
-            dataType: 'autoComplete',
+            dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
             paramName: 'school',
@@ -239,7 +244,7 @@
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableUserHeader"/>',
             width : 100,
             right: 4 + 22 + 4 + 110 + 4,
-            dataType: 'autoComplete',
+            dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
             paramName: 'user',
@@ -352,9 +357,9 @@
           
           transferCreditsTable.hideCell(rowIndex, removeButtonColumnIndex);
           transferCreditsTable.showCell(rowIndex, archiveButtonColumnIndex);
-          IxTableControllers.getController('autoComplete').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:replace(transferCredit.subject.name, "'", "\\'")}');
-          IxTableControllers.getController('autoComplete').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:replace(transferCredit.school.name, "'", "\\'")}');
-          IxTableControllers.getController('autoComplete').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(transferCredit.assessingUser.fullName, "'", "\\'")}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:replace(transferCredit.subject.name, "'", "\\'")}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:replace(transferCredit.school.name, "'", "\\'")}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(transferCredit.assessingUser.fullName, "'", "\\'")}');
           
         </c:forEach>
 

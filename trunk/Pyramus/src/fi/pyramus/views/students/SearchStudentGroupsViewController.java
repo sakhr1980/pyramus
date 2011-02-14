@@ -24,9 +24,9 @@ public class SearchStudentGroupsViewController implements PyramusViewController,
     Collections.sort(users, new Comparator<User>() {
       @Override
       public int compare(User o1, User o2) {
-        int cmp = o1.getLastName().compareTo(o2.getLastName());
+        int cmp = o1.getLastName().compareToIgnoreCase(o2.getLastName());
         if (cmp == 0)
-          cmp = o1.getFirstName().compareTo(o2.getFirstName());
+          cmp = o1.getFirstName().compareToIgnoreCase(o2.getFirstName());
         return cmp;
       }
     });

@@ -240,6 +240,15 @@ h1.genericPageHeader{
   border-radius:3px;
 }
 
+/* Manage Course Assessments */
+
+#manageCourseAssessmentsStudentsTableContainer .ixTableRow:hover{
+  background:#D7E3F9;
+  color:#2351B1;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
 
 /* View Course - Basic Info */
 

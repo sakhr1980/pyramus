@@ -137,7 +137,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           String s1 = getCourseAssessmentCompareStr(o1);
           String s2 = getCourseAssessmentCompareStr(o2);
           
-          return s1.compareTo(s2);
+          return s1.compareToIgnoreCase(s2);
         }
       });
 
@@ -235,7 +235,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           String s1 = getCourseAssessmentCompareStr(o1);
           String s2 = getCourseAssessmentCompareStr(o2);
           
-          return s1.compareTo(s2);
+          return s1.compareToIgnoreCase(s2);
         }
       });
       
@@ -259,7 +259,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           String s1 = getCourseAssessmentCompareStr(o1);
           String s2 = getCourseAssessmentCompareStr(o2);
           
-          return s1.compareTo(s2);
+          return s1.compareToIgnoreCase(s2);
         }
       });
       

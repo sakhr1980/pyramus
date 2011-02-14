@@ -33,9 +33,9 @@ public class ListReportsViewController implements PyramusViewController, Breadcr
       public int compare(Report o1, Report o2) {
         String s1 = o1.getCategory() == null ? null : o1.getCategory().getName();
         String s2 = o2.getCategory() == null ? null : o2.getCategory().getName();
-        int cmp = s1 == null ? 1 : s2 == null ? -1 : s1.compareTo(s2);
+        int cmp = s1 == null ? 1 : s2 == null ? -1 : s1.compareToIgnoreCase(s2);
         if (cmp == 0) {
-          cmp = o1.getName().compareTo(o2.getName());
+          cmp = o1.getName().compareToIgnoreCase(o2.getName());
         }
         return cmp;
       }

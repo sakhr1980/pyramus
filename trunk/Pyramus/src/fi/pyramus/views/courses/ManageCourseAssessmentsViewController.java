@@ -47,9 +47,9 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
     Collections.sort(courseStudents, new Comparator<CourseStudent>() {
       @Override
       public int compare(CourseStudent o1, CourseStudent o2) {
-        int cmp = o1.getStudent().getLastName().compareTo(o2.getStudent().getLastName());
+        int cmp = o1.getStudent().getLastName().compareToIgnoreCase(o2.getStudent().getLastName());
         if (cmp == 0)
-          cmp = o1.getStudent().getFirstName().compareTo(o2.getStudent().getFirstName());
+          cmp = o1.getStudent().getFirstName().compareToIgnoreCase(o2.getStudent().getFirstName());
         return cmp;
       }
     });

@@ -1490,11 +1490,11 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
 
 IxTableControllers.registerController(new IxTextTableEditorController());
 
-IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
+IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoComplete tableAutoComplete", {}, columnDefinition);
     
-    var classNames = "ixTableCellEditorAutoCompleteText";
+    var classNames = "ixTableCellEditorAutoCompleteSelectText";
     if (columnDefinition.required)
       classNames += ' required';
     
@@ -1532,14 +1532,14 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
     var handlerInstance = $super(table, column, row, parentNode, handlerInstance);
     
     if (handlerInstance._editable == true) {
-      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
       textInput._keyUpListener = this._onTextInputKeyUp.bindAsEventListener(this);
       Event.observe(textInput, "keyup", textInput._keyUpListener);
     } 
   },
   detachContentHandler: function ($super, handlerInstance) {
     if (handlerInstance._editable == true) {
-      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
       Event.stopObserving(textInput, "keyup", textInput._keyUpListener);
       textInput._keyUpListener = undefined;
     } 
@@ -1590,12 +1590,12 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
     if (handlerInstance._editable != true) {
       return handlerInstance._fieldContent.innerHTML;
     } else {
-      return handlerInstance.down('input.ixTableCellEditorAutoCompleteText').value;
+      return handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText').value;
     }
   },
   setDisplayValue: function (handlerInstance, displayValue) {
     if (handlerInstance._editable) {
-      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
       textInput.value = displayValue;
       textInput.validate(true);
     } else {
@@ -1611,7 +1611,7 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
 //     return handlerInstance.disabled;
   },
   getDataType: function ($super) {
-    return "autoComplete";  
+    return "autoCompleteSelect";  
   },
   getMode: function ($super) { 
     return IxTableControllers.EDITMODE_EDITABLE;
@@ -1658,4 +1658,131 @@ IxAutoCompleteTableEditorController = Class.create(IxTableEditorController, {
   }
 });
 
-IxTableControllers.registerController(new IxAutoCompleteTableEditorController());
+IxTableControllers.registerController(new IxAutoCompleteSelectTableEditorController());
+
+IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, {
+  buildEditor: function ($super, name, columnDefinition) {
+    var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoComplete tableAutoComplete", {}, columnDefinition);
+    
+    var classNames = "ixTableCellEditorAutoCompleteText";
+    if (columnDefinition.required)
+      classNames += ' required';
+    
+    var inputElement = new Element("input", {type: "text", className: classNames, name: name});
+    var indicatorElement = new Element("span", {className: "autocomplete_progress_indicator", style: "display: none"}).update('<img src="' + columnDefinition.autoCompleteProgressUrl + '"/>');
+    var choicesElement = new Element("div", {className: "autocomplete_choices"});  
+    
+    if (columnDefinition.displayValue)
+      inputElement.value = columnDefinition.displayValue;
+     
+    cellEditor.appendChild(inputElement);
+    cellEditor.appendChild(indicatorElement);
+    cellEditor.appendChild(choicesElement);
+    
+    var _this = this;
+    new Ajax.Autocompleter(inputElement, choicesElement, columnDefinition.autoCompleteUrl, {
+      paramName: 'text', 
+      minChars: 1, 
+      indicator: indicatorElement,
+      afterUpdateElement : function getSelectionId(text, li) {
+        var li = $(li);
+//        idElement.value = li.down('input[name="id"]').value;
+        inputElement.validate(false);
+      }
+    });
+    
+    return cellEditor;
+  },
+  buildViewer: function ($super, name, columnDefinition) {
+    return this._createViewerElement("div", name, "ixTableCellViewerAutoComplete", {}, columnDefinition);
+  },
+  disableEditor: function ($super, handlerInstance) {
+    // TODO: Implement this
+    /*
+    if (handlerInstance._editable != true)
+      handlerInstance.addClassName("ixTableCellViewerDisabled");
+    else {
+      this._addDisabledHiddenElement(handlerInstance);
+      handlerInstance.disabled = true;
+    }
+    */
+  },
+  enableEditor: function ($super, handlerInstance) {
+    // TODO: Implement this
+    /*
+    if (handlerInstance._editable != true)
+      handlerInstance.removeClassName("ixTableCellViewerDisabled");
+    else {
+      handlerInstance.disabled = false;
+      this._removeDisabledHiddenElement(handlerInstance);
+    }
+    */
+  },
+  getEditorValue: function ($super, handlerInstance) {
+    if (handlerInstance._editable != true) 
+      return this._getViewerValue(handlerInstance);
+    else {
+      return handlerInstance.down('input.ixTableCellEditorAutoCompleteText').value;
+    }
+  },
+  setEditorValue: function ($super, handlerInstance, value) {
+    if (handlerInstance._editable != true) {
+      this._setViewerValue(handlerInstance, value);
+    } else {
+      if (this.isDisabled(handlerInstance))
+        this._updateDisabledHiddenElement(handlerInstance, value);
+      
+      var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteText');
+      textInput.value = value;
+    }
+  },
+  destroyEditor: function ($super, handlerInstance) {
+    handlerInstance.remove();
+  },
+  isDisabled: function ($super, handlerInstance) {
+    // TODO: 
+    return false;
+//     return handlerInstance.disabled;
+  },
+  getDataType: function ($super) {
+    return "autoComplete";  
+  },
+  getMode: function ($super) { 
+    return IxTableControllers.EDITMODE_EDITABLE;
+  },
+  copyCellValue: function($super, target, source) {
+    this.setEditorValue(target, this.getEditorValue(source));
+  },
+  setEditable: function ($super, handlerInstance, editable) {
+    if (handlerInstance._editable == editable)
+      return;
+    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_ONLY_EDITABLE) && (editable == false))
+      return;
+    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_NOT_EDITABLE) && (editable == true))
+      return;
+    
+    var table = handlerInstance._table;
+    var column = handlerInstance._column;
+    var row = handlerInstance._row;
+    var parentNode = handlerInstance._cell;
+    var visible = this.isVisible(handlerInstance); 
+    var displayValue = this.getDisplayValue(handlerInstance);
+    
+    this.detachContentHandler(handlerInstance);
+    
+    var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
+    this.attachContentHandler(table, column, row, parentNode, newHandler);
+    
+    if (visible) 
+      this.show(newHandler);
+    else 
+      this.hide(newHandler);
+    
+    this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
+    this.destroyHandler(handlerInstance);
+    
+    this.setDisplayValue(newHandler, displayValue);
+  }
+});
+
+IxTableControllers.registerController(new IxAutoCompleteTextTableEditorController());
