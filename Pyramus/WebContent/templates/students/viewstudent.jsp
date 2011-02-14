@@ -74,7 +74,7 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.coursesTableNameHeader"/>',
             left: 8,
-            right: 400, 
+            width: 400, 
             dataType: 'text',
             editable: false
           }, {

@@ -1492,14 +1492,14 @@ IxTableControllers.registerController(new IxTextTableEditorController());
 
 IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
-    var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoComplete tableAutoComplete", {}, columnDefinition);
+    var cellEditor = this._createEditorElement("div", name, "ixTableCellEditorAutoCompleteSelect tableAutoCompleteSelect", {}, columnDefinition);
     
     var classNames = "ixTableCellEditorAutoCompleteSelectText";
     if (columnDefinition.required)
       classNames += ' required';
     
     var inputElement = new Element("input", {type: "text", className: classNames, name: name + '.text'});
-    var idElement = new Element("input", {type: "hidden", name: name, className: "ixTableCellEditorAutoCompleteId"});
+    var idElement = new Element("input", {type: "hidden", name: name, className: "ixTableCellEditorAutoCompleteSelectId"});
     var indicatorElement = new Element("span", {className: "autocomplete_progress_indicator", style: "display: none"}).update('<img src="' + columnDefinition.autoCompleteProgressUrl + '"/>');
     var choicesElement = new Element("div", {className: "autocomplete_choices"});  
     
@@ -1526,7 +1526,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
     return cellEditor;
   },
   buildViewer: function ($super, name, columnDefinition) {
-    return this._createViewerElement("div", name, "ixTableCellViewerAutoComplete", {}, columnDefinition);
+    return this._createViewerElement("div", name, "ixTableCellViewerAutoCompleteSelect", {}, columnDefinition);
   },
   attachContentHandler: function ($super, table, column, row, parentNode, handlerInstance) {
     var handlerInstance = $super(table, column, row, parentNode, handlerInstance);
@@ -1572,7 +1572,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
     if (handlerInstance._editable != true) 
       return this._getViewerValue(handlerInstance);
     else {
-      return handlerInstance.down('input.ixTableCellEditorAutoCompleteId').value;
+      return handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectId').value;
     }
   },
   setEditorValue: function ($super, handlerInstance, value) {
@@ -1582,7 +1582,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
       if (this.isDisabled(handlerInstance))
         this._updateDisabledHiddenElement(handlerInstance, value);
       
-      var idInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteId');
+      var idInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectId');
       idInput.value = value;
     }
   },
@@ -1653,7 +1653,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
   _onTextInputKeyUp: function (event) {
     var textInput = Event.element(event);
     var handlerInstance = textInput.parentNode;
-    var hiddenInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteId');
+    var hiddenInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectId');
     hiddenInput.value = -1;
   }
 });
@@ -1683,12 +1683,7 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
     new Ajax.Autocompleter(inputElement, choicesElement, columnDefinition.autoCompleteUrl, {
       paramName: 'text', 
       minChars: 1, 
-      indicator: indicatorElement,
-      afterUpdateElement : function getSelectionId(text, li) {
-        var li = $(li);
-//        idElement.value = li.down('input[name="id"]').value;
-        inputElement.validate(false);
-      }
+      indicator: indicatorElement
     });
     
     return cellEditor;
@@ -1749,39 +1744,6 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
   },
   getMode: function ($super) { 
     return IxTableControllers.EDITMODE_EDITABLE;
-  },
-  copyCellValue: function($super, target, source) {
-    this.setEditorValue(target, this.getEditorValue(source));
-  },
-  setEditable: function ($super, handlerInstance, editable) {
-    if (handlerInstance._editable == editable)
-      return;
-    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_ONLY_EDITABLE) && (editable == false))
-      return;
-    if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_NOT_EDITABLE) && (editable == true))
-      return;
-    
-    var table = handlerInstance._table;
-    var column = handlerInstance._column;
-    var row = handlerInstance._row;
-    var parentNode = handlerInstance._cell;
-    var visible = this.isVisible(handlerInstance); 
-    var displayValue = this.getDisplayValue(handlerInstance);
-    
-    this.detachContentHandler(handlerInstance);
-    
-    var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
-    this.attachContentHandler(table, column, row, parentNode, newHandler);
-    
-    if (visible) 
-      this.show(newHandler);
-    else 
-      this.hide(newHandler);
-    
-    this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
-    this.destroyHandler(handlerInstance);
-    
-    this.setDisplayValue(newHandler, displayValue);
   }
 });
 

@@ -894,8 +894,6 @@ public class CourseDAO extends PyramusDAO {
         luceneQuery = parser.parse(queryString);
       }
       
-      System.out.println(queryString);
-
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Course.class)
           .setSort(new Sort(new SortField[]{SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING)}))
           .setFirstResult(firstResult)
@@ -1014,6 +1012,8 @@ public class CourseDAO extends PyramusDAO {
       }
     }
 
+    
+    
     Session s = getHibernateSession();
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
@@ -1300,9 +1300,14 @@ public class CourseDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<CourseStudent> listCourseStudentsByCourse(Course course) {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class)
-      .add(Restrictions.eq("course", course))
-      .add(Restrictions.eq("archived", Boolean.FALSE)).list();
+
+    return s.createQuery(
+        "from CourseStudent cs " +
+        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2")
+        .setParameter("course", course)
+        .setBoolean("archived", Boolean.FALSE)
+        .setBoolean("archived2", Boolean.FALSE)
+        .list();
   }
 
   @SuppressWarnings("unchecked")
