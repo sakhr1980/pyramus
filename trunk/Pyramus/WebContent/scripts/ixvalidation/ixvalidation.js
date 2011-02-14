@@ -234,7 +234,7 @@ IxTableAutoCompleteSelectFieldValidator = Class.create(IxFieldValidator, {
     $super();
   },
   validate: function ($super, field) {
-    var idField = $(field.parentNode).down('input.ixTableCellEditorAutoCompleteId');
+    var idField = $(field.parentNode).down('input.ixTableCellEditorAutoCompleteSelectId');
     
     if (field.value) {
       if ((idField.value && (parseInt(idField.value) >= 0))) 
@@ -249,19 +249,6 @@ IxTableAutoCompleteSelectFieldValidator = Class.create(IxFieldValidator, {
     return IxFieldValidator.TYPE_NORMAL;
   },
   className: 'ixTableCellEditorAutoCompleteSelectText'
-});
-
-IxTableAutoCompleteTextFieldValidator = Class.create(IxFieldValidator, {
-  initialize : function($super) {
-    $super();
-  },
-  validate: function ($super, field) {
-    return this._getFieldValue(field).blank() ? IxFieldValidator.STATUS_INVALID : IxFieldValidator.STATUS_VALID;
-  },
-  getType: function ($super) {
-    return IxFieldValidator.TYPE_NORMAL;
-  },
-  className: 'ixTableCellEditorAutoCompleteText'
 });
 
 Object.extend(IxFieldValidator, {
@@ -456,7 +443,6 @@ IxFieldValidatorVault.registerValidator(new IxFloatValidValidator());
 IxFieldValidatorVault.registerValidator(new IxNumberValidValidator());
 IxFieldValidatorVault.registerValidator(new IxEqualsFieldValidator());
 IxFieldValidatorVault.registerValidator(new IxTableAutoCompleteSelectFieldValidator());
-IxFieldValidatorVault.registerValidator(new IxTableAutoCompleteTextFieldValidator());
 
 function initializeValidation(container) {
   var delegators = new Array();
