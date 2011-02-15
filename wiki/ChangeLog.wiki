@@ -5,8 +5,7 @@
 
   * Added hover effects to tables in viewstudent
   * Added Course State label and Course Evaluation button to courses table in viewstudent
-  * Added sorting to courses, course assessments and transfer credits in
-viewstudent
+  * Added sorting to courses, course assessments and transfer credits in viewstudent
   * Added sorting to transfer credit management view
   * Added Binary Request Controller for AutoComplete fields to search by name from all transfercredit teplate courses
   * Added hover effect to table on Manage Course Assessments
