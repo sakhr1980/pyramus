@@ -1,6 +1,23 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.36 (110214.10)
+  * Added hover effects to tables in viewstudent
+  * Added Course State label and Course Evaluation button to courses table in viewstudent
+  * Added sorting to courses, course assessments and transfer credits in
+viewstudent
+  * Added sorting to transfer credit management view
+  * Added Binary Request Controller for AutoComplete fields to search by name from all transfercredit teplate courses
+  * Added hover effect to table on Manage Course Assessments
+  * Added basic search for transfercredittempate courses to GradingDAO
+  * Added name indexing to TransferCreditTemplateCourse to allow searching
+  * Changed name for existing AutoComplete field in ixtable to AutoCompleteSelect and implemented new AutoComplete field that acts as auto completable text field
+  * Changed visibility of modify button to false for new rows in managetransfercredits
+  * Changed course name field from text field to autocomplete field in
+managetransfercredits
+  * Changed sorting of most lists to be case insensitive
+
+
 *Version 0.35 (110207.9)
 
   * Minor optimizations to PyramusWebServices
