@@ -2,6 +2,7 @@
 #labels Featured
 
 *Version 0.36 (110214.10)
+
   * Added hover effects to tables in viewstudent
   * Added Course State label and Course Evaluation button to courses table in viewstudent
   * Added sorting to courses, course assessments and transfer credits in
