@@ -74,14 +74,20 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.coursesTableNameHeader"/>',
             left: 8,
-            width: 400, 
+            right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 200 + 8,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseStateHeader"/>',
-            left: 408,
-            right: 8 + 22 + 8 + 22 + 8,
+            width: 200,
+            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
             dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.viewStudent.coursesTableCourseEnrolmentTimeHeader"/>',
+            width: 150,
+            right: 8 + 22 + 8 + 22 + 8,
+            dataType: 'date',
             editable: false
           }, {
             dataType: 'hidden',
@@ -261,7 +267,13 @@
           coursesTable = setupCoursesTab(${student.id});
 
           <c:forEach var="studentCourse" items="${courses[student.id]}">
-            coursesTable.addRow(['${studentCourse.course.name}', '${studentCourse.participationType.name}', ${studentCourse.id}, ${studentCourse.course.id}, '', '']);
+            <c:set var="courseName">${studentCourse.course.name}</c:set>
+
+            <c:if test="${not empty studentCourse.course.nameExtension}">
+              <c:set var="courseName">${studentCourse.course.name} (${studentCourse.course.nameExtension})</c:set>
+            </c:if>
+          
+            coursesTable.addRow(['${courseName}', '${studentCourse.participationType.name}', '${studentCourse.enrolmentTime.time}', ${studentCourse.id}, ${studentCourse.course.id}, '', '']);
           </c:forEach>
 
           // Setup grade tabs
