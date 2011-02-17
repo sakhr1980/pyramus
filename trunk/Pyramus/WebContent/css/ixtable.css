@@ -130,6 +130,9 @@ div.ixTableRowButton:hover{
 
 }
 
+.ixTableRowHoverEffect .ixTableRow:hover {
+}
+
 .ixTableCellEditorSelect {
   border:1px solid #739DE7;
   -moz-border-radius:3px 3px 3px 3px;

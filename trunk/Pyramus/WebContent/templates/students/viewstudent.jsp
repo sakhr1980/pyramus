@@ -71,6 +71,7 @@
     
         var coursesTable = new IxTable($('coursesTableContainer.' + studentId), {
           id: 'coursesTable.' + studentId,
+          rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.coursesTableNameHeader"/>',
             left: 8,
@@ -129,6 +130,7 @@
         
         var transferCreditsTable = new IxTable($('transferCreditsTableContainer.' + studentId), {
           id: 'transferCreditsTable.' + studentId,
+          rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.transferCreditsTableNameHeader"/>',
             left: 8,
@@ -186,6 +188,7 @@
       function setupCourseAssessmentsTab(studentId) {
         var courseAssesmentsTable = new IxTable($('courseAssessmentsTableContainer.' + studentId), {
           id: 'courseAssessmentsTable.' + studentId,
+          rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableNameHeader"/>',
             left: 8,

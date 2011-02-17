@@ -37,8 +37,13 @@ IxTable = Class.create({
       value: 0
     });
     
+    var classNames = "ixTable";
+    
+    if (options.rowHoverEffect === true)
+      classNames += " ixTableRowHoverEffect"
+    
     this.domNode = Builder.node("div", {
-      className : "ixTable"
+      className : classNames
     }, [ this._headerRow, this._content, this._rowCount]);
 
     this._headerCells = new Object();
