@@ -25,6 +25,7 @@
       function setupStudentsTable() {
         var studentsTable = new IxTable($('studentsTable'), {
           id : "studentsTable",
+          rowHoverEffect: true,
           columns : [{
             width: 30,
             left: 8,
@@ -41,13 +42,14 @@
           }, {
             header : '<fmt:message key="students.viewStudentGroup.studentsTableNameHeader"/>',
             left : 38,
+            width : 300,
             dataType : 'text',
             paramName: 'studentName',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudentGroup.studentsTableStudyProgrammeHeader"/>',
-            width: 140,
-            left : 230,
+            right: 8 + 22 + 8 + 22 + 8,
+            left : 308,
             dataType : 'text', 
             paramName: 'studyProgramme',
             editable: false
@@ -55,8 +57,8 @@
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
           }, {
-            width: 30,
-            right: 30,
+            width: 22,
+            right: 8 + 22 + 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="students.viewStudentGroup.studentsTableViewStudentTooltip"/>',
@@ -66,8 +68,8 @@
               redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=' + abstractStudentId);
             }
           }, {
-            width: 30,
-            right: 00,
+            width: 22,
+            right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="students.viewStudentGroup.studentsTableEditStudentTooltip"/>',
@@ -89,9 +91,15 @@
             </c:otherwise>
           </c:choose>
           
+          <c:if test="${!student.student.active}">
+            <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+          </c:if>
+          
+          <c:set var="studentName">${fn:escapeXml(student.student.lastName)}, ${fn:escapeXml(student.student.firstName)}</c:set>
+          
           studentsTable.addRow([
             "", 
-            "${fn:escapeXml(student.student.lastName)}, ${fn:escapeXml(student.student.firstName)}", 
+            "${studentName}", 
             "${studyProgrammeName}",
             ${student.student.abstractStudent.id},
             '',
