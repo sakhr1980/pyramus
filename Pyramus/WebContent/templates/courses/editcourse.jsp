@@ -780,7 +780,7 @@
             width: 100,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200,
             dataType : 'select',
-            editable: false,
+            editable: true,
             dynamicOptions: true,
             paramName: 'studentId',
             options: [
@@ -790,7 +790,7 @@
             width: 200,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
             dataType : 'select',
-            editable: false,
+            editable: true,
             overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
@@ -804,7 +804,7 @@
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
-            editable: false,
+            editable: true,
             overwriteColumnValues : true,
             paramName: 'enrolmentDate'
           }, {
@@ -812,7 +812,7 @@
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140,
             dataType: 'select', 
-            editable: false,
+            editable: true,
             paramName: 'enrolmentType',
             options: [
             <c:forEach var="courseEnrolmentType" items="${courseEnrolmentTypes}" varStatus="vs">
@@ -826,7 +826,7 @@
             width: 140,
             dataType : 'select',
             paramName: 'optionality',
-            editable: false,
+            editable: true,
             options: [
               {text: '', value: ''},
               {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
@@ -837,7 +837,7 @@
             width: 100,
             right : 8 + 22 + 8 + 8 + 22,
             dataType: 'select', 
-            editable: false,
+            editable: true,
             overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
