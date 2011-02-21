@@ -19,7 +19,6 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
@@ -64,14 +63,14 @@ public class StudentDAO extends PyramusDAO {
    */
   public void archiveStudent(Student student) {
     Session s = getHibernateSession();
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     student.setArchived(Boolean.TRUE);
     s.saveOrUpdate(student);
     
     // Also archive course students of the archived student
     
-    List<CourseStudent> courseStudents = listCourseStudentsByStudent(student);
+    List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByStudent(student);
     if (courseStudents.size() > 0) {
-      CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
       for (CourseStudent courseStudent : courseStudents) {
         courseDAO.archiveCourseStudent(courseStudent);
       }
@@ -311,22 +310,6 @@ public class StudentDAO extends PyramusDAO {
       add(Restrictions.eq("student", student)).
       add(Restrictions.eq("archived", Boolean.FALSE)).
       list();
-  }
-
-  /**
-   * Returns a list of the course students of the given student.
-   * 
-   * @param student The student
-   * 
-   * @return A list of the course students of the given student
-   */
-  @SuppressWarnings("unchecked")
-  public List<CourseStudent> listCourseStudentsByStudent(Student student) {
-    Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class)
-      .add(Restrictions.eq("student", student))
-      .add(Restrictions.eq("archived", Boolean.FALSE))
-      .list();
   }
 
   @SuppressWarnings("unchecked")
@@ -1115,7 +1098,14 @@ public class StudentDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<StudentGroup> listStudentsStudentGroups(Student student) {
     Session s = getHibernateSession();
-    return s.createCriteria(StudentGroupStudent.class).add(Restrictions.eq("student", student)).setProjection(Projections.property("studentGroup")).list();
+    
+    return s.createQuery(
+        "select sgs.studentGroup " +
+        "from StudentGroupStudent sgs " +
+        "where sgs.student=:student and sgs.studentGroup.archived=:archived")
+        .setParameter("student", student)
+        .setBoolean("archived", Boolean.FALSE)
+        .list();
   }
   
   public StudentContactLogEntry findStudentContactLogEntryById(Long entryId) {

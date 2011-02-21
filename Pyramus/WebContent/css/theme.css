@@ -150,6 +150,21 @@ h1.genericPageHeader{
   border-radius:3px;
 }
 
+.ixTableCellContextMenu {
+  background: #739de7;
+  border:1px solid #739DE7;
+  color:#fff;
+}
+
+.ixTableCellContextMenuItem {
+}
+
+.ixTableCellContextMenuItem:hover {
+  background:#5b87d4;
+  --color:#2351B1;
+}
+
+
 #componentHoursTotalContainer{
   margin-left:18px;
   width:300px;

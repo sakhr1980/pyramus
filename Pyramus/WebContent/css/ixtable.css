@@ -156,3 +156,45 @@ div.ixTableRowButton:hover{
   height: 16px;
   background-image: url(../gfx/input-checked.png);
 }
+
+.ixTableCellContextMenuButton {
+  --border: solid 1px;
+  display:none;
+  position:absolute;
+  background-image:url(../gfx/list-add.png);
+  background-repeat:no-repeat;
+  background-position: right top;
+  right:4px;
+  top:0px;
+  width:17px;
+  height:17px;
+}
+
+.ixTableCell:hover .ixTableCellContextMenuButton {
+  display:block;
+}
+
+.ixTableCellContextMenu {
+  /*border: solid 1px;
+  background: #ffffff;*/
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  padding: 4px 4px 4px 4px;
+  z-index: 2;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
+
+.ixTableCellContextMenuItem {
+  padding: 2px 8px 2px 8px;
+  cursor: pointer;
+}
+
+.ixTableCellContextMenuItem:hover {
+  /*background: #cecece;*/
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+}
