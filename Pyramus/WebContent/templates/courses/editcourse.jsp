@@ -329,11 +329,11 @@
             } 
           }]        
         });
-        <c:forEach var="courseUser" items="${course.courseUsers}">
+        <c:forEach var="courseUser" items="${courseUsers}">
           personnelTable.addRow([
             ${courseUser.id},
             ${courseUser.user.id},
-            '${fn:replace(courseUser.user.fullName, "'", "\\'")}',
+            '${fn:replace(courseUser.user.lastName, "'", "\\'")}, ${fn:replace(courseUser.user.firstName, "'", "\\'")}',
             ${courseUser.role.id},
             ''
           ]);
@@ -780,7 +780,7 @@
             width: 100,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200,
             dataType : 'select',
-            editable: true,
+            editable: false,
             dynamicOptions: true,
             paramName: 'studentId',
             options: [
@@ -790,7 +790,7 @@
             width: 200,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
             dataType : 'select',
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
@@ -804,7 +804,7 @@
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
             paramName: 'enrolmentDate'
           }, {
@@ -812,7 +812,7 @@
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140,
             dataType: 'select', 
-            editable: true,
+            editable: false,
             paramName: 'enrolmentType',
             options: [
             <c:forEach var="courseEnrolmentType" items="${courseEnrolmentTypes}" varStatus="vs">
@@ -826,7 +826,7 @@
             width: 140,
             dataType : 'select',
             paramName: 'optionality',
-            editable: true,
+            editable: false,
             options: [
               {text: '', value: ''},
               {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
@@ -837,7 +837,7 @@
             width: 100,
             right : 8 + 22 + 8 + 8 + 22,
             dataType: 'select', 
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
@@ -984,7 +984,7 @@
 
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
-              IxTableControllers.getController('select').addOption(cellEditor , 
+              IxTableControllers.getController('select').addOption(cellEditor, 
                   jsonResponse.studentStudyProgrammes[j].studentId, 
                   jsonResponse.studentStudyProgrammes[j].studyProgrammeName, 
                   jsonResponse.studentStudyProgrammes[j].studentId == studentId);

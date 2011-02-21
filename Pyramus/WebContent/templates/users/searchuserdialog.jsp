@@ -53,7 +53,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].id]);
+              resultsTable.addRow([results[i].lastName + ", " + results[i].firstName, results[i].id]);
             }
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
