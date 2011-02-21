@@ -60,14 +60,48 @@
             right : 546,
             dataType : 'text',
             editable: false,
-            paramName: 'participationType'
+            paramName: 'participationType',
+            contextMenu: [
+              {
+                text: 'Teksti yksi',
+                onclick: function (event) {
+                  alert('klak ' + event.row + ' ' + event.column);
+                  
+                  // tableComponent
+                  // event.row
+                  // event.column
+                }
+              },
+              {
+                text: 'Filter by value',
+                onclick: IxTable_ROWSTRINGFILTER
+              },
+              {
+                text: 'Clear filter',
+                onclick: IxTable_ROWCLEARFILTER
+              },
+              {
+                text: 'Sort',
+                onclick: IxTable_ROWSTRINGSORT
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentDateHeader"/>',
             width: 200,
             right : 338,
             dataType: 'date',
             editable: false,
-            paramName: 'enrolmentDate'
+            paramName: 'enrolmentDate',
+            contextMenu: [
+              {
+                text: 'Show earlier',
+                onclick: IxTable_ROWDATEEARLIERFILTER
+              },
+              {
+                text: 'Clear filter',
+                onclick: IxTable_ROWCLEARFILTER
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 174,
