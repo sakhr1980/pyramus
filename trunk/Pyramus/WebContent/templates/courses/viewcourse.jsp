@@ -74,15 +74,15 @@
               },
               {
                 text: 'Filter by value',
-                onclick: IxTable_ROWSTRINGFILTER
+                onclick: new IxTable_ROWSTRINGFILTER()
               },
               {
                 text: 'Clear filter',
-                onclick: IxTable_ROWCLEARFILTER
+                onclick: new IxTable_ROWCLEARFILTER()
               },
               {
                 text: 'Sort',
-                onclick: IxTable_ROWSTRINGSORT
+                onclick: new IxTable_ROWSTRINGSORT("asc")
               }
             ]            
           }, {
@@ -95,11 +95,15 @@
             contextMenu: [
               {
                 text: 'Show earlier',
-                onclick: IxTable_ROWDATEEARLIERFILTER
+                onclick: new IxTable_ROWDATEFILTER(true)
+              },
+              {
+                text: 'Show later',
+                onclick: new IxTable_ROWDATEFILTER(false)
               },
               {
                 text: 'Clear filter',
-                onclick: IxTable_ROWCLEARFILTER
+                onclick: new IxTable_ROWCLEARFILTER()
               }
             ]            
           }, {
