@@ -251,9 +251,11 @@ IxTable = Class.create({
       if (rowElements[i]._rowNumber == this.getRowCount()) {
 
         for (var j = 0, len = this.options.columns.length; j < len; j++) {
-          var editorInstance = this.getCellEditor(i, j);
-          var contextMenuButton = $(editorInstance.parentNode).up(".ixTableCellContextMenuButton");
-          Event.stopObserving(contextMenuButton, "click", this._contextMenuButtonClickListener);
+          if (this.options.columns.contextMenu) {
+            var editorInstance = this.getCellEditor(i, j);
+            var contextMenuButton = $(editorInstance.parentNode).down(".ixTableCellContextMenuButton");
+            Event.stopObserving(contextMenuButton, "click", this._contextMenuButtonClickListener);
+          }
         }
       
         rowElements[i].remove();
@@ -625,7 +627,7 @@ IxTable = Class.create({
 
     contextMenu.remove();
     
-    menuItem.onclick.call(window, {
+    menuItem.onclick.execute.call(window, {
       tableComponent: this,
       row: row,
       column: column
@@ -1894,55 +1896,80 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
 
 IxTableControllers.registerController(new IxAutoCompleteTextTableEditorController());
 
-IxTable_ROWSTRINGFILTER = function (event) {
-  var table = event.tableComponent;
-  var row = event.row;
-  var column = event.column;
-  var cellValue = table.getCellValue(row, column);
-  
-  var hideArray = new Array();
-  
-  for (var i = table.getRowCount() - 1; i >= 0; i--) {
-    var rowValue = table.getCellValue(i, column);
-    if (rowValue != cellValue)
-      hideArray.push(i);
+IxTable_ROWSTRINGFILTER = Class.create({
+  initialize : function(filterEarlier) {
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var row = event.row;
+    var column = event.column;
+    var cellValue = table.getCellValue(row, column);
+    
+    var hideArray = new Array();
+    
+    for (var i = table.getRowCount() - 1; i >= 0; i--) {
+      var rowValue = table.getCellValue(i, column);
+      if (rowValue != cellValue)
+        hideArray.push(i);
+    }
+
+    table.hideRows(hideArray.toArray());
   }
+});
 
-  table.hideRows(hideArray.toArray());
-};
-
-IxTable_ROWDATEEARLIERFILTER = function (event) {
-  var table = event.tableComponent;
-  var row = event.row;
-  var column = event.column;
-  var cellValue = table.getCellValue(row, column);
-  var hideArray = new Array();
+IxTable_ROWDATEFILTER = Class.create({
+  initialize : function(filterEarlier) {
+    this._filterEarlier = filterEarlier;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var row = event.row;
+    var column = event.column;
+    var cellValue = table.getCellValue(row, column);
+    var hideArray = new Array();
+    
+    if (this._filterEarlier) {
+      for (var i = table.getRowCount() - 1; i >= 0; i--) {
+        var rowValue = table.getCellValue(i, column);
+        if ((rowValue) && (rowValue > cellValue)) 
+          hideArray.push(i);
+      }
+    } else {
+      for (var i = table.getRowCount() - 1; i >= 0; i--) {
+        var rowValue = table.getCellValue(i, column);
+        if ((rowValue) && (rowValue < cellValue)) 
+          hideArray.push(i);
+      }
+    }
   
-  for (var i = table.getRowCount() - 1; i >= 0; i--) {
-    var rowValue = table.getCellValue(i, column);
-    if ((rowValue) && (rowValue > cellValue)) 
-      hideArray.push(i);
+    table.hideRows(hideArray.toArray());
   }
+});
 
-  table.hideRows(hideArray.toArray());
-};
+IxTable_ROWCLEARFILTER = Class.create({
+  initialize : function() {
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    table.showAllRows();
+  }  
+});
 
-IxTable_ROWCLEARFILTER = function (event) {
-  var table = event.tableComponent;
-  table.showAllRows();
-};
-
-IxTable_ROWSTRINGSORT = function (event) {
-  var table = event.tableComponent;
-  var column = event.column;
-
-  alert("hep");
+IxTable_ROWSTRINGSORT = Class.create({
+  initialize : function(sortDirection) {
+    this._sortDirection = sortDirection;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var column = event.column;
   
-  $$('.ixTableRow').sortBy(
-    function(element) {
-      var row = element._rowNumber;
-      var val = table.getCellValue(row, column);
-      return val;
-    });
-
-};
+    alert("hep");
+    
+    $$('.ixTableRow').sortBy(
+      function(element) {
+        var row = element._rowNumber;
+        var val = table.getCellValue(row, column);
+        return val;
+      });
+  }
+});
