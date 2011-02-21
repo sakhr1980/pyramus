@@ -40,7 +40,8 @@ public class SearchUsersJSONRequestController implements JSONRequestController {
     for (User user : users) {
       Map<String, Object> info = new HashMap<String, Object>();
       info.put("id", user.getId());
-      info.put("name", user.getFullName());
+      info.put("firstName", user.getFirstName());
+      info.put("lastName", user.getLastName());
       results.add(info);
     }
 

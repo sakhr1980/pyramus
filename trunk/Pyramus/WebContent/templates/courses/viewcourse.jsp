@@ -401,22 +401,23 @@
 	            <jsp:param name="helpLocale" value="courses.viewCourse.personnelHelp" />
 	          </jsp:include>
 	          <div class="genericViewFormDataText">
-	            <c:forEach var="courseUser" items="${course.courseUsers}">
-	              <div>${courseUser.user.fullName} - ${courseUser.role.name}</div>
+	            <c:forEach var="courseUser" items="${courseUsers}">
+	              <div>${courseUser.user.lastName}, ${courseUser.user.firstName} - ${courseUser.role.name}</div>
 	            </c:forEach>
 	          </div>
 	        </div>        
   
         </div>
         <!--  Course Detailed Info Ends -->
-        
+
       </div>
   
       <div id="components" class="tabContent hiddenTab">
         <c:choose>
           <c:when test="${fn:length(courseComponents) le 0}">
             <div class="genericTableNotAddedMessageContainer">
-              <fmt:message key="courses.viewCourse.noCourseComponents" /></div>
+              <fmt:message key="courses.viewCourse.noCourseComponents" />
+            </div>
           </c:when>
           <c:otherwise>
             <div class="viewCourseComponentsContainer">

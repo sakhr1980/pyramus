@@ -23,6 +23,7 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
 import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.courses.CourseUser;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
@@ -72,6 +73,17 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
       }
     });
     
+    List<CourseUser> courseUsers = courseDAO.listCourseUsers(course);
+    Collections.sort(courseUsers, new Comparator<CourseUser>() {
+      @Override
+      public int compare(CourseUser o1, CourseUser o2) {
+        int cmp = o1.getUser().getLastName().compareToIgnoreCase(o2.getUser().getLastName());
+        if (cmp == 0)
+          cmp = o1.getUser().getFirstName().compareToIgnoreCase(o2.getUser().getFirstName());
+        return cmp;
+      }
+    });
+    
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = course.getTags().iterator();
     while (tagIterator.hasNext()) {
@@ -90,6 +102,7 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
+    pageRequestContext.getRequest().setAttribute("courseUsers", courseUsers);
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("courseComponents", courseComponents);
     

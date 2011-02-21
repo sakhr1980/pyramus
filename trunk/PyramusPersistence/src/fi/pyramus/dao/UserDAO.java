@@ -13,6 +13,8 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -315,8 +317,10 @@ public class UserDAO extends PyramusDAO {
       }
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class)
-        .setFirstResult(firstResult)
-        .setMaxResults(resultsPerPage);
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastName", SortField.STRING),
+                   new SortField("firstName", SortField.STRING) }))
+          .setFirstResult(firstResult)
+          . setMaxResults(resultsPerPage);
 
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;
@@ -376,7 +380,10 @@ public class UserDAO extends PyramusDAO {
         luceneQuery = parser.parse(queryString);
       }
 
-      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class).setFirstResult(firstResult)
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class)
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastName", SortField.STRING),
+                   new SortField("firstName", SortField.STRING) }))
+          .setFirstResult(firstResult)
           .setMaxResults(resultsPerPage);
 
       int hits = query.getResultSize();
