@@ -46,14 +46,34 @@
             right : 900,
             dataType : 'text',
             paramName: 'studentName',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableStudyProgrammeHeader"/>',
             width: 140,
             right : 752,
             dataType : 'text', 
             paramName: 'studyProgramme',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
@@ -79,12 +99,18 @@
               {
                 text: 'Clear filter',
                 onclick: new IxTable_ROWCLEARFILTER()
-              },
-              {
-                text: 'Sort',
-                onclick: new IxTable_ROWSTRINGSORT("asc")
               }
-            ]            
+            ],            
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentDateHeader"/>',
             width: 200,
@@ -105,7 +131,17 @@
                 text: 'Clear filter',
                 onclick: new IxTable_ROWCLEARFILTER()
               }
-            ]            
+            ],            
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 174,
@@ -119,7 +155,17 @@
             right : 68,
             dataType: 'text', 
             editable: false,
-            paramName: 'lodging'
+            paramName: 'lodging',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
