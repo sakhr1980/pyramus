@@ -1997,7 +1997,7 @@ IxTable_ROWSTRINGSORT = Class.create({
     var column = event.column;
     var sortAction = event.sortAction;
   
-    var rowElements = $$('.ixTableRow').sortBy(
+    var rowElements = $(table._content).select('.ixTableRow').sortBy(
       function(element) {
         var row = element._rowNumber;
         var val = table.getCellValue(row, column);
