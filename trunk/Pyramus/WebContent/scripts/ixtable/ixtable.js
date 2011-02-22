@@ -17,6 +17,7 @@ IxTableControllers = {
 IxTable = Class.create({
   initialize : function(parentNode, options) {
     this._rowClickListener = this._onRowClick.bindAsEventListener(this);
+    this._sortColumnClickListener = this._onSortColumnClick.bindAsEventListener(this);
     this._activeRows = new Hash();
   
     this._headerRowContent = Builder.node("div", {
@@ -65,6 +66,27 @@ IxTable = Class.create({
       var headerCell = Builder.node("div", {
         className : "ixTableHeaderCell"
       }, [ headerTextNode ]);
+      
+      if (column.sortAttributes) {
+        if (column.sortAttributes.sortAscending) {
+          var sortAscendingBtn = new Element("span", { className : "ixTableHeaderSortButton" });
+          sortAscendingBtn.innerHTML = "▲";
+          sortAscendingBtn._sort = column.sortAttributes.sortAscending; 
+          sortAscendingBtn._column = i; 
+          headerCell.appendChild(sortAscendingBtn);
+
+          Event.observe(sortAscendingBtn, "click", this._sortColumnClickListener);
+        }
+        if (column.sortAttributes.sortDescending) {
+          var sortDescendingBtn = new Element("span", { className : "ixTableHeaderSortButton" });
+          sortDescendingBtn.innerHTML = "▼";
+          sortDescendingBtn._sort = column.sortAttributes.sortDescending; 
+          sortDescendingBtn._column = i; 
+          headerCell.appendChild(sortDescendingBtn);
+
+          Event.observe(sortDescendingBtn, "click", this._sortColumnClickListener);
+        }
+      }
       
       if (column.overwriteColumnValues) {
         var copyNode = Builder.node("div", {
@@ -585,6 +607,17 @@ IxTable = Class.create({
   },
   _unsetCellContentHandler: function (row, column) {
     this._cellEditors.unset(row + '.' + column);
+  },
+  _onSortColumnClick: function (event) {
+    var sortButton = Event.element(event);
+    if (sortButton._sort) {
+      var column = sortButton._column;
+      sortButton._sort.sortAction.execute.call(window, {
+        tableComponent: this,
+        sortAction: sortButton._sort,
+        column: column
+      });
+    }
   },
   _onContextMenuButtonClick: function (event) {
     var contextMenuButton = Event.element(event);
@@ -1962,15 +1995,24 @@ IxTable_ROWSTRINGSORT = Class.create({
   execute: function (event) {
     var table = event.tableComponent;
     var column = event.column;
+    var sortAction = event.sortAction;
   
-    alert("hep");
-    
-    $$('.ixTableRow').sortBy(
+    var rowElements = $$('.ixTableRow').sortBy(
       function(element) {
         var row = element._rowNumber;
         var val = table.getCellValue(row, column);
         return val;
       });
+
+    if (sortAction.sortAction._sortDirection == "desc") {
+      for (var i = rowElements.length - 1; i >= 0; i--) {
+        table._content.appendChild(rowElements[i]);
+      }
+    } else {
+      for (var i = 0, l = rowElements.length; i < l; i++) {
+        table._content.appendChild(rowElements[i]);
+      }
+    }
   }
 });
 
