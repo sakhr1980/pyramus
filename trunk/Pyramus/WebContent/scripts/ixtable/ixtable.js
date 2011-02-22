@@ -1973,3 +1973,24 @@ IxTable_ROWSTRINGSORT = Class.create({
       });
   }
 });
+
+IxTable_COPYVALUESTOCOLUMNACTION = Class.create({
+  initialize : function(onlyModifiable) {
+    this._onlyModifiable = onlyModifiable;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var column = event.column;
+    var row = event.row;
+    
+    var value = table.getCellValue(row, column);
+    
+    for (var i = 0, len = table.getRowCount(); i < len; i++) {
+      var cellEditor = table.getCellEditor(row, column);
+      var editable = cellEditor.getEditable(cellEditor); 
+
+      if ((!this._onlyModifiable) || (editable))
+        table.setCellValue(i, column, value);
+    }
+  }
+});
