@@ -146,18 +146,23 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
         
         if (dynamicOptions) {
           var cellEditor = table.getCellEditor(row, column);
-          var optionCount = cellEditor.options.length;
-          
-          draftData.set(row + '.' + column + '.dynamicOptions.count', optionCount);
-          
-          for (var optionIndex = 0; optionIndex < optionCount; optionIndex++) {
-            // TODO: Values should be retrieved thru controller 
-            var option = cellEditor.options[optionIndex];
-            var optionName = option.innerHTML;
-            var optionValue = option.value;
-
-            draftData.set(row + '.' + column + '.dynamicOption.' + optionIndex + '.name', optionName);          
-            draftData.set(row + '.' + column + '.dynamicOption.' + optionIndex + '.value', optionValue);
+          if (editable) {
+            var optionCount = cellEditor.options.length;
+            
+            draftData.set(row + '.' + column + '.dynamicOptions.count', optionCount);
+            
+            for (var optionIndex = 0; optionIndex < optionCount; optionIndex++) {
+              // TODO: Values should be retrieved thru controller 
+              var option = cellEditor.options[optionIndex];
+              var optionName = option.innerHTML;
+              var optionValue = option.value;
+  
+              draftData.set(row + '.' + column + '.dynamicOption.' + optionIndex + '.name', optionName);          
+              draftData.set(row + '.' + column + '.dynamicOption.' + optionIndex + '.value', optionValue);
+            }
+          }
+          else {
+            draftData.set(row + '.' + column + '.displayValue', this._compress(cellEditor._fieldContent.innerHTML));
           }
         }
       }
@@ -209,20 +214,28 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
 
         if (dynamicOptions) {
           var cellEditor = table.getCellEditor(row, column);
-          var optionCount = tableData[row + '.' + column + '.dynamicOptions.count'];
-          
-          for (var optionIndex = 0; optionIndex < optionCount; optionIndex++) {
-            var optionName = tableData[row + '.' + column + '.dynamicOption.' + optionIndex + '.name'];
-            var optionValue = tableData[row + '.' + column + '.dynamicOption.' + optionIndex + '.value'];
-
-            IxTableControllers.getController('select').addOption(cellEditor , optionValue, optionName);
+          if (editable) {
+            var optionCount = tableData[row + '.' + column + '.dynamicOptions.count'];
+            
+            for (var optionIndex = 0; optionIndex < optionCount; optionIndex++) {
+              var optionName = tableData[row + '.' + column + '.dynamicOption.' + optionIndex + '.name'];
+              var optionValue = tableData[row + '.' + column + '.dynamicOption.' + optionIndex + '.value'];
+  
+              IxTableControllers.getController('select').addOption(cellEditor, optionValue, optionName);
+            }
+            var value = this._uncompress(tableData[row + '.' + column + '.value']);
+            table.setCellValue(row, column, value);
+          }
+          else {
+            IxTableControllers.getController('select').setEditorValue(cellEditor,
+                this._uncompress(tableData[row + '.' + column + '.value']),
+                this._uncompress(tableData[row + '.' + column + '.displayValue']));
           }
         }
-      }
-      
-      for (var column = 0; column < columns; column++) {
-        var value = this._uncompress(tableData[row + '.' + column + '.value']);
-        table.setCellValue(row, column, value);
+        else {
+          var value = this._uncompress(tableData[row + '.' + column + '.value']);
+          table.setCellValue(row, column, value);
+        }
       }
     }
   }
