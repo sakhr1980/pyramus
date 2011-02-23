@@ -82,25 +82,16 @@
       }
 
       function addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName) {
-        JSONRequest.request("students/getstudentstudyprogrammes.json", {
-          parameters: {
-            abstractStudentId: abstractStudentId
-          },
-          onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, '', '', '']);
-            studentsTable.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
-            var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
-            for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
-              IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
-            }
-
-            if (studentsTable.getRowCount() > 0) {
-              $('noStudentsAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
-          }
-        });   
+        var table = getIxTableById('studentsTable');
+        var rowIndex = table.addRow(['', '', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, 1, '', '', '']);
+        table.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
+        for (var i = 3; i < 9; i++) {
+          table.setCellEditable(rowIndex, i, true);
+        }
+        loadStudentStudyProgrammes(rowIndex, studentId);
+        $('noStudentsAddedMessageContainer').setStyle({
+          display: 'none'
+        });
       };
 
       function openSearchStudentsDialog() {
@@ -769,28 +760,44 @@
               openStudentInfoPopupOnElement(button, abstractStudentId);
             } 
           }, {
+            left: 8 + 22 + 8,
+            width: 22,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            tooltip: '<fmt:message key="courses.editCourse.studentsTableEditStudentTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableObject;
+              var modified = table.getCellValue(event.row, table.getNamedColumnIndex('modified'));
+              if (modified != 1) {
+                var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
+                table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+                for (var i = 3; i < 9; i++) {
+                  table.setCellEditable(event.row, i, true);
+                }
+                loadStudentStudyProgrammes(event.row, studentId);
+              }
+            }
+          }, {
             header : '<fmt:message key="courses.editCourse.studentsTableNameHeader"/>',
-            left : 8 + 22 + 8,
-            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 100,
+            left : 8 + 22 + 8 + 8 + 22 + 8,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 150,
             dataType : 'text',
             paramName: 'studentName',
             editable: false
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableStudyProgrammeHeader"/>',
-            width: 100,
+            width: 150,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200,
             dataType : 'select',
-            editable: true,
+            editable: false,
             dynamicOptions: true,
-            paramName: 'studentId',
-            options: [
-            ]
+            paramName: 'studentId'
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
             dataType : 'select',
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
@@ -804,15 +811,15 @@
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
-            paramName: 'enrolmentDate'
+            paramName: 'enrolmentDate',
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140,
             dataType: 'select', 
-            editable: true,
+            editable: false,
             paramName: 'enrolmentType',
             options: [
             <c:forEach var="courseEnrolmentType" items="${courseEnrolmentTypes}" varStatus="vs">
@@ -826,7 +833,7 @@
             width: 140,
             dataType : 'select',
             paramName: 'optionality',
-            editable: true,
+            editable: false,
             options: [
               {text: '', value: ''},
               {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
@@ -837,7 +844,7 @@
             width: 100,
             right : 8 + 22 + 8 + 8 + 22,
             dataType: 'select', 
-            editable: true,
+            editable: false,
             overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
@@ -850,6 +857,9 @@
           }, {
             dataType: 'hidden', 
             paramName: 'courseStudentId'
+          }, {
+            dataType: 'hidden', 
+            paramName: 'modified'
           }, {
             width: 22,
             right: 8 + 22 + 8,
@@ -932,19 +942,42 @@
           }]        
         });
 
+        var rowIndex;
+        var cellEditor; 
         <c:forEach var="courseStudent" items="${courseStudents}" varStatus="status">
-          loadStudentStudyProgrammes(
-              studentsTable,
-              ${courseStudent.student.abstractStudent.id},
-              "${fn:escapeXml(courseStudent.student.lastName)}, ${fn:escapeXml(courseStudent.student.firstName)}", 
-              ${courseStudent.student.id},
-              ${courseStudent.participationType.id}, 
-              ${courseStudent.enrolmentTime.time}, 
-              ${courseStudent.courseEnrolmentType.id},
-              '${courseStudent.optionality}',
-              ${courseStudent.lodging},
-              ${courseStudent.id}
-          );
+          rowIndex = studentsTable.addRow([
+            '',
+            '',
+            "${fn:escapeXml(courseStudent.student.lastName)}, ${fn:escapeXml(courseStudent.student.firstName)}",
+            ${courseStudent.student.id},
+            ${courseStudent.participationType.id}, 
+            ${courseStudent.enrolmentTime.time}, 
+            ${courseStudent.courseEnrolmentType.id},
+            '${courseStudent.optionality}',
+            '${courseStudent.lodging}',
+            ${courseStudent.student.abstractStudent.id},
+            ${courseStudent.id},
+            0,
+            '',
+            '',
+            '']);
+          studentsTable.showCell(rowIndex, studentsTable.getNamedColumnIndex("archiveButton"));
+
+          <c:choose>
+            <c:when test="${courseStudent.student.studyProgramme ne null}">
+              <c:set var="studyProgrammeName">${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
+            </c:otherwise>
+          </c:choose>
+
+          <c:if test="${!courseStudent.student.active}">
+            <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+          </c:if>
+
+          cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
+          IxTableControllers.getController('select').addOption(cellEditor, ${courseStudent.student.id}, '${studyProgrammeName}');
         </c:forEach>
 
         studentsTable.addListener("rowAdd", function (event) {
@@ -959,29 +992,15 @@
         </c:if>
       }
 
-      function loadStudentStudyProgrammes(studentsTable, abstractStudentId, fullName, studentId, participationTypeId, enrolmentTime,
-          courseEnrolmentTypeId, optionality, lodging, courseStudentId) {
+      function loadStudentStudyProgrammes(rowIndex, studentId) {
+        var studentsTable = getIxTableById('studentsTable');
+        var abstractStudentId = studentsTable.getCellValue(rowIndex, studentsTable.getNamedColumnIndex('abstractStudentId'));
         JSONRequest.request("students/getstudentstudyprogrammes.json", {
           asynchronous: false,
           parameters: {
             abstractStudentId: abstractStudentId
           },
           onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow([
-              '',
-              fullName, 
-              studentId,
-              participationTypeId, 
-              enrolmentTime, 
-              courseEnrolmentTypeId,
-              optionality,
-              lodging,
-              abstractStudentId, 
-              courseStudentId,
-              '',
-              '',
-              '']);
-
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor, 
@@ -989,7 +1008,6 @@
                   jsonResponse.studentStudyProgrammes[j].studyProgrammeName, 
                   jsonResponse.studentStudyProgrammes[j].studentId == studentId);
             }
-            studentsTable.showCell(studentsTable.getRowCount() - 1, studentsTable.getNamedColumnIndex("archiveButton"));
           }
         });   
       }
