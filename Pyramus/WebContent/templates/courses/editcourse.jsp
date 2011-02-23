@@ -805,15 +805,40 @@
                 {text: "${courseParticipationType.name}", value: ${courseParticipationType.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            contextMenu: [
+              {
+                text: 'Filter by value',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  
+                  var modified = table.getCellValue(row, col);
+
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: 'Clear filter',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentDateHeader"/>',
             width: 140,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'enrolmentDate',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 140,
@@ -977,7 +1002,7 @@
           </c:if>
 
           cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
-          IxTableControllers.getController('select').addOption(cellEditor, ${courseStudent.student.id}, '${studyProgrammeName}');
+          IxTableControllers.getController('select').setEditorValue(cellEditor, ${courseStudent.student.id}, '${studyProgrammeName}');
         </c:forEach>
 
         studentsTable.addListener("rowAdd", function (event) {

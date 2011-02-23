@@ -1061,9 +1061,6 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
       handlerInstance.appendChild(optionNode);
       return optionNode;
     }
-    else if (this._getViewerValue(handlerInstance) == value) {
-      this._setViewerValue(handlerInstance, value, text);
-    }
   },
   _createOptionGroup: function (text) {
     return new Element("optgroup", {label:text});
@@ -1082,7 +1079,9 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     return optionNode;
   },
   buildViewer: function ($super, name, columnDefinition) {
-    return this._createViewerElement("div", name, "ixTableCellViewerSelect", {}, columnDefinition);
+    var cellViewer = this._createViewerElement("div", name, "ixTableCellViewerSelect", {}, columnDefinition);
+    cellViewer._dynamicOptions = columnDefinition.dynamicOptions || false;
+    return cellViewer;
   },
   disableEditor: function ($super, handlerInstance) {
     if (handlerInstance._editable != true)
@@ -1106,23 +1105,25 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     else
       return handlerInstance.value;
   },
-  setEditorValue: function ($super, handlerInstance, value) {
+  setEditorValue: function ($super, handlerInstance, value, displayValue) {
     if (handlerInstance._editable != true) {
-      var displayValue = value;
-      var options = handlerInstance._columnDefinition.options;
-      if (options) {
-        for (var i = 0; i < options.length; i++) {
-          if (options[i].optionGroup == true) {
-            for (var j = 0; j < options[i].options.length;j++) {
-              if (options[i].options[j].value == value) {
-                displayValue = options[i].options[j].text;
+      if (displayValue == undefined) {
+        displayValue = value;
+        var options = handlerInstance._columnDefinition.options;
+        if (options) {
+          for (var i = 0; i < options.length; i++) {
+            if (options[i].optionGroup == true) {
+              for (var j = 0; j < options[i].options.length;j++) {
+                if (options[i].options[j].value == value) {
+                  displayValue = options[i].options[j].text;
+                  break;
+                }
+              }
+            } else {
+              if (options[i].value == value) {
+                displayValue = options[i].text;
                 break;
               }
-            }
-          } else {
-            if (options[i].value == value) {
-              displayValue = options[i].text;
-              break;
             }
           }
         }
