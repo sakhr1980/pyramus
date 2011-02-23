@@ -1912,7 +1912,8 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
 IxTableControllers.registerController(new IxAutoCompleteTextTableEditorController());
 
 IxTable_ROWSTRINGFILTER = Class.create({
-  initialize : function(filterEarlier) {
+  initialize : function(rowFilterableFunc) {
+    this._rowFilterableFunc = rowFilterableFunc;
   },
   execute: function (event) {
     var table = event.tableComponent;
@@ -1924,8 +1925,11 @@ IxTable_ROWSTRINGFILTER = Class.create({
     
     for (var i = table.getRowCount() - 1; i >= 0; i--) {
       var rowValue = table.getCellValue(i, column);
-      if (rowValue != cellValue)
-        hideArray.push(i);
+      if (rowValue != cellValue) {
+        
+        if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+          hideArray.push(i);
+      }
     }
 
     table.hideRows(hideArray.toArray());
@@ -1933,8 +1937,9 @@ IxTable_ROWSTRINGFILTER = Class.create({
 });
 
 IxTable_ROWDATEFILTER = Class.create({
-  initialize : function(filterEarlier) {
+  initialize : function(filterEarlier, rowFilterableFunc) {
     this._filterEarlier = filterEarlier;
+    this._rowFilterableFunc = rowFilterableFunc;
   },
   execute: function (event) {
     var table = event.tableComponent;
@@ -1946,14 +1951,18 @@ IxTable_ROWDATEFILTER = Class.create({
     if (this._filterEarlier) {
       for (var i = table.getRowCount() - 1; i >= 0; i--) {
         var rowValue = table.getCellValue(i, column);
-        if ((rowValue) && (rowValue > cellValue)) 
-          hideArray.push(i);
+        if ((rowValue) && (rowValue > cellValue)) { 
+          if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+            hideArray.push(i);
+        }
       }
     } else {
       for (var i = table.getRowCount() - 1; i >= 0; i--) {
         var rowValue = table.getCellValue(i, column);
-        if ((rowValue) && (rowValue < cellValue)) 
-          hideArray.push(i);
+        if ((rowValue) && (rowValue < cellValue)) { 
+          if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+            hideArray.push(i);
+        }
       }
     }
   
@@ -1983,7 +1992,7 @@ IxTable_ROWSTRINGSORT = Class.create({
       function(element) {
         var row = element._rowNumber;
         var val = table.getCellValue(row, column);
-        return val;
+        return val.toUpperCase();
       });
 
     if (sortAction.sortAction._sortDirection == "desc") {
