@@ -398,10 +398,13 @@ public class EditCourseJSONRequestController implements JSONRequestController {
         courseStudent = courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
       }
       else {
-        /* Existing student */
-        Student student = studentDAO.getStudent(studentId);
-        courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-        courseDAO.updateCourseStudent(courseStudent, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
+        boolean modified = new Integer(1).equals(requestContext.getInteger(colPrefix + ".modified"));
+        if (modified) {
+          /* Existing student */
+          Student student = studentDAO.getStudent(studentId);
+          courseStudent = courseDAO.findCourseStudentById(courseStudentId);
+          courseDAO.updateCourseStudent(courseStudent, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
+        }
       }
     }
     requestContext.setRedirectURL(requestContext.getReferer(true));
