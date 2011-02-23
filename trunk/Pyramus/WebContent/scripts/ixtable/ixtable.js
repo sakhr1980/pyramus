@@ -660,7 +660,8 @@ IxTable = Class.create({
     menuItem.onclick.execute.call(window, {
       tableComponent: this,
       row: row,
-      column: column
+      column: column,
+      menuItem: menuItem
     });
   },
   _onContextMenuMouseLeave: function (event) {
@@ -1920,6 +1921,8 @@ IxTable_ROWSTRINGFILTER = Class.create({
     var row = event.row;
     var column = event.column;
     var cellValue = table.getCellValue(row, column);
+    var filterFunc = event.menuItem.onclick._rowFilterableFunc;
+    var hasFilterFunc = !((filterFunc == undefined) || (filterFunc == null));
     
     var hideArray = new Array();
     
@@ -1927,7 +1930,7 @@ IxTable_ROWSTRINGFILTER = Class.create({
       var rowValue = table.getCellValue(i, column);
       if (rowValue != cellValue) {
         
-        if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+        if ((!hasFilterFunc) || (filterFunc(table, i) === true))
           hideArray.push(i);
       }
     }
@@ -1946,13 +1949,16 @@ IxTable_ROWDATEFILTER = Class.create({
     var row = event.row;
     var column = event.column;
     var cellValue = table.getCellValue(row, column);
-    var hideArray = new Array();
+    var filterFunc = event.menuItem.onclick._rowFilterableFunc;
+    var hasFilterFunc = !((filterFunc == undefined) || (filterFunc == null));
     
+    var hideArray = new Array();
+
     if (this._filterEarlier) {
       for (var i = table.getRowCount() - 1; i >= 0; i--) {
         var rowValue = table.getCellValue(i, column);
         if ((rowValue) && (rowValue > cellValue)) { 
-          if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
             hideArray.push(i);
         }
       }
@@ -1960,7 +1966,7 @@ IxTable_ROWDATEFILTER = Class.create({
       for (var i = table.getRowCount() - 1; i >= 0; i--) {
         var rowValue = table.getCellValue(i, column);
         if ((rowValue) && (rowValue < cellValue)) { 
-          if (((this._rowFilterableFunc == undefined) || (this._rowFilterableFunc == null)) || (this._rowFilterableFunc(event) === true))
+          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
             hideArray.push(i);
         }
       }
@@ -1992,7 +1998,7 @@ IxTable_ROWSTRINGSORT = Class.create({
       function(element) {
         var row = element._rowNumber;
         var val = table.getCellValue(row, column);
-        return val.toUpperCase();
+        return String(val).toUpperCase();
       });
 
     if (sortAction.sortAction._sortDirection == "desc") {
