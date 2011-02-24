@@ -1158,13 +1158,20 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     this._fireValueChange(handlerInstance, handlerInstance.value);
   },
   _copyState: function ($super, target, source) {
+    // TODO copying state can cause the target to change since it may switch between editor/viewer :(
     target = $super(target, source);
     if (source._dynamicOptions && target._dynamicOptions) {
-      var sourceValue = this.getEditorValue(source);
-      this.removeAllOptions(target);
-      for (var i = 0; i < source.options.length; i++) {
-        var option = source.options[i];
-        this.addOption(target, option.value, option.innerHTML, option.value == sourceValue);
+      if (source._editable && target._editable) {
+        var sourceValue = this.getEditorValue(source);
+        this.removeAllOptions(target);
+        for (var i = 0; i < source.options.length; i++) {
+          var option = source.options[i];
+          this.addOption(target, option.value, option.innerHTML, option.value == sourceValue);
+        }
+      }
+      else {
+        // TODO scrap editor/viewer model and implement a simple getValue/getDisplayValue :(
+        this.setEditorValue(target, source._fieldValue.value, source._fieldContent.innerHTML);
       }
     }
   }  
@@ -1360,6 +1367,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
      ***/
     
     // Event.observe(cellEditor, "change", this._fieldValueChangeListener);
+    
     return cellEditor;
   },
   buildViewer: function ($super, name, columnDefinition) {
