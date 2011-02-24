@@ -162,7 +162,8 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
             }
           }
           else {
-            draftData.set(row + '.' + column + '.displayValue', this._compress(cellEditor._fieldContent.innerHTML));
+            var displayValue = cellEditor._fieldContent ? cellEditor._fieldContent.innerHTML : value;
+            draftData.set(row + '.' + column + '.displayValue', this._compress(value));
           }
         }
       }
