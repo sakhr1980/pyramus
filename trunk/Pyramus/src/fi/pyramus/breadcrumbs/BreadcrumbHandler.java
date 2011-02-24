@@ -13,18 +13,27 @@ public class BreadcrumbHandler {
   }
   
   public boolean contains(HttpServletRequest request) {
-    return indexOf(getBreadcrumbUrl(request)) >= 0;
+    return indexOf(getBreadcrumbUrl(request, true)) >= 0;
   }
   
   public void process(HttpServletRequest request, Breadcrumbable breadcrumbable) {
-    String url = getBreadcrumbUrl(request);
-    int index = indexOf(url);
-    if (index == -1) {
-      Breadcrumb breadcrumb = new Breadcrumb(url, breadcrumbable.getName(request.getLocale()));
+    String shortUrl = getBreadcrumbUrl(request, false);
+    String completeUrl = getBreadcrumbUrl(request, true);
+    String lastUrl = getSize() == 0 ? "" : breadcrumbs.get(breadcrumbs.size() - 1).getUrl();
+    if (lastUrl.startsWith(shortUrl)) {
+      pop();
+      Breadcrumb breadcrumb = new Breadcrumb(completeUrl, breadcrumbable.getName(request.getLocale()));
       breadcrumbs.add(breadcrumb);
     }
     else {
-      prune(index);
+      int index = indexOf(completeUrl);
+      if (index == -1) {
+        Breadcrumb breadcrumb = new Breadcrumb(completeUrl, breadcrumbable.getName(request.getLocale()));
+        breadcrumbs.add(breadcrumb);
+      }
+      else {
+        prune(index);
+      }
     }
   }
   
@@ -61,19 +70,21 @@ public class BreadcrumbHandler {
     return breadcrumbs;
   }
   
-  public String getBreadcrumbUrl(HttpServletRequest request) {
+  public String getBreadcrumbUrl(HttpServletRequest request, boolean includeRequestParams) {
     StringBuilder sb = new StringBuilder();
     sb.append(request.getRequestURL());
-    boolean firstParam = true;
-    Enumeration<String> params = request.getParameterNames();
-    while (params.hasMoreElements()) {
-      String param = params.nextElement();
-      if (!isBreadcrumbParameter(param)) {
-        sb.append(firstParam ? '?' : '&'); 
-        sb.append(param);
-        sb.append("=");
-        sb.append(request.getParameter(param));
-        firstParam = false;
+    if (includeRequestParams) {
+      boolean firstParam = true;
+      Enumeration<String> params = request.getParameterNames();
+      while (params.hasMoreElements()) {
+        String param = params.nextElement();
+        if (!isBreadcrumbParameter(param)) {
+          sb.append(firstParam ? '?' : '&'); 
+          sb.append(param);
+          sb.append("=");
+          sb.append(request.getParameter(param));
+          firstParam = false;
+        }
       }
     }
     return sb.toString();

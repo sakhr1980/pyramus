@@ -106,7 +106,7 @@ public class Servlet extends HttpServlet {
   
         try {
           if (requestController instanceof PyramusViewController) {
-  
+            
             // Handle breadcrumbs for get requests
   
             BreadcrumbHandler breadcrumbHandler = getBreadcrumbHandler(request);
@@ -114,9 +114,6 @@ public class Servlet extends HttpServlet {
               breadcrumbHandler.clear();
             }
             if (requestController instanceof Breadcrumbable && "GET".equals(request.getMethod())) {
-              if (!breadcrumbHandler.contains(request) && request.getHeader("Referer") == null) {
-                breadcrumbHandler.clear();
-              }
               Breadcrumbable breadcrumbable = (Breadcrumbable) requestController;
               breadcrumbHandler.process(request, breadcrumbable);
             }

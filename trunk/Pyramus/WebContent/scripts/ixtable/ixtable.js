@@ -733,11 +733,11 @@ IxTableEditorController = Class.create({
   },
   setEditable: function (handlerInstance, editable) {
     if (handlerInstance._editable == editable)
-      return;
+      return handlerInstance;
     if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_ONLY_EDITABLE) && (editable == false))
-      return;
+      return handlerInstance;
     if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_NOT_EDITABLE) && (editable == true))
-      return;
+      return handlerInstance;
     
     var table = handlerInstance._table;
     var parentNode = handlerInstance._cell;
@@ -755,6 +755,8 @@ IxTableEditorController = Class.create({
     
     this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
     this.destroyHandler(handlerInstance);
+
+    return newHandler;
   },
   getEditorValue: function (handlerInstance) {},
   setEditorValue: function (handlerInstance, value) {},
@@ -896,7 +898,7 @@ IxTableEditorController = Class.create({
   },
   _copyState: function (target, source) {
     this.copyCellValue(target, source);
-    this.setEditable(target, this.getEditable(source));
+    return this.setEditable(target, this.getEditable(source));
     // TODO: disabled, datatype yms tiedot
   }
 });
@@ -1156,14 +1158,13 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     this._fireValueChange(handlerInstance, handlerInstance.value);
   },
   _copyState: function ($super, target, source) {
-    $super(target, source);
-    
+    target = $super(target, source);
     if (source._dynamicOptions && target._dynamicOptions) {
+      var sourceValue = this.getEditorValue(source);
       this.removeAllOptions(target);
-
       for (var i = 0; i < source.options.length; i++) {
         var option = source.options[i];
-        this.addOption(target, option.value, option.innerHTML);
+        this.addOption(target, option.value, option.innerHTML, option.value == sourceValue);
       }
     }
   }  
@@ -1788,11 +1789,11 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
   },
   setEditable: function ($super, handlerInstance, editable) {
     if (handlerInstance._editable == editable)
-      return;
+      return handlerInstance;
     if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_ONLY_EDITABLE) && (editable == false))
-      return;
+      return handlerInstance;
     if ((this.getMode(handlerInstance) == IxTableControllers.EDITMODE_NOT_EDITABLE) && (editable == true))
-      return;
+      return handlerInstance;
     
     var table = handlerInstance._table;
     var parentNode = handlerInstance._cell;
@@ -1813,6 +1814,8 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
     this.destroyHandler(handlerInstance);
     
     this.setDisplayValue(newHandler, displayValue);
+
+    return newHandler;
   },
   _onTextInputKeyUp: function (event) {
     var textInput = Event.element(event);
