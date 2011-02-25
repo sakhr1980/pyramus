@@ -143,7 +143,8 @@ div.ixTableRowButton:hover{
   padding-bottom:2px;
   padding-left:1px;
   padding-right:1px;
-  width:inherit;
+  --width:inherit;
+  width:95%;
 }
 
 .ixTableCellViewerDisabled, .ixTableButtonDisabled {
@@ -162,13 +163,17 @@ div.ixTableRowButton:hover{
   --border: solid 1px;
   display:none;
   position:absolute;
-  background-image:url(../gfx/list-add.png);
-  background-repeat:no-repeat;
-  background-position: right top;
-  right:4px;
+  --background-image:url(../gfx/list-add.png);
+  --background-repeat:no-repeat;
+  --background-position: right top;
+  right:0px;
   top:0px;
-  width:17px;
-  height:17px;
+  width:12px;
+  height:12px;
+  font-size: 75%;
+  text-align: center;
+  vertical-align: top;
+  cursor:pointer;
 }
 
 .ixTableCell:hover .ixTableCellContextMenuButton {
@@ -179,7 +184,7 @@ div.ixTableRowButton:hover{
   /*border: solid 1px;
   background: #ffffff;*/
   position: absolute;
-  right: 6px;
+  right: 2px;
   top: 6px;
   padding: 4px 4px 4px 4px;
   z-index: 2;
@@ -190,7 +195,7 @@ div.ixTableRowButton:hover{
 
 .ixTableCellContextMenuItem {
   padding: 2px 8px 2px 8px;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .ixTableCellContextMenuItem:hover {
@@ -205,7 +210,7 @@ div.ixTableRowButton:hover{
   font-size: 75%;
   --margin-left:2px;
   padding: 0px 2px 0px 2px;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .ixTableHeaderSortButton:hover {

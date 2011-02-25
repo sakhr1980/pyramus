@@ -77,19 +77,49 @@
             left: 8,
             right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 200 + 8,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseStateHeader"/>',
             width: 200,
             right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseEnrolmentTimeHeader"/>',
             width: 150,
             right: 8 + 22 + 8 + 22 + 8,
             dataType: 'date',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             dataType: 'hidden',
             paramName: 'courseStudentId'
@@ -134,21 +164,51 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.transferCreditsTableNameHeader"/>',
             left: 8,
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 200 + 8, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableSubjectHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
             width: 200,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingDateHeader"/>',
             right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
-            width: 100,
+            width: 120,
             dataType: 'date',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthHeader"/>',
             right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
@@ -178,7 +238,17 @@
             right: 8,
             width: 230,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }]
         });
 
@@ -192,21 +262,51 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 200 + 8, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableSubjectHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
             width: 200,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingDateHeader"/>',
             right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
-            width: 100,
+            width: 120,
             dataType: 'date',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthHeader"/>',
             right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
@@ -236,7 +336,17 @@
             right: 8 + 22 + 8,
             width: 200,
             dataType: 'text',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: "Sort ascending",
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: "Sort descending",
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             dataType: 'hidden',
             paramName: 'courseStudentId'

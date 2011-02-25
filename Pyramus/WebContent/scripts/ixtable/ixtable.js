@@ -17,8 +17,8 @@ IxTableControllers = {
 IxTable = Class.create({
   initialize : function(parentNode, options) {
     this._rowClickListener = this._onRowClick.bindAsEventListener(this);
-    this._sortColumnClickListener = this._onSortColumnClick.bindAsEventListener(this);
     this._activeRows = new Hash();
+    this._filters = new Array();
   
     this._headerRowContent = Builder.node("div", {
       className : "ixTableRowContent"
@@ -68,8 +68,10 @@ IxTable = Class.create({
       }, [ headerTextNode ]);
       
       if (column.sortAttributes) {
+        this._sortColumnClickListener = this._onSortColumnClick.bindAsEventListener(this);
+
         if (column.sortAttributes.sortAscending) {
-          var sortAscendingBtn = new Element("span", { className : "ixTableHeaderSortButton" });
+          var sortAscendingBtn = new Element("span", { className : "ixTableHeaderSortButton", title: column.sortAttributes.sortAscending.toolTip });
           sortAscendingBtn.innerHTML = "▲";
           sortAscendingBtn._sort = column.sortAttributes.sortAscending; 
           sortAscendingBtn._column = i; 
@@ -78,7 +80,7 @@ IxTable = Class.create({
           Event.observe(sortAscendingBtn, "click", this._sortColumnClickListener);
         }
         if (column.sortAttributes.sortDescending) {
-          var sortDescendingBtn = new Element("span", { className : "ixTableHeaderSortButton" });
+          var sortDescendingBtn = new Element("span", { className : "ixTableHeaderSortButton", title: column.sortAttributes.sortDescending.toolTip });
           sortDescendingBtn.innerHTML = "▼";
           sortDescendingBtn._sort = column.sortAttributes.sortDescending; 
           sortDescendingBtn._column = i; 
@@ -186,6 +188,7 @@ IxTable = Class.create({
 
         if (column.contextMenu) {
           var contextMenuButton = new Element("span", {className: "ixTableCellContextMenuButton"});
+          contextMenuButton.innerHTML = "▼";
           cell.appendChild(contextMenuButton);
           
           Event.observe(contextMenuButton, "click", this._contextMenuButtonClickListener);
@@ -251,46 +254,9 @@ IxTable = Class.create({
     return rowNumber;
   },
   deleteRow: function (rowNumber) {
-    this.fire("beforeRowDelete", {
-      tableObject: this,
-      row: rowNumber
-    });
-    
-    for (var row = rowNumber; row < (this.getRowCount() - 1); row++) {
-      for (var column = 0; column < this.options.columns.length; column++) {
-        var cellEditor = this.getCellEditor(row, column);
-        var nextCellEditor = this.getCellEditor(row + 1, column); 
-        IxTableControllers.getController(cellEditor._dataType)._copyState(cellEditor, nextCellEditor);
-      }
-    }
-    
-    this._setRowCount(this.getRowCount() - 1);
-    var rowElements = this.domNode.select('.ixTableRow');
-    for (var i = this.getRowCount(); i >= 0; i--) {
-      if (rowElements[i]._rowNumber == this.getRowCount()) {
-
-        for (var j = 0, len = this.options.columns.length; j < len; j++) {
-          if (this.options.columns.contextMenu) {
-            var editorInstance = this.getCellEditor(i, j);
-            var contextMenuButton = $(editorInstance.parentNode).down(".ixTableCellContextMenuButton");
-            Event.stopObserving(contextMenuButton, "click", this._contextMenuButtonClickListener);
-          }
-        }
-      
-        rowElements[i].remove();
-      }
-    }
-    
-    this.fire("rowDelete", {
-      tableObject: this, 
-      row: rowNumber
-    });
-
-    if (this.getVisibleRowCount() == 0 && this._hasHeader == true) {
-      this._headerRow.setStyle({
-        display: 'none'
-      });
-    }
+    this._deleteRow(rowNumber);
+    this._redoFilters();
+    this._redoSort();
   },
   hideRow: function (rowNumber) {
     this.getRowElement(rowNumber).hide();
@@ -356,7 +322,8 @@ IxTable = Class.create({
   },
   deleteAllRows: function () {
     while (this.getRowCount() > 0)
-      this.deleteRow(this.getRowCount() - 1);
+      this._deleteRow(this.getRowCount() - 1);
+    this._clearFilters();
   },
   getCellEditor: function (row, column) {
     return this._cellEditors.get(row + '.' + column);
@@ -524,6 +491,80 @@ IxTable = Class.create({
     
     return null;
   },
+  _addFilter: function (filter) {
+    this._filters.push(filter);
+    filter.execute({ 
+      tableComponent: this 
+    });
+  },
+  _redoFilters: function () {
+    this.showAllRows();
+    var filters = this._filters.toArray();
+    for (var i = 0, len = filters.length; i < len; i++) {
+      var filter = filters[i];
+      
+      filter.execute({ 
+        tableComponent: this 
+      });
+    }
+  },
+  _clearFilters: function () {
+    this._filters.clear();
+    this.showAllRows();
+  },
+  _setSortMethod: function (sortMethod) {
+    this._sortMethod = sortMethod;
+    this._redoSort();
+  },
+  _redoSort: function () {
+    if (this._sortMethod) {
+      this._sortMethod.execute({ 
+        tableComponent: this 
+      });
+    }
+  },
+  _deleteRow: function (rowNumber) {
+    this.fire("beforeRowDelete", {
+      tableObject: this,
+      row: rowNumber
+    });
+    
+    for (var row = rowNumber; row < (this.getRowCount() - 1); row++) {
+      for (var column = 0; column < this.options.columns.length; column++) {
+        var cellEditor = this.getCellEditor(row, column);
+        var nextCellEditor = this.getCellEditor(row + 1, column); 
+        IxTableControllers.getController(cellEditor._dataType)._copyState(cellEditor, nextCellEditor);
+      }
+    }
+    
+    this._setRowCount(this.getRowCount() - 1);
+    var rowElements = this.domNode.select('.ixTableRow');
+    for (var i = this.getRowCount(); i >= 0; i--) {
+      if (rowElements[i]._rowNumber == this.getRowCount()) {
+
+        for (var j = 0, len = this.options.columns.length; j < len; j++) {
+          if (this.options.columns.contextMenu) {
+            var editorInstance = this.getCellEditor(i, j);
+            var contextMenuButton = $(editorInstance.parentNode).down(".ixTableCellContextMenuButton");
+            Event.stopObserving(contextMenuButton, "click", this._contextMenuButtonClickListener);
+          }
+        }
+      
+        rowElements[i].remove();
+      }
+    }
+    
+    this.fire("rowDelete", {
+      tableObject: this, 
+      row: rowNumber
+    });
+
+    if (this.getVisibleRowCount() == 0 && this._hasHeader == true) {
+      this._headerRow.setStyle({
+        display: 'none'
+      });
+    }
+  },
   _getCellEditorRow: function (editorInstance) {
     return this._getCellRow($(editorInstance.parentNode));
   },
@@ -657,12 +698,18 @@ IxTable = Class.create({
 
     contextMenu.remove();
     
-    menuItem.onclick.execute.call(window, {
+    menuItem.onclick.execute({
       tableComponent: this,
       row: row,
       column: column,
       menuItem: menuItem
     });
+//    menuItem.onclick.execute.call(window, {
+//      tableComponent: this,
+//      row: row,
+//      column: column,
+//      menuItem: menuItem
+//    });
   },
   _onContextMenuMouseLeave: function (event) {
     var menuElement = Event.element(event);
@@ -1721,28 +1768,6 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
 
     $super(handlerInstance);
   }, 
-  disableEditor: function ($super, handlerInstance) {
-    // TODO: Implement this
-    /*
-    if (handlerInstance._editable != true)
-      handlerInstance.addClassName("ixTableCellViewerDisabled");
-    else {
-      this._addDisabledHiddenElement(handlerInstance);
-      handlerInstance.disabled = true;
-    }
-    */
-  },
-  enableEditor: function ($super, handlerInstance) {
-    // TODO: Implement this
-    /*
-    if (handlerInstance._editable != true)
-      handlerInstance.removeClassName("ixTableCellViewerDisabled");
-    else {
-      handlerInstance.disabled = false;
-      this._removeDisabledHiddenElement(handlerInstance);
-    }
-    */
-  },
   getEditorValue: function ($super, handlerInstance) {
     if (handlerInstance._editable != true) 
       return this._getViewerValue(handlerInstance);
@@ -1866,28 +1891,6 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
   buildViewer: function ($super, name, columnDefinition) {
     return this._createViewerElement("div", name, "ixTableCellViewerAutoComplete", {}, columnDefinition);
   },
-  disableEditor: function ($super, handlerInstance) {
-    // TODO: Implement this
-    /*
-    if (handlerInstance._editable != true)
-      handlerInstance.addClassName("ixTableCellViewerDisabled");
-    else {
-      this._addDisabledHiddenElement(handlerInstance);
-      handlerInstance.disabled = true;
-    }
-    */
-  },
-  enableEditor: function ($super, handlerInstance) {
-    // TODO: Implement this
-    /*
-    if (handlerInstance._editable != true)
-      handlerInstance.removeClassName("ixTableCellViewerDisabled");
-    else {
-      handlerInstance.disabled = false;
-      this._removeDisabledHiddenElement(handlerInstance);
-    }
-    */
-  },
   getEditorValue: function ($super, handlerInstance) {
     if (handlerInstance._editable != true) 
       return this._getViewerValue(handlerInstance);
@@ -1924,6 +1927,79 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
 
 IxTableControllers.registerController(new IxAutoCompleteTextTableEditorController());
 
+_IxTable_TABLESTRINGSORT = Class.create({
+  initialize : function(sortDirection, column) {
+    this._sortDirection = sortDirection;
+    this._column = column;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+  
+    var _this = this;
+    var rowElements = $(table._content).select('.ixTableRow').sortBy(
+      function(element) {
+        var row = element._rowNumber;
+        var val = table.getCellValue(row, _this._column);
+        return String(val).toUpperCase();
+      });
+
+    if (this._sortDirection == "desc") {
+      for (var i = rowElements.length - 1; i >= 0; i--) {
+        table._content.appendChild(rowElements[i]);
+      }
+    } else {
+      for (var i = 0, l = rowElements.length; i < l; i++) {
+        table._content.appendChild(rowElements[i]);
+      }
+    }
+  },
+  _sortDirection: "asc",
+  _column: -1
+});
+ 
+IxTable_ROWSTRINGSORT = Class.create({
+  initialize : function(sortDirection) {
+    this._sortDirection = sortDirection;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var column = event.column;
+    var sortAction = event.sortAction;
+    var sortDirection = sortAction.sortAction._sortDirection;
+    
+    table._setSortMethod(new _IxTable_TABLESTRINGSORT(sortDirection, column));
+  }
+});
+
+_IxTable_TABLESTRINGFILTER = Class.create({
+  initialize : function(column, filterValue, rowFilterableFunc) {
+    this._column = column; 
+    this._filterValue = filterValue;
+    this._rowFilterableFunc = rowFilterableFunc;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var filterFunc = this._rowFilterableFunc;
+    var hasFilterFunc = !(this._rowFilterableFunc == undefined);
+    
+    var hideArray = new Array();
+    
+    for (var i = table.getRowCount() - 1; i >= 0; i--) {
+      var rowValue = table.getCellValue(i, this._column);
+      if (rowValue != this._filterValue) {
+        
+        if ((!hasFilterFunc) || (filterFunc(table, i) === true))
+          hideArray.push(i);
+      }
+    }
+
+    table.hideRows(hideArray.toArray());
+  },
+  _rowFilterableFunc: undefined,
+  _column: undefined,
+  _filterValue: undefined  
+});
+
 IxTable_ROWSTRINGFILTER = Class.create({
   initialize : function(rowFilterableFunc) {
     this._rowFilterableFunc = rowFilterableFunc;
@@ -1932,23 +2008,52 @@ IxTable_ROWSTRINGFILTER = Class.create({
     var table = event.tableComponent;
     var row = event.row;
     var column = event.column;
-    var cellValue = table.getCellValue(row, column);
-    var filterFunc = event.menuItem.onclick._rowFilterableFunc;
+    var filterValue = table.getCellValue(row, column);
+    var filter = new _IxTable_TABLESTRINGFILTER(column, filterValue, this._rowFilterableFunc);
+
+    table._addFilter(filter);
+  },
+  _rowFilterableFunc: undefined
+});
+
+_IxTable_TABLEDATEFILTER = Class.create({
+  initialize : function(column, filterValue, filterEarlier, rowFilterableFunc) {
+    this._column = column;
+    this._filterValue = filterValue;
+    this._filterEarlier = filterEarlier;
+    this._rowFilterableFunc = rowFilterableFunc;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var filterFunc = this._rowFilterableFunc;
     var hasFilterFunc = !((filterFunc == undefined) || (filterFunc == null));
     
     var hideArray = new Array();
-    
-    for (var i = table.getRowCount() - 1; i >= 0; i--) {
-      var rowValue = table.getCellValue(i, column);
-      if (rowValue != cellValue) {
-        
-        if ((!hasFilterFunc) || (filterFunc(table, i) === true))
-          hideArray.push(i);
+
+    if (this._filterEarlier) {
+      for (var i = table.getRowCount() - 1; i >= 0; i--) {
+        var rowValue = table.getCellValue(i, this._column);
+        if ((rowValue) && (rowValue > this._filterValue)) { 
+          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
+            hideArray.push(i);
+        }
+      }
+    } else {
+      for (var i = table.getRowCount() - 1; i >= 0; i--) {
+        var rowValue = table.getCellValue(i, this._column);
+        if ((rowValue) && (rowValue < this._filterValue)) { 
+          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
+            hideArray.push(i);
+        }
       }
     }
-
+  
     table.hideRows(hideArray.toArray());
-  }
+  },
+  _column: undefined, 
+  _filterValue: undefined, 
+  _filterEarlier: undefined, 
+  _rowFilterableFunc: undefined
 });
 
 IxTable_ROWDATEFILTER = Class.create({
@@ -1960,32 +2065,13 @@ IxTable_ROWDATEFILTER = Class.create({
     var table = event.tableComponent;
     var row = event.row;
     var column = event.column;
-    var cellValue = table.getCellValue(row, column);
-    var filterFunc = event.menuItem.onclick._rowFilterableFunc;
-    var hasFilterFunc = !((filterFunc == undefined) || (filterFunc == null));
-    
-    var hideArray = new Array();
+    var filterValue = table.getCellValue(row, column);
 
-    if (this._filterEarlier) {
-      for (var i = table.getRowCount() - 1; i >= 0; i--) {
-        var rowValue = table.getCellValue(i, column);
-        if ((rowValue) && (rowValue > cellValue)) { 
-          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
-            hideArray.push(i);
-        }
-      }
-    } else {
-      for (var i = table.getRowCount() - 1; i >= 0; i--) {
-        var rowValue = table.getCellValue(i, column);
-        if ((rowValue) && (rowValue < cellValue)) { 
-          if ((!hasFilterFunc) || (filterFunc(table, i) === true))
-            hideArray.push(i);
-        }
-      }
-    }
-  
-    table.hideRows(hideArray.toArray());
-  }
+    var filter = new _IxTable_TABLEDATEFILTER(column, filterValue, this._filterEarlier, this._rowFilterableFunc);
+    table._addFilter(filter);
+  },
+  _filterEarlier: undefined,
+  _rowFilterableFunc: undefined
 });
 
 IxTable_ROWCLEARFILTER = Class.create({
@@ -1993,36 +2079,8 @@ IxTable_ROWCLEARFILTER = Class.create({
   },
   execute: function (event) {
     var table = event.tableComponent;
-    table.showAllRows();
+    table._clearFilters();
   }  
-});
-
-IxTable_ROWSTRINGSORT = Class.create({
-  initialize : function(sortDirection) {
-    this._sortDirection = sortDirection;
-  },
-  execute: function (event) {
-    var table = event.tableComponent;
-    var column = event.column;
-    var sortAction = event.sortAction;
-  
-    var rowElements = $(table._content).select('.ixTableRow').sortBy(
-      function(element) {
-        var row = element._rowNumber;
-        var val = table.getCellValue(row, column);
-        return String(val).toUpperCase();
-      });
-
-    if (sortAction.sortAction._sortDirection == "desc") {
-      for (var i = rowElements.length - 1; i >= 0; i--) {
-        table._content.appendChild(rowElements[i]);
-      }
-    } else {
-      for (var i = 0, l = rowElements.length; i < l; i++) {
-        table._content.appendChild(rowElements[i]);
-      }
-    }
-  }
 });
 
 IxTable_COPYVALUESTOCOLUMNACTION = Class.create({
