@@ -83,16 +83,6 @@
             paramName: 'participationType',
             contextMenu: [
               {
-                text: 'Teksti yksi',
-                onclick: function (event) {
-                  alert('klak ' + event.row + ' ' + event.column);
-                  
-                  // tableComponent
-                  // event.row
-                  // event.column
-                }
-              },
-              {
                 text: 'Filter by value',
                 onclick: new IxTable_ROWSTRINGFILTER()
               },
