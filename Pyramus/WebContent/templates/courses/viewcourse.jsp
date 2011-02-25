@@ -83,21 +83,21 @@
             paramName: 'participationType',
             contextMenu: [
               {
-                text: 'Filter by value',
+                text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER()
               },
               {
-                text: 'Clear filter',
+                text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
               }
             ],            
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -110,25 +110,25 @@
             paramName: 'enrolmentDate',
             contextMenu: [
               {
-                text: 'Show earlier',
+                text: '<fmt:message key="generic.filter.earlier"/>',
                 onclick: new IxTable_ROWDATEFILTER(true)
               },
               {
-                text: 'Show later',
+                text: '<fmt:message key="generic.filter.later"/>',
                 onclick: new IxTable_ROWDATEFILTER(false)
               },
               {
-                text: 'Clear filter',
+                text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
               }
             ],            
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -146,13 +146,23 @@
             dataType: 'text', 
             editable: false,
             paramName: 'lodging',
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ],            
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
