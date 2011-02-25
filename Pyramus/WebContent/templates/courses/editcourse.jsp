@@ -827,6 +827,10 @@
             },
             contextMenu: [
               {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              },
+              {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
@@ -857,6 +861,10 @@
               }
             },
             contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              },
               {
                 text: '<fmt:message key="generic.filter.earlier"/>',
                 onclick: new IxTable_ROWDATEFILTER(true)
@@ -907,6 +915,10 @@
             ],
             contextMenu: [
               {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              },
+              {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
@@ -941,6 +953,10 @@
               {text: '<fmt:message key="courses.editCourse.studentsTableLodgingNo"/>', value: 'false'}
             ],
             contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              },
               {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {

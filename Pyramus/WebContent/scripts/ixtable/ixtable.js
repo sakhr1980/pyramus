@@ -2093,10 +2093,11 @@ IxTable_COPYVALUESTOCOLUMNACTION = Class.create({
     var row = event.row;
     
     var value = table.getCellValue(row, column);
+    var controller = IxTableControllers.getController(table.getCellEditor(row, column)._dataType);
     
     for (var i = 0, len = table.getRowCount(); i < len; i++) {
-      var cellEditor = table.getCellEditor(row, column);
-      var editable = cellEditor.getEditable(cellEditor); 
+      var cellEditor = table.getCellEditor(i, column);
+      var editable = controller.getEditable(cellEditor); 
 
       if ((!this._onlyModifiable) || (editable))
         table.setCellValue(i, column, value);
