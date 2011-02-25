@@ -783,7 +783,17 @@
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 150,
             dataType : 'text',
             paramName: 'studentName',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableStudyProgrammeHeader"/>',
             width: 150,
@@ -798,7 +808,6 @@
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
             dataType : 'select',
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
               <c:forEach var="courseParticipationType" items="${courseParticipationTypes}" varStatus="vs">
@@ -806,19 +815,27 @@
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            },
             contextMenu: [
               {
-                text: 'Filter by value',
+                text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
-                  
                   var modified = table.getCellValue(row, col);
-
                   return (!(modified == 1));
                 })
               },
               {
-                text: 'Clear filter',
+                text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
               }
             ]            
@@ -831,14 +848,28 @@
             paramName: 'enrolmentDate',
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
-            }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.earlier"/>',
+                onclick: new IxTable_ROWDATEFILTER(true)
+              },
+              {
+                text: '<fmt:message key="generic.filter.later"/>',
+                onclick: new IxTable_ROWDATEFILTER(false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ],            
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 140,
@@ -851,7 +882,17 @@
               {text: "${courseEnrolmentType.name}", value: ${courseEnrolmentType.id}}
               <c:if test="${not vs.last}">,</c:if>
             </c:forEach>
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableOptionalityHeader"/>',
             right :  8 + 22 + 8 + 8 + 22 + 8 + 100,
@@ -863,19 +904,66 @@
               {text: '', value: ''},
               {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
               {text: '<fmt:message key="courses.editCourse.studentsTableOptionalityOptional"/>', value: 'OPTIONAL'}
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ],            
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableLodgingHeader"/>',
             width: 100,
             right : 8 + 22 + 8 + 8 + 22,
             dataType: 'select', 
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
               {text: '<fmt:message key="courses.editCourse.studentsTableLodgingYes"/>', value: 'true'},
               {text: '<fmt:message key="courses.editCourse.studentsTableLodgingNo"/>', value: 'false'}
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ],            
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: new IxTable_ROWSTRINGSORT("desc")
+              }
+            }
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
