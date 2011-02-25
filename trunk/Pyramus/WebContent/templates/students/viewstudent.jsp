@@ -80,11 +80,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -96,11 +96,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -112,11 +112,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -169,11 +169,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -185,11 +185,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -201,11 +201,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -241,11 +241,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -267,11 +267,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -283,11 +283,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -299,11 +299,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
@@ -339,11 +339,11 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("asc") 
               },
               sortDescending: {
-                toolTip: "Sort descending",
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
             }
