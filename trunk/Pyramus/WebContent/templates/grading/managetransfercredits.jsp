@@ -152,7 +152,28 @@
             editable: false,
             paramName: 'courseName',
             autoCompleteUrl: GLOBAL_contextPath + '/settings/transfercreditcoursenameautocomplete.binary',
-            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+            onAutoCompleteValueSelect: function (event) {
+              var row = event.row;
+              var li = event.liElement;
+              var subjectId = li.down('input[name="subjectId"]').value;
+              var subjectDisplayValue = li.down('input[name="subjectName"]').value; 
+              var courseLength = li.down('input[name="courseLength"]').value;
+              var courseLengthUnitId = li.down('input[name="courseLengthUnitId"]').value;
+              var courseNumber = li.down('input[name="courseNumber"]').value;
+
+              var subjectColumnIndex = transferCreditsTable.getNamedColumnIndex('subject'); 
+              var courseLengthColumnIndex = transferCreditsTable.getNamedColumnIndex('courseLength'); 
+              var courseLengthUnitColumnIndex = transferCreditsTable.getNamedColumnIndex('courseLengthUnit'); 
+              var courseNumberColumnIndex = transferCreditsTable.getNamedColumnIndex('courseNumber'); 
+
+              transferCreditsTable.setCellValue(row, subjectColumnIndex, subjectId);
+              IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(row, subjectColumnIndex), subjectDisplayValue);
+
+              transferCreditsTable.setCellValue(row, courseLengthColumnIndex, courseLength);
+              transferCreditsTable.setCellValue(row, courseLengthUnitColumnIndex, courseLengthUnitId);
+              transferCreditsTable.setCellValue(row, courseNumberColumnIndex, courseNumber);
+            }
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
             width: 90,
