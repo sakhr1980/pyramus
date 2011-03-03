@@ -894,6 +894,9 @@ IxTableEditorController = Class.create({
   focus: function (handlerInstance) {
     Form.Element.focus(handlerInstance);
   },
+  getTableComponent: function (handlerInstance) {
+    return handlerInstance._table;
+  },
   getEditorRow: function (handlerInstance) {
     return handlerInstance._table._getCellEditorRow(handlerInstance);
   },
@@ -1801,9 +1804,20 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
       minChars: 1, 
       indicator: indicatorElement,
       afterUpdateElement : function getSelectionId(text, li) {
+        var row = _this.getEditorRow(cellEditor);
+        var column = _this.getEditorColumn(cellEditor);
+        var table = _this.getTableComponent(cellEditor);
+
         var li = $(li);
         idElement.value = li.down('input[name="id"]').value;
         inputElement.validate(false);
+
+        table.fire("cellValueChange", {
+          tableComponent: table,
+          row: row,
+          column: column, 
+          value: idElement.value
+        });
       }
     });
     
@@ -1947,17 +1961,25 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
       minChars: 1, 
       indicator: indicatorElement,
       afterUpdateElement : function getSelectionId(text, li) {
+        var row = _this.getEditorRow(cellEditor);
+        var column = _this.getEditorColumn(cellEditor);
+        var table = _this.getTableComponent(cellEditor);
+        var li = $(li);
+
         if (columnDefinition.onAutoCompleteValueSelect) {
-          var li = $(li);
-          var row = _this.getEditorRow(cellEditor);
-          var column = _this.getEditorColumn(cellEditor);
-          
           columnDefinition.onAutoCompleteValueSelect({
             liElement: li,
             row: row,
             column: column
           });
         }
+
+        table.fire("cellValueChange", {
+          tableComponent: table,
+          row: row,
+          column: column, 
+          value: inputElement.value
+        });
       }
     });
     
