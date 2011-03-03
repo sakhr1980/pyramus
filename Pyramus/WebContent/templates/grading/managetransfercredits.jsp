@@ -72,6 +72,7 @@
             var rowCountBefore = table.getRowCount();
             var results = jsonResponse.results;
             var rowDatas = new Array();
+            table.detachFromDom();
             
             for (var i = 0, l = results.length; i < l; i++) {
               var template = results[i];
@@ -117,6 +118,7 @@
             
             updateTransferCreditsCount();
             
+            table.reattachToDom();
             glassPane.hide();
             delete glassPane;
           }

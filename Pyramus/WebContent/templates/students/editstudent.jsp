@@ -330,7 +330,18 @@
         var value;
         
         <c:forEach var="student" items="${students}">
-          setupRelatedCommands(${student.id}, '${fn:replace(student.fullName, "'", "\\'")}');
+          <c:choose>
+            <c:when test="${student.studyProgramme eq null}">
+              <c:set var="sprogName">
+                <fmt:message key="students.editStudent.noStudyProgrammeTabLabel" />
+              </c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="sprogName">${fn:replace(student.studyProgramme.name, "'", "\\'")}</c:set>
+            </c:otherwise>
+          </c:choose>
+        
+          setupRelatedCommands(${student.id}, '${sprogName}');
 
           // Addresses
 
@@ -450,7 +461,7 @@
         }));
       }
 
-      function setupRelatedCommands(studentId, studentFullName) {
+      function setupRelatedCommands(studentId, studyProgrammeName) {
         var studentRelatedActionsHoverMenu = new IxHoverMenu($('studentRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.editStudent.studentTabRelatedActionsLabel"/>'
         });
@@ -480,7 +491,7 @@
           iconURL: GLOBAL_contextPath + '/gfx/edit-delete.png',
           text: '<fmt:message key="students.editStudent.studentTabRelatedActionsArchiveStudentLabel"/>',
           onclick: function (event) {
-            var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.editStudent.archiveStudentConfirmDialogContent&localeParams=" + encodeURIComponent(studentFullName);
+            var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.editStudent.archiveStudentConfirmDialogContent&localeParams=" + encodeURIComponent(studyProgrammeName);
             
             var dialog = new IxDialog({
               id : 'confirmRemoval',

@@ -154,6 +154,7 @@ IxTable = Class.create({
   addRows: function (rowDatas, editable) {
     var rowNumber = this.getRowCount() - 1;
     var rowElements = new Array(); 
+    this.detachFromDom();
     
     for (var rowIndex = 0, rowCount = rowDatas.length; rowIndex < rowCount; rowIndex++) {
       rowNumber++;
@@ -250,6 +251,7 @@ IxTable = Class.create({
       });
     }
     
+    this.reattachToDom();
     return rowNumber;
   },
   deleteRow: function (rowNumber) {
@@ -490,6 +492,27 @@ IxTable = Class.create({
     
     return null;
   },
+  detachFromDom: function() {
+    if (!this._detached) {
+      this._detachedParent = this.domNode.parentNode;
+      this._detachedNextSibling = this.domNode.next();
+      
+      this.domNode.remove();
+      this._detached = true;
+    }
+  },
+  reattachToDom: function() {
+    if (this._detached) {
+      if (this._detachedNextSibling) {
+        this._detachedParent.insertBefore(this.domNode, this._detachedNextSibling);
+      } else {
+        this._detachedParent.appendChild(this.domNode);
+      }
+      this._detachedParent = undefined;
+      this._detachedNextSibling = undefined;
+      this._detached = false;
+    }
+  },  
   _addFilter: function (filter) {
     this._filters.push(filter);
     filter.execute({ 
@@ -1956,7 +1979,9 @@ _IxTable_TABLESTRINGSORT = Class.create({
         var val = table.getCellValue(row, _this._column);
         return String(val).toUpperCase();
       });
-
+    
+    table.detachFromDom();
+    
     if (this._sortDirection == "desc") {
       for (var i = rowElements.length - 1; i >= 0; i--) {
         table._content.appendChild(rowElements[i]);
@@ -1966,6 +1991,8 @@ _IxTable_TABLESTRINGSORT = Class.create({
         table._content.appendChild(rowElements[i]);
       }
     }
+
+    table.reattachToDom();
   },
   _sortDirection: "asc",
   _column: -1
