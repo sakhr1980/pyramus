@@ -564,11 +564,14 @@ IxTable = Class.create({
       });
     }
   },
+  _getCellEditorCell: function (editorInstance) {
+    return $(editorInstance._cell||editorInstance.parentNode);
+  },
   _getCellEditorRow: function (editorInstance) {
-    return this._getCellRow($(editorInstance.parentNode));
+    return this._getCellRow(this._getCellEditorCell(editorInstance));
   },
   _getCellEditorColumn: function (editorInstance) {
-    return this._getCellColumn($(editorInstance.parentNode));
+    return this._getCellColumn(this._getCellEditorCell(editorInstance));
   },
   _getCellRow: function (cell) {
     var rowContent = $(cell.parentNode);
@@ -707,8 +710,6 @@ IxTable = Class.create({
   _onContextMenuItemClick: function (event) {
     var menuElement = Event.element(event);
     var contextMenu = menuElement.parentNode;
-
-    Event.stopObserving(menuElement, "click", this._contextMenuItemClickListener);
     
     var menuItem = menuElement._menuItem;
     var cell = $(contextMenu.parentNode);
