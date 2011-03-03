@@ -1945,7 +1945,20 @@ IxAutoCompleteTextTableEditorController = Class.create(IxTableEditorController, 
     new Ajax.Autocompleter(inputElement, choicesElement, columnDefinition.autoCompleteUrl, {
       paramName: 'text', 
       minChars: 1, 
-      indicator: indicatorElement
+      indicator: indicatorElement,
+      afterUpdateElement : function getSelectionId(text, li) {
+        if (columnDefinition.onAutoCompleteValueSelect) {
+          var li = $(li);
+          var row = _this.getEditorRow(cellEditor);
+          var column = _this.getEditorColumn(cellEditor);
+          
+          columnDefinition.onAutoCompleteValueSelect({
+            liElement: li,
+            row: row,
+            column: column
+          });
+        }
+      }
     });
     
     return cellEditor;

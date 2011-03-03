@@ -103,7 +103,17 @@
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
-            }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseEnrolmentTimeHeader"/>',
             width: 150,
@@ -119,7 +129,21 @@
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
                 sortAction: new IxTable_ROWSTRINGSORT("desc")
               }
-            }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.earlier"/>',
+                onclick: new IxTable_ROWDATEFILTER(true)
+              },
+              {
+                text: '<fmt:message key="generic.filter.later"/>',
+                onclick: new IxTable_ROWDATEFILTER(false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
           }, {
             dataType: 'hidden',
             paramName: 'courseStudentId'

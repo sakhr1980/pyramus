@@ -54,9 +54,35 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController impleme
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(course.getCourseName()))
       .append("</span>")
+
       .append("<input type=\"hidden\" name=\"id\" value=\"")
       .append(course.getId())
       .append("\"/>")
+
+      .append("<input type=\"hidden\" name=\"subjectId\" value=\"")
+      .append(course.getSubject().getId())
+      .append("\"/>")
+
+      .append("<input type=\"hidden\" name=\"subjectName\" value=\"")
+      .append(course.getSubject().getName())
+      .append("\"/>")
+
+      .append("<input type=\"hidden\" name=\"courseLength\" value=\"")
+      .append(course.getCourseLength().getUnits())
+      .append("\"/>")
+    
+      .append("<input type=\"hidden\" name=\"courseLengthUnitId\" value=\"")
+      .append(course.getCourseLength().getUnit().getId())
+      .append("\"/>")
+
+      .append("<input type=\"hidden\" name=\"courseLengthUnitName\" value=\"")
+      .append(course.getCourseLength().getUnit().getName())
+      .append("\"/>")
+
+      .append("<input type=\"hidden\" name=\"courseNumber\" value=\"")
+      .append(course.getCourseNumber())
+      .append("\"/>")
+      
       .append("</li>");
   }
 }
