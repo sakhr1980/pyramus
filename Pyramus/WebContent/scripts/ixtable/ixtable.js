@@ -492,25 +492,36 @@ IxTable = Class.create({
     
     return null;
   },
+  isDetachedFromDom: function () {
+    return this._detached == true;
+  },
   detachFromDom: function() {
-    if (!this._detached) {
-      this._detachedParent = this.domNode.parentNode;
-      this._detachedNextSibling = this.domNode.next();
-      
-      this.domNode.remove();
-      this._detached = true;
+    if (!this.isDetachedFromDom()) {
+      if (this.fire("beforeDetachFromDom", { tableComponent: this})) {
+        this._detachedParent = this.domNode.parentNode;
+        this._detachedNextSibling = this.domNode.next();
+        
+        this.domNode.remove();
+        this._detached = true;
+        
+        this.fire("afterDetachFromDom", { tableComponent: this});
+      }
     }
   },
   reattachToDom: function() {
-    if (this._detached) {
-      if (this._detachedNextSibling) {
-        this._detachedParent.insertBefore(this.domNode, this._detachedNextSibling);
-      } else {
-        this._detachedParent.appendChild(this.domNode);
+    if (this.isDetachedFromDom()) {
+      if (this.fire("beforeReattachToDom", { tableComponent: this})) {
+        if (this._detachedNextSibling) {
+          this._detachedParent.insertBefore(this.domNode, this._detachedNextSibling);
+        } else {
+          this._detachedParent.appendChild(this.domNode);
+        }
+        this._detachedParent = undefined;
+        this._detachedNextSibling = undefined;
+        this._detached = false;
+      
+        this.fire("afterReattachToDom", { tableComponent: this}); 
       }
-      this._detachedParent = undefined;
-      this._detachedNextSibling = undefined;
-      this._detached = false;
     }
   },  
   _addFilter: function (filter) {
@@ -1499,32 +1510,46 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     
     if (handlerInstance._editable == true) {
       handlerInstance._cell = parentNode;
-      var _this = this;
       
       var row = handlerInstance.up('.ixTableRow');
-      if (!row) {
-        handlerInstance._onRowAdd = function (event) {
-          var row = _this.getEditorRow(this);
-          if (row == event.row) {
-            event.tableObject.removeListener("rowAdd", this);
-            this._onRowAdd = undefined;
-            this._component = replaceDateField(this);
-
-            if (this._pendingValue) {
-              _this.setEditorValue(this, this._pendingValue);
-              this._pendingValue = undefined;
-            }
-          } 
+      
+      if (table.isDetachedFromDom()) {
+        var _this = this;
+        handlerInstance._onAfterReattachToDom = function (event) {
+          _this._replaceDateField(this);
+          
+          event.tableComponent.removeListener("afterReattachToDom", this);
         };
-
-        table.addListener("rowAdd", handlerInstance, handlerInstance._onRowAdd);
+        
+        table.addListener("afterReattachToDom", handlerInstance, handlerInstance._onAfterReattachToDom);
       } else {
-        handlerInstance._component = replaceDateField(handlerInstance);
+        if (!row) {
+          var _this = this;
+          handlerInstance._onRowAdd = function (event) {
+            var row = _this.getEditorRow(this);
+            if (row == event.row) {
+              event.tableObject.removeListener("rowAdd", this);
+              this._onRowAdd = undefined;
+              _this._replaceDateField(this);
+            } 
+          };
+
+          table.addListener("rowAdd", handlerInstance, handlerInstance._onRowAdd);
+        } else {
+          this._replaceDateField(handlerInstance);
+        }
       }
       // TODO: Click support for editor
     } else {
       handlerInstance._clickListener = this._onClick.bindAsEventListener(this);
       Event.observe(handlerInstance, "click", handlerInstance._clickListener); 
+    }
+  },
+  _replaceDateField: function (handlerInstance) {
+    handlerInstance._component = replaceDateField(handlerInstance);
+    if (handlerInstance._pendingValue) {
+      this.setEditorValue(handlerInstance, handlerInstance._pendingValue);
+      handlerInstance._pendingValue = undefined;
     }
   },
   detachContentHandler: function ($super, handlerInstance) {
