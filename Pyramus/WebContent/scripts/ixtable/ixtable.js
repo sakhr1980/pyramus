@@ -147,7 +147,6 @@ IxTable = Class.create({
 
     this._contextMenuButtonClickListener = this._onContextMenuButtonClick.bindAsEventListener(this);
     this._contextMenuItemClickListener = this._onContextMenuItemClick.bindAsEventListener(this);
-    this._contextMenuMouseLeaveListener = this._onContextMenuMouseLeave.bindAsEventListener(this);
   },
   addRow : function(values, editable) {
     return this.addRows([values], editable);
@@ -672,14 +671,35 @@ IxTable = Class.create({
         var menuElement = new Element("div", {className: "ixTableCellContextMenuItem"} );
         menuElement._menuItem = menuItem;
         
-        menuElement.innerHTML = menuItem.text;
+        menuElement.update(menuItem.text);
         var _this = this;
         Event.observe(menuElement, "click", this._contextMenuItemClickListener);
         menuContainer.appendChild(menuElement);
-        
-        // TODO: Ota menuitem listener puis
       }
-      Event.observe(menuContainer, "mouseleave", this._contextMenuMouseLeaveListener);
+      
+      var _this = this;
+      var windowMouseMove = function (event) {
+        var element = Event.element(event);
+        var overMenu = element.hasClassName('ixTableCellContextMenu');
+        if (!overMenu) {
+          if (element.up('.ixTableCellContextMenu'))
+            overMenu = true;
+        }
+      
+        if (!overMenu) {
+          $$('.ixTableCellContextMenu').forEach(function (menu) {
+            menu.select('.ixTableCellContextMenuItem').forEach(function (menuItem) {
+              Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
+            }); 
+            
+            menu.remove();
+          });
+          
+          Event.stopObserving(Prototype.Browser.IE ? document : window, "mousemove", windowMouseMove);
+        }
+      };
+      
+      Event.observe(Prototype.Browser.IE ? document : window, "mousemove", windowMouseMove);
       
       cell.appendChild(menuContainer);
     }
@@ -687,14 +707,18 @@ IxTable = Class.create({
   _onContextMenuItemClick: function (event) {
     var menuElement = Event.element(event);
     var contextMenu = menuElement.parentNode;
-    
-    Event.stopObserving(contextMenu, "mouseleave", this._contextMenuMouseLeaveListener);
+
     Event.stopObserving(menuElement, "click", this._contextMenuItemClickListener);
     
     var menuItem = menuElement._menuItem;
     var cell = $(contextMenu.parentNode);
     var row = this._getCellRow(cell);
     var column = this._getCellColumn(cell);
+
+    var _this = this;
+    contextMenu.select('.ixTableCellContextMenuItem').forEach(function (menuItem) {
+      Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
+    }); 
 
     contextMenu.remove();
     
@@ -704,17 +728,6 @@ IxTable = Class.create({
       column: column,
       menuItem: menuItem
     });
-//    menuItem.onclick.execute.call(window, {
-//      tableComponent: this,
-//      row: row,
-//      column: column,
-//      menuItem: menuItem
-//    });
-  },
-  _onContextMenuMouseLeave: function (event) {
-    var menuElement = Event.element(event);
-    Event.stopObserving(menuElement, "mouseleave", this._contextMenuMouseLeaveListener);
-    menuElement.remove();
   }
 });
 
