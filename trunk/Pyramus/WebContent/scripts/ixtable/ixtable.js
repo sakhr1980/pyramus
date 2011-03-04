@@ -1109,30 +1109,7 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     cellEditor._dynamicOptions = columnDefinition.dynamicOptions || false;
     
     if (columnDefinition.options) {
-      var options = columnDefinition.options;
-      var elements = new Array();
-
-      for (var j = 0, l = options.length; j < l; j++) {
-        var option = options[j];
-        if (option.optionGroup == true) {
-          
-          var optionGroup = this._createOptionGroup(option.text);
-
-          var groupOptions = option.options;
-          for (var groupIndex = 0; groupIndex < groupOptions.length; groupIndex++) {
-            var optionElement = this._createOption(groupOptions[groupIndex].value, groupOptions[groupIndex].text, false);
-            optionGroup.appendChild(optionElement);
-          }
-          
-          elements.push(optionGroup);
-        } else {
-          elements.push(this._createOption(option.value, option.text, false));
-        }
-      }
-
-      for (var i = 0, l = elements.length; i < l;i++) {
-        cellEditor.appendChild(elements[i]);
-      }
+      this._addOptionsFromArray(cellEditor, columnDefinition.options);
     }
     
     return cellEditor;
@@ -1144,14 +1121,6 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
       }  
     }
   },
-  addOptionGroup: function (handlerInstance, text) {
-    if (handlerInstance._editable) {
-      var optGroupElement = this._createOptionGroup(text);
-      
-      handlerInstance.appendChild(optGroupElement);
-      return optGroupElement;
-    }
-  },
   addOption: function (handlerInstance, value, text) {
     return this.addOption(handlerInstance, value, text, false);
   },
@@ -1160,6 +1129,15 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
       var optionNode = this._createOption(value, text, selected);
       handlerInstance.appendChild(optionNode);
       return optionNode;
+    } else {
+      handlerInstance._options.push({
+        text: text,
+        value: value
+      });
+      
+      if (this.getEditorValue(handlerInstance) == value) {
+        this._setViewerValue(handlerInstance, value, text);
+      }
     }
   },
   _createOptionGroup: function (text) {
@@ -1181,6 +1159,9 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
   buildViewer: function ($super, name, columnDefinition) {
     var cellViewer = this._createViewerElement("div", name, "ixTableCellViewerSelect", {}, columnDefinition);
     cellViewer._dynamicOptions = columnDefinition.dynamicOptions || false;
+    if (cellViewer._dynamicOptions)
+      cellViewer._options = new Array();
+    
     return cellViewer;
   },
   disableEditor: function ($super, handlerInstance) {
@@ -1205,25 +1186,24 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     else
       return handlerInstance.value;
   },
-  setEditorValue: function ($super, handlerInstance, value, displayValue) {
+  setEditorValue: function ($super, handlerInstance, value) {
     if (handlerInstance._editable != true) {
-      if (displayValue == undefined) {
-        displayValue = value;
-        var options = handlerInstance._columnDefinition.options;
-        if (options) {
-          for (var i = 0; i < options.length; i++) {
-            if (options[i].optionGroup == true) {
-              for (var j = 0; j < options[i].options.length;j++) {
-                if (options[i].options[j].value == value) {
-                  displayValue = options[i].options[j].text;
-                  break;
-                }
-              }
-            } else {
-              if (options[i].value == value) {
-                displayValue = options[i].text;
+      var displayValue = value;
+      var options = handlerInstance._dynamicOptions ? handlerInstance._options : handlerInstance._columnDefinition.options;
+      
+      if (options) {
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].optionGroup == true) {
+            for (var j = 0; j < options[i].options.length;j++) {
+              if (options[i].options[j].value == value) {
+                displayValue = options[i].options[j].text;
                 break;
               }
+            }
+          } else {
+            if (options[i].value == value) {
+              displayValue = options[i].text;
+              break;
             }
           }
         }
@@ -1255,24 +1235,88 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     var handlerInstance = Event.element(event);
     this._fireValueChange(handlerInstance, handlerInstance.value);
   },
-  _copyState: function ($super, target, source) {
-    // TODO copying state can cause the target to change since it may switch between editor/viewer :(
-    target = $super(target, source);
-    if (source._dynamicOptions && target._dynamicOptions) {
-      if (source._editable && target._editable) {
-        var sourceValue = this.getEditorValue(source);
-        this.removeAllOptions(target);
-        for (var i = 0; i < source.options.length; i++) {
-          var option = source.options[i];
-          this.addOption(target, option.value, option.innerHTML, option.value == sourceValue);
+  setEditable: function ($super, handlerInstance, editable) {
+    if (!handlerInstance._dynamicOptions)
+      return $super(handlerInstance, editable);
+    
+    var value = this.getEditorValue(handlerInstance);
+    var options;
+    
+    if (!editable) {
+      options = this._readOptionsToArray(handlerInstance);
+    } else {
+      options = handlerInstance._options;
+    }
+
+    var newInstance = $super(handlerInstance, editable);
+      
+    if (editable) {
+      this._addOptionsFromArray(newInstance, options);
+    } else {
+      newInstance._options = options;
+    }
+    
+    this.setEditorValue(newInstance, value);
+    
+    return newInstance;
+  },
+  _addOptionsFromArray: function (cellEditor, options) {
+    var elements = new Array();
+
+    for (var j = 0, l = options.length; j < l; j++) {
+      var option = options[j];
+      if (option.optionGroup == true) {
+        
+        var optionGroup = this._createOptionGroup(option.text);
+
+        var groupOptions = option.options;
+        for (var groupIndex = 0; groupIndex < groupOptions.length; groupIndex++) {
+          var optionElement = this._createOption(groupOptions[groupIndex].value, groupOptions[groupIndex].text, false);
+          optionGroup.appendChild(optionElement);
         }
-      }
-      else {
-        // TODO scrap editor/viewer model and implement a simple getValue/getDisplayValue :(
-        this.setEditorValue(target, source._fieldValue.value, source._fieldContent.innerHTML);
+        
+        elements.push(optionGroup);
+      } else {
+        elements.push(this._createOption(option.value, option.text, false));
       }
     }
-  }  
+
+    for (var i = 0, l = elements.length; i < l;i++) {
+      cellEditor.appendChild(elements[i]);
+    }
+  },
+  _readOptionsToArray: function (cellEditor) {
+    var options = new Array();
+    
+    for (var i = 0, sourceChildNodeLen = cellEditor.childNodes.length; i < sourceChildNodeLen; i++) {
+      var editorChildNode = cellEditor.childNodes[i];
+      if (editorChildNode.tagName == 'OPTGROUP') {
+        var groupOptions = new Array();
+        
+        for (var j = 0, groupChildNodeLen = editorChildNode.childNodes.length; j < groupChildNodeLen; j++) {
+          var groupOption = editorChildNode.childNodes[k];
+          groupOptions.push({
+            text: groupOptionNode.text,
+            value: groupOptionNode.value
+          });
+        }
+        
+        options.push({
+          text: editorChildNode.text,
+          optionGroup: true,
+          options: groupOptions
+        });
+        
+      } else if (editorChildNode.tagName == 'OPTION') {
+        options.push({
+          text: editorChildNode.text,
+          value: editorChildNode.value
+        });
+      }
+    }
+    
+    return options;
+  } 
 });
 
 IxTableControllers.registerController(new IxSelectTableEditorController());

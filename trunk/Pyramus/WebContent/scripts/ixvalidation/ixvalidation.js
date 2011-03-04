@@ -288,8 +288,7 @@ IxValidationDelegator = Class.create({
     this._validators.push(validator);
   },
   deinitialize: function () {
-    while (this._validators.length > 0) 
-      this._validators.pop();
+    this._validators.clear();
     
     if (this._field.type == 'checkbox') {
       Event.stopObserving(this._field, 'click', this._fieldChangeListener);

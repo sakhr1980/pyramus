@@ -774,7 +774,6 @@
                 for (var i = 3; i < 9; i++) {
                   table.setCellEditable(event.row, i, true);
                 }
-                loadStudentStudyProgrammes(event.row, studentId);
               }
             }
           }, {
@@ -1073,6 +1072,10 @@
 
         var rowIndex;
         var cellEditor; 
+        var selectController = IxTableControllers.getController('select');
+        var studentIdColumnIndex = studentsTable.getNamedColumnIndex('studentId');
+        studentsTable.detachFromDom();
+        
         <c:forEach var="courseStudent" items="${courseStudents}" varStatus="status">
           rowIndex = studentsTable.addRow([
             '',
@@ -1090,6 +1093,17 @@
             '',
             '',
             '']);
+
+          cellEditor = studentsTable.getCellEditor(rowIndex, studentIdColumnIndex);
+          
+          <c:forEach var="courseStudentStudent" items="${courseStudentsStudents[courseStudent.id]}">
+            selectController.addOption(cellEditor, 
+                ${courseStudentStudent.id},
+                '${fn:replace(courseStudentStudent.studyProgramme.name, "'", "\\'")}',
+                ${courseStudent.student.id == courseStudentStudent.id}
+             );
+          </c:forEach>
+          
           studentsTable.showCell(rowIndex, studentsTable.getNamedColumnIndex("archiveButton"));
 
           <c:choose>
@@ -1104,10 +1118,9 @@
           <c:if test="${!courseStudent.student.active}">
             <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
           </c:if>
-
-          cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
-          IxTableControllers.getController('select').setEditorValue(cellEditor, ${courseStudent.student.id}, '${studyProgrammeName}');
         </c:forEach>
+
+        studentsTable.reattachToDom();
 
         studentsTable.addListener("rowAdd", function (event) {
           var studentsTable = event.tableObject;
