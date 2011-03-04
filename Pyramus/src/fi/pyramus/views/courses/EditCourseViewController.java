@@ -17,6 +17,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.Tag;
@@ -24,6 +25,7 @@ import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.courses.CourseUser;
+import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
@@ -42,7 +44,8 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
     // The course to be edited
     
     Course course = courseDAO.getCourse(NumberUtils.createLong(pageRequestContext.getRequest().getParameter("course")));
@@ -95,6 +98,14 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     
     List<CourseComponent> courseComponents = courseDAO.listCourseComponents(course);
     
+    // course students students
+    
+    Map<Long, List<Student>> courseStudentsStudents = new HashMap<Long, List<Student>>();
+    
+    for (CourseStudent courseStudent : courseStudents) {
+      courseStudentsStudents.put(courseStudent.getId(), studentDAO.listStudentsByAbstractStudent(courseStudent.getStudent().getAbstractStudent()));
+    }
+    
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
     pageRequestContext.getRequest().setAttribute("roles", courseDAO.listCourseUserRoles());
@@ -105,6 +116,7 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("courseUsers", courseUsers);
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("courseComponents", courseComponents);
+    pageRequestContext.getRequest().setAttribute("courseStudentsStudents", courseStudentsStudents);
     
     pageRequestContext.setIncludeJSP("/templates/courses/editcourse.jsp");
   }
