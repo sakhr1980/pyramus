@@ -34,6 +34,35 @@
       function getCourseComponentsEditor() {
         return componentsEditor;
       }
+
+      ActiveStudentsFilter = Class.create(_IxTable_FILTER, {
+        initialize : function($super, column) {
+          $super(column);
+        },
+        execute: function ($super, event) {
+          var studentsTable = event.tableComponent;
+          var hideArray = new Array();
+          
+          for (var i = studentsTable.getRowCount() - 1; i >= 0; i--) {
+            var rowValue = studentsTable.getCellValue(i, this.getColumn());
+            if (rowValue != 10) {
+              hideArray.push(i);
+            }
+          }
+
+          if (hideArray.size() > 0)
+            studentsTable.hideRows(hideArray.toArray());
+        }
+      });
+      
+      function filterOnlyActiveStudents() {
+        var studentsTable = getIxTableById('studentsTable');
+        var stateColumn = studentsTable.getNamedColumnIndex('participationType');
+
+        studentsTable.clearFilters();
+        
+        studentsTable.addFilter(new ActiveStudentsFilter(stateColumn));
+      }
       
       // Generic resource related functions
 
@@ -786,11 +815,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -817,11 +846,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSELECTSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSELECTSORT
               }
             },
             contextMenu: [
@@ -852,11 +881,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWNUMBERSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWNUMBERSORT
               }
             },
             contextMenu: [
@@ -893,11 +922,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSELECTSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSELECTSORT
               }
             }
           }, {
@@ -933,11 +962,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSELECTSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSELECTSORT
               }
             }
           }, {
@@ -968,15 +997,15 @@
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
               }
-            ],            
+            ],
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSELECTSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSELECTSORT
               }
             }
           }, {
@@ -1212,6 +1241,8 @@
         setupOtherCostsTable();
         setupResources();
         setupStudentsTable();
+        
+        //filterOnlyActiveStudents();
       }
 
     </script>
@@ -1636,6 +1667,11 @@
 		          <div class="genericTableAddRowContainer">
 	              <span class="genericTableAddRowLinkContainer" onclick="openSearchStudentsDialog();"><fmt:message key="courses.editCourse.addStudentLink"/></span>
 	            </div>
+<!--
+              <div class="genericTableFilterActiveContainer">
+                <span class="genericTableFilterActiveLinkContainer" onclick="filterOnlyActiveStudents();"><fmt:message key="courses.editCourse.filterActiveStudentsLink"/></span>
+              </div>
+-->
 	              
 	            <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
 	              <span><fmt:message key="courses.editCourse.noStudentsAddedPreFix"/> <span onclick="openSearchStudentsDialog();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noStudentsAddedClickHereLink"/></span>.</span>

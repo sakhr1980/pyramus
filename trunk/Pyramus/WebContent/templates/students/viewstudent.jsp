@@ -81,11 +81,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -97,11 +97,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             },
             contextMenu: [
@@ -123,11 +123,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             },
             contextMenu: [
@@ -194,11 +194,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -210,11 +210,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -226,11 +226,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -266,11 +266,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }]
@@ -292,11 +292,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -308,11 +308,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -324,11 +324,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -364,11 +364,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {

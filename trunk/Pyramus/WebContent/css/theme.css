@@ -95,6 +95,19 @@ h1.genericPageHeader{
   cursor:pointer;
 }
 
+.genericTableFilterActiveContainer {
+  margin:5px 0px 0px 8px;
+}
+
+.genericTableFilterActiveLinkContainer {
+  background-image:url(../gfx/eye.png);
+  background-repeat:no-repeat;
+  padding:1px 2px 2px 20px;
+  color:#2e5ec5;
+  text-decoration:underline;
+  cursor:pointer;
+}
+	
 .genericInfoMessageContainer{
   margin:5px 0px 10px 8px;
 }
@@ -164,6 +177,16 @@ h1.genericPageHeader{
   --color:#2351B1;
 }
 
+.ixTableColumnHeaderFiltered {
+	color:#739de7; 
+}
+
+.ixTableClearFilterButton {
+  display: none;
+}
+.ixTableColumnHeaderFiltered .ixTableClearFilterButton {
+  display: block;
+}
 
 #componentHoursTotalContainer{
   margin-left:18px;
