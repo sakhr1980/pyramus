@@ -1097,27 +1097,28 @@
           cellEditor = studentsTable.getCellEditor(rowIndex, studentIdColumnIndex);
           
           <c:forEach var="courseStudentStudent" items="${courseStudentsStudents[courseStudent.id]}">
+	          <c:choose>
+		          <c:when test="${courseStudent.student.studyProgramme ne null}">
+		            <c:set var="studyProgrammeName">${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:set>
+		          </c:when>
+		          <c:otherwise>
+		            <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
+		          </c:otherwise>
+		        </c:choose>
+		
+		        <c:if test="${!courseStudent.student.active}">
+		          <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+		        </c:if>
+            
+          
             selectController.addOption(cellEditor, 
                 ${courseStudentStudent.id},
-                '${fn:replace(courseStudentStudent.studyProgramme.name, "'", "\\'")}',
+                '${fn:replace(studyProgrammeName, "'", "\\'")}',
                 ${courseStudent.student.id == courseStudentStudent.id}
              );
           </c:forEach>
           
           studentsTable.showCell(rowIndex, studentsTable.getNamedColumnIndex("archiveButton"));
-
-          <c:choose>
-            <c:when test="${courseStudent.student.studyProgramme ne null}">
-              <c:set var="studyProgrammeName">${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:set>
-            </c:when>
-            <c:otherwise>
-              <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
-            </c:otherwise>
-          </c:choose>
-
-          <c:if test="${!courseStudent.student.active}">
-            <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
-          </c:if>
         </c:forEach>
 
         studentsTable.reattachToDom();
