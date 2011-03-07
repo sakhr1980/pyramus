@@ -49,12 +49,12 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
-                toolTip: "Sort descending",
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -66,12 +66,12 @@
             editable: false,
             sortAttributes: {
               sortAscending: {
-                toolTip: "Sort ascending",
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
-                toolTip: "Sort descending",
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -94,11 +94,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -125,11 +125,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -159,11 +159,11 @@
             sortAttributes: {
               sortAscending: {
                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("asc") 
+                sortAction: IxTable_ROWSTRINGSORT 
               },
               sortDescending: {
                 toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: new IxTable_ROWSTRINGSORT("desc")
+                sortAction: IxTable_ROWSTRINGSORT
               }
             }
           }, {
@@ -194,6 +194,7 @@
           }]        
         });
 
+        studentsTable.detachFromDom();
         <c:forEach var="courseStudent" items="${courseStudents}">
           <c:choose>
             <c:when test="${courseStudent.lodging}">
@@ -230,6 +231,7 @@
             ''
           ]);
         </c:forEach>
+        studentsTable.reattachToDom();
       }
 
       function setupRelatedCommands() {
