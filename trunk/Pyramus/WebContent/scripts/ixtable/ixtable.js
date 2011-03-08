@@ -554,14 +554,13 @@ IxTable = Class.create({
     this.detachFromDom();
 
     this.showAllRows();
-    var filters = this._filters.toArray();
-    for (var i = 0, len = filters.length; i < len; i++) {
-      var filter = filters[i];
-      
+
+    var _this = this;
+    this._filters.each(function(filter) {
       filter.execute({ 
-        tableComponent: this 
+        tableComponent: _this 
       });
-    }
+    });
     
     this.reattachToDom();
     this.fire("afterFiltering", { tableComponent: this });
