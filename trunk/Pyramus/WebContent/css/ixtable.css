@@ -147,7 +147,6 @@ div.ixTableRowButton:hover{
   padding-bottom:2px;
   padding-left:1px;
   padding-right:1px;
-  --width:inherit;
   width:95%;
 }
 
@@ -164,12 +163,8 @@ div.ixTableRowButton:hover{
 }
 
 .ixTableCellContextMenuButton {
-  --border: solid 1px;
   display:none;
   position:absolute;
-  --background-image:url(../gfx/list-add.png);
-  --background-repeat:no-repeat;
-  --background-position: right top;
   right:0px;
   top:0px;
   width:12px;
@@ -210,9 +205,7 @@ div.ixTableRowButton:hover{
 }
 
 .ixTableHeaderSortButton {
-  --border: 1px solid #fff;
   font-size: 75%;
-  --margin-left:2px;
   padding: 0px 2px 0px 2px;
   cursor:pointer;
 }

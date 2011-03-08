@@ -15,7 +15,6 @@
 	    
 	    function onLoad(event) {
 	      var tabControl = new IxProtoTabs($('tabs'));
-	      var cacheTabsControl = new IxProtoTabs($('cacheTabs'));
 	    }
 	
 	  </script>
@@ -26,7 +25,6 @@
 	  
 	  <h1 class="genericPageHeader"><fmt:message key="system.systemInfo.pageTitle" /></h1>
 	  
-	  <div id="hibernateStatisticContainer"> 
       <div class="genericFormContainer"> 
         <div class="tabLabelsContainer" id="tabs">
           <a class="tabLabel" href="#general">
@@ -78,8 +76,7 @@
           </table>
         </div>
           
-      </div>      
-		</div> 
+      </div>    
 	  
 	  <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>
