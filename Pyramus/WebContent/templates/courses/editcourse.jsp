@@ -1126,20 +1126,19 @@
           cellEditor = studentsTable.getCellEditor(rowIndex, studentIdColumnIndex);
           
           <c:forEach var="courseStudentStudent" items="${courseStudentsStudents[courseStudent.id]}">
-	          <c:choose>
-		          <c:when test="${courseStudent.student.studyProgramme ne null}">
-		            <c:set var="studyProgrammeName">${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:set>
-		          </c:when>
-		          <c:otherwise>
-		            <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
-		          </c:otherwise>
-		        </c:choose>
-		
-		        <c:if test="${!courseStudent.student.active}">
-		          <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
-		        </c:if>
+	        <c:choose>
+	          <c:when test="${courseStudentStudent.studyProgramme ne null}">
+	            <c:set var="studyProgrammeName">${fn:escapeXml(courseStudentStudent.studyProgramme.name)}</c:set>
+	          </c:when>
+	          <c:otherwise>
+	            <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
+	          </c:otherwise>
+	        </c:choose>
+	
+	        <c:if test="${!courseStudentStudent.active}">
+	          <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+	        </c:if>
             
-          
             selectController.addOption(cellEditor, 
                 ${courseStudentStudent.id},
                 '${fn:replace(studyProgrammeName, "'", "\\'")}',

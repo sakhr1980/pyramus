@@ -386,10 +386,6 @@ IxTable = Class.create({
     var handlerInstance = this.getCellEditor(row, column);
     return IxTableControllers.getController(handlerInstance._dataType).isVisible(handlerInstance);
   },
-  isCellDynamicOptions: function (row, column) {
-    var handlerInstance = this.getCellEditor(row, column);
-    return IxTableControllers.getController(handlerInstance._dataType).isDynamicOptions(handlerInstance);
-  },
   isCellDisabled: function (row, column) {
     var handlerInstance = this.getCellEditor(row, column);
     return IxTableControllers.getController(handlerInstance._dataType).isDisabled(handlerInstance);
@@ -803,7 +799,6 @@ IxTable = Class.create({
         menuElement._menuItem = menuItem;
         
         menuElement.update(menuItem.text);
-        var _this = this;
         Event.observe(menuElement, "click", this._contextMenuItemClickListener);
         menuContainer.appendChild(menuElement);
       }
@@ -1088,9 +1083,6 @@ IxTableEditorController = Class.create({
       handlerInstance._disabledHiddenElement.value = value;
     }
   },
-  isDynamicOptions: function (handlerInstance) {
-    return false;
-  },
   copyCellValue: function(target, source) {
     this.setEditorValue(target, this.getEditorValue(source));
   },
@@ -1153,7 +1145,7 @@ IxNumberTableEditorController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
   getDataType: function () {
     return "number";  
@@ -1187,7 +1179,7 @@ IxHiddenTableEditorController = Class.create(IxTableEditorController, {
     return "hidden";  
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
   getMode: function () { 
     return IxTableControllers.EDITMODE_ONLY_EDITABLE;
@@ -1332,9 +1324,9 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
-  isDynamicOptions: function ($super, handlerInstance) {
+  isDynamicOptions: function (handlerInstance) {
     return handlerInstance._dynamicOptions;
   },
   getDataType: function ($super) {
@@ -1342,6 +1334,21 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
   },
   getMode: function ($super) { 
     return IxTableControllers.EDITMODE_EDITABLE;
+  },
+  getOptions: function (handlerInstance) {
+    if (this.getEditable(handlerInstance)) {
+      return this._readOptionsToArray(handlerInstance);
+    } else {
+      return handlerInstance._options;
+    }
+  },
+  setOptions: function (handlerInstance, options) {
+    if (this.getEditable(handlerInstance)) {
+      this.removeAllOptions(handlerInstance);
+      this._addOptionsFromArray(handlerInstance, options);
+    } else {
+      handlerInstance._options = options;
+    }
   },
   _onEditorValueChange: function (event) {
     var handlerInstance = Event.element(event);
@@ -1487,7 +1494,7 @@ IxCheckboxTableEditorController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
   getDataType: function ($super) {
     return "checkbox";  
@@ -1557,7 +1564,7 @@ IxRadioButtonTableEditorController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
   getDataType: function ($super) {
     return "radiobutton";  
@@ -1726,6 +1733,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     }
   }, 
   isDisabled: function ($super, handlerInstance) {
+    return false;
     // TODO: 
     // return handlerInstance.disabled;
   },
@@ -1807,7 +1815,7 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance._disabled;
+    return handlerInstance._disabled == true;
   },
   getDataType: function ($super) {
     return "button";  
@@ -1893,7 +1901,7 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
     handlerInstance.remove();
   },
   isDisabled: function ($super, handlerInstance) {
-    return handlerInstance.disabled;
+    return handlerInstance.disabled == true;
   },
   getDataType: function ($super) {
     return "text";  
