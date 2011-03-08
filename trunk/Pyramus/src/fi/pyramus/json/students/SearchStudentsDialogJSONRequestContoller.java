@@ -52,10 +52,11 @@ public class SearchStudentsDialogJSONRequestContoller implements JSONRequestCont
     	if (student != null) {
         Map<String, Object> info = new HashMap<String, Object>();
         info.put("abstractStudentId", abstractStudent.getId());
-        info.put("id", abstractStudent.getLatestStudent().getId());
+        info.put("id", student.getId());
         info.put("firstName", student.getFirstName());
         info.put("lastName", student.getLastName());
         info.put("archived", student.getArchived());
+        info.put("lodging", Boolean.toString(student.getLodging()));
         results.add(info);
     	}
     }

@@ -110,9 +110,9 @@
         dialog.open();
       }
 
-      function addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName) {
+      function addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName, lodging) {
         var table = getIxTableById('studentsTable');
-        var rowIndex = table.addRow(['', '', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, -1, 1, '', '', '']);
+        var rowIndex = table.addRow(['', '', studentName, studentId, 10, new Date().getTime(), 0, '', lodging, abstractStudentId, -1, 1, '', '', '']);
         table.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
         for (var i = 3; i < 9; i++) {
           table.setCellEditable(rowIndex, i, true);
@@ -154,9 +154,10 @@
                 var abstractStudentId = event.results.students[i].abstractStudentId;
                 var studentId = event.results.students[i].id;
                 var studentName = event.results.students[i].name;
+                var lodging = event.results.students[i].lodging;
                 var index = getStudentRowIndex(studentId);
                 if (index == -1) {
-                  addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName);
+                  addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName, lodging);
                 } 
               }
             break;

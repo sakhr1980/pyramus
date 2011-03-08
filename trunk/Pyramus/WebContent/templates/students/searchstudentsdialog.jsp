@@ -55,7 +55,7 @@
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
               var studentName = results[i].lastName + ', ' + results[i].firstName;
-              resultsTable.addRow(['', studentName, results[i].id, results[i].abstractStudentId]);
+              resultsTable.addRow(['', studentName, results[i].id, results[i].abstractStudentId, results[i].lodging]);
               var rowIndex = getStudentRowIndex('studentsTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
@@ -91,11 +91,13 @@
           var studentName = table.getCellValue(i, table.getNamedColumnIndex('name'));
           var studentId = table.getCellValue(i, table.getNamedColumnIndex('studentId'));
           var abstractStudentId = table.getCellValue(i, table.getNamedColumnIndex('abstractStudentId'));
+          var lodging = table.getCellValue(i, table.getNamedColumnIndex('lodging'));
 
           results.push({
             name: studentName,
             id: studentId,
-            abstractStudentId: abstractStudentId
+            abstractStudentId: abstractStudentId,
+            lodging: lodging
           });
         }
         return {
@@ -119,70 +121,80 @@
 
         var searchResultsTable = new IxTable($('searchResultsTableContainer'), {
           id: 'searchResultsTable',
-          columns : [{
-            width: 30,
-            left: 8,
-            dataType: 'button',
-            paramName: 'studentInfoButton',
-            imgsrc: GLOBAL_contextPath + '/gfx/info.png',
-            tooltip: '<fmt:message key="students.searchStudentsDialog.searchResultsTableStudentInfoTooltip"/>',
-            onclick: function (event) {
-              var table = event.tableObject;
-              var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
-              var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
-              openStudentInfoPopupOnElement(button, abstractStudentId);
-            } 
-          }, {
-            left: 46,
-            right: 8,
-            dataType: 'text',
-            editable: false,
-            selectable: false,
-            paramName: 'name',
-            onclick: function (event) {
-              var table = event.tableObject;
-              table.disableRow(event.row);
-              var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
-              var studentName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
-              getIxTableById('studentsTable').addRow([studentName, studentId, abstractStudentId]);
+          columns : [
+            {
+              width: 30,
+              left: 8,
+              dataType: 'button',
+              paramName: 'studentInfoButton',
+              imgsrc: GLOBAL_contextPath + '/gfx/info.png',
+              tooltip: '<fmt:message key="students.searchStudentsDialog.searchResultsTableStudentInfoTooltip"/>',
+              onclick: function (event) {
+                var table = event.tableObject;
+                var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
+                var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
+                openStudentInfoPopupOnElement(button, abstractStudentId);
+              } 
+            }, {
+              left: 46,
+              right: 8,
+              dataType: 'text',
+              editable: false,
+              selectable: false,
+              paramName: 'name',
+              onclick: function (event) {
+                var table = event.tableObject;
+                table.disableRow(event.row);
+                var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
+                var studentName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
+                var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
+                var lodging = table.getCellValue(event.row, table.getNamedColumnIndex('lodging'));
+                getIxTableById('studentsTable').addRow([studentName, studentId, abstractStudentId, lodging]);
+              }
+            }, {
+              dataType: 'hidden',
+              paramName: 'studentId'
+            }, {
+              dataType: 'hidden',
+              paramName: 'abstractStudentId'
+            }, {
+              dataType: 'hidden',
+              paramName: 'lodging'
             }
-          }, {
-            dataType: 'hidden',
-            paramName: 'studentId'
-          }, {
-            dataType: 'hidden',
-            paramName: 'abstractStudentId'
-          }]
+          ]
         });
         searchResultsTable.domNode.addClassName("modalDialogSearchResultsIxTable");
         
         var studentsTable = new IxTable($('studentsTableContainer'), {
           id: 'studentsTable',
-          columns : [ {
-            left: 8,
-            right: 8,
-            dataType: 'text',
-            editable: false,
-            selectable: false,
-            paramName: 'name',
-            onclick: function (event) {
-              var table = event.tableObject;
-              var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
-              table.deleteRow(event.row);
-              var rowIndex = getStudentRowIndex('searchResultsTable', studentId);
-              if (rowIndex != -1) {
-                var resultsTable = getIxTableById('searchResultsTable');
-                resultsTable.enableRow(rowIndex);
+          columns : [ 
+            {
+              left: 8,
+              right: 8,
+              dataType: 'text',
+              editable: false,
+              selectable: false,
+              paramName: 'name',
+              onclick: function (event) {
+                var table = event.tableObject;
+                var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
+                table.deleteRow(event.row);
+                var rowIndex = getStudentRowIndex('searchResultsTable', studentId);
+                if (rowIndex != -1) {
+                  var resultsTable = getIxTableById('searchResultsTable');
+                  resultsTable.enableRow(rowIndex);
+                }
               }
+            }, {
+              dataType: 'hidden',
+              paramName: 'studentId'
+            }, {
+              dataType: 'hidden',
+              paramName: 'abstractStudentId'
+            }, {
+              dataType: 'hidden',
+              paramName: 'lodging'
             }
-          }, {
-            dataType: 'hidden',
-            paramName: 'studentId'
-          }, {
-            dataType: 'hidden',
-            paramName: 'abstractStudentId'
-          }
           ]
         });
         studentsTable.domNode.addClassName("modalDialogStudentsIxTable");
