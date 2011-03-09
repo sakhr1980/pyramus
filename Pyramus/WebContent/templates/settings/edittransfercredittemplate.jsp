@@ -173,7 +173,7 @@
 	              <jsp:param name="helpLocale" value="settings.editTransferCreditTemplate.nameHelp"/>
 	            </jsp:include>
 	                    
-	            <input type="text" name="name" class="required" value="${transferCreditTemplate.name}" size="40">
+                <input type="text" name="name" class="required" value="${fn:escapeXml(transferCreditTemplate.name)}" size="40">
 	          </div>
           
             <div class="genericTableAddRowContainer">

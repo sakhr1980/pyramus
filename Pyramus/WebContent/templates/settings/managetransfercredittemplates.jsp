@@ -87,7 +87,11 @@
         });
 
         <c:forEach var="transferCreditTemplate" items="${transferCreditTemplates}">
-          transferCreditTemplatesTable.addRow(['${transferCreditTemplate.name}', null, null, '${transferCreditTemplate.id}']);
+          transferCreditTemplatesTable.addRow([
+            '${fn:replace(transferCreditTemplate.name, "'", "\\'")}', 
+            null, 
+            null, 
+            '${transferCreditTemplate.id}']);
         </c:forEach>
         
         <c:if test="${fn:length(transferCreditTemplates) > 0}">

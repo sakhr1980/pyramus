@@ -53,36 +53,30 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController impleme
       .append("<li>")
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(course.getCourseName()))
-      .append("</span>")
-
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
-      .append(course.getId())
-      .append("\"/>")
-
-      .append("<input type=\"hidden\" name=\"subjectId\" value=\"")
-      .append(course.getSubject().getId())
-      .append("\"/>")
-
-      .append("<input type=\"hidden\" name=\"subjectName\" value=\"")
-      .append(course.getSubject().getName())
-      .append("\"/>")
-
-      .append("<input type=\"hidden\" name=\"courseLength\" value=\"")
-      .append(course.getCourseLength().getUnits())
-      .append("\"/>")
+      .append("</span>");
     
-      .append("<input type=\"hidden\" name=\"courseLengthUnitId\" value=\"")
-      .append(course.getCourseLength().getUnit().getId())
-      .append("\"/>")
-
-      .append("<input type=\"hidden\" name=\"courseLengthUnitName\" value=\"")
-      .append(course.getCourseLength().getUnit().getName())
-      .append("\"/>")
-
-      .append("<input type=\"hidden\" name=\"courseNumber\" value=\"")
-      .append(course.getCourseNumber())
-      .append("\"/>")
-      
-      .append("</li>");
+    addHiddenValue(resultBuilder, "id", course.getId());
+    addHiddenValue(resultBuilder, "subjectId", course.getSubject() != null ? course.getSubject().getId() : null);
+    addHiddenValue(resultBuilder, "subjectName", course.getSubject() != null ? course.getSubject().getName() : null);
+    addHiddenValue(resultBuilder, "courseLength", course.getCourseLength() != null ? course.getCourseLength().getUnits() : null);
+    addHiddenValue(resultBuilder, "courseLengthUnitId", course.getCourseLength() != null ? course.getCourseLength().getUnit().getId() : null);
+    addHiddenValue(resultBuilder, "courseLengthUnitName", course.getCourseLength() != null ? course.getCourseLength().getUnit().getName() : null);
+    addHiddenValue(resultBuilder, "courseNumber", course.getCourseNumber());
+    
+    resultBuilder.append("</li>");
+  }
+  
+  private void addHiddenValue(StringBuilder resultBuilder, String name, Object value) {
+    String stringValue = value == null ? null : String.valueOf(value);
+    
+    resultBuilder.append("<input type=\"hidden\" name=\"");
+    resultBuilder.append(name);
+    resultBuilder.append("\" value=\"");
+    
+    if (!StringUtils.isBlank(stringValue)) {
+      resultBuilder.append(StringEscapeUtils.escapeHtml(stringValue));
+    } 
+    
+    resultBuilder.append("\"/>");
   }
 }
