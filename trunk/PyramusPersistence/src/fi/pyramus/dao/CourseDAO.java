@@ -1303,20 +1303,26 @@ public class CourseDAO extends PyramusDAO {
 
     return s.createQuery(
         "from CourseStudent cs " +
-        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2")
+        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2 and cs.course.archived=:archived3")
         .setParameter("course", course)
         .setBoolean("archived", Boolean.FALSE)
         .setBoolean("archived2", Boolean.FALSE)
+        .setBoolean("archived3", Boolean.FALSE)
         .list();
   }
 
   @SuppressWarnings("unchecked")
   public List<CourseStudent> listCourseStudentsByStudent(Student student) {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseStudent.class)
-      .add(Restrictions.eq("student", student))
-      .add(Restrictions.eq("archived", Boolean.FALSE))
-      .list();
+
+    return s.createQuery(
+        "from CourseStudent cs " +
+        "where cs.student=:student and cs.archived=:archived and cs.student.archived=:archived2 and cs.course.archived=:archived3")
+        .setParameter("student", student)
+        .setBoolean("archived", Boolean.FALSE)
+        .setBoolean("archived2", Boolean.FALSE)
+        .setBoolean("archived3", Boolean.FALSE)
+        .list();
   }
 
   /**
