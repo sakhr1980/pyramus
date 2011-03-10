@@ -278,10 +278,11 @@ public class GradingDAO extends PyramusDAO {
     
     return s.createQuery(
         "from CourseAssessment ca " +
-        "where ca.courseStudent.student=:student and ca.archived=:archived and ca.courseStudent.archived=:archived2")
+        "where ca.courseStudent.student=:student and ca.archived=:archived and ca.courseStudent.archived=:archived2 and ca.courseStudent.course.archived=:archived3")
       .setEntity("student", student)
       .setBoolean("archived", Boolean.FALSE)
       .setBoolean("archived2", Boolean.FALSE)
+      .setBoolean("archived3", Boolean.FALSE)
       .list();
   }  
   
