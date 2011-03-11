@@ -156,6 +156,14 @@ public class User {
     return version;
   }
 
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="User")  
   @TableGenerator(name="User", allocationSize=1)
@@ -189,6 +197,8 @@ public class User {
   @NotEmpty
   private String authProvider;  
 
+  private String title;  
+  
   @NotNull
   @Column (nullable = false)
   @Type (type="Role")  

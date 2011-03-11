@@ -312,128 +312,136 @@
         <form action="createuser.json" method="post" ix:jsonform="true">
           <div id="createUser" class="tabContent">
 
-              <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.firstNameTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.firstNameHelp"/>
-                </jsp:include>                  
-                <input type="text" name="firstName" size="20" class="required"/>
-              </div>
-              <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.lastNameTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.lastNameHelp"/>
-                </jsp:include>                  
-                <input type="text" name="lastName" size="30" class="required"/>
-              </div>
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.firstNameTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.firstNameHelp"/>
+              </jsp:include>                  
+              <input type="text" name="firstName" size="20" class="required"/>
+            </div>
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.lastNameTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.lastNameHelp"/>
+              </jsp:include>                  
+              <input type="text" name="lastName" size="30" class="required"/>
+            </div>
 
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.titleTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.titleHelp"/>
+              </jsp:include>                  
+              <input type="text" name="title" size="30">
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.authenticationMethodTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.authenticationMethodHelp"/>
+              </jsp:include>                  
+  
+              <select name="authProvider">
+                <c:forEach var="authenticationProvider" items="${authenticationProviders}">
+                  <c:choose>
+                    <c:when test="${authenticationProvider.active eq true}">
+                      <c:set var="authenticationProviderName">${authenticationProvider.name}</c:set>
+                    </c:when>
+                    <c:otherwise>
+                      <c:set var="authenticationProviderName">${authenticationProvider.name} (<fmt:message key="users.createUser.authenticationMethodDisabled"/>)</c:set>
+                    </c:otherwise>
+                  </c:choose>
+                  
+                  <c:choose>
+                    <c:when test="${authenticationProvider.name eq user.authProvider}">
+                      <option value="${authenticationProvider.name}" selected="selected">${authenticationProviderName}</option>
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${authenticationProvider.name}">${authenticationProviderName}</option>
+                    </c:otherwise>
+                  </c:choose>
+                </c:forEach>
+              </select>
+            </div>
+        
+            <div id="createUserCredentialsContainer">
               <div class="genericFormSection">  
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.authenticationMethodTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.authenticationMethodHelp"/>
+                  <jsp:param name="titleLocale" value="users.createUser.usernameTitle"/>
+                  <jsp:param name="helpLocale" value="users.createUser.usernameHelp"/>
                 </jsp:include>                  
-    
-                <select name="authProvider">
-                  <c:forEach var="authenticationProvider" items="${authenticationProviders}">
-                    <c:choose>
-                      <c:when test="${authenticationProvider.active eq true}">
-                        <c:set var="authenticationProviderName">${authenticationProvider.name}</c:set>
-                      </c:when>
-                      <c:otherwise>
-                        <c:set var="authenticationProviderName">${authenticationProvider.name} (<fmt:message key="users.createUser.authenticationMethodDisabled"/>)</c:set>
-                      </c:otherwise>
-                    </c:choose>
-                    
-                    <c:choose>
-                      <c:when test="${authenticationProvider.name eq user.authProvider}">
-                        <option value="${authenticationProvider.name}" selected="selected">${authenticationProviderName}</option>
-                      </c:when>
-                      <c:otherwise>
-                        <option value="${authenticationProvider.name}">${authenticationProviderName}</option>
-                      </c:otherwise>
-                    </c:choose>
-                  </c:forEach>
-                </select>
+                <input type="text" class="required" name="username" size="30">
               </div>
-          
-	            <div id="createUserCredentialsContainer">
-	              <div class="genericFormSection">  
-	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                  <jsp:param name="titleLocale" value="users.createUser.usernameTitle"/>
-	                  <jsp:param name="helpLocale" value="users.createUser.usernameHelp"/>
-	                </jsp:include>                  
-	                <input type="text" class="required" name="username" size="30">
-	              </div>
-	              
-	              <div class="genericFormSection">  
-	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                  <jsp:param name="titleLocale" value="users.createUser.password1Title"/>
-	                  <jsp:param name="helpLocale" value="users.createUser.password1Help"/>
-	                </jsp:include>                  
-	                <input type="password" class="required equals" ix:equals-field-name="password2" name="password1" value="" size="30">
-	              </div>
-	              
-	              <div class="genericFormSection">  
-	                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                  <jsp:param name="titleLocale" value="users.createUser.password2Title"/>
-	                  <jsp:param name="helpLocale" value="users.createUser.password2Help"/>
-	                </jsp:include>                  
-	                <input type="password" class="required equals" ix:equals-field-name="password1" name="password2" value="" size="30">
-	              </div>
-	            </div>
               
-              <div class="genericFormSection">
-	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                <jsp:param name="titleLocale" value="users.createUser.tagsTitle"/>
-	                <jsp:param name="helpLocale" value="users.createUser.tagsHelp"/>
-	              </jsp:include>
-	              <input type="text" id="tags" name="tags" size="40"/>
-	              <div id="tags_choices" class="autocomplete_choices"></div>
-	            </div>
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.createUser.password1Title"/>
+                  <jsp:param name="helpLocale" value="users.createUser.password1Help"/>
+                </jsp:include>                  
+                <input type="password" class="required equals" ix:equals-field-name="password2" name="password1" value="" size="30">
+              </div>
+              
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="users.createUser.password2Title"/>
+                  <jsp:param name="helpLocale" value="users.createUser.password2Help"/>
+                </jsp:include>                  
+                <input type="password" class="required equals" ix:equals-field-name="password1" name="password2" value="" size="30">
+              </div>
+            </div>
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.tagsTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
 
-              <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.addressesTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.addressesHelp"/>
-                </jsp:include>                                         
-                <div id="addressTable"></div>
-              </div>
-  
-              <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.emailTableEmailsTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.emailTableEmailsHelp"/>
-                </jsp:include>                                         
-                <div id="emailTable"></div>
-              </div>
-  
-              <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="users.createUser.phoneNumbersTitle"/>
-                  <jsp:param name="helpLocale" value="users.createUser.phoneNumbersHelp"/>
-                </jsp:include>                                         
-                <div id="phoneTable"></div>
-              </div>
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.addressesTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.addressesHelp"/>
+              </jsp:include>                                         
+              <div id="addressTable"></div>
+            </div>
 
-              <c:choose>
-                <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
-                  <div class="genericFormSection">  
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="users.createUser.roleTitle"/>
-                      <jsp:param name="helpLocale" value="users.createUser.roleHelp"/>
-                    </jsp:include>                  
-                    <select name="role">
-                      <option value="1"><fmt:message key="users.createUser.roleGuestTitle"/></option>
-                      <option value="2"><fmt:message key="users.createUser.roleUserTitle"/></option>
-                      <option value="3"><fmt:message key="users.createUser.roleManagerTitle"/></option>
-                      <option value="4"><fmt:message key="users.createUser.roleAdministratorTitle"/></option>
-                    </select>
-                  </div>
-                </c:when>
-                <c:otherwise>
-                  <input type="hidden" name="role" value="1"/>
-                </c:otherwise>
-              </c:choose>
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.emailTableEmailsTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.emailTableEmailsHelp"/>
+              </jsp:include>                                         
+              <div id="emailTable"></div>
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.createUser.phoneNumbersTitle"/>
+                <jsp:param name="helpLocale" value="users.createUser.phoneNumbersHelp"/>
+              </jsp:include>                                         
+              <div id="phoneTable"></div>
+            </div>
+
+            <c:choose>
+              <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
+                <div class="genericFormSection">  
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="users.createUser.roleTitle"/>
+                    <jsp:param name="helpLocale" value="users.createUser.roleHelp"/>
+                  </jsp:include>                  
+                  <select name="role">
+                    <option value="1"><fmt:message key="users.createUser.roleGuestTitle"/></option>
+                    <option value="2"><fmt:message key="users.createUser.roleUserTitle"/></option>
+                    <option value="3"><fmt:message key="users.createUser.roleManagerTitle"/></option>
+                    <option value="4"><fmt:message key="users.createUser.roleAdministratorTitle"/></option>
+                  </select>
+                </div>
+              </c:when>
+              <c:otherwise>
+                <input type="hidden" name="role" value="1"/>
+              </c:otherwise>
+            </c:choose>
           </div>
           <div class="genericFormSubmitSectionOffTab">
             <input type="submit" name="login" value="<fmt:message key="users.createUser.submitButton"/>" class="formvalid">

@@ -62,7 +62,7 @@ public class UserDAO extends PyramusDAO {
     s.delete(user);
   }
 
-  public User createUser(String firstName, String lastName, String externalId, String authProvider, Role role) {
+  public User createUser(String firstName, String lastName, String externalId, String authProvider, Role role, String title) {
     Session s = getHibernateSession();
     
     User newUser = new User();
@@ -71,6 +71,7 @@ public class UserDAO extends PyramusDAO {
     newUser.setAuthProvider(authProvider);
     newUser.setExternalId(externalId);
     newUser.setRole(role);
+    newUser.setTitle(title);
 
     s.save(newUser);
 
@@ -87,11 +88,12 @@ public class UserDAO extends PyramusDAO {
     return user;
   }
   
-  public User updateUser(User user, String firstName, String lastName, Role role) {
+  public User updateUser(User user, String firstName, String lastName, Role role, String title) {
     Session s = getHibernateSession();
     user.setFirstName(firstName);
     user.setLastName(lastName);
     user.setRole(role);
+    user.setTitle(title);
     s.saveOrUpdate(user);
     return user;
   }
