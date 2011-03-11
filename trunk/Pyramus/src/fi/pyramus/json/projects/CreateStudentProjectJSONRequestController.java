@@ -54,7 +54,7 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
     }
     
     Student student = studentDAO.getStudent(studentId);
-    Project project = projectId == -1 ? null : projectDAO.getProject(projectId);
+    Project project = projectId == -1 ? null : projectDAO.findProjectById(projectId);
 
     String name;
     String description;

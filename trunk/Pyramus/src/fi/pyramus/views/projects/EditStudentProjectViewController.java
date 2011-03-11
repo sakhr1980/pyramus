@@ -44,7 +44,7 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     
     Long studentProjectId = pageRequestContext.getLong("studentproject");
 
-    StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
+    StudentProject studentProject = projectDAO.findStudentProjectById(studentProjectId);
     List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByStudent(studentProject.getStudent());
     
     StringBuilder tagsBuilder = new StringBuilder();

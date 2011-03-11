@@ -36,7 +36,7 @@ public class EditProjectJSONRequestController implements JSONRequestController {
     // Project
 
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.getProject(projectId);
+    Project project = projectDAO.findProjectById(projectId);
     
     // Version check
     Long version = jsonRequestContext.getLong("version"); 
