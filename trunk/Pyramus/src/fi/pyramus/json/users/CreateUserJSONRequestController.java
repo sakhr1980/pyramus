@@ -45,6 +45,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
 
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
+    String title = requestContext.getString("title");
     Role role = Role.getRole(requestContext.getInteger("role"));
     String tagsText = requestContext.getString("tags");
     String authProvider = requestContext.getString("authProvider");
@@ -88,7 +89,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     
     // User
 
-    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role);
+    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role, title);
     
     // Tags
     

@@ -52,6 +52,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
 
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
+    String title = requestContext.getString("title");
     Role role = Role.getRole(requestContext.getInteger("role").intValue());
     String username = requestContext.getString("username");
     String password = requestContext.getString("password1");
@@ -71,7 +72,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
       }
     }
     
-    userDAO.updateUser(user, firstName, lastName, role);
+    userDAO.updateUser(user, firstName, lastName, role, title);
 
     // Tags
 

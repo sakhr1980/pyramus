@@ -483,6 +483,14 @@
               </jsp:include>                  
               <input type="text" name="lastName" value="${fn:escapeXml(user.lastName)}" size="30" class="required">
             </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.editUser.titleTitle"/>
+                <jsp:param name="helpLocale" value="users.editUser.titleHelp"/>
+              </jsp:include>                  
+              <input type="text" name="title" value="${fn:escapeXml(user.title)}" size="30">
+            </div>
             
             <c:choose>
 	            <c:when test="${loggedUserRole == 'ADMINISTRATOR'}">
