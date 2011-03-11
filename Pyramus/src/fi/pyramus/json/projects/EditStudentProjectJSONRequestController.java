@@ -49,7 +49,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     // Project
 
     Long studentProjectId = jsonRequestContext.getLong("studentProject");
-    StudentProject studentProject = projectDAO.getStudentProject(studentProjectId);
+    StudentProject studentProject = projectDAO.findStudentProjectById(studentProjectId);
     
     // Version check
     Long version = jsonRequestContext.getLong("version"); 

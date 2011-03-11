@@ -31,18 +31,20 @@
           columns: [ {
             header: '<fmt:message key="projects.searchStudentProjects.studentProjectTableProjectNameHeader"/>',
             left: 8,
+            right : 8 + 22 + 8 + 22 + 8 + 300 + 8,
             dataType: 'text',
             editable: false,
             paramName: 'projectName' 
           }, {
             header: '<fmt:message key="projects.searchStudentProjects.studentProjectTableStudentNameHeader"/>',
             dataType: 'text',
-            left: 300,
+            width: 300,
+            right : 8 + 22 + 8 + 22 + 8,
             editable: false,
             paramName: 'studentName' 
           }, {
-            width: 30,
-            right : 0,
+            width: 22,
+            right : 8 + 22 + 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="projects.searchStudentProjects.studentProjectTableEditStudentProjectTooltip"/>',
@@ -50,6 +52,48 @@
               var table = event.tableObject;
               var studentProjectId = table.getCellValue(event.row, table.getNamedColumnIndex('studentProjectId'));
               redirectTo(GLOBAL_contextPath + '/projects/editstudentproject.page?studentproject=' + studentProjectId);
+            } 
+          }, {
+            width: 22,
+            right : 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
+            tooltip: '<fmt:message key="projects.searchStudentProjects.studentProjectTableArchiveProjectTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableObject;
+              var studentProjectId = table.getCellValue(event.row, table.getNamedColumnIndex('studentProjectId'));
+              var projectName = table.getCellValue(event.row, table.getNamedColumnIndex('projectName'));
+              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=projects.searchStudentProjects.studentProjectArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(projectName);
+                 
+              var dialog = new IxDialog({
+                id : 'confirmRemoval',
+                contentURL : url,
+                centered : true,
+                showOk : true,  
+                showCancel : true,
+                autoEvaluateSize: true,
+                title : '<fmt:message key="projects.searchStudentProjects.studentProjectArchiveConfirmDialogTitle"/>',
+                okLabel : '<fmt:message key="projects.searchStudentProjects.studentProjectArchiveConfirmDialogOkLabel"/>',
+                cancelLabel : '<fmt:message key="projects.searchStudentProjects.studentProjectArchiveConfirmDialogCancelLabel"/>'
+              });
+            
+              dialog.addDialogListener(function(event) {
+                switch (event.name) {
+                  case 'okClick':
+                    JSONRequest.request("projects/archivestudentproject.json", {
+                      parameters: {
+                        studentProjectId: studentProjectId
+                      },
+                      onSuccess: function (jsonResponse) {                        
+                        var currentPage = getSearchNavigationById('searchResultsNavigation').getCurrentPage();
+                        doStudentProjectSearch(currentPage);
+                      }
+                    });
+                  break;
+                }
+              });
+            
+              dialog.open();
             } 
           }, {
             dataType: 'hidden',
@@ -76,7 +120,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].studentProjectName, results[i].studentLastName + ", " + results[i].studentFirstName, "", results[i].id]);
+              resultsTable.addRow([results[i].studentProjectName, results[i].studentLastName + ", " + results[i].studentFirstName, "", "", results[i].id]);
             }
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);

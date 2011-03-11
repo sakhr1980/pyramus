@@ -33,7 +33,7 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
     Long projectId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.getProject(projectId);
+    Project project = projectDAO.findProjectById(projectId);
     
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = project.getTags().iterator();

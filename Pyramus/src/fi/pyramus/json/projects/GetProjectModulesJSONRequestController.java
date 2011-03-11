@@ -24,7 +24,7 @@ public class GetProjectModulesJSONRequestController implements JSONRequestContro
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.getProject(projectId);
+    Project project = projectDAO.findProjectById(projectId);
 
     List<Map<String, Object>> projectModules = new ArrayList<Map<String,Object>>();
     for (ProjectModule projectModule : project.getProjectModules()) {

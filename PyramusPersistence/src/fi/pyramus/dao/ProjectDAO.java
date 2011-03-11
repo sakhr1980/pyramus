@@ -48,7 +48,7 @@ public class ProjectDAO extends PyramusDAO {
    * 
    * @return The project corresponding to the given identifier
    */
-  public Project getProject(Long projectId) {
+  public Project findProjectById(Long projectId) {
     Session s = getHibernateSession();
     return (Project) s.load(Project.class, projectId);
   }
@@ -60,7 +60,7 @@ public class ProjectDAO extends PyramusDAO {
    * 
    * @return The student project corresponding to the given identifier
    */
-  public StudentProject getStudentProject(Long studentProjectId) {
+  public StudentProject findStudentProjectById(Long studentProjectId) {
     Session s = getHibernateSession();
     return (StudentProject) s.load(StudentProject.class, studentProjectId);
   }
@@ -383,7 +383,7 @@ public class ProjectDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<ProjectModule> listProjectModules(Long projectId) {
     Session s = getHibernateSession();
-    return s.createCriteria(ProjectModule.class).add(Restrictions.eq("project", getProject(projectId))).list();
+    return s.createCriteria(ProjectModule.class).add(Restrictions.eq("project", findProjectById(projectId))).list();
   }
 
   public void archiveProject(Project project) {

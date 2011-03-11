@@ -10,6 +10,7 @@
     <title><fmt:message key="projects.searchProjects.pageTitle"/></title>
 
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
@@ -31,11 +32,13 @@
           columns : [ {
             header : '<fmt:message key="projects.searchProjects.projectTableNameHeader"/>',
             left: 8,
+            right: 8 + 22 + 8 + 22 + 8,
             dataType: 'text',
+            paramName: 'projectName',
             editable: false
           }, {
-            width: 30,
-            right: 0,
+            width: 22,
+            right: 8 + 22 + 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="projects.searchProjects.projectTableEditProjectTooltip"/>',
@@ -43,6 +46,48 @@
               var table = event.tableObject;
               var projectId = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
               redirectTo(GLOBAL_contextPath + '/projects/editproject.page?project=' + projectId);
+            }
+          }, {
+            width: 22,
+            right: 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
+            tooltip: '<fmt:message key="projects.searchProjects.projectTableArchiveProjectTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableObject;
+              var projectId = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
+              var projectName = table.getCellValue(event.row, table.getNamedColumnIndex('projectName'));
+              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=projects.searchProjects.projectArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(projectName);
+                 
+              var dialog = new IxDialog({
+                id : 'confirmRemoval',
+                contentURL : url,
+                centered : true,
+                showOk : true,  
+                showCancel : true,
+                autoEvaluateSize: true,
+                title : '<fmt:message key="projects.searchProjects.projectArchiveConfirmDialogTitle"/>',
+                okLabel : '<fmt:message key="projects.searchProjects.projectArchiveConfirmDialogOkLabel"/>',
+                cancelLabel : '<fmt:message key="projects.searchProjects.projectArchiveConfirmDialogCancelLabel"/>'
+              });
+            
+              dialog.addDialogListener(function(event) {
+                switch (event.name) {
+                  case 'okClick':
+                    JSONRequest.request("projects/archiveproject.json", {
+                      parameters: {
+                        projectId: projectId
+                      },
+                      onSuccess: function (jsonResponse) {
+                        var currentPage = getSearchNavigationById('searchResultsNavigation').getCurrentPage();
+                        doSearch(currentPage);
+                      }
+                    });
+                  break;
+                }
+              });
+            
+              dialog.open();
             }
           }, {
             dataType: 'hidden',
@@ -68,7 +113,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, '', results[i].id]);
+              resultsTable.addRow([results[i].name, '', '', results[i].id]);
             }
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
