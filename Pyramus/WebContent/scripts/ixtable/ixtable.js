@@ -774,11 +774,16 @@ IxTable = Class.create({
       
       for (var i = 0, l = columnOptions.contextMenu.length; i < l; i++) {
         var menuItem = columnOptions.contextMenu[i];
-        var menuElement = new Element("div", {className: "ixTableCellContextMenuItem"} );
+        var menuElement = new Element("div");
         menuElement._menuItem = menuItem;
-        
-        menuElement.update(menuItem.text);
-        Event.observe(menuElement, "click", this._contextMenuItemClickListener);
+
+        if (!("-" === menuItem.text)) {
+          menuElement.addClassName("ixTableCellContextMenuItem");
+          menuElement.update(menuItem.text);
+          Event.observe(menuElement, "click", this._contextMenuItemClickListener);
+        } else {
+          menuElement.addClassName("ixTableCellContextMenuItemSpacer");
+        }
         menuContainer.appendChild(menuElement);
       }
       
@@ -794,7 +799,8 @@ IxTable = Class.create({
         if (!overMenu) {
           $$('.ixTableCellContextMenu').forEach(function (menu) {
             $(menu).select('.ixTableCellContextMenuItem').forEach(function (menuItem) {
-              Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
+              if (!menuItem.hasClassName("ixTableCellContextMenuItemSpacer"))
+                Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
             }); 
             
             $(menu).remove();
