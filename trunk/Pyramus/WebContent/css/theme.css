@@ -176,6 +176,12 @@ h1.genericPageHeader{
   background:#5b87d4;
 }
 
+.ixTableCellContextMenuItemSpacer {
+  background:#5b87d4;
+  height:1px;
+  margin:4px 8px 4px 8px;
+}
+
 .ixTableColumnHeaderFiltered {
 	color:#739de7; 
 }

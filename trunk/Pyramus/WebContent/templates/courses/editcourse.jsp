@@ -830,7 +830,17 @@
             dataType : 'select',
             editable: false,
             dynamicOptions: true,
-            paramName: 'studentId'
+            paramName: 'studentId',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
@@ -856,10 +866,6 @@
             },
             contextMenu: [
               {
-                text: '<fmt:message key="generic.action.copyValues"/>',
-                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
-              },
-              {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
@@ -870,6 +876,13 @@
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
               }
             ]            
           }, {
@@ -891,10 +904,6 @@
             },
             contextMenu: [
               {
-                text: '<fmt:message key="generic.action.copyValues"/>',
-                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
-              },
-              {
                 text: '<fmt:message key="generic.filter.earlier"/>',
                 onclick: new IxTable_ROWDATEFILTER(true)
               },
@@ -905,6 +914,13 @@
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
               }
             ],            
           }, {
@@ -944,10 +960,6 @@
             ],
             contextMenu: [
               {
-                text: '<fmt:message key="generic.action.copyValues"/>',
-                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
-              },
-              {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
@@ -958,6 +970,13 @@
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
               }
             ],            
             sortAttributes: {
@@ -983,10 +1002,6 @@
             ],
             contextMenu: [
               {
-                text: '<fmt:message key="generic.action.copyValues"/>',
-                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
-              },
-              {
                 text: '<fmt:message key="generic.filter.byValue"/>',
                 onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
                   var col = table.getNamedColumnIndex('modified');
@@ -997,6 +1012,13 @@
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
               }
             ],
             sortAttributes: {
