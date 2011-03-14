@@ -101,18 +101,43 @@
             left: 8,
             dataType: 'text',
             editable: false,
-            paramName: 'name'
+            paramName: 'name',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="projects.createProject.moduleTableOptionalityHeader"/>',
             right : 40,
             dataType : 'select',
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'optionality',
             options: [
               {text: '<fmt:message key="projects.createProject.optionalityMandatory"/>', value: 0},
               {text: '<fmt:message key="projects.createProject.optionalityOptional"/>', value: 1}
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             width: 30,
             right: 0,

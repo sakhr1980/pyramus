@@ -102,17 +102,57 @@
             left : 8,
             dataType: 'text',
             editable: false,
-            paramName: 'name'
+            paramName: 'name',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="projects.editProject.moduleTableOptionalityHeader"/>',
             right : 40,
             dataType : 'select',
             paramName: 'optionality',
             editable: true,
-            overwriteColumnValues : true,
             options: [
               {text: '<fmt:message key="projects.editProject.optionalityMandatory"/>', value: 0},
               {text: '<fmt:message key="projects.editProject.optionalityOptional"/>', value: 1}
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
             ]
           }, {
             width: 30,

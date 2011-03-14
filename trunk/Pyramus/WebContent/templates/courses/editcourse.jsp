@@ -922,7 +922,7 @@
                 text: '<fmt:message key="generic.action.copyValues"/>',
                 onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
               }
-            ],            
+            ]            
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 140,
