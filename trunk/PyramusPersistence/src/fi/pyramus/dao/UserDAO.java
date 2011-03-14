@@ -324,8 +324,8 @@ public class UserDAO extends PyramusDAO {
       }
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class)
-          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastName", SortField.STRING),
-                   new SortField("firstName", SortField.STRING) }))
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastNameSortable", SortField.STRING),
+                   new SortField("firstNameSortable", SortField.STRING) }))
           .setFirstResult(firstResult)
           . setMaxResults(resultsPerPage);
 
@@ -388,8 +388,8 @@ public class UserDAO extends PyramusDAO {
       }
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, User.class)
-          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastName", SortField.STRING),
-                   new SortField("firstName", SortField.STRING) }))
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastNameSortable", SortField.STRING),
+                   new SortField("firstNameSortable", SortField.STRING) }))
           .setFirstResult(firstResult)
           .setMaxResults(resultsPerPage);
 

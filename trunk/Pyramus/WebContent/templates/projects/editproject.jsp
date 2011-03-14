@@ -136,11 +136,7 @@
             contextMenu: [
               {
                 text: '<fmt:message key="generic.filter.byValue"/>',
-                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
-                  var col = table.getNamedColumnIndex('modified');
-                  var modified = table.getCellValue(row, col);
-                  return (!(modified == 1));
-                })
+                onclick: new IxTable_ROWSTRINGFILTER()
               },
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
