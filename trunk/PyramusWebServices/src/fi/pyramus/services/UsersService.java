@@ -27,8 +27,7 @@ public class UsersService extends PyramusService {
   public UserEntity createUser(String firstName, String lastName, String externalId, String authProvider, String role) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();  
     Role userRole = EnumType.valueOf(Role.class, role);
-    // TODO User title?
-    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, userRole, null);
+    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, userRole);
     validateEntity(user);
     return EntityFactoryVault.buildFromDomainObject(user);
   }
@@ -38,8 +37,7 @@ public class UsersService extends PyramusService {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();  
     User user = userDAO.getUser(userId);
     Role userRole = EnumType.valueOf(Role.class, role);
-    // TODO User title?
-    userDAO.updateUser(user, firstName, lastName, userRole, null);
+    userDAO.updateUser(user, firstName, lastName, userRole);
     validateEntity(user);
   }
   

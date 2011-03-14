@@ -39,8 +39,7 @@ public class InternalAuthenticationStrategy implements InternalAuthenticationPro
     try {
       String passwordEncoded = EncodingUtils.md5EncodeString(password);
       InternalAuth internalAuth = userDAO.createInternalAuth(username, passwordEncoded);
-      // TODO User title?
-      User user = userDAO.createUser(firstName, lastName, String.valueOf(internalAuth.getId()), getName(), role, null);
+      User user = userDAO.createUser(firstName, lastName, String.valueOf(internalAuth.getId()), getName(), role);
       // TODO Default contact type?
       baseDAO.createEmail(user.getContactInfo(), null, Boolean.TRUE, email);
       return user;

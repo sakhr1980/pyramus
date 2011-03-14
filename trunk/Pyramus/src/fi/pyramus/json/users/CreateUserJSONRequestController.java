@@ -89,7 +89,9 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     
     // User
 
-    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role, title);
+    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role);
+    if (title != null)
+      userDAO.updateUserTitle(user, title);
     
     // Tags
     
