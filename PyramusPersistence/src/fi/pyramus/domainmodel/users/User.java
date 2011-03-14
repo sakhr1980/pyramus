@@ -70,6 +70,18 @@ public class User {
     this.lastName = lastName;
   }
   
+  @Transient
+  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  public String getFirstNameSortable() {
+    return getFirstName();
+  }
+
+  @Transient
+  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  public String getLastNameSortable() {
+    return getLastName();
+  }
+
   public String getAuthProvider() {
     return authProvider;
   }
