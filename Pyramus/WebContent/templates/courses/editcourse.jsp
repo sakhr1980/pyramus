@@ -809,7 +809,7 @@
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableNameHeader"/>',
             left : 8 + 22 + 8 + 8 + 22 + 8,
-            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 150,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 150 + 8 + 160 + 8 + 160,
             dataType : 'text',
             paramName: 'studentName',
             editable: false,
@@ -825,8 +825,8 @@
             }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableStudyProgrammeHeader"/>',
-            width: 150,
-            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200,
+            width: 160,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 150 + 8 + 160,
             dataType : 'select',
             editable: false,
             dynamicOptions: true,
@@ -843,8 +843,8 @@
             }
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableParticipationTypeHeader"/>',
-            width: 200,
-            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140,
+            width: 160,
+            right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 150,
             dataType : 'select',
             editable: false,
             paramName: 'participationType',
@@ -887,7 +887,7 @@
             ]            
           }, {
             header : '<fmt:message key="courses.editCourse.studentsTableEnrolmentDateHeader"/>',
-            width: 140,
+            width: 150,
             right : 8 + 22 + 8 + 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140,
             dataType: 'date',
             editable: false,

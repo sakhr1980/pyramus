@@ -162,19 +162,6 @@ div.ixTableRowButton:hover{
   background-image: url(../gfx/input-checked.png);
 }
 
-.ixTableCellContextMenuButton {
-  display:none;
-  position:absolute;
-  right:0px;
-  top:0px;
-  width:12px;
-  height:12px;
-  font-size: 75%;
-  text-align: center;
-  vertical-align: top;
-  cursor:pointer;
-}
-
 .ixTableCell:hover .ixTableCellContextMenuButton {
   display:block;
 }
@@ -210,9 +197,56 @@ div.ixTableRowButton:hover{
   cursor:pointer;
 }
 
-.ixTableHeaderSortButton:hover {
-  border: 1px solid #739de7;
+.ixTableHeaderSortButtonAscending{
+  background:url('../gfx/icons/custom/actions/ixtable_sortbutton_ascending.png') no-repeat;
+  margin-top:3px;
+  margin-right:3px;
+  width:11px;
+  height:11px;
+  display:inline-block;
+  padding:0;
+}
+
+.ixTableHeaderSortButtonDescending{
+  background:url('../gfx/icons/custom/actions/ixtable_sortbutton_descending.png') no-repeat;
+  margin-top:3px;
+  margin-right:3px;
+  width:11px;
+  height:11px;
+  display:inline-block;
+  padding:0;
+}
+
+.ixTableHeaderSortButtonAscending:hover{
+  background:url('../gfx/icons/custom/actions/ixtable_sortbutton_ascending_hover.png') no-repeat;
+}
+
+.ixTableHeaderSortButtonDescending:hover{
+  background:url('../gfx/icons/custom/actions/ixtable_sortbutton_descending_hover.png') no-repeat;
+}
+
+.ixTableCellContextMenuButton{
+  background:url('../gfx/icons/custom/actions/ixtable_context_menu.png') no-repeat;
+  padding:0;
+  display:none;
+  position:absolute;
+  right:0px;
+  top:0px;
+  width:12px;
+  height:12px;
+  font-size: 75%;
+  cursor:pointer;  
+  
+}
+
+.ixTableCellContextMenuButton:hover{
+  background:url('../gfx/icons/custom/actions/ixtable_context_menu_hover.png') no-repeat;
+}
+
+.ixTableContextMenuCell .ixTableCellEditorSelect{
+  width:90%;
 }
 
 .ixTableColumnHeaderFiltered {
 }
+

@@ -79,16 +79,16 @@ IxTable = Class.create({
         this._sortColumnClickListener = this._onSortColumnClick.bindAsEventListener(this);
 
         if (column.sortAttributes.sortAscending) {
-          var sortAscendingBtn = new Element("span", { className : "ixTableHeaderSortButton", title: column.sortAttributes.sortAscending.toolTip });
-          sortAscendingBtn.update("▲");
+          var sortAscendingBtn = new Element("span", { className : "ixTableHeaderSortButton ixTableHeaderSortButtonAscending", title: column.sortAttributes.sortAscending.toolTip });
+          
           sortAscendingBtn._sortAction = new column.sortAttributes.sortAscending.sortAction(i, "asc");
           headerCell.appendChild(sortAscendingBtn);
 
           Event.observe(sortAscendingBtn, "click", this._sortColumnClickListener);
         }
         if (column.sortAttributes.sortDescending) {
-          var sortDescendingBtn = new Element("span", { className : "ixTableHeaderSortButton", title: column.sortAttributes.sortDescending.toolTip });
-          sortDescendingBtn.update("▼");
+          var sortDescendingBtn = new Element("span", { className : "ixTableHeaderSortButton ixTableHeaderSortButtonDescending", title: column.sortAttributes.sortDescending.toolTip });
+          
           sortDescendingBtn._sortAction = new column.sortAttributes.sortDescending.sortAction(i, "desc");
           headerCell.appendChild(sortDescendingBtn);
 
@@ -195,7 +195,7 @@ IxTable = Class.create({
 
         if (column.contextMenu) {
           var contextMenuButton = new Element("span", {className: "ixTableCellContextMenuButton"});
-          contextMenuButton.innerHTML = "▼";
+          cell.addClassName('ixTableContextMenuCell');
           cell.appendChild(contextMenuButton);
           
           Event.observe(contextMenuButton, "click", this._contextMenuButtonClickListener);
