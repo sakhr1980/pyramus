@@ -147,7 +147,11 @@ div.ixTableRowButton:hover{
   padding-bottom:2px;
   padding-left:1px;
   padding-right:1px;
-  width:95%;
+  width:100%;
+}
+
+.ixTableContextMenuCell .ixTableCellEditorSelect {
+  width:90%;
 }
 
 .ixTableCellViewerDisabled, .ixTableButtonDisabled {
@@ -241,10 +245,6 @@ div.ixTableRowButton:hover{
 
 .ixTableCellContextMenuButton:hover{
   background:url('../gfx/icons/custom/actions/ixtable_context_menu_hover.png') no-repeat;
-}
-
-.ixTableContextMenuCell .ixTableCellEditorSelect{
-  width:90%;
 }
 
 .ixTableColumnHeaderFiltered {
