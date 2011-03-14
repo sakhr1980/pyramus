@@ -173,6 +173,16 @@
               transferCreditsTable.setCellValue(row, courseLengthColumnIndex, courseLength);
               transferCreditsTable.setCellValue(row, courseLengthUnitColumnIndex, courseLengthUnitId);
               transferCreditsTable.setCellValue(row, courseNumberColumnIndex, courseNumber);
+            },
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
             }
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
@@ -181,12 +191,27 @@
             dataType: 'select',
             required: true,
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'courseOptionality',
             options: [
               {text: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityOptional"/>', value: 'OPTIONAL'},
               {text: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityMandatory"/>', value: 'MANDATORY'}
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNumberHeader"/>',
             width : 87,
@@ -203,7 +228,6 @@
             editable: false,
             required: true,
             paramName: 'grade',
-            overwriteColumnValues : true,
             options: [
               <c:forEach var="gradingScale" items="${gradingScales}" varStatus="vs">
                 {text: "${fn:replace(gradingScale.name, "'", "\\'")}", optionGroup: true, 
@@ -216,7 +240,13 @@
                 } 
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ] 
+            ], 
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSubjectHeader"/>',
             width : 120,
@@ -224,10 +254,25 @@
             dataType: 'autoCompleteSelect',
             editable: false,
             required: true,
-            overwriteColumnValues : true,
             paramName: 'subject',
             autoCompleteUrl: GLOBAL_contextPath + '/settings/subjectsautocomplete.binary',
-            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthHeader"/>',
             width : 64,
@@ -235,8 +280,23 @@
             dataType: 'number',
             required: true,
             editable: false,
-            overwriteColumnValues : true,
-            paramName: 'courseLength'
+            paramName: 'courseLength',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWNUMBERSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWNUMBERSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthUnitHeader"/>',
             width : 100,
@@ -244,13 +304,18 @@
             dataType: 'select',
             required: true,
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'courseLengthUnit',
             options: [
               <c:forEach var="timeUnit" items="${timeUnits}" varStatus="vs">
                 {text: "${fn:replace(timeUnit.name, "'", "\\'")}", value: ${timeUnit.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
+            ],            
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
             ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSchoolHeader"/>',
@@ -260,9 +325,24 @@
             required: true,
             editable: false,
             paramName: 'school',
-            overwriteColumnValues : true,
             autoCompleteUrl: GLOBAL_contextPath + '/settings/schoolsautocomplete.binary',
-            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableUserHeader"/>',
             width : 100,
@@ -271,18 +351,48 @@
             required: true,
             editable: false,
             paramName: 'user',
-            overwriteColumnValues : true,
             autoCompleteUrl: GLOBAL_contextPath + '/users/usersautocomplete.binary',
-            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableDateHeader"/>',
             width : 110,
             right: 4 + 22 + 4,
             dataType: 'date',
             required: true,
-            overwriteColumnValues : true,
             editable: false,
-            paramName: 'date'
+            paramName: 'date',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWNUMBERSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWNUMBERSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             right: 4,
             width: 22,

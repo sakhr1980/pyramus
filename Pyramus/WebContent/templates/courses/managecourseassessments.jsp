@@ -76,21 +76,40 @@
             right : 8 + 140 + 8 + 180 + 8 + 160 + 8 + 120 + 8 + 100 + 8,
             dataType : 'text',
             paramName: 'studentName',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableStudyProgrammeHeader"/>',
             width: 160,
             right : 8 + 140 + 8 + 180 + 8 + 160 + 8 + 120 + 8,
             dataType : 'text',
             editable: false,
-            paramName: 'studyProgrammeName'
+            paramName: 'studyProgrammeName',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableGradeHeader"/>',
             width: 120,
             right : 8 + 140 + 8 + 180 + 8 + 160 + 8,
             dataType : 'select',
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'gradeId',
             options: [
               {text: "-", value: -1}
@@ -106,21 +125,72 @@
                 } 
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableParticipationTypeHeader"/>',
             width: 160,
             right : 8 + 140 + 8 + 180 + 8,
             dataType : 'select',
             editable: false,
-            overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
               <c:forEach var="courseParticipationType" items="${courseParticipationTypes}" varStatus="vs">
                 {text: "${courseParticipationType.name}", value: ${courseParticipationType.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessingUserHeader"/>',
             width : 180,
@@ -129,17 +199,77 @@
             required: true,
             editable: false,
             paramName: 'assessingUserId',
-            overwriteColumnValues : true,
             autoCompleteUrl: GLOBAL_contextPath + '/users/usersautocomplete.binary',
-            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif'
+            autoCompleteProgressUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessmentDateHeader"/>',
             width: 140,
             right : 8,
             dataType: 'date',
             editable: false,
-            overwriteColumnValues : true,
-            paramName: 'assessmentDate'
+            paramName: 'assessmentDate',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWNUMBERSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWNUMBERSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(function (table, row) {
+                  var col = table.getNamedColumnIndex('modified');
+                  var modified = table.getCellValue(row, col);
+                  return (!(modified == 1));
+                })
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              },
+              {
+                text: '-'
+              },
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             dataType: 'hidden', 
             paramName: 'courseStudentId'

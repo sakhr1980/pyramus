@@ -47,19 +47,34 @@
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 200 + 8 + 100 + 8 + 100 + 8,
             dataType: 'text',
             editable: true,
-            paramName: 'courseName'
+            paramName: 'courseName',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="settings.editTransferCreditTemplate.coursesTableCourseOptionalityHeader"/>',
             width : 100,
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 200 + 8 + 100 + 8,
             dataType: 'select',
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'courseOptionality',
             options: [
               {text: '<fmt:message key="settings.editTransferCreditTemplate.coursesTableCourseOptionalityOptional"/>', value: 'OPTIONAL'},
               {text: '<fmt:message key="settings.editTransferCreditTemplate.coursesTableCourseOptionalityMandatory"/>', value: 'MANDATORY'}
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="settings.editTransferCreditTemplate.coursesTableCourseNumberHeader"/>',
             width : 100,
@@ -73,35 +88,50 @@
             right: 8 + 22 + 8 + 100 + 8 + 100 + 8,
             dataType: 'select',
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'subject',
             options: [
               <c:forEach var="subject" items="${subjects}" varStatus="vs">
                 {text: "${fn:replace(subject.name, "'", "\\'")}", value: ${subject.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="settings.editTransferCreditTemplate.coursesTableLengthHeader"/>',
             width : 100,
             right: 8 + 22 + 8 + 100 + 8,
             dataType: 'number',
             editable: true,
-            overwriteColumnValues : true,
-            paramName: 'courseLength'
+            paramName: 'courseLength',
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="settings.editTransferCreditTemplate.coursesTableLengthUnitHeader"/>',
             width : 100,
             right: 8 + 22 + 8,
             dataType: 'select',
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'courseLengthUnit', 
             options: [
               <c:forEach var="timeUnit" items="${timeUnits}" varStatus="vs">
                 {text: "${fn:replace(timeUnit.name, "'", "\\'")}", value: ${timeUnit.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
+            ],            
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
             ]            
           }, {
             right: 8,

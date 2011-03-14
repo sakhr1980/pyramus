@@ -208,7 +208,17 @@
             right : 8 + 22 + 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8,
             dataType: 'text',
             editable: false,
-            paramName: 'name'
+            paramName: 'name',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="projects.editStudentProject.moduleTableStudyTermHeader"/>',
             right : 8 + 22 + 8 + 22 + 8 + 22 + 8 + 100 + 8,
@@ -216,7 +226,6 @@
             dataType : 'select',
             paramName: 'academicTerm',
             editable: true,
-            overwriteColumnValues : true,
             options: [
               {text: "", value: -1}
               <c:if test="${not empty academicTerms}">,</c:if>
@@ -224,6 +233,22 @@
                 {text: "${academicTerm.name}", value: ${academicTerm.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
             ]
           }, {
             header : '<fmt:message key="projects.editStudentProject.moduleTableOptionalityHeader"/>',
@@ -232,10 +257,25 @@
             dataType : 'select',
             paramName: 'optionality',
             editable: true,
-            overwriteColumnValues : true,
             options: [
               {text: '<fmt:message key="projects.editStudentProject.optionalityMandatory"/>', value: 'MANDATORY'},
               {text: '<fmt:message key="projects.editStudentProject.optionalityOptional"/>', value: 'OPTIONAL'}
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
             ]
           }, {
             width: 22,
@@ -326,7 +366,17 @@
             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8,
             dataType : 'text',
             editable: false,
-            paramName: 'name'
+            paramName: 'name',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeHeader"/>',
             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8,

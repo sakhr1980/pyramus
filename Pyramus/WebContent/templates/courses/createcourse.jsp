@@ -651,7 +651,17 @@
             right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 100 + 8,
             dataType : 'text',
             paramName: 'studentName',
-            editable: false
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableStudyProgrammeHeader"/>',
             width: 100,
@@ -661,29 +671,69 @@
             dynamicOptions: true,
             paramName: 'studentId',
             options: [
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
             right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8,
             dataType : 'select',
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'participationType',
             options: [
               <c:forEach var="courseParticipationType" items="${courseParticipationTypes}" varStatus="vs">
                 {text: "${courseParticipationType.name}", value: ${courseParticipationType.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableEnrolmentDateHeader"/>',
             width: 140,
             right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8,
             dataType: 'date',
             editable: true,
-            overwriteColumnValues : true,
-            paramName: 'enrolmentDate'
+            paramName: 'enrolmentDate',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWNUMBERSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWNUMBERSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableEnrolmentTypeHeader"/>',
             width: 140,
@@ -696,7 +746,17 @@
               {text: "${courseEnrolmentType.name}", value: ${courseEnrolmentType.id}}
               <c:if test="${not vs.last}">,</c:if>
             </c:forEach>
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableOptionalityHeader"/>',
             right :  8 + 22 + 8 + 100 + 8,
@@ -708,19 +768,50 @@
               {text: '', value: ''},
               {text: '<fmt:message key="courses.createCourse.studentsTableOptionalityMandatory"/>', value: 'MANDATORY'},
               {text: '<fmt:message key="courses.createCourse.studentsTableOptionalityOptional"/>', value: 'OPTIONAL'}
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ],            
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableLodgingHeader"/>',
             width: 100,
             right : 8 + 22 + 8,
             dataType: 'select', 
             editable: true,
-            overwriteColumnValues : true,
             paramName: 'lodging',
             options: [
               {text: '<fmt:message key="courses.createCourse.studentsTableLodgingYes"/>', value: 'true'},
               {text: '<fmt:message key="courses.createCourse.studentsTableLodgingNo"/>', value: 'false'}
-            ]
+            ],
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.action.copyValues"/>',
+                onclick: new IxTable_COPYVALUESTOCOLUMNACTION(true)
+              }
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
