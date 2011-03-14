@@ -111,8 +111,7 @@ public class ImportLDAPUsersViewController extends PyramusFormViewController {
         String roleName = requestContext.getString(colPrefix + ".role");
         String id = requestContext.getString(colPrefix + ".id");
         Role role = Enum.valueOf(Role.class, roleName);
-        // TODO User title?
-        User user = userDAO.createUser(firstName, lastName, id, "LDAP", role, null);
+        User user = userDAO.createUser(firstName, lastName, id, "LDAP", role);
         baseDAO.createEmail(user.getContactInfo(), null, Boolean.TRUE, email);
         createdUsers.add(user);
       }

@@ -72,7 +72,8 @@ public class EditUserJSONRequestController implements JSONRequestController {
       }
     }
     
-    userDAO.updateUser(user, firstName, lastName, role, title);
+    userDAO.updateUser(user, firstName, lastName, role);
+    userDAO.updateUserTitle(user, title);
 
     // Tags
 
