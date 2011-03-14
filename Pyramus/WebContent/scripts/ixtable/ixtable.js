@@ -2380,15 +2380,17 @@ IxTable_COPYVALUESTOCOLUMNACTION = Class.create({
     var column = event.column;
     var row = event.row;
     
-    var value = table.getCellValue(row, column);
+    var sourceEditor = table.getCellEditor(row, column);
     var controller = IxTableControllers.getController(table.getCellEditor(row, column)._dataType);
     
     for (var i = 0, len = table.getRowCount(); i < len; i++) {
-      var cellEditor = table.getCellEditor(i, column);
-      var editable = controller.getEditable(cellEditor); 
-
-      if ((!this._onlyModifiable) || (editable))
-        table.setCellValue(i, column, value);
+      if (i != row) {
+        var cellEditor = table.getCellEditor(i, column);
+        var settable = this._onlyModifiable ? controller.getEditable(cellEditor) : true; 
+  
+        if (settable)
+          controller.copyCellValue(cellEditor, sourceEditor);
+      }
     }
   }
 });
