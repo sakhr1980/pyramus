@@ -186,6 +186,7 @@ div.ixTableRowButton:hover{
 .ixTableCellContextMenuItem {
   padding: 2px 8px 2px 8px;
   cursor:pointer;
+  white-space: nowrap;
 }
 
 .ixTableCellContextMenuItem:hover {
