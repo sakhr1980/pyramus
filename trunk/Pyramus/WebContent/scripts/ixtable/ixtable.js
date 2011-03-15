@@ -96,25 +96,6 @@ IxTable = Class.create({
         }
       }
       
-      if (column.overwriteColumnValues) {
-        var copyNode = Builder.node("div", {
-          className : "ixTableHeaderColumValueButton",
-          title: getLocale().getText('generic.ixTable.overwriteColumnValues.tooltip')
-        }, []);
-        var _this = this;
-        Event.observe(copyNode, "click", function (event) {
-          var columnNode = Event.element(event).parentNode;
-          var index = 0;
-          while (columnNode = columnNode.previousSibling) {
-            ++index;
-          }
-
-          for (var rowIndex = 1, rowCount = _this.getRowCount(); rowIndex < rowCount; rowIndex++)
-            _this.copyCellValue(index, 0, rowIndex);
-        });
-        headerCell.appendChild(copyNode);
-      }
-
       if ((column.left != undefined) && (column.left != NaN)) {
         headerCell.setStyle( {
           left : column.left + 'px'
@@ -231,16 +212,6 @@ IxTable = Class.create({
           });
         }
       }    
-      
-      if (this.options.removeRowBtns == true) {
-        var delRowButton = new Element("div", {className: "ixTableDelRowButton ixTableRowButton"});
-        rowContent.appendChild(delRowButton);
-        
-        var _this = this;
-        Event.observe(delRowButton, "click", function (event) {
-          _this.deleteRow(row._rowNumber);
-        });
-      }
       
       this._setRowCount(this.getRowCount() + 1);
       

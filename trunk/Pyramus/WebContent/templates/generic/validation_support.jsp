@@ -21,7 +21,17 @@
         };
 
         tableComponent.addListener("rowAdd", function (event) {
-          initializeValidation(event.tableObject.getRowElement(event.row));   
+          var table = event.tableObject;
+          if (table.isDetachedFromDom()) {
+            var row = event.row;
+            var onAfterReattachToDom = function (e) {
+              e.tableComponent.removeListener("afterReattachToDom", onAfterReattachToDom);
+              initializeValidation(e.tableComponent.getRowElement(row));
+            };
+            table.addListener("afterReattachToDom", onAfterReattachToDom); 
+          } else {
+            initializeValidation(event.tableObject.getRowElement(event.row));
+          }
         });
         
         tableComponent.addListener("beforeRowDelete", function (event) {
