@@ -245,5 +245,6 @@ div.ixTableRowButton:hover{
 }
 
 .ixTableColumnHeaderFiltered {
+  font-style:italic;
 }
 
