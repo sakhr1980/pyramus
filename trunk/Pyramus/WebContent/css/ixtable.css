@@ -146,10 +146,6 @@ div.ixTableRowButton:hover{
   width:100%;
 }
 
-.ixTableContextMenuCell .ixTableCellEditorSelect {
-  width:90%;
-}
-
 .ixTableCellViewerDisabled, .ixTableButtonDisabled {
   opacity: 0.33;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=33)";
@@ -230,14 +226,35 @@ div.ixTableRowButton:hover{
   background:url('../gfx/icons/custom/actions/ixtable_context_menu.png') no-repeat;
   padding:0;
   display:none;
-  position:absolute;
-  right:0px;
-  top:0px;
+  margin-top:5px;
+  margin-left: 4px;
   width:12px;
   height:12px;
   font-size: 75%;
   cursor:pointer;  
-  
+}
+
+.ixTableContextMenuCell .ixTableCellEditorContainer {
+   position: absolute;
+  left: 0px; 
+  right: 0px;
+  height: 20px;
+}
+
+.ixTableContextMenuCell .ixTableCellContextMenuButtonContainer {
+  position: absolute;
+  width: 0px;
+  height: 20px;
+  right: 0px;
+}
+
+.ixTableContextMenuCell:hover .ixTableCellEditorContainer {
+  left: 0px; 
+  right: 15px;
+}
+.ixTableContextMenuCell:hover .ixTableCellContextMenuButtonContainer {
+  width: 15px;
+  right: 0px;
 }
 
 .ixTableCellContextMenuButton:hover{

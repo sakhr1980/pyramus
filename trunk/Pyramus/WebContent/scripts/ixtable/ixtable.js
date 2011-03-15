@@ -174,14 +174,6 @@ IxTable = Class.create({
         var cellStyles = {};
         var hasStyles = false;
 
-        if (column.contextMenu) {
-          var contextMenuButton = new Element("span", {className: "ixTableCellContextMenuButton"});
-          cell.addClassName('ixTableContextMenuCell');
-          cell.appendChild(contextMenuButton);
-          
-          Event.observe(contextMenuButton, "click", this._contextMenuButtonClickListener);
-        }
-        
         if ((column.left != undefined) && (column.left != NaN)) {
           cellStyles.left = column.left + 'px';
           hasStyles = true;
@@ -613,8 +605,8 @@ IxTable = Class.create({
 
     for (var i = 0, len = this.options.columns.length; i < len; i++) {
       if (this.options.columns[i].contextMenu) {
-        var editorInstance = this.getCellEditor(rowNumber, i);
-        var contextMenuButton = $(editorInstance.parentNode).down(".ixTableCellContextMenuButton");
+        var cell = this._getCellEditorCell(this.getCellEditor(rowNumber, i));
+        var contextMenuButton = cell.down(".ixTableCellContextMenuButton");
         Event.stopObserving(contextMenuButton, "click", this._contextMenuButtonClickListener);
       }
     }
@@ -634,8 +626,11 @@ IxTable = Class.create({
       });
     }
   },
+  _getContextButtonCell: function (contextMenuButton) {
+    return $(contextMenuButton.parentNode.parentNode);
+  },
   _getCellEditorCell: function (editorInstance) {
-    return $(editorInstance._cell||editorInstance.parentNode);
+    return $(editorInstance._cell);
   },
   _getCellEditorRow: function (editorInstance) {
     return this._getCellRow(this._getCellEditorCell(editorInstance));
@@ -735,7 +730,7 @@ IxTable = Class.create({
   },
   _onContextMenuButtonClick: function (event) {
     var contextMenuButton = Event.element(event);
-    var cell = $(contextMenuButton.parentNode);
+    var cell = this._getContextButtonCell(contextMenuButton);
     var row = this._getCellRow(cell);
     var column = this._getCellColumn(cell);
     
@@ -824,11 +819,26 @@ function getIxTables() {
 IxTableEditorController = Class.create({
   buildEditor: function (name, columnDefinition) { },
   buildViewer: function (name, columnDefinition) { },
-  attachContentHandler: function (table, parentNode, handlerInstance) {
+  attachContentHandler: function (table, cell, handlerInstance) {
     handlerInstance._table = table;
-    handlerInstance._cell = parentNode;
+    handlerInstance._cell = cell;
     
-    parentNode.appendChild(handlerInstance);
+    if (handlerInstance._columnDefinition.contextMenu) {
+      var contextMenuButtonContainer = new Element("div", {className: "ixTableCellContextMenuButtonContainer"});
+      var contextMenuButton = new Element("span", {className: "ixTableCellContextMenuButton"});
+      var editorContainer = new Element("div", {className: "ixTableCellEditorContainer"});
+       cell.addClassName('ixTableContextMenuCell');
+      
+      Event.observe(contextMenuButton, "click", table._contextMenuButtonClickListener);
+
+      contextMenuButtonContainer.appendChild(contextMenuButton);
+      editorContainer.appendChild(handlerInstance);
+      cell.appendChild(editorContainer);
+      cell.appendChild(contextMenuButtonContainer);
+    } else {
+      cell.appendChild(handlerInstance);
+    }
+    
     var row = this.getEditorRow(handlerInstance);
     var column = this.getEditorColumn(handlerInstance);
     table._setCellContentHandler(row, column, handlerInstance);
@@ -849,7 +859,8 @@ IxTableEditorController = Class.create({
     var column = this.getEditorColumn(handlerInstance);
     handlerInstance._table._unsetCellContentHandler(row, column);
     handlerInstance._table = undefined;
-    handlerInstance.parentNode.removeChild(handlerInstance);  
+    var cell = handlerInstance._cell;
+    cell.childElements().invoke('remove');
   },  
   destroyHandler: function (handlerInstance) { 
     handlerInstance._editable = undefined;
@@ -880,13 +891,13 @@ IxTableEditorController = Class.create({
       return handlerInstance;
     
     var table = handlerInstance._table;
-    var parentNode = handlerInstance._cell;
+    var cell = handlerInstance._cell;
     var visible = this.isVisible(handlerInstance); 
     
     this.detachContentHandler(handlerInstance);
     
     var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
-    this.attachContentHandler(table, parentNode, newHandler);
+    this.attachContentHandler(table, cell, newHandler);
     
     if (visible) 
       this.show(newHandler);
@@ -1021,7 +1032,7 @@ IxTableEditorController = Class.create({
       } else {
         var hiddenElement = new Element("input", {type: 'hidden', value: value, name: handlerInstance._name});
         handlerInstance._disabledHiddenElement = hiddenElement;
-        handlerInstance.parentNode.appendChild(hiddenElement);
+        handlerInstance._cell.appendChild(hiddenElement);
       }
     } else {
       // TODO: Onko tälläisiäkin tilanteita ????
@@ -1650,11 +1661,11 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
       }
     }
   },
-  attachContentHandler: function ($super, table, parentNode, handlerInstance) {
-    var handlerInstance = $super(table, parentNode, handlerInstance);
+  attachContentHandler: function ($super, table, cell, handlerInstance) {
+    var handlerInstance = $super(table, cell, handlerInstance);
     
     if (handlerInstance._editable == true) {
-      handlerInstance._cell = parentNode;
+      handlerInstance._cell = cell;
       
       var row = handlerInstance.up('.ixTableRow');
       
@@ -1772,8 +1783,8 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
   destroyHandler: function ($super, handlerInstance) { 
     $super(handlerInstance);
   },
-  attachContentHandler: function ($super, table, parentNode, handlerInstance) {
-    var handlerInstance = $super(table, parentNode, handlerInstance);
+  attachContentHandler: function ($super, table, cell, handlerInstance) {
+    var handlerInstance = $super(table, cell, handlerInstance);
     handlerInstance._clickListener = this._onClick.bindAsEventListener(this);
     Event.observe(handlerInstance, "click", handlerInstance._clickListener); 
   },
@@ -1834,8 +1845,8 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
   buildViewer: function ($super, name, columnDefinition) {
     return this._createViewerElement("div", name, "ixTableCellViewerText", {}, columnDefinition);
   },
-  attachContentHandler: function ($super, table, parentNode, handlerInstance) {
-    var handlerInstance = $super(table, parentNode, handlerInstance);
+  attachContentHandler: function ($super, table, cell, handlerInstance) {
+    var handlerInstance = $super(table, cell, handlerInstance);
     handlerInstance._clickListener = this._onClick.bindAsEventListener(this);
     Event.observe(handlerInstance, "click", handlerInstance._clickListener); 
   },
@@ -1969,8 +1980,8 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
   buildViewer: function ($super, name, columnDefinition) {
     return this._createViewerElement("div", name, "ixTableCellViewerAutoCompleteSelect", {}, columnDefinition);
   },
-  attachContentHandler: function ($super, table, parentNode, handlerInstance) {
-    var handlerInstance = $super(table, parentNode, handlerInstance);
+  attachContentHandler: function ($super, table, cell, handlerInstance) {
+    var handlerInstance = $super(table, cell, handlerInstance);
     
     if (handlerInstance._editable == true) {
       var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
@@ -2048,14 +2059,14 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
       return handlerInstance;
     
     var table = handlerInstance._table;
-    var parentNode = handlerInstance._cell;
+    var cell = handlerInstance._cell;
     var visible = this.isVisible(handlerInstance); 
     var displayValue = this.getDisplayValue(handlerInstance);
     
     this.detachContentHandler(handlerInstance);
     
     var newHandler = editable == true ? this.buildEditor(handlerInstance._name, handlerInstance._columnDefinition) : this.buildViewer(handlerInstance._name, handlerInstance._columnDefinition);
-    this.attachContentHandler(table, parentNode, newHandler);
+    this.attachContentHandler(table, cell, newHandler);
     
     if (visible) 
       this.show(newHandler);
