@@ -110,10 +110,6 @@
   padding:2px 2px 2px 2px;
 }
 
-.ixTableDelRowButton {
-  background-image: url(../gfx/list-remove.png);
-}
-
 .ixTableRowButton {
   width: 16px;
   height: 16px;
