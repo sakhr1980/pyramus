@@ -1,6 +1,28 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.4 (110315.11)
+
+  * Removed deprecated row delete support from the ixtable component
+  * Fixed several layout issues in different views where ixtable is being used
+  * Changed all references to ixtable overwritecolumnvalues to use contextmenu instead
+  * Added sorting, filtering and value copying support to all tables that may contain a lot of data 
+  * Added title support for users
+  * Added project archiving support
+  * Added student project archiving support
+  * Added copying of lodging information to adding of new course student in editcourse
+  * Added autocompletion of fields in transfer credit management table by selected course
+  * Added several performance improvements to ixtable   
+  * Changed student archiving to display name of studyprogramme instead of student
+  * Fixed some minor issues related to breadcrumb handling
+  * Added better support for dynamic options in ixtable's select fields
+  * Changed the students table of the edit course view to load students in view mode by default
+  * Added support for sorting in ixtable 
+  * Added support for context menus in ixtable
+  * Added Course Name Extension and Enrolment Time to courses table in viewstudent
+  * Added System Info view that shows information about system attributes
+  * Changed user lists to display and sort by last name, first name instead of full name
+
 *Version 0.36 (110214.10)
 
   * Added hover effects to tables in viewstudent
