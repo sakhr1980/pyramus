@@ -398,7 +398,7 @@
         
         <c:forEach var="student" items="${students}">
           // Setup basics
-          setupBasicTab(${abstractStudent.id}, ${student.id}, '${student.fullName}'); 
+          setupBasicTab(${abstractStudent.id}, ${student.id}, '${fn:escapeXml(student.fullName)}'); 
 
           // Setup course tabs
           coursesTable = setupCoursesTab(${student.id});
