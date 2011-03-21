@@ -1,10 +1,14 @@
 package fi.pyramus.dao;
 
+import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -121,6 +125,54 @@ public class SystemDAO extends PyramusDAO {
     super.forceReindex(o);
   }
   
+  // JPA methods
+
+  @SuppressWarnings({ "unchecked", "rawtypes" }) 
+  public Object findEntityById(Class referencedClass, Long id) {
+    EntityManager entityManager = getEntityManager();
+    return entityManager.find(referencedClass, id);
+  }
+  
+  public Object getEntityId(Object entity) {
+    Class<?> entityClass = entity.getClass();
+    EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
+    SingularAttribute<?, ?> idAttribute = entityType.getId(entityType.getIdType().getJavaType());
+    Field idField = getField(entityClass, idAttribute.getName());
+    idField.setAccessible(true);
+    try {
+      return idField.get(entity);
+    } catch (IllegalArgumentException e) {
+      return null;
+    } catch (IllegalAccessException e) {
+      return null;
+    }
+  }
+  
+  public Set<javax.persistence.metamodel.Attribute<?, ?>> getEntityAttributes(Class<?> entityClass) {
+    Set<javax.persistence.metamodel.Attribute<?, ?>> result = new HashSet<javax.persistence.metamodel.Attribute<?,?>>();
+    
+    EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
+    for (javax.persistence.metamodel.Attribute<?, ?> attribute : entityType.getAttributes()) {
+      result.add(attribute);
+    }
+    
+    return result;
+  }
+  
+  private Field getField(Class<?> clazz, String name) {
+    try {
+      return clazz.getDeclaredField(name);
+    } catch (SecurityException e) {
+      return null;
+    } catch (NoSuchFieldException e) {
+      Class<?> superClass = clazz.getSuperclass();
+      if (superClass != null && !Object.class.equals(superClass))
+        return getField(superClass, name);
+    }
+    
+    return null;
+  }
+  
   // Hibernate methods
   
   public Session getHibernateSession() {
@@ -178,10 +230,4 @@ public class SystemDAO extends PyramusDAO {
   }
   
   private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-
-  @SuppressWarnings({ "unchecked", "rawtypes" }) 
-  public Object findEntityById(Class referencedClass, Long id) {
-    EntityManager entityManager = getEntityManager();
-    return entityManager.find(referencedClass, id);
-  }
 }
