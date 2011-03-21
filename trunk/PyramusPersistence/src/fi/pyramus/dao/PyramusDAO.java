@@ -14,8 +14,6 @@ import org.hibernate.ejb.EntityManagerImpl;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
-import com.sun.enterprise.container.common.impl.EntityManagerWrapper;
-
 public class PyramusDAO {
   
   protected EntityManager getEntityManager() {
@@ -28,8 +26,8 @@ public class PyramusDAO {
   }
   
   protected Session getHibernateSession() {
-    EntityManagerWrapper entityManagerWrapper = (EntityManagerWrapper) getEntityManager();
-    return ((EntityManagerImpl) entityManagerWrapper.getDelegate()).getSession();
+    EntityManagerImpl entityManagerImpl = (EntityManagerImpl) getEntityManager().getDelegate();
+    return entityManagerImpl.getSession();
   }
 
   protected void forceReindex(Object o) {
