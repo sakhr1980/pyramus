@@ -34,6 +34,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -113,8 +114,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -140,20 +140,21 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="municipality" items="${municipalities}">
-          rowIndex = municipalitiesTable.addRow([
+          rows.push([
             '',
-            '${fn:replace(municipality.name, "'", "\\'")}',
-            '${fn:replace(municipality.code, "'", "\\'")}',
+            '${fn:escapeXml(municipality.name)}',
+            '${fn:escapeXml(municipality.code)}',
             '',
             '',
             ${municipality.id},
             0
           ]);
-          municipalitiesTable.showCell(rowIndex, municipalitiesTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
 
+        municipalitiesTable.addRows(rows);
+        
         if (municipalitiesTable.getRowCount() > 0) {
           $('noMunicipalitiesAddedMessageContainer').setStyle({
             display: 'none'

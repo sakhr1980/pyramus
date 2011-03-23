@@ -66,11 +66,14 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].lastName + ", " + results[i].firstName, '', results[i].id]);
+              var name = results[i].lastName + ", " + results[i].firstName;
+              resultsTable.addRow([name.escapeHTML(), '', results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;
@@ -109,15 +112,15 @@
         </div>
         
         <div id="searchUsers" class="tabContent">
-		      <form id="searchForm" method="post" onsubmit="onSearchUsers(event);">
-		  
-		        <div class="genericFormSection">
-                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                    <jsp:param name="titleLocale" value="users.searchUsers.textTitle"/>
-                    <jsp:param name="helpLocale" value="users.searchUsers.textHelp"/>
-                  </jsp:include>      
-		          <input type="text" name="text" size="40"/>
-		        </div>
+          <form id="searchForm" method="post" onsubmit="onSearchUsers(event);">
+      
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="users.searchUsers.textTitle"/>
+                <jsp:param name="helpLocale" value="users.searchUsers.textHelp"/>
+              </jsp:include>      
+              <input type="text" name="text" size="40"/>
+            </div>
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -132,14 +135,14 @@
                 <option value="ADMINISTRATOR"><fmt:message key="users.searchUsers.roleAdministratorTitle"/></option>
               </select>
             </div>
-		        
-		        <div class="genericFormSubmitSection">
-		          <input type="submit" value="<fmt:message key="users.searchUsers.searchButton"/>">
-		        </div>
-		  
-		      </form>
-			  </div>
-			</div>
+            
+            <div class="genericFormSubmitSection">
+              <input type="submit" value="<fmt:message key="users.searchUsers.searchButton"/>">
+            </div>
+      
+          </form>
+        </div>
+      </div>
     </div>
     
     <div id="searchResultsWrapper" style="display:none;">

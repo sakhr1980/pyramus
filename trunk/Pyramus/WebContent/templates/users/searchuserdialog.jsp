@@ -50,11 +50,14 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].lastName + ", " + results[i].firstName, results[i].id]);
+              var name = results[i].lastName + ", " + results[i].firstName;
+              resultsTable.addRow([name.escapeHTML(), results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('modalSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

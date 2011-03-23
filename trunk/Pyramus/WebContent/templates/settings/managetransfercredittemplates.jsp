@@ -86,13 +86,15 @@
           }]
         });
 
+        var rows = new Array();
         <c:forEach var="transferCreditTemplate" items="${transferCreditTemplates}">
-          transferCreditTemplatesTable.addRow([
-            '${fn:replace(transferCreditTemplate.name, "'", "\\'")}', 
+          rows.push([
+            '${fn:escapeXml(transferCreditTemplate.name)}', 
             null, 
             null, 
             '${transferCreditTemplate.id}']);
         </c:forEach>
+        transferCreditTemplatesTable.addRows(rows);        
         
         <c:if test="${fn:length(transferCreditTemplates) > 0}">
           $('noTransferCreditTemapltesAddedMessageContainer').setStyle({

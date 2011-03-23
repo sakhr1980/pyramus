@@ -42,12 +42,14 @@
           }]
         });
 
+        var rows = new Array();
         <c:forEach var="settingKey" items="${settingKeys}">
-          settingsTable.addRow([
+          rows.push([
             '${settingKey.name}',
             '${fn:escapeXml(settings[settingKey.name])}',
           ]);
         </c:forEach>
+        settingsTable.addRows(rows);
       }
         
     </script>

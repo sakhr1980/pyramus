@@ -35,6 +35,7 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
@@ -42,8 +43,9 @@
               var nameExt = results[i].nameExtension;
               if (nameExt && (nameExt.length > 0))
                 name += ' (' + nameExt + ')';
-              resultsTable.addRow([name, results[i].beginDate, '', '', '', results[i].id]);
+              resultsTable.addRow([name.escapeHTML(), results[i].beginDate, '', '', '', results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

@@ -60,15 +60,17 @@
           var dlg = event.dialog;
           switch (event.name) {
             case 'okClick':
+              var resourcesTable = getIxTableById(targetTableId);
+              resourcesTable.detachFromDom();
               for (var i = 0, len = event.results.resources.length; i < len; i++) {
                 var resourceId = event.results.resources[i].id;
                 var resourceName = event.results.resources[i].name;
                 var index = getResourceRowIndex(targetTableId, resourceId);
                 if (index == -1) {
-                  var resourcesTable = getIxTableById(targetTableId);
                   resourcesTable.addRow([resourceId, resourceName, 0, 0, 0, 0, 0, '']);
                 }
               }
+              resourcesTable.reattachToDom();
             break;
           }
         });
@@ -81,7 +83,7 @@
             abstractStudentId: abstractStudentId
           },
           onSuccess: function (jsonResponse) {
-            var rowIndex = studentsTable.addRow(['', studentName, studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, '']);
+            var rowIndex = studentsTable.addRow(['', studentName.escapeHTML(), studentId, 10, new Date().getTime(), 0, '', 'false', abstractStudentId, '']);
             var cellEditor = studentsTable.getCellEditor(rowIndex, studentsTable.getNamedColumnIndex('studentId'));
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
@@ -123,6 +125,7 @@
           switch (event.name) {
             case 'okClick':
               var studentsTable = getIxTableById('studentsTable');
+              studentsTable.detachFromDom();
               for (var i = 0, len = event.results.students.length; i < len; i++) {
                 var abstractStudentId = event.results.students[i].abstractStudentId;
                 var studentId = event.results.students[i].id;
@@ -132,6 +135,7 @@
                   addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName);
                 } 
               }
+              studentsTable.reattachToDom();
             break;
           }
         });
@@ -275,6 +279,7 @@
           switch (event.name) {
             case 'okClick':
               var personnelTable = getIxTableById('personnelTable');
+              personnelTable.detachFromDom();
               for (var i = 0, len = event.results.users.length; i < len; i++) {
                 var userId = event.results.users[i].id;
                 var userName = event.results.users[i].name;
@@ -283,6 +288,7 @@
                   personnelTable.addRow([userId, userName, '', '']);
                 } 
               }
+              personnelTable.reattachToDom();
             break;
           }
         });

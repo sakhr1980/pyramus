@@ -71,11 +71,13 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('moduleSearchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].id]);
+              resultsTable.addRow([results[i].name.escapeHTML(), results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('moduleSearchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('moduleSearchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('moduleSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

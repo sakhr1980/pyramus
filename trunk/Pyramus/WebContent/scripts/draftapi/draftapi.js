@@ -170,6 +170,8 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
     var tableData = Object.isString(elementDraft.getData()) ? elementDraft.getData().evalJSON() : elementDraft.getData();
     var columns = table.getColumnCount();
     var rows = tableData.rows;
+
+    table.detachFromDom();
     
     table.deleteAllRows();
     
@@ -219,6 +221,7 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
         table.setCellValue(row, column, value);
       }
     }
+    table.reattachToDom();
   }
 });
 

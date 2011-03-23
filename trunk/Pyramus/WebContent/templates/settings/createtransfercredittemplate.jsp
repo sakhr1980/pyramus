@@ -91,7 +91,7 @@
             paramName: 'subject',
             options: [
               <c:forEach var="subject" items="${subjects}" varStatus="vs">
-                {text: "${fn:replace(subject.name, "'", "\\'")}", value: ${subject.id}}
+                {text: "${fn:escapeXml(subject.name)}", value: ${subject.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],
@@ -123,7 +123,7 @@
             paramName: 'courseLengthUnit', 
             options: [
               <c:forEach var="timeUnit" items="${timeUnits}" varStatus="vs">
-                {text: "${fn:replace(timeUnit.name, "'", "\\'")}", value: ${timeUnit.id}}
+                {text: "${fn:escapeXml(timeUnit.name)}", value: ${timeUnit.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],            

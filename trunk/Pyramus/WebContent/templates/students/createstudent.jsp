@@ -290,32 +290,34 @@
               }]
             });
           
+            variablesTable.detachFromDom();
             <c:forEach var="variableKey" items="${variableKeys}">
               var rowNumber = variablesTable.addRow([
                 '',
-                '${fn:replace(variableKey.variableKey, "'", "\\'")}',
-                '${fn:replace(variableKey.variableName, "'", "\\'")}',
+                '${fn:escapeXml(variableKey.variableKey)}',
+                '${fn:escapeXml(variableKey.variableName)}',
                 ''
               ]);
     
               var dataType;
               <c:choose>
-              <c:when test="${variableKey.variableType == 'NUMBER'}">
-                dataType = 'number';
-              </c:when>
-              <c:when test="${variableKey.variableType == 'DATE'}">
-                dataType = 'date';
-              </c:when>
-              <c:when test="${variableKey.variableType == 'BOOLEAN'}">
-                dataType = 'checkbox';
-              </c:when>
-              <c:otherwise>
-                dataType = 'text';
-              </c:otherwise>
-            </c:choose>
+                <c:when test="${variableKey.variableType == 'NUMBER'}">
+                  dataType = 'number';
+                </c:when>
+                <c:when test="${variableKey.variableType == 'DATE'}">
+                  dataType = 'date';
+                </c:when>
+                <c:when test="${variableKey.variableType == 'BOOLEAN'}">
+                  dataType = 'checkbox';
+                </c:when>
+                <c:otherwise>
+                  dataType = 'text';
+                </c:otherwise>
+              </c:choose>
                 
-            variablesTable.setCellDataType(rowNumber, 3, dataType);
-          </c:forEach>
+              variablesTable.setCellDataType(rowNumber, 3, dataType);
+            </c:forEach>
+            variablesTable.reattachToDom();
           </c:when>
         </c:choose>
       };

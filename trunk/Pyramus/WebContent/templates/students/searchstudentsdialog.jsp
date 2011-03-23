@@ -51,16 +51,18 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
               var studentName = results[i].lastName + ', ' + results[i].firstName;
-              resultsTable.addRow(['', studentName, results[i].id, results[i].abstractStudentId, results[i].lodging]);
+              resultsTable.addRow(['', studentName.escapeHTML(), results[i].id, results[i].abstractStudentId, results[i].lodging]);
               var rowIndex = getStudentRowIndex('studentsTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
               } 
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('modalSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

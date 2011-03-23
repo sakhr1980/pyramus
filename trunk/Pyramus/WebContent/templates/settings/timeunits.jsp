@@ -175,12 +175,13 @@
         });
 
         var rowIndex;
+        timeUnitsTable.detachFromDom();
         <c:forEach var="timeUnit" items="${timeUnits}">
           rowIndex = timeUnitsTable.addRow([
             '',
             ${timeUnit eq baseTimeUnit},
             ${timeUnit.baseUnits},
-            '${fn:replace(timeUnit.name, "'", "\\'")}',
+            '${fn:escapeXml(timeUnit.name)}',
             '',
             '',
             ${timeUnit.id}
@@ -192,6 +193,7 @@
           
           timeUnitsTable.showCell(rowIndex, timeUnitsTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
+        timeUnitsTable.reattachToDom();
 
         if (timeUnitsTable.getRowCount() > 0) {
           $('noTimeUnitsAddedMessageContainer').setStyle({

@@ -117,11 +117,14 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchStudentProjectsResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].studentProjectName, results[i].studentLastName + ", " + results[i].studentFirstName, "", "", results[i].id]);
+              var name = results[i].studentLastName + ", " + results[i].studentFirstName;
+              resultsTable.addRow([results[i].studentProjectName.escapeHTML(), name.escapeHTML(), "", "", results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

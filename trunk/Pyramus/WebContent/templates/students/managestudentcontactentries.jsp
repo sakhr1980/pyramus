@@ -496,8 +496,8 @@
 		                      ${contactEntry.id}, 
 		                      ${contactEntry.entryDate.time}, 
 		                      '${contactEntry.type}', 
-		                      '${fn:replace(contactEntry.creatorName, "'", "\\'")}', 
-		                      '${fn:replace(fn:replace(contactEntry.text, newLineChar, ""), "'", "\\'")}'
+		                      '${fn:escapeXml(contactEntry.creatorName)}', 
+		                      '${fn:escapeXml(fn:replace(contactEntry.text, newLineChar, ""))}'
 		                  );
 		
 		                  <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
@@ -507,8 +507,8 @@
 		                      ${comment.id},
 		                      ${student.id}, 
 		                      ${comment.commentDate.time}, 
-		                      '${fn:replace(comment.creatorName, "'", "\\'")}', 
-		                      '${fn:replace(fn:replace(comment.text, newLineChar, ""), "'", "\\'")}'
+		                      '${fn:escapeXml(comment.creatorName)}', 
+		                      '${fn:escapeXml(fn:replace(comment.text, newLineChar, ""))}'
 		                  );
 		                  </c:if>
 		                  </c:forEach>

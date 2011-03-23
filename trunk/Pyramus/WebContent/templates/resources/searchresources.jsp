@@ -32,24 +32,26 @@
 	        },
 	        onSuccess: function (jsonResponse) {
 	          var resultsTable = getIxTableById('resourcesTable');
+	          resultsTable.detachFromDom();
 	          resultsTable.deleteAllRows();
 	          var results = jsonResponse.results;
-            for (var i = 0; i < results.length; i++) {
-              var resourceType;        
-              if (results[i].resourceType == 'MATERIAL_RESOURCE') {
-                resourceType = '<fmt:message key="resources.searchResources.resourceType_MATERIAL_RESOURCE"/>';
+              for (var i = 0; i < results.length; i++) {
+                var resourceType;        
+                if (results[i].resourceType == 'MATERIAL_RESOURCE') {
+                  resourceType = '<fmt:message key="resources.searchResources.resourceType_MATERIAL_RESOURCE"/>';
+                }
+                else if (results[i].resourceType == 'WORK_RESOURCE') { 
+                  resourceType = '<fmt:message key="resources.searchResources.resourceType_WORK_RESOURCE"/>';
+                }
+                resultsTable.addRow([results[i].name.escapeHTML(), resourceType, results[i].resourceCategoryName.escapeHTML(), '', '', results[i].resourceType, results[i].id]);
               }
-              else if (results[i].resourceType == 'WORK_RESOURCE') { 
-                resourceType = '<fmt:message key="resources.searchResources.resourceType_WORK_RESOURCE"/>';
-              }
-              resultsTable.addRow([results[i].name, resourceType, results[i].resourceCategoryName, '', '', results[i].resourceType, results[i].id]);
-            }
-            getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
-            getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
-            $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;
-            $('searchResultsWrapper').setStyle({
-              display: ''
-            });
+  	          resultsTable.reattachToDom();
+              getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
+              getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
+              $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;
+              $('searchResultsWrapper').setStyle({
+                display: ''
+              });
 	        } 
 	      });
 	    }

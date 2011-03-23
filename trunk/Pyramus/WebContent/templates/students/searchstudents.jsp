@@ -50,11 +50,13 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow(['', results[i].lastName + ", " + results[i].firstName, '', '', results[i].abstractStudentId]);
+              resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), '', '', results[i].abstractStudentId]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('searchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

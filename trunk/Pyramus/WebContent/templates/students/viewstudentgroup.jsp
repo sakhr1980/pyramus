@@ -81,6 +81,7 @@
           }]        
         });
 
+        var rows = new Array();
         <c:forEach var="student" items="${studentGroupStudents}">
           <c:choose>
             <c:when test="${student.student.studyProgramme ne null}">
@@ -97,7 +98,7 @@
           
           <c:set var="studentName">${fn:escapeXml(student.student.lastName)}, ${fn:escapeXml(student.student.firstName)}</c:set>
           
-          studentsTable.addRow([
+          rows.push([
             "", 
             "${studentName}", 
             "${studyProgrammeName}",
@@ -106,6 +107,7 @@
             ''
           ]);
         </c:forEach>
+        studentsTable.addRows(rows);
       }
 
       function setupRelatedCommands() {

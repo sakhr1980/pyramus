@@ -62,15 +62,17 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].id]);
+              resultsTable.addRow([results[i].name.escapeHTML(), results[i].id]);
               var rowIndex = getModuleRowIndex('modulesTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
               } 
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('searchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('modalSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

@@ -38,6 +38,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -116,8 +117,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -161,19 +161,19 @@
           }
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="courseParticipationType" items="${courseParticipationTypes}">
-          rowIndex = courseParticipationTypesTable.addRow([
+          rows.push([
             '',
             ${courseParticipationType eq initialCourseParticipationType},
-            '${fn:replace(courseParticipationType.name, "'", "\\'")}',
+            '${fn:escapeXml(courseParticipationType.name)}',
             '',
             '',
             ${courseParticipationType.id}
           ]);
-          
-          courseParticipationTypesTable.showCell(rowIndex, courseParticipationTypesTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
+        
+        courseParticipationTypesTable.addRows(rows);
 
         if (courseParticipationTypesTable.getRowCount() > 0) {
           $('noCourseParticipationTypesAddedMessageContainer').setStyle({

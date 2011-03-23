@@ -39,11 +39,12 @@
           }]
         });
         var value;
+        variablesTable.detachFromDom();
         <c:forEach var="variableKey" items="${variableKeys}">
-          value = '${fn:replace(school.variablesAsStringMap[variableKey.variableKey], "'", "\\'")}';
+          value = '${fn:escapeXml(school.variablesAsStringMap[variableKey.variableKey])}';
           var rowNumber = variablesTable.addRow([
-            '${fn:replace(variableKey.variableKey, "'", "\\'")}',
-            '${fn:replace(variableKey.variableName, "'", "\\'")}',
+            '${fn:escapeXml(variableKey.variableKey)}',
+            '${fn:escapeXml(variableKey.variableName)}',
             value
           ]);
 
@@ -65,7 +66,8 @@
           
           variablesTable.setCellDataType(rowNumber, 3, dataType);
         </c:forEach>
-	    };
+        variablesTable.reattachToDom();
+      };
     </script>
     
   </head>

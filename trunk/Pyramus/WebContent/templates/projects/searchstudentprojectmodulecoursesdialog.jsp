@@ -83,7 +83,7 @@
         var rowId;
         <c:forEach var="studentProjectModuleCourse" items="${studentProjectModuleCourses}">
           rowId = searchResultsTable.addRow([
-            '${fn:replace(studentProjectModuleCourse.courseName, "'", "\\'")}', 
+            '${fn:escapeXml(studentProjectModuleCourse.courseName)}', 
             ${studentProjectModuleCourse.courseBeginDate.time}, 
             ${studentProjectModuleCourse.courseEndDate.time},  
             ${studentProjectModuleCourse.courseId}]);

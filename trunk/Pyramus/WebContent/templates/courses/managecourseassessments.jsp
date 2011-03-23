@@ -64,7 +64,7 @@
                   table.setCellValue(event.row, assessmentDateCol, new Date().getTime());
                 if (table.getCellValue(event.row, assessingUserCol) == '') {
                   table.setCellValue(event.row, assessingUserCol, '${loggedUserId}');
-                  IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:replace(loggedUserName, "'", "\\'")}');
+                  IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:escapeXml(loggedUserName)}');
                 }
 
                 table.setCellValue(event.row, modifiedCol, 1);
@@ -115,10 +115,10 @@
               {text: "-", value: -1}
               <c:if test="${fn:length(gradingScales) gt 0}">,</c:if>
               <c:forEach var="gradingScale" items="${gradingScales}" varStatus="vs">
-                {text: "${fn:replace(gradingScale.name, "'", "\\'")}", optionGroup: true, 
+                {text: "${fn:escapeXml(gradingScale.name)}", optionGroup: true, 
                   options: [
                     <c:forEach var="grade" items="${gradingScale.grades}" varStatus="vs2">
-                      {text: "${fn:replace(grade.name, "'", "\\'")}", value: ${grade.id}}
+                      {text: "${fn:escapeXml(grade.name)}", value: ${grade.id}}
                       <c:if test="${not vs2.last}">,</c:if>
                     </c:forEach>
                   ]
@@ -285,6 +285,7 @@
         var rowIndex;
         var userColumnIndex = studentsTable.getNamedColumnIndex('assessingUserId');
         
+        studentsTable.detachFromDom();
         <c:forEach var="courseStudent" items="${courseStudents}" varStatus="status">
           rowIndex = studentsTable.addRow([
             '',
@@ -298,8 +299,9 @@
             '${courseStudent.id}',
             '${courseStudent.student.abstractStudent.id}',
             0]);
-          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(assessments[courseStudent.id].assessingUser.fullName, "'", "\\'")}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(assessments[courseStudent.id].assessingUser.fullName)}');
         </c:forEach>
+        studentsTable.reattachToDom();
       }
       
       function setupRelatedCommands() {

@@ -34,6 +34,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -113,8 +114,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -140,20 +140,21 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="educationType" items="${educationTypes}">
-          rowIndex = educationTypesTable.addRow([
+          rows.push([
             '',
-            '${fn:replace(educationType.name, "'", "\\'")}',
-            '${fn:replace(educationType.code, "'", "\\'")}',
+            '${fn:escapeXml(educationType.name)}',
+            '${fn:escapeXml(educationType.code)}',
             '',
             '',
             ${educationType.id},
             0
           ]);
-          educationTypesTable.showCell(rowIndex, educationTypesTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
-
+        
+        educationTypesTable.addRows(rows);
+        
         if (educationTypesTable.getRowCount() > 0) {
           $('noEducationTypesAddedMessageContainer').setStyle({
             display: 'none'

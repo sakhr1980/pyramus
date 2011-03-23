@@ -29,6 +29,7 @@
         var table = getIxTableById('componentsTable');
         table.addRow([-1, '', 0, '', '', '']);
         table.showCell(table.getRowCount() - 1, table.getNamedColumnIndex("removeButton"));
+        table.hideCell(table.getRowCount() - 1, table.getNamedColumnIndex("archiveButton"));
         $('noComponentsAddedMessageContainer').setStyle({
           display: 'none'
         });
@@ -111,7 +112,6 @@
             right: 0,
             dataType: 'button',
             paramName: 'archiveButton',
-            hidden: true,
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="modules.editModule.componentsTableArchiveRowTooltip"/>',
             onclick: function (event) {
@@ -174,18 +174,19 @@
 
         // TODO component length units > double (hours)
 
+        var rows = new Array();
         <c:forEach var="component" items="${moduleComponents}">
-          componentsTable.addRow([
+          rows.push([
             ${component.id},
-            '${fn:replace(component.name, "'", "\\'")}',
+            '${fn:escapeXml(component.name)}',
             ${component.length.units},
-            '${fn:replace(component.description, "'", "\\'")}',
+            '${fn:escapeXml(component.description)}',
             '',
             ''
           ]);
-          componentsTable.showCell(componentsTable.getRowCount() - 1, componentsTable.getNamedColumnIndex("archiveButton"));
         </c:forEach>
-
+        componentsTable.addRows(rows);
+        
         if (componentsTable.getRowCount() > 0) {
           $('noComponentsAddedMessageContainer').setStyle({
             display: 'none'

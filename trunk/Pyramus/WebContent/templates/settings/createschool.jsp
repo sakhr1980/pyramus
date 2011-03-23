@@ -295,11 +295,13 @@
             paramName: 'value'
           }]
         });
+        
+        variablesTable.detachFromDom();
         <c:forEach var="variableKey" items="${variableKeys}">
           var rowNumber = variablesTable.addRow([
             '',
-            '${fn:replace(variableKey.variableKey, "'", "\\'")}',
-            '${fn:replace(variableKey.variableName, "'", "\\'")}',
+            '${fn:escapeXml(variableKey.variableKey)}',
+            '${fn:escapeXml(variableKey.variableName)}',
             ''
           ]);
   
@@ -321,6 +323,7 @@
           
           variablesTable.setCellDataType(rowNumber, 3, dataType);
         </c:forEach>
+        variablesTable.reattachToDom();
       };
     </script>
     
