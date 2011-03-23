@@ -56,7 +56,7 @@
                 var moduleName = event.results.modules[i].name;
                 var index = getModuleRowIndex('modulesTable', moduleId);
                 if (index == -1) {
-                  modulesTable.addRow([moduleName, 0, '', moduleId, -1]);
+                  modulesTable.addRow([moduleName.escapeHTML(), 0, '', moduleId, -1]);
                 }
               }
               modulesTable.reattachToDom();
@@ -180,14 +180,16 @@
           },
           onSuccess: function(jsonResponse) {
             var projectModules = jsonResponse.projectModules;
+            var rows = new Array();
             for (var i = 0; i < projectModules.length; i++) {
-              modulesTable.addRow([
+              rows.push([
                   projectModules[i].name.escapeHTML(),
                   projectModules[i].optionality,
                   '',
                   projectModules[i].moduleId,
                   projectModules[i].id]);
             }
+            modulesTable.addRows(rows);
             if(modulesTable.getRowCount() > 0){
               $('noModulesAddedMessageContainer').setStyle({
                 display: 'none'

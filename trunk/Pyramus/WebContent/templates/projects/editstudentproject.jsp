@@ -23,77 +23,77 @@
         var table = getIxTableById('modulesTable');
         var allMessageVisible = false;
         var noMessageVisible = false;
-	      
+      
         if (table.getRowCount() > 0) {
           if (table.getVisibleRowCount() == 0) {
-	          allMessageVisible = true;
-	        }
-	      } else {
-	        noMessageVisible = true;
-	      }
+          allMessageVisible = true;
+        }
+      } else {
+        noMessageVisible = true;
+      }
         
         $('noModulesAddedMessageContainer').setStyle({
           display: noMessageVisible ? '' : 'none'
         });
-	      
+      
         $('allModulesAddedMessageContainer').setStyle({
           display: allMessageVisible ? '' : 'none'
         });
       }
     
       function openSearchModulesDialog() {
-	
-	      var selectedModules = new Array();
-	      var modulesTable = getIxTableById('modulesTable');
-	      for (var i = 0; i < modulesTable.getRowCount() - 1; i++) {
-	        var moduleName = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('name'));
-	        var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
-	        selectedModules.push({
-	          name: moduleName,
-	          id: moduleId
-	        });
-	      }
-	
-	      var dialog = new IxDialog({
-	        id : 'searchModulesDialog',
-	        contentURL : GLOBAL_contextPath + '/projects/searchmodulesdialog.page',
-	        centered : true,
-	        showOk : true,
-	        showCancel : true,
-	        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialog.dialogTitle"/>',
-	        okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
-	        cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
-	      });
-	      
-	      dialog.setSize("800px", "600px");
-	      dialog.addDialogListener(function(event) {
-	        var dlg = event.dialog;
-	        switch (event.name) {
-	          case 'okClick':
-	            var modulesTable = getIxTableById('modulesTable');
-	            var coursesTable = getIxTableById('coursesTable');
-				modulesTable.detachFromDom();              
-	            for (var i = 0, len = event.results.modules.length; i < len; i++) {
-	              var moduleId = event.results.modules[i].id;
-	              var moduleName = event.results.modules[i].name;
-	              var index = getModuleTableModuleRowIndex(modulesTable, moduleId);
-	              if (index == -1) {
-	                var rowNumber = modulesTable.addRow([moduleName, -1, 0, '', '', '', moduleId, -1]);
-	                
-	                if (getCourseTableModuleRowIndex(coursesTable, moduleId) > 0) {
-	                  modulesTable.hideRow(rowNumber);
-	                }
-	              }
-	            }
+
+      var selectedModules = new Array();
+      var modulesTable = getIxTableById('modulesTable');
+      for (var i = 0; i < modulesTable.getRowCount() - 1; i++) {
+        var moduleName = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('name'));
+        var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
+        selectedModules.push({
+          name: moduleName,
+          id: moduleId
+        });
+      }
+
+      var dialog = new IxDialog({
+        id : 'searchModulesDialog',
+        contentURL : GLOBAL_contextPath + '/projects/searchmodulesdialog.page',
+        centered : true,
+        showOk : true,
+        showCancel : true,
+        title : '<fmt:message key="projects.searchModulesDialog.searchModulesDialog.dialogTitle"/>',
+        okLabel : '<fmt:message key="projects.searchModulesDialog.okLabel"/>', 
+        cancelLabel : '<fmt:message key="projects.searchModulesDialog.cancelLabel"/>' 
+      });
+      
+      dialog.setSize("800px", "600px");
+      dialog.addDialogListener(function(event) {
+        var dlg = event.dialog;
+        switch (event.name) {
+          case 'okClick':
+            var modulesTable = getIxTableById('modulesTable');
+            var coursesTable = getIxTableById('coursesTable');
+modulesTable.detachFromDom();              
+            for (var i = 0, len = event.results.modules.length; i < len; i++) {
+              var moduleId = event.results.modules[i].id;
+              var moduleName = event.results.modules[i].name;
+              var index = getModuleTableModuleRowIndex(modulesTable, moduleId);
+              if (index == -1) {
+                var rowNumber = modulesTable.addRow([moduleName, -1, 0, '', '', '', moduleId, -1]);
+                
+                if (getCourseTableModuleRowIndex(coursesTable, moduleId) > 0) {
+                  modulesTable.hideRow(rowNumber);
+                }
+              }
+            }
                 modulesTable.reattachToDom();              
-	            
-	            checkModulesMessage();
-	            
-	          break;
-	        }
-	      });
-	      dialog.open();
-	    }
+            
+            checkModulesMessage();
+            
+          break;
+        }
+      });
+      dialog.open();
+    }
       
       function openSearchCoursesDialog() {
         var dialog = new IxDialog({
@@ -125,16 +125,16 @@
                 var index = getCourseTableCourseRowIndex(coursesTable, courseId);
                 if (index == -1) {
                   coursesTable.addRow([
-	                  courseName,
-	                  participationType,
-	                  beginDate||'',
-	                  endDate||'',
-	                  'OPTIONAL',
-	                  '',
-	                  '',
-	                  moduleId,
-	                  courseId,
-	                  -1]);
+                  courseName,
+                  participationType,
+                  beginDate||'',
+                  endDate||'',
+                  'OPTIONAL',
+                  '',
+                  '',
+                  moduleId,
+                  courseId,
+                  -1]);
                 }
                 
                 var moduleTables = getIxTableById('modulesTable');
@@ -458,6 +458,7 @@
         });
         
         var rowId;
+        modulesTable.detachFromDom();
         <c:forEach var="studentProjectModule" items="${studentProjectModules}">
           rowId = modulesTable.addRow([
             '${fn:escapeXml(studentProjectModule.studentProjectModule.module.name)}',
@@ -473,39 +474,42 @@
             modulesTable.hideRow(rowId);
           }
         </c:forEach>
+        modulesTable.reattachToDom();
         
         checkModulesMessage();
         
+        coursesTable.detachFromDom();
         <c:forEach var="courseStudent" items="${courseStudents}">
-	        <c:choose>
-		        <c:when test="${fn:length(courseStudent.course.nameExtension) gt 0}">
-		          <c:set var="courseName">${courseStudent.course.name} (${courseStudent.course.nameExtension})</c:set>  
-		        </c:when>
-		        <c:otherwise>
+          <c:choose>
+            <c:when test="${fn:length(courseStudent.course.nameExtension) gt 0}">
+              <c:set var="courseName">${courseStudent.course.name} (${courseStudent.course.nameExtension})</c:set>  
+            </c:when>
+            <c:otherwise>
               <c:set var="courseName">${courseStudent.course.name}</c:set>  
-		        </c:otherwise>
-		      </c:choose>
+            </c:otherwise>
+          </c:choose>
         
-	        rowId = coursesTable.addRow([
-	          '${fn:escapeXml(courseName)}',
-	          '${courseStudent.participationType.name}',
-	          ${courseStudent.course.beginDate.time},
-	          ${courseStudent.course.endDate.time},
-            '${courseStudent.optionality}',
-	          '',
-	          '',
-	          ${courseStudent.course.module.id},
-	          ${courseStudent.course.id},
-	          ${courseStudent.id}]);
-	        
-	        coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
-	      </c:forEach>
+          rowId = coursesTable.addRow([
+            '${fn:escapeXml(courseName)}',
+            '${courseStudent.participationType.name}',
+            ${courseStudent.course.beginDate.time},
+            ${courseStudent.course.endDate.time},
+              '${courseStudent.optionality}',
+            '',
+            '',
+            ${courseStudent.course.module.id},
+            ${courseStudent.course.id},
+            ${courseStudent.id}]);
+          
+          coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
+        </c:forEach>
+        coursesTable.reattachToDom();
       
-	      if (coursesTable.getRowCount() > 0) {
-	        $('noCoursesAddedMessageContainer').setStyle({
-	          display: 'none'
-	        });
-	      }
+        if (coursesTable.getRowCount() > 0) {
+          $('noCoursesAddedMessageContainer').setStyle({
+            display: 'none'
+          });
+        }
         
         var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer'), {
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsLabel"/>'
@@ -542,15 +546,15 @@
         
           <div id="basic" class="tabContent">
             <div id="basicTabRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
-	          <input type="hidden" name="studentProject" value="${studentProject.id}"/>
-	          
-	          <div class="genericFormSection">
-	            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+          <input type="hidden" name="studentProject" value="${studentProject.id}"/>
+          
+          <div class="genericFormSection">
+            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editStudentProject.studentTitle"/>
                   <jsp:param name="helpLocale" value="projects.editStudentProject.studentHelp"/>
                 </jsp:include>
-	            <div>${studentProject.student.firstName} ${studentProject.student.lastName}</div>
-	          </div>
+            <div>${studentProject.student.firstName} ${studentProject.student.lastName}</div>
+          </div>
   
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -574,14 +578,14 @@
                 </c:if>
               </select>
             </div>
-	
-	          <div class="genericFormSection">
+
+          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editStudentProject.nameTitle"/>
                   <jsp:param name="helpLocale" value="projects.editStudentProject.nameHelp"/>
                 </jsp:include>
-	            <input type="text" class="required" name="name" value="${fn:escapeXml(studentProject.name)}" size="40"/>
-	          </div>
+            <input type="text" class="required" name="name" value="${fn:escapeXml(studentProject.name)}" size="40"/>
+          </div>
              
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -591,27 +595,27 @@
               <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
-	      
-	          <div class="genericFormSection">
+      
+          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editStudentProject.descriptionTitle"/>
                   <jsp:param name="helpLocale" value="projects.editStudentProject.descriptionHelp"/>
                 </jsp:include>
-	            <textarea ix:cktoolbar="studentProjectDescription" name="description" ix:ckeditor="true">${studentProject.description}</textarea>
-	          </div>
-	
-	          <div class="genericFormSection">
+            <textarea ix:cktoolbar="studentProjectDescription" name="description" ix:ckeditor="true">${studentProject.description}</textarea>
+          </div>
+
+          <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editStudentProject.optionalStudiesTitle"/>
                   <jsp:param name="helpLocale" value="projects.editStudentProject.optionalStudiesHelp"/>
                 </jsp:include>
-	            <input type="text" name="optionalStudiesLength" class="required" value="${studentProject.optionalStudiesLength.units}" size="15"/>
-	            <select name="optionalStudiesLengthTimeUnit">           
-	              <c:forEach var="optionalStudiesLengthTimeUnit" items="${optionalStudiesLengthTimeUnits}">
-	                <option value="${optionalStudiesLengthTimeUnit.id}" <c:if test="${studentProject.optionalStudiesLength.unit.id == optionalStudiesLengthTimeUnit.id}">selected="selected"</c:if>>${optionalStudiesLengthTimeUnit.name}</option> 
-	              </c:forEach>
-	            </select>            
-	          </div>
+            <input type="text" name="optionalStudiesLength" class="required" value="${studentProject.optionalStudiesLength.units}" size="15"/>
+            <select name="optionalStudiesLengthTimeUnit">           
+              <c:forEach var="optionalStudiesLengthTimeUnit" items="${optionalStudiesLengthTimeUnits}">
+                <option value="${optionalStudiesLengthTimeUnit.id}" <c:if test="${studentProject.optionalStudiesLength.unit.id == optionalStudiesLengthTimeUnit.id}">selected="selected"</c:if>>${optionalStudiesLengthTimeUnit.name}</option> 
+              </c:forEach>
+            </select>            
+          </div>
           </div>
           
           <!--  Courses and Modules tab -->
@@ -624,21 +628,21 @@
               </jsp:include>
             </div>
             
-	          <div class="genericTableAddRowContainer">
-	            <span class="genericTableAddRowLinkContainer" onclick="openSearchModulesDialog();"><fmt:message key="projects.editStudentProject.addModuleLink"/></span>
-	          </div>
-	          
-	          <div id="noModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-	            <span><fmt:message key="projects.editStudentProject.noModulesAddedPreFix"/> <span onclick="openSearchModulesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noModulesAddedClickHereLink"/></span>.</span>
-	          </div>
+          <div class="genericTableAddRowContainer">
+            <span class="genericTableAddRowLinkContainer" onclick="openSearchModulesDialog();"><fmt:message key="projects.editStudentProject.addModuleLink"/></span>
+          </div>
+          
+          <div id="noModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+            <span><fmt:message key="projects.editStudentProject.noModulesAddedPreFix"/> <span onclick="openSearchModulesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noModulesAddedClickHereLink"/></span>.</span>
+          </div>
 
             <div id="allModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
               <span><fmt:message key="projects.editStudentProject.allModulesAddedPreFix"/></span>
             </div>
-	          
-	          <div id="modulesContainer">
-	            <div id="modulesTableContainer"></div>
-	          </div>
+          
+          <div id="modulesContainer">
+            <div id="modulesTableContainer"></div>
+          </div>
 
             <div class="genericFormSection editStudentProjectCourseListTitle">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -660,8 +664,8 @@
             </div>
           </div>
 
-	      </div>
-  		</div>
+      </div>
+  </div>
     
       <div class="genericFormSubmitSection">
         <input type="submit" class="formvalid" value="<fmt:message key="projects.editStudentProject.saveButton"/>">
