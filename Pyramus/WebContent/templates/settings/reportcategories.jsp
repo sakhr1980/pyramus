@@ -106,8 +106,7 @@
             
               dialog.open();
             },
-            paramName: 'deleteButton',
-            hidden: true
+            paramName: 'deleteButton'
           }, {
             left: 346,
             width: 30,
@@ -122,7 +121,8 @@
                 });
               }
             },
-            paramName: 'removeButton'
+            paramName: 'removeButton',
+            hidden: true
           }, {
             dataType: 'hidden',
             paramName: 'reportCategoryId'

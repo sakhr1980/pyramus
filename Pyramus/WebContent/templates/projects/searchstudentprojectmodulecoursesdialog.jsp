@@ -81,6 +81,7 @@
         
         var name;
         var rowId;
+        searchResultsTable.detachFromDom();
         <c:forEach var="studentProjectModuleCourse" items="${studentProjectModuleCourses}">
           rowId = searchResultsTable.addRow([
             '${fn:escapeXml(studentProjectModuleCourse.courseName)}', 
@@ -92,6 +93,7 @@
             searchResultsTable.getRowElement(rowId).addClassName("studentProjectModuleCourseWithinTimeFrame");
           </c:if>
         </c:forEach>
+        searchResultsTable.reattachToDom();
       }
     </script>
 

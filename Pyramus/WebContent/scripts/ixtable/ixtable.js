@@ -136,12 +136,17 @@ IxTable = Class.create({
     this._contextMenuItemClickListener = this._onContextMenuItemClick.bindAsEventListener(this);
   },
   addRow : function(values, editable) {
-    return this.addRows([values], editable);
+    return this._addRows([values], editable);
   },
   addRows: function (rowDatas, editable) {
+    this.detachFromDom();
+    var rowCount = this._addRows(rowDatas, editable);
+    this.reattachToDom();
+    return rowCount;
+  },
+  _addRows: function (rowDatas, editable) {
     var rowNumber = this.getRowCount() - 1;
     var rowElements = new Array(); 
-    this.detachFromDom();
     
     for (var rowIndex = 0, rowCount = rowDatas.length; rowIndex < rowCount; rowIndex++) {
       rowNumber++;
@@ -221,7 +226,6 @@ IxTable = Class.create({
       });
     }
     
-    this.reattachToDom();
     return rowNumber;
   },
   deleteRow: function (rowNumber) {
