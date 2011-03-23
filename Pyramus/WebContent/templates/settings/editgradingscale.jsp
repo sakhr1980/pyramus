@@ -102,9 +102,11 @@
           }]
         });
 
+        var rows = new Array();
         <c:forEach var="grade" items="${gradingScale.grades}">
-          gradesTable.addRow(['', ${grade.passingGrade}, '${grade.name}', '${grade.qualification}', ${grade.GPA}, '${grade.description}', '${grade.id}', '']);
+          rows.push(['', ${grade.passingGrade}, '${grade.name}', '${grade.qualification}', ${grade.GPA}, '${grade.description}', '${grade.id}', '']);
         </c:forEach>
+        gradesTable.addRows(rows);
 
         if (gradesTable.getRowCount() > 0) {
           $('noGradesAddedMessageContainer').setStyle({

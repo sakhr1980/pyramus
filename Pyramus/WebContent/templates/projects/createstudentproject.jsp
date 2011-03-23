@@ -87,11 +87,14 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('studentSearchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].lastName + ", " + results[i].firstName, results[i].id]);
+              var name = results[i].lastName + ", " + results[i].firstName;
+              resultsTable.addRow([name.escapeHTML(), results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('studentSearchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('studentSearchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('studentSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;
@@ -117,11 +120,13 @@
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('projectSearchResultsTable');
+            resultsTable.detachFromDom();
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name, results[i].id]);
+              resultsTable.addRow([results[i].name.escapeHTML(), results[i].id]);
             }
+            resultsTable.reattachToDom();
             getSearchNavigationById('projectSearchResultsNavigation').setTotalPages(jsonResponse.pages);
             getSearchNavigationById('projectSearchResultsNavigation').setCurrentPage(jsonResponse.page);
             $('projectSearchResultsStatusMessageContainer').innerHTML = jsonResponse.statusMessage;

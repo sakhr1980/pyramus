@@ -35,6 +35,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -68,7 +69,7 @@
             paramName: 'educationTypeId',
             options: [
               <c:forEach var="educationType" items="${educationTypes}" varStatus="vs">
-                {text: "${fn:replace(educationType.name, "'", "\\'")}", value: ${educationType.id}}
+                {text: "${fn:escapeXml(educationType.name)}", value: ${educationType.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ]
@@ -131,8 +132,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -158,23 +158,24 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="educationType" items="${educationTypes}">
           <c:forEach var="educationSubtype" items="${educationType.unarchivedSubtypes}">
-            rowIndex = educationSubtypesTable.addRow([
+            rows.push([
               '',
               ${educationType.id},
-              '${fn:replace(educationSubtype.name, "'", "\\'")}',
-              '${fn:replace(educationSubtype.code, "'", "\\'")}',
+              '${fn:escapeXml(educationSubtype.name)}',
+              '${fn:escapeXml(educationSubtype.code)}',
               '',
               '',
               ${educationSubtype.id},
               0 
             ]);
-            educationSubtypesTable.showCell(rowIndex, educationSubtypesTable.getNamedColumnIndex('archiveButton'));
           </c:forEach>
         </c:forEach>
-
+        
+        educationSubtypesTable.addRows(rows);
+        
         if (educationSubtypesTable.getRowCount() > 0) {
           $('noEducationSubtypesAddedMessageContainer').setStyle({
             display: 'none'

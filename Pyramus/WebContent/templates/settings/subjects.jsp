@@ -34,6 +34,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -113,8 +114,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -140,19 +140,20 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="subject" items="${subjects}">
-          rowIndex = subjectsTable.addRow([
+          rows.push([
             '',
-            '${fn:replace(subject.code, "'", "\\'")}',
-            '${fn:replace(subject.name, "'", "\\'")}',
+            '${fn:escapeXml(subject.code)}',
+            '${fn:escapeXml(subject.name)}',
             '',
             '',
             ${subject.id},
             0
-          ]);
-          subjectsTable.showCell(rowIndex, subjectsTable.getNamedColumnIndex('archiveButton'));
+          ]);          
         </c:forEach>
+        
+        subjectsTable.addRows(rows);
 
         if (subjectsTable.getRowCount() > 0) {
           $('noSubjectsAddedMessageContainer').setStyle({

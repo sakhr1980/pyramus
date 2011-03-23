@@ -337,7 +337,7 @@
               </c:set>
             </c:when>
             <c:otherwise>
-              <c:set var="sprogName">${fn:replace(student.studyProgramme.name, "'", "\\'")}</c:set>
+              <c:set var="sprogName">${fn:escapeXml(student.studyProgramme.name)}</c:set>
             </c:otherwise>
           </c:choose>
         
@@ -352,11 +352,11 @@
               ${address.id},
               ${address.defaultAddress},
               ${address.contactType.id},
-              '${fn:replace(address.name, "'", "\\'")}',
-              '${fn:replace(address.streetAddress, "'", "\\'")}',
-              '${fn:replace(address.postalCode, "'", "\\'")}',
-              '${fn:replace(address.city, "'", "\\'")}',
-              '${fn:replace(address.country, "'", "\\'")}',
+              '${fn:escapeXml(address.name)}',
+              '${fn:escapeXml(address.streetAddress)}',
+              '${fn:escapeXml(address.postalCode)}',
+              '${fn:escapeXml(address.city)}',
+              '${fn:escapeXml(address.country)}',
               '',
               '']);
           </c:forEach>
@@ -375,7 +375,7 @@
               ${email.id},
               ${email.defaultAddress},
               ${email.contactType.id},
-              '${fn:replace(email.address, "'", "\\'")}',
+              '${fn:escapeXml(email.address)}',
               '',
               '']);
           </c:forEach>
@@ -394,7 +394,7 @@
               ${phone.id},
               ${phone.defaultNumber},
               ${phone.contactType.id},
-              '${fn:replace(phone.number, "'", "\\'")}',
+              '${fn:escapeXml(phone.number)}',
               '',
               '']);
           </c:forEach>
@@ -410,11 +410,11 @@
               variablesTable = initStudentVariableTable(${student.id});
     
               <c:forEach var="variableKey" items="${variableKeys}">
-                value = '${fn:replace(student.variablesAsStringMap[variableKey.variableKey], "'", "\\'")}';
+                value = '${fn:escapeXml(student.variablesAsStringMap[variableKey.variableKey])}';
                 var rowNumber = variablesTable.addRow([
                   '',
-                  '${fn:replace(variableKey.variableKey, "'", "\\'")}',
-                  '${fn:replace(variableKey.variableName, "'", "\\'")}',
+                  '${fn:escapeXml(variableKey.variableKey)}',
+                  '${fn:escapeXml(variableKey.variableName)}',
                   value
                 ]);
         

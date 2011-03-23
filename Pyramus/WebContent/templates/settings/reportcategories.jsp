@@ -34,6 +34,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('deleteButton'));
       }
       
       function onLoad(event) {
@@ -121,8 +122,7 @@
                 });
               }
             },
-            paramName: 'removeButton',
-            hidden: true
+            paramName: 'removeButton'
           }, {
             dataType: 'hidden',
             paramName: 'reportCategoryId'
@@ -132,19 +132,19 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="category" items="${categories}">
-          rowIndex = reportCategoriesTable.addRow([
+          rows.push([
             '',
-            '${fn:replace(category.name, "'", "\\'")}',
+            '${fn:escapeXml(category.name)}',
             '',
             '',
             ${category.id},
             0
           ]);
-          reportCategoriesTable.showCell(rowIndex, reportCategoriesTable.getNamedColumnIndex('deleteButton'));
         </c:forEach>
-
+        reportCategoriesTable.addRows(rows);
+        
         if (reportCategoriesTable.getRowCount() > 0) {
           $('noReportCategoriesAddedMessageContainer').setStyle({
             display: 'none'

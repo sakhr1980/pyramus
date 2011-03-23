@@ -48,15 +48,17 @@
           var dlg = event.dialog;
           switch (event.name) {
             case 'okClick':
+              var modulesTable = getIxTableById('modulesTable');
+              modulesTable.detachFromDom();
               for (var i = 0, len = event.results.modules.length; i < len; i++) {
                 var moduleId = event.results.modules[i].id;
                 var moduleName = event.results.modules[i].name;
                 var index = getModuleRowIndex('modulesTable', moduleId);
                 if (index == -1) {
-                  var modulesTable = getIxTableById('modulesTable');
                   modulesTable.addRow([moduleName, 0, '', moduleId]);
                 }
               }
+              modulesTable.reattachToDom();
               if (modulesTable.getRowCount() > 0) {
                 $('noModulesAddedMessageContainer').setStyle({
                   display: 'none'

@@ -38,6 +38,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -116,8 +117,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -161,19 +161,20 @@
           }
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="courseState" items="${courseStates}">
-          rowIndex = courseStatesTable.addRow([
+          rows.push([
             '',
             ${courseState eq initalCourseState},
-            '${fn:replace(courseState.name, "'", "\\'")}',
+            '${fn:escapeXml(courseState.name)}',
             '',
             '',
             ${courseState.id}
           ]);
-          courseStatesTable.showCell(rowIndex, courseStatesTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
-
+        
+        courseStatesTable.addRows(rows);
+        
         if (courseStatesTable.getRowCount() > 0) {
           $('noCourseStatesAddedMessageContainer').setStyle({
             display: 'none'

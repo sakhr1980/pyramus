@@ -91,7 +91,7 @@
             paramName: 'subject',
             options: [
               <c:forEach var="subject" items="${subjects}" varStatus="vs">
-                {text: "${fn:replace(subject.name, "'", "\\'")}", value: ${subject.id}}
+                {text: "${fn:escapeXml(subject.name)}", value: ${subject.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],
@@ -123,7 +123,7 @@
             paramName: 'courseLengthUnit', 
             options: [
               <c:forEach var="timeUnit" items="${timeUnits}" varStatus="vs">
-                {text: "${fn:replace(timeUnit.name, "'", "\\'")}", value: ${timeUnit.id}}
+                {text: "${fn:escapeXml(timeUnit.name)}", value: ${timeUnit.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],            
@@ -155,10 +155,10 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="course" items="${transferCreditTemplate.courses}">
-          rowIndex = coursesTable.addRow([
-	          '${fn:replace(course.courseName, "'", "\\'")}',
+          rows.push([
+	          '${fn:escapeXml(course.courseName)}',
 	          '${course.optionality}',
 	          ${course.courseNumber},
 	          ${course.subject.id},
@@ -168,7 +168,9 @@
 	          ${course.id}
 	        ]);
         </c:forEach>
-
+        
+        coursesTable.addRows(rows);
+        
         if (coursesTable.getRowCount() > 0) {
           $('noCoursesAddedMessageContainer').setStyle({
             display: 'none'

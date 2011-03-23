@@ -69,6 +69,7 @@
           switch (event.name) {
             case 'okClick':
               var studentsTable = getIxTableById('studentsTable');
+              studentsTable.detachFromDom();
               for (var i = 0, len = event.results.students.length; i < len; i++) {
                 var abstractStudentId = event.results.students[i].abstractStudentId;
                 var studentId = event.results.students[i].id;
@@ -78,6 +79,7 @@
                   addNewStudent(studentsTable, abstractStudentId, studentId, studentName);
                 } 
               }
+              studentsTable.reattachToDom();
             break;
           }
         });
@@ -130,7 +132,7 @@
         <c:forEach var="user" items="${studentGroup.users}">
         usersTable.addRow([
           ${user.user.id},
-          '${fn:replace(user.user.fullName, "'", "\\'")}',
+          '${fn:escapeXml(user.user.fullName)}',
           '',
           ${user.id}
         ]);
@@ -155,6 +157,7 @@
           switch (event.name) {
             case 'okClick':
               var usersTable = getIxTableById('usersTable');
+              usersTable.detachFromDom();
               for (var i = 0, len = event.results.users.length; i < len; i++) {
                 var userId = event.results.users[i].id;
                 var userName = event.results.users[i].name;
@@ -163,6 +166,7 @@
                   usersTable.addRow([userId, userName, '', '']);
                 } 
               }
+              usersTable.reattachToDom();
             break;
           }
         });

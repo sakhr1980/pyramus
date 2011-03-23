@@ -85,9 +85,11 @@
           }]
         });
 
+        var rows = new Array();
         <c:forEach var="gradingScale" items="${gradingScales}">
-          gradingScalesTable.addRow(['${gradingScale.name}', null, null, '${gradingScale.id}']);
+          rows.push(['${gradingScale.name}', null, null, '${gradingScale.id}']);
         </c:forEach>
+        gradingScalesTable.addRows(rows);
       };
     </script>
     

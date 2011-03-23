@@ -194,7 +194,7 @@
           }]        
         });
 
-        studentsTable.detachFromDom();
+        var rows = new Array();
         <c:forEach var="courseStudent" items="${courseStudents}">
           <c:choose>
             <c:when test="${courseStudent.lodging}">
@@ -218,7 +218,7 @@
             <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
           </c:if>
           
-          studentsTable.addRow([
+          rows.push([
             "", 
             "${fn:escapeXml(courseStudent.student.lastName)}, ${fn:escapeXml(courseStudent.student.firstName)}", 
             "${studyProgrammeName}",
@@ -231,7 +231,7 @@
             ''
           ]);
         </c:forEach>
-        studentsTable.reattachToDom();
+        studentsTable.addRows(rows);
       }
 
       function setupRelatedCommands() {

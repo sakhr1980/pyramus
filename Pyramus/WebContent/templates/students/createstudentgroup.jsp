@@ -69,6 +69,7 @@
           switch (event.name) {
             case 'okClick':
               var studentsTable = getIxTableById('studentsTable');
+              studentsTable.detachFromDom();
               for (var i = 0, len = event.results.students.length; i < len; i++) {
                 var abstractStudentId = event.results.students[i].abstractStudentId;
                 var studentId = event.results.students[i].id;
@@ -78,6 +79,7 @@
                   addNewStudent(studentsTable, abstractStudentId, studentId, studentName);
                 } 
               }
+              studentsTable.reattachToDom();
             break;
           }
         });
@@ -143,6 +145,7 @@
           switch (event.name) {
             case 'okClick':
               var usersTable = getIxTableById('usersTable');
+              usersTable.detachFromDom();
               for (var i = 0, len = event.results.users.length; i < len; i++) {
                 var userId = event.results.users[i].id;
                 var userName = event.results.users[i].name;
@@ -151,6 +154,7 @@
                   usersTable.addRow([userId, userName, '']);
                 } 
               }
+              usersTable.reattachToDom();
             break;
           }
         });
@@ -160,8 +164,9 @@
       function getUserRowIndex(userId) {
         var table = getIxTableById('usersTable');
         if (table) {
+          var userIdColumn = table.getNamedColumnIndex('userId');
           for (var i = 0; i < table.getRowCount(); i++) {
-            var tableUserId = table.getCellValue(i, table.getNamedColumnIndex('userId'));
+            var tableUserId = table.getCellValue(i, userIdColumn);
             if (tableUserId == userId) {
               return i;
             }

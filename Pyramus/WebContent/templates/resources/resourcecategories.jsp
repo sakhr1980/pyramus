@@ -135,7 +135,7 @@
         <c:forEach var="resourceCategory" items="${resourceCategories}">
           rowIndex = resourceCategoriesTable.addRow([
             '',
-            '${fn:replace(resourceCategory.name, "'", "\\'")}',
+            '${fn:escapeXml(resourceCategory.name)}',
             '',
             '',
             ${resourceCategory.id},

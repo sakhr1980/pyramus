@@ -72,7 +72,7 @@
 	          case 'okClick':
 	            var modulesTable = getIxTableById('modulesTable');
 	            var coursesTable = getIxTableById('coursesTable');
-              
+				modulesTable.detachFromDom();              
 	            for (var i = 0, len = event.results.modules.length; i < len; i++) {
 	              var moduleId = event.results.modules[i].id;
 	              var moduleName = event.results.modules[i].name;
@@ -85,6 +85,7 @@
 	                }
 	              }
 	            }
+                modulesTable.reattachToDom();              
 	            
 	            checkModulesMessage();
 	            
@@ -112,7 +113,7 @@
           switch (event.name) {
             case 'okClick':
               var coursesTable = getIxTableById('coursesTable');
-              
+              coursesTable.detachFromDom();
               for (var i = 0, len = event.results.courses.length; i < len; i++) {
                 var courseId = event.results.courses[i].id;
                 var moduleId = event.results.courses[i].moduleId;
@@ -141,8 +142,8 @@
                 if (moduleTablesRow >= 0) { 
                   moduleTables.hideRow(moduleTablesRow);
                 }
-
               }
+              coursesTable.reattachToDom();
               
               checkModulesMessage();
               
@@ -459,7 +460,7 @@
         var rowId;
         <c:forEach var="studentProjectModule" items="${studentProjectModules}">
           rowId = modulesTable.addRow([
-            '${fn:replace(studentProjectModule.studentProjectModule.module.name, "'", "\\'")}',
+            '${fn:escapeXml(studentProjectModule.studentProjectModule.module.name)}',
             ${studentProjectModule.studentProjectModule.academicTerm.id},
             '${studentProjectModule.studentProjectModule.optionality}',
             '',
@@ -486,7 +487,7 @@
 		      </c:choose>
         
 	        rowId = coursesTable.addRow([
-	          '${fn:replace(courseName, "'", "\\'")}',
+	          '${fn:escapeXml(courseName)}',
 	          '${courseStudent.participationType.name}',
 	          ${courseStudent.course.beginDate.time},
 	          ${courseStudent.course.endDate.time},

@@ -49,15 +49,17 @@
           var dlg = event.dialog;
           switch (event.name) {
             case 'okClick':
+              var modulesTable = getIxTableById('modulesTable');
+              modulesTable.detachFromDom();
               for (var i = 0, len = event.results.modules.length; i < len; i++) {
                 var moduleId = event.results.modules[i].id;
                 var moduleName = event.results.modules[i].name;
                 var index = getModuleRowIndex('modulesTable', moduleId);
                 if (index == -1) {
-                  var modulesTable = getIxTableById('modulesTable');
                   modulesTable.addRow([moduleName, 0, '', moduleId, -1]);
                 }
               }
+              modulesTable.reattachToDom();
               if (getIxTableById('modulesTable').getRowCount() > 0) {
                 $('noModulesAddedMessageContainer').setStyle({
                   display: 'none'
@@ -180,7 +182,7 @@
             var projectModules = jsonResponse.projectModules;
             for (var i = 0; i < projectModules.length; i++) {
               modulesTable.addRow([
-                  projectModules[i].name,
+                  projectModules[i].name.escapeHTML(),
                   projectModules[i].optionality,
                   '',
                   projectModules[i].moduleId,

@@ -34,6 +34,7 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -105,8 +106,7 @@
             
               dialog.open();
             },
-            paramName: 'archiveButton',
-            hidden: true
+            paramName: 'archiveButton'
           }, {
             right: 8,
             width: 30,
@@ -132,19 +132,19 @@
           }]
         });
 
-        var rowIndex;
+        var rows = new Array();
         <c:forEach var="studyProgrammeCategory" items="${studyProgrammeCategories}">
-          rowIndex = studyProgrammeCategoriesTable.addRow([
+          rows.push([
             '',
-            '${fn:replace(studyProgrammeCategory.name, "'", "\\'")}',
+            '${fn:escapeXml(studyProgrammeCategory.name)}',
             '',
             '',
             ${studyProgrammeCategory.id},
             0
           ]);
-          studyProgrammeCategoriesTable.showCell(rowIndex, studyProgrammeCategoriesTable.getNamedColumnIndex('archiveButton'));
         </c:forEach>
-
+        studyProgrammeCategoriesTable.addRows(rows);
+        
         if (studyProgrammeCategoriesTable.getRowCount() > 0) {
           $('noStudyProgrammeCategoriesAddedMessageContainer').setStyle({
             display: 'none'

@@ -93,6 +93,8 @@
           var dlg = event.dialog;
           switch (event.name) {
             case 'okClick':
+              var resourcesTable = getIxTableById(targetTableId);
+              resourcesTable.detachFromDom();
               for (var i = 0, len = event.results.resources.length; i < len; i++) {
                 var resourceId = event.results.resources[i].id;
                 var resourceName = event.results.resources[i].name;
@@ -100,10 +102,10 @@
                 var resourceHourlyCost = event.results.resources[i].hourlyCost;
                 var index = getResourceRowIndex(targetTableId, resourceId);
                 if (index == -1) {
-                  var resourcesTable = getIxTableById(targetTableId);
                   resourcesTable.addRow([-1, resourceId, resourceName, 0, resourceHourlyCost, 0, resourceUnitCost, 0, '']);
                 }
               }
+              resourcesTable.reattachToDom();
             break;
           }
         });
@@ -150,6 +152,7 @@
           switch (event.name) {
             case 'okClick':
               var studentsTable = getIxTableById('studentsTable');
+              studentsTable.detachFromDom();
               for (var i = 0, len = event.results.students.length; i < len; i++) {
                 var abstractStudentId = event.results.students[i].abstractStudentId;
                 var studentId = event.results.students[i].id;
@@ -160,6 +163,7 @@
                   addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName, lodging);
                 } 
               }
+              studentsTable.reattachToDom();
             break;
           }
         });
@@ -255,7 +259,7 @@
           basicResourcesTable.addRow([
             ${courseResource.id},
             ${courseResource.resource.id},
-            '${fn:replace(courseResource.resource.name, "'", "\\'")}',
+            '${fn:escapeXml(courseResource.resource.name)}',
             ${courseResource.hours},
             ${courseResource.hourlyCost.amount},
             ${courseResource.units},
@@ -271,7 +275,7 @@
           studentResourcesTable.addRow([
             ${courseResource.id},
             ${courseResource.resource.id},
-            '${fn:replace(courseResource.resource.name, "'", "\\'")}',
+            '${fn:escapeXml(courseResource.resource.name)}',
             ${courseResource.hours},
             ${courseResource.hourlyCost.amount},
             ${courseResource.units},
@@ -287,7 +291,7 @@
           gradeResourcesTable.addRow([
             ${courseResource.id},
             ${courseResource.resource.id},
-            '${fn:replace(courseResource.resource.name, "'", "\\'")}',
+            '${fn:escapeXml(courseResource.resource.name)}',
             ${courseResource.hours},
             ${courseResource.hourlyCost.amount},
             ${courseResource.units},
@@ -302,7 +306,7 @@
         <c:forEach var="otherCost" items="${course.otherCosts}">
           otherCostsTable.addRow([
             ${otherCost.id},
-            '${fn:replace(otherCost.name, "'", "\\'")}',
+            '${fn:escapeXml(otherCost.name)}',
             ${otherCost.cost.amount},
             '']);
         </c:forEach>
@@ -354,7 +358,7 @@
           personnelTable.addRow([
             ${courseUser.id},
             ${courseUser.user.id},
-            '${fn:replace(courseUser.user.lastName, "'", "\\'")}, ${fn:replace(courseUser.user.firstName, "'", "\\'")}',
+            '${fn:escapeXml(courseUser.user.lastName)}, ${fn:escapeXml(courseUser.user.firstName)}',
             ${courseUser.role.id},
             ''
           ]);
@@ -379,6 +383,7 @@
           switch (event.name) {
             case 'okClick':
               var personnelTable = getIxTableById('personnelTable');
+              personnelTable.detachFromDom();
               for (var i = 0, len = event.results.users.length; i < len; i++) {
                 var userId = event.results.users[i].id;
                 var userName = event.results.users[i].name;
@@ -387,6 +392,7 @@
                   personnelTable.addRow([-1, userId, userName, '', '']);
                 } 
               }
+              personnelTable.reattachToDom();
             break;
           }
         });
@@ -1164,7 +1170,7 @@
             
             selectController.addOption(cellEditor, 
                 ${courseStudentStudent.id},
-                '${fn:replace(studyProgrammeName, "'", "\\'")}',
+                '${fn:escapeXml(studyProgrammeName)}',
                 ${courseStudent.student.id == courseStudentStudent.id}
              );
           </c:forEach>

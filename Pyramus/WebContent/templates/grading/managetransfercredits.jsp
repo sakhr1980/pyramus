@@ -35,7 +35,7 @@
 
         IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, subjectColumnIndex), '');
         IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, schoolColumnIndex), '');
-        IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(loggedUserName, "'", "\\'")}');
+        IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(loggedUserName)}');
 
         // Hide modify button for new entries
         table.hideCell(rowIndex, modifyColumnIndex);
@@ -79,7 +79,7 @@
               
               rowDatas.push([
 	              '',
-	              template.courseName,
+	              template.courseName.escapeHTML(),
 	              template.courseOptionality,                                  
 	              template.courseNumber,
 	              -1,           
@@ -106,7 +106,7 @@
               var userCellEditor = table.getCellEditor(i + rowCountBefore, userColumnIndex);
               var subjectCellEditor = table.getCellEditor(i + rowCountBefore, subjectColumnIndex);
               
-              IxTableControllers.getController('autoCompleteSelect').setDisplayValue(userCellEditor, '${fn:replace(loggedUserName, "'", "\\'")}');
+              IxTableControllers.getController('autoCompleteSelect').setDisplayValue(userCellEditor, '${fn:escapeXml(loggedUserName)}');
               IxTableControllers.getController('autoCompleteSelect').setDisplayValue(subjectCellEditor, template.subjectName);
             }
             
@@ -230,10 +230,10 @@
             paramName: 'grade',
             options: [
               <c:forEach var="gradingScale" items="${gradingScales}" varStatus="vs">
-                {text: "${fn:replace(gradingScale.name, "'", "\\'")}", optionGroup: true, 
+                {text: "${fn:escapeXml(gradingScale.name)}", optionGroup: true, 
                   options: [
                     <c:forEach var="grade" items="${gradingScale.grades}" varStatus="vs2">
-                      {text: "${fn:replace(grade.name, "'", "\\'")}", value: ${grade.id}}
+                      {text: "${fn:escapeXml(grade.name)}", value: ${grade.id}}
                       <c:if test="${not vs2.last}">,</c:if>
                     </c:forEach>
                   ]
@@ -307,7 +307,7 @@
             paramName: 'courseLengthUnit',
             options: [
               <c:forEach var="timeUnit" items="${timeUnits}" varStatus="vs">
-                {text: "${fn:replace(timeUnit.name, "'", "\\'")}", value: ${timeUnit.id}}
+                {text: "${fn:escapeXml(timeUnit.name)}", value: ${timeUnit.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],            
@@ -470,10 +470,11 @@
         var archiveButtonColumnIndex = transferCreditsTable.getNamedColumnIndex('archiveButton');
         
         var rowIndex;
+        transferCreditsTable.detachFromDom();
         <c:forEach var="transferCredit" items="${transferCredits}">
           rowIndex = transferCreditsTable.addRow([
             '',
-            '${fn:replace(transferCredit.courseName, "'", "\\'")}',
+            '${fn:escapeXml(transferCredit.courseName)}',
             '${transferCredit.optionality}',                                  
             ${transferCredit.courseNumber},
             ${transferCredit.grade.id},           
@@ -490,11 +491,11 @@
           
           transferCreditsTable.hideCell(rowIndex, removeButtonColumnIndex);
           transferCreditsTable.showCell(rowIndex, archiveButtonColumnIndex);
-          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:replace(transferCredit.subject.name, "'", "\\'")}');
-          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:replace(transferCredit.school.name, "'", "\\'")}');
-          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:replace(transferCredit.assessingUser.fullName, "'", "\\'")}');
-          
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:escapeXml(transferCredit.subject.name)}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:escapeXml(transferCredit.school.name)}');
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(transferCredit.assessingUser.fullName)}');
         </c:forEach>
+        transferCreditsTable.reattachToDom();
 
         if (transferCreditsTable.getRowCount() > 0) {
           $('noTransferCreditsAddedMessageContainer').setStyle({

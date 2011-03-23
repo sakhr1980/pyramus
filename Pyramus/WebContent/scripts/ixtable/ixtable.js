@@ -1009,7 +1009,7 @@ IxTableEditorController = Class.create({
       viewer._fieldContent.innerHTML = '';
     } else {
       viewer._fieldValue.value = value;
-      viewer._fieldContent.innerHTML = displayValue ? displayValue : value;
+      viewer._fieldContent.innerHTML = displayValue ? displayValue : String(value).escapeHTML();
     }
   },
   _getViewerValue: function (viewer) {
@@ -1044,9 +1044,8 @@ IxTableEditorController = Class.create({
       delete handlerInstance._disabledHiddenElement;
     }
   },
-  _updateDisabledHiddenElement: function (handlerInstance) {
+  _updateDisabledHiddenElement: function (handlerInstance, value) {
     if (handlerInstance._disabledHiddenElement) {
-      var value = this.getEditorValue(handlerInstance);
       handlerInstance._disabledHiddenElement.value = value;
     }
   },
@@ -1057,6 +1056,14 @@ IxTableEditorController = Class.create({
     this.copyCellValue(target, source);
     return this.setEditable(target, this.getEditable(source));
     // TODO: disabled, datatype yms tiedot
+  },
+  _unescapeHtmlEntities: function(value) {
+    if (value) {
+      var tmp = document.createElement("pre");
+      tmp.innerHTML = value;
+      value = tmp.firstChild.nodeValue;
+    }
+    return value;
   }
 });
 
@@ -1137,7 +1144,7 @@ IxHiddenTableEditorController = Class.create(IxTableEditorController, {
     return handlerInstance.value;
   },
   setEditorValue: function ($super, handlerInstance, value) {
-    handlerInstance.value = value == undefined ? '' : value;
+    handlerInstance.value = value == undefined ? '' : this._unescapeHtmlEntities(value);
   },
   destroyEditor: function ($super, handlerInstance) {
     handlerInstance.remove();
@@ -1878,12 +1885,12 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
       return handlerInstance.value;
   },
   setEditorValue: function ($super, handlerInstance, value) {
+    value = this._unescapeHtmlEntities(value);
     if (handlerInstance._editable != true) {
       this._setViewerValue(handlerInstance, value);
     } else {
       if (this.isDisabled(handlerInstance))
         this._updateDisabledHiddenElement(handlerInstance, value);
-      
       handlerInstance.value = value;
     }
   },
