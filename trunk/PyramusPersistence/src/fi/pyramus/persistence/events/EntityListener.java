@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,7 +42,7 @@ public class EntityListener extends EJB3FlushEventListener {
 
   @PostPersist
   void onPostPersist(Object entity) {
-    if (isObservedEntity(entity.getClass().getSimpleName())) {
+    if (TrackedEntityUtils.isTrackedEntity(entity.getClass().getName())) {
       try {
         Session session = createSession();
 
@@ -66,9 +65,9 @@ public class EntityListener extends EJB3FlushEventListener {
   void onPostLoad(Object entity) {
     SystemDAO systemDAO = new SystemDAO();
 
-    String entityName = entity.getClass().getSimpleName();
+    String entityName = entity.getClass().getName();
 
-    if (isObservedEntity(entityName)) {
+    if (TrackedEntityUtils.isTrackedEntity(entityName)) {
       Object id = getEntityId(entity);
       if (id != null) {
         Map<String, Object> updateBatch = getEntityStateData().getUpdateBatch(entityName, id);
@@ -80,7 +79,7 @@ public class EntityListener extends EJB3FlushEventListener {
             if (!attribute.isCollection() && !attribute.isAssociation()) {
               String fieldName = attribute.getName();
 
-              if (isObservedField(entityName, fieldName)) {
+              if (TrackedEntityUtils.isTrackedProperty(entityName, fieldName)) {
                 try {
                   updateBatch.put(fieldName, getFieldValue(entity, fieldName));
                 } catch (IllegalArgumentException e) {
@@ -100,9 +99,9 @@ public class EntityListener extends EJB3FlushEventListener {
 
   @PostUpdate
   void onPostUpdate(Object entity) {
-    String entityName = entity.getClass().getSimpleName();
+    String entityName = entity.getClass().getName();
 
-    if (isObservedEntity(entityName)) {
+    if (TrackedEntityUtils.isTrackedEntity(entityName)) {
       Object id = getEntityId(entity);
       if (id != null) {
         Map<String, Object> updateBatch = getEntityStateData().getUpdateBatch(entityName, id);
@@ -110,13 +109,11 @@ public class EntityListener extends EJB3FlushEventListener {
           throw new EventException("could not find update batch");
 
         Map<String, Object[]> changedFields = new HashMap<String, Object[]>();
-
         for (String fieldName : updateBatch.keySet()) {
           try {
             Object oldValue = updateBatch.get(fieldName);
             Object newValue = getFieldValue(entity, fieldName);
-
-            if ((oldValue == null && newValue != null) || (!oldValue.equals(newValue))) {
+            if ((oldValue != newValue) && ((oldValue == null) || (!oldValue.equals(newValue)))) {
               changedFields.put(fieldName, new Object[] { oldValue, newValue });
             }
           } catch (SecurityException e) {
@@ -129,9 +126,8 @@ public class EntityListener extends EJB3FlushEventListener {
             throw new EventException(e);
           }
         }
-
+        
         getEntityStateData().removeUpdateBatch(entityName, id);
-
         if (changedFields.size() > 0) {
           try {
             Session session = createSession();
@@ -147,10 +143,13 @@ public class EntityListener extends EJB3FlushEventListener {
               Object oldValue = changedFields.get(fieldName)[0];
               Object newValue = changedFields.get(fieldName)[1];
               message.setString("field." + i + ".name", fieldName);
-              message.setObject("field." + i + ".oldValue", oldValue);
-              message.setObject("field." + i + ".newValue", newValue);
+              if (oldValue != null)
+                message.setObject("field." + i + ".oldValue", oldValue);
+              if (newValue != null)
+                message.setObject("field." + i + ".newValue", newValue);
               i++;
             }
+
             message.setInt("fieldCount", i);
             sendMessage(session, message);
           } catch (JMSException e) {
@@ -165,7 +164,7 @@ public class EntityListener extends EJB3FlushEventListener {
 
   @PreRemove
   void onPreRemove(Object entity) {
-    if (isObservedEntity(entity.getClass().getSimpleName())) {
+    if (TrackedEntityUtils.isTrackedEntity(entity.getClass().getName())) {
       try {
         Session session = createSession();
 
@@ -253,24 +252,6 @@ public class EntityListener extends EJB3FlushEventListener {
     return (Topic) new InitialContext().lookup("jms/JPAEvents");
   }
 
-  private static boolean isObservedEntity(String entityName) {
-    return observedEntities.get(entityName) != null;
-  }
-
-  private static boolean isObservedField(String entityName, String field) {
-    Set<String> fields = observedEntities.get(entityName);
-    return field != null && fields.contains(field);
-  }
-
-  private static void addObservedField(String entity, String field) {
-    Set<String> fields = observedEntities.get(entity);
-    if (fields == null) {
-      fields = new HashSet<String>();
-      observedEntities.put(entity, fields);
-    }
-    fields.add(field);
-  }
-
   private static EntityStateData getEntityStateData() {
     EntityStateData entityStateData = THREAD_LOCAL.get();
     if (entityStateData == null) {
@@ -286,10 +267,4 @@ public class EntityListener extends EJB3FlushEventListener {
   }
   
   private static final ThreadLocal<EntityStateData> THREAD_LOCAL = new ThreadLocal<EntityStateData>();
-  private static Map<String, Set<String>> observedEntities = new HashMap<String, Set<String>>();
-
-  static {
-    addObservedField("Module", "courseNumber");
-
-  }
-}
+ }

@@ -52,6 +52,10 @@ public class DAOFactory {
     return new HelpDAO();
   }
   
+  public ChangeLogDAO getChangeLogDAO() {
+    return new ChangeLogDAO();
+  }
+  
   public SystemDAO getSystemDAO() {
     return new SystemDAO();
   }
