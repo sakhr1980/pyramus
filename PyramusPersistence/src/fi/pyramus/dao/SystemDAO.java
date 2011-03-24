@@ -133,10 +133,14 @@ public class SystemDAO extends PyramusDAO {
     return entityManager.find(referencedClass, id);
   }
   
+  public SingularAttribute<?, ?> getEntityIdAttribute(Class<?> entityClass) {
+    EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
+    return entityType.getId(entityType.getIdType().getJavaType());
+  }
+  
   public Object getEntityId(Object entity) {
     Class<?> entityClass = entity.getClass();
-    EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
-    SingularAttribute<?, ?> idAttribute = entityType.getId(entityType.getIdType().getJavaType());
+    SingularAttribute<?, ?> idAttribute = getEntityIdAttribute(entityClass);
     Field idField = getField(entityClass, idAttribute.getName());
     idField.setAccessible(true);
     try {
@@ -146,6 +150,10 @@ public class SystemDAO extends PyramusDAO {
     } catch (IllegalAccessException e) {
       return null;
     }
+  }
+  
+  public Set<EntityType<?>> getEntities() {
+    return getEntityManager().getMetamodel().getEntities();
   }
   
   public Set<javax.persistence.metamodel.Attribute<?, ?>> getEntityAttributes(Class<?> entityClass) {
