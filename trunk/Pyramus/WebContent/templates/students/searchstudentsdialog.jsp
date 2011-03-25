@@ -132,7 +132,7 @@
               imgsrc: GLOBAL_contextPath + '/gfx/info.png',
               tooltip: '<fmt:message key="students.searchStudentsDialog.searchResultsTableStudentInfoTooltip"/>',
               onclick: function (event) {
-                var table = event.tableObject;
+                var table = event.tableComponent;
                 var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
                 var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
                 openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -145,7 +145,7 @@
               selectable: false,
               paramName: 'name',
               onclick: function (event) {
-                var table = event.tableObject;
+                var table = event.tableComponent;
                 table.disableRow(event.row);
                 var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
                 var studentName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
@@ -178,7 +178,7 @@
               selectable: false,
               paramName: 'name',
               onclick: function (event) {
-                var table = event.tableObject;
+                var table = event.tableComponent;
                 var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
                 table.deleteRow(event.row);
                 var rowIndex = getStudentRowIndex('searchResultsTable', studentId);

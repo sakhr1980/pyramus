@@ -49,7 +49,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="projects.searchStudentProjects.studentProjectTableEditStudentProjectTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var studentProjectId = table.getCellValue(event.row, table.getNamedColumnIndex('studentProjectId'));
               redirectTo(GLOBAL_contextPath + '/projects/editstudentproject.page?studentproject=' + studentProjectId);
             } 
@@ -60,7 +60,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="projects.searchStudentProjects.studentProjectTableArchiveProjectTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var studentProjectId = table.getCellValue(event.row, table.getNamedColumnIndex('studentProjectId'));
               var projectName = table.getCellValue(event.row, table.getNamedColumnIndex('projectName'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=projects.searchStudentProjects.studentProjectArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(projectName);

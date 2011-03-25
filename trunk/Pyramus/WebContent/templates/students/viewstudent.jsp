@@ -158,7 +158,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
             tooltip: '<fmt:message key="students.viewStudent.coursesTableEvaluateStudentTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
               redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             } 
@@ -169,7 +169,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="students.viewStudent.courseTableViewTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/viewcourse.page?course=' + courseId);
             }
@@ -381,7 +381,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="students.viewStudent.courseAssessmentsTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
               redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             }

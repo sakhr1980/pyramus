@@ -2,8 +2,6 @@ package fi.pyramus.json.settings;
 
 import java.util.Date;
 
-import org.apache.commons.lang.math.NumberUtils;
-
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -16,15 +14,14 @@ public class SaveAcademicTermsJSONRequestController implements JSONRequestContro
   public void process(JSONRequestContext jsonRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
 
-    int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("termsTable.rowCount")).intValue();
+    int rowCount = jsonRequestContext.getInteger("termsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
       String colPrefix = "termsTable." + i;
-      Long termId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".termId"));
-      String name = jsonRequestContext.getRequest().getParameter(colPrefix + ".name");
-      Date startDate = new Date(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".startDate")));
-      Date endDate = new Date(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".endDate")));
-      boolean modified = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter(colPrefix + ".modified")) == 1;
-   
+      Long termId = jsonRequestContext.getLong(colPrefix + ".termId");
+      String name = jsonRequestContext.getString(colPrefix + ".name");
+      Date startDate =  jsonRequestContext.getDate(colPrefix + ".startDate");
+      Date endDate = jsonRequestContext.getDate(colPrefix + ".endDate");
+      boolean modified = jsonRequestContext.getInteger(colPrefix + ".modified") == 1; 
       if (termId == -1) {
         baseDAO.createAcademicTerm(name, startDate, endDate); 
       }

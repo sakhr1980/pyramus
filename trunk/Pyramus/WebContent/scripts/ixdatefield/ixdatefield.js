@@ -103,6 +103,15 @@ IxDateField = Class.create({
   getYearField: function () {
     return this._yearInput;
   },
+  addDayClass: function(className) {
+    this._dayInput.addClassName(className);
+  },
+  addMonthClass: function(className) {
+    this._monthInput.addClassName(className);
+  },
+  addYearClass: function(className) {
+    this._yearInput.addClassName(className);
+  },
   replaceNode : function(node) {
     var parent = node.parentNode;
     parent.insertBefore(this._domNode, node);

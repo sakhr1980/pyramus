@@ -121,7 +121,7 @@
             selectable: false,
             paramName: 'name',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               table.disableRow(event.row);
               var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var beginDate = table.getCellValue(event.row, table.getNamedColumnIndex('beginDate'));
@@ -156,7 +156,7 @@
             selectable: false,
             paramName: 'name',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               table.deleteRow(event.row);
               var rowIndex = getCourseRowIndex('searchResultsTable', courseId);

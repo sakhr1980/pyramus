@@ -97,8 +97,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="modules.editModule.componentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noComponentsAddedMessageContainer').setStyle({
                   display: ''
                 });
@@ -115,7 +115,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="modules.editModule.componentsTableArchiveRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var componentId = table.getCellValue(event.row, table.getNamedColumnIndex('componentId'));
               var componentName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=modules.editModule.archiveComponentConfirmDialogContent&localeParams=" + encodeURIComponent(componentName);

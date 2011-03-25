@@ -17,11 +17,11 @@
     
       function initializeTable(tableComponent) {
         for (var i = 0, l = tableComponent.getRowCount(); i < l; i++) {
-          initializeValidation(event.tableObject.getRowElement(i)); 
+          initializeValidation(event.tableComponent.getRowElement(i)); 
         };
 
         tableComponent.addListener("rowAdd", function (event) {
-          var table = event.tableObject;
+          var table = event.tableComponent;
           if (table.isDetachedFromDom()) {
             var row = event.row;
             var onAfterReattachToDom = function (e) {
@@ -30,20 +30,20 @@
             };
             table.addListener("afterReattachToDom", onAfterReattachToDom); 
           } else {
-            initializeValidation(event.tableObject.getRowElement(event.row));
+            initializeValidation(event.tableComponent.getRowElement(event.row));
           }
         });
         
         tableComponent.addListener("beforeRowDelete", function (event) {
-          deinitializeValidation(event.tableObject.getRowElement(event.row)); 
+          deinitializeValidation(event.tableComponent.getRowElement(event.row)); 
         });
 
         // tableComponent.addListener("beforeRowDelete", function (event) {
-        //  deinitializeValidation(event.tableObject.domNode); 
+        //  deinitializeValidation(event.tableComponent.domNode); 
         // });
 
         // tableComponent.addListener("rowDelete", function (event) {
-        //  initializeValidation(event.tableObject.domNode); 
+        //  initializeValidation(event.tableComponent.domNode); 
         //  revalidateAll();  
         // });
 

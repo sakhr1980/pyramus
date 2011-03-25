@@ -35,7 +35,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/info.png',
             tooltip: '<fmt:message key="courses.viewCourse.studentsTableStudentInfoTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
               openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -176,7 +176,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="courses.viewCourse.studentsTableViewStudentTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=' + abstractStudentId);
             }
@@ -187,7 +187,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.viewCourse.studentsTableEditStudentTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               redirectTo(GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=' + abstractStudentId);
             }

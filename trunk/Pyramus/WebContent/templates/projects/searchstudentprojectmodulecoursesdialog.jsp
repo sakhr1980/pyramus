@@ -42,7 +42,7 @@
 
       function onLoad(event) {
         var onCellClick = function (event) {
-          var table = event.tableObject;
+          var table = event.tableComponent;
           selectedCourseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
           getDialog().clickOk();
         };

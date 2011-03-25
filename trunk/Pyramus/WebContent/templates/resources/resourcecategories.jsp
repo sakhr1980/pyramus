@@ -47,7 +47,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="resources.resourceCategories.resourceCategoriesTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               for (var i = 0; i < table.getColumnCount(); i++) {
                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
               }
@@ -68,7 +68,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="resources.resourceCategories.resourceCategoriesTableArchiveTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var resourceCategoryId = table.getCellValue(event.row, table.getNamedColumnIndex('resourceCategoryId'));
               var resourceCategoryName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=resources.resourceCategories.resourceCategoryArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(resourceCategoryName);
@@ -113,8 +113,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="resources.resourceCategories.resourceCategoriesTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noResourceCategoriesAddedMessageContainer').setStyle({
                   display: ''
                 });

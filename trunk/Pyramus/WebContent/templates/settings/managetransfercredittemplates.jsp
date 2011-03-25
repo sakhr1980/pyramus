@@ -33,7 +33,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplatesTableEditButtonHeader"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var transferCreditTemplateId = table.getCellValue(event.row, table.getNamedColumnIndex('transferCreditTemplateId'));
               redirectTo(GLOBAL_contextPath + '/settings/edittransfercredittemplate.page?transferCreditTemplate=' + transferCreditTemplateId);
             }
@@ -44,7 +44,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplatesTableDeleteButtonHeader"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var transferCreditTemplateName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var transferCreditTemplateId = table.getCellValue(event.row, table.getNamedColumnIndex('transferCreditTemplateId'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.manageTransferCreditTemplates.transferCreditTemplateDeleteConfirmDialogContent&localeParams=" + encodeURIComponent(transferCreditTemplateName);

@@ -124,7 +124,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="students.searchStudentGroups.resultsTableViewRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var studentGroupId = table.getCellValue(event.row, table.getNamedColumnIndex('studentGroupId'));
               redirectTo(GLOBAL_contextPath + '/students/viewstudentgroup.page?studentgroup=' + studentGroupId);
             } 
@@ -135,7 +135,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="students.searchStudentGroups.resultsTableEditRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var studentGroupId = table.getCellValue(event.row, table.getNamedColumnIndex('studentGroupId'));
               redirectTo(GLOBAL_contextPath + '/students/editstudentgroup.page?studentgroup=' + studentGroupId);
             } 
@@ -146,7 +146,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="students.searchStudentGroups.resultsTableArchiveRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var studentGroupId = table.getCellValue(event.row, table.getNamedColumnIndex('studentGroupId'));
               var studentGroupName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.searchStudentGroups.archiveConfirmDialogContent&localeParams=" + encodeURIComponent(studentGroupName);

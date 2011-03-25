@@ -87,12 +87,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="students.createStudent.emailTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         emailTable.addListener("rowAdd", function (event) {
-          var emailTable = event.tableObject; 
+          var emailTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           emailTable.showCell(event.row, emailTable.getNamedColumnIndex(enabledButton));
         });
@@ -167,7 +167,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-add.png',
             tooltip: '<fmt:message key="students.createStudent.addressTableAddTooltip"/>',
             onclick: function (event) {
-              addAddressTableRow(event.tableObject);
+              addAddressTableRow(event.tableComponent);
             }
           }, {
             width: 30,
@@ -178,12 +178,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="students.createStudent.addressTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         addressTable.addListener("rowAdd", function (event) {
-          var addressTable = event.tableObject; 
+          var addressTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           addressTable.showCell(event.row, addressTable.getNamedColumnIndex(enabledButton));
         });
@@ -230,7 +230,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-add.png',
             tooltip: '<fmt:message key="students.createStudent.phoneTableAddTooltip"/>',
             onclick: function (event) {
-              addPhoneTableRow(event.tableObject);
+              addPhoneTableRow(event.tableComponent);
             }
           }, {
             width: 30,
@@ -241,12 +241,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="students.createStudent.phoneTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         phoneTable.addListener("rowAdd", function (event) {
-          var phoneTable = event.tableObject; 
+          var phoneTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           phoneTable.showCell(event.row, phoneTable.getNamedColumnIndex(enabledButton));
         });
@@ -267,7 +267,7 @@
                 imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
                 tooltip: '<fmt:message key="students.createStudent.variablesTableEditTooltip"/>',
                 onclick: function (event) {
-                  var table = event.tableObject;
+                  var table = event.tableComponent;
                   var valueColumn = table.getNamedColumnIndex('value');
                   table.setCellEditable(event.row, valueColumn, table.isCellEditable(event.row, valueColumn) == false);
                 }

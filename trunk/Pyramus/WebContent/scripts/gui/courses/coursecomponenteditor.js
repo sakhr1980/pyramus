@@ -136,7 +136,7 @@ CourseComponentEditor = Class.create({
         hidden: true,
         imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
         onclick: function (event) {
-          event.tableObject.deleteRow(event.row);
+          event.tableComponent.deleteRow(event.row);
         }
       }, {
         dataType: 'button',
@@ -144,7 +144,7 @@ CourseComponentEditor = Class.create({
         hidden: true,
         imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
         onclick: function (event) {
-          var table = event.tableObject;
+          var table = event.tableComponent;
           var courseComponentResourceId = table.getCellValue(event.row, table.getNamedColumnIndex('id'));
           var name = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
           var url = GLOBAL_contextPath + "/simpledialog.page?localeId=" + _this._options.resourceDeleteConfirmContentLocale + "&localeParams=" + encodeURIComponent(name);
@@ -202,7 +202,7 @@ CourseComponentEditor = Class.create({
     
     var _this = this;
     resourcesTable.addListener("rowDelete", function (event) {
-      var table = event.tableObject;
+      var table = event.tableComponent;
       if (table.getRowCount() <= 0) {
         categoryElement.hide(); 
       }
@@ -465,7 +465,7 @@ CourseComponentEditor = Class.create({
         imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
         tooltip: this._options.archiveButtonTooltip,
         onclick: function (event) {
-          var table = event.tableObject;
+          var table = event.tableComponent;
           var componentId = table.getCellValue(event.row, table.getNamedColumnIndex('componentId'));
           var name = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
           var url = GLOBAL_contextPath + "/simpledialog.page?localeId=" + _this._options.archiveConfirmContentLocale + "&localeParams=" + encodeURIComponent(name);

@@ -116,7 +116,7 @@
             selectable: false,
             paramName: 'name',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var userId = table.getCellValue(event.row, table.getNamedColumnIndex('userId'));
               var userName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               $$('.searchUserDialogTableSelectedRow').each(function (item) {

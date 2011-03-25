@@ -255,7 +255,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.personnelTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           }]        
         });
@@ -424,7 +424,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.basicResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -497,7 +497,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.studentResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -570,7 +570,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.gradeResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -613,7 +613,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.otherCostsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -646,7 +646,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/info.png',
             tooltip: '<fmt:message key="courses.createCourse.studentsTableStudentInfoTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
               openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -828,7 +828,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
               if (studentsTable.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''

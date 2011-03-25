@@ -40,7 +40,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="users.searchUsers.userTableEditUserTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var userId = table.getCellValue(event.row, table.getNamedColumnIndex('userId'));
               redirectTo(GLOBAL_contextPath + '/users/edituser.page?userId=' + userId);
             }

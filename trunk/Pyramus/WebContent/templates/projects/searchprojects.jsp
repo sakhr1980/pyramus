@@ -43,7 +43,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="projects.searchProjects.projectTableEditProjectTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var projectId = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
               redirectTo(GLOBAL_contextPath + '/projects/editproject.page?project=' + projectId);
             }
@@ -54,7 +54,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="projects.searchProjects.projectTableArchiveProjectTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var projectId = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
               var projectName = table.getCellValue(event.row, table.getNamedColumnIndex('projectName'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=projects.searchProjects.projectArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(projectName);

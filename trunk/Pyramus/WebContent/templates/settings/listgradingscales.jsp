@@ -32,7 +32,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.listGradingScales.gradeTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var scaleId = table.getCellValue(event.row, table.getNamedColumnIndex('scaleId'));
               redirectTo(GLOBAL_contextPath + '/settings/editgradingscale.page?gradingScaleId=' + scaleId);
             }
@@ -43,7 +43,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.listGradingScales.gradeTableArchiveTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var gradeName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var scaleId = table.getCellValue(event.row, table.getNamedColumnIndex('scaleId'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.listGradingScales.gradingScaleArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(gradeName);

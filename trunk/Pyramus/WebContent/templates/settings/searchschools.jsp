@@ -90,7 +90,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.searchSchools.schoolsTableEditSchoolTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var schoolId = table.getCellValue(event.row, table.getNamedColumnIndex('schoolId'));
               redirectTo(GLOBAL_contextPath + '/settings/editschool.page?school=' + schoolId);
             }
@@ -101,7 +101,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.searchSchools.schoolsTableArchiveSchoolTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var schoolId = table.getCellValue(event.row, table.getNamedColumnIndex('schoolId'));
               var schoolName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.searchSchools.schoolArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(schoolName);
