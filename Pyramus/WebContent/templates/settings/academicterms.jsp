@@ -26,7 +26,7 @@
 
       function addTermsTableRow() {
         var table = getIxTableById('termsTable');
-        var rowIndex = table.addRow(['', '', 0, 0, '', '', -1, 1]);
+        var rowIndex = table.addRow(['', '', '', '', '', '', -1, 1]);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -49,7 +49,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.academicTerms.academicTermTableEditAcademicTermTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               for (var i = 0; i < table.getColumnCount(); i++) {
                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
               }
@@ -86,7 +86,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.academicTerms.termsTableArchiveRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var termId = table.getCellValue(event.row, table.getNamedColumnIndex('termId'));
               var termName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.academicTerms.termArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(termName);
@@ -130,8 +130,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="settings.academicTerms.termsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noTermsAddedMessageContainer').setStyle({
                   display: ''
                 });
@@ -180,15 +180,15 @@
     <h1 class="genericPageHeader"><fmt:message key="settings.academicTerms.pageTitle"/></h1>
     
     <div id="manageAcademicTermsFormContainer"> 
-	    <div class="genericFormContainer"> 
-	      <form action="saveacademicterms.json" method="post" ix:jsonform="true"  ix:useglasspane="true">
-	  
-	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#manageAcademicTermsListTerms">
-	            <fmt:message key="settings.academicTerms.tabLabelAcademicTerms"/>
-	          </a>
-	        </div>
-	        
+      <div class="genericFormContainer"> 
+        <form action="saveacademicterms.json" method="post" ix:jsonform="true"  ix:useglasspane="true">
+    
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#manageAcademicTermsListTerms">
+              <fmt:message key="settings.academicTerms.tabLabelAcademicTerms"/>
+            </a>
+          </div>
+          
           <div id="manageAcademicTermsListTerms" class="tabContentixTableFormattedData">
             <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="addTermsTableRow();"><fmt:message key="settings.academicTerms.addTermLink"/></span>
@@ -200,14 +200,14 @@
             
             <div id="termsTable"></div>
           </div>
-	  
+    
           <div class="genericFormSubmitSectionOffTab">
             <input type="submit" class="formvalid" value="<fmt:message key="settings.academicTerms.saveButton"/>">
           </div>
 
-	      </form>
-	    </div>
-	  </div>
+        </form>
+      </div>
+    </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>

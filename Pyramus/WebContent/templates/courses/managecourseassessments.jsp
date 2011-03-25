@@ -34,7 +34,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/info.png',
             tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableStudentInfoTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
               openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -46,7 +46,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var modifiedCol = table.getNamedColumnIndex('modified');
               
               if (table.getCellValue(event.row, modifiedCol) == 0) {

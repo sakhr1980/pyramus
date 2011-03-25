@@ -350,7 +350,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.personnelTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           }]        
         });
@@ -559,7 +559,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.basicResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -635,7 +635,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.studentResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -711,7 +711,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.gradeResourcesTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -757,7 +757,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.otherCostsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           } ]
         });
@@ -790,7 +790,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/info.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableStudentInfoTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
               openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -802,7 +802,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableEditStudentTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var modified = table.getCellValue(event.row, table.getNamedColumnIndex('modified'));
               if (modified != 1) {
                 var studentId = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
@@ -1054,7 +1054,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableEvaluateStudentTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
               redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             } 
@@ -1067,7 +1067,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
               if (studentsTable.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
@@ -1083,7 +1083,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableArchiveRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
               var studentName = table.getCellValue(event.row, table.getNamedColumnIndex('studentName'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=courses.editCourse.studentArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(studentName);
@@ -1181,7 +1181,7 @@
         studentsTable.reattachToDom();
 
         studentsTable.addListener("rowAdd", function (event) {
-          var studentsTable = event.tableObject;
+          var studentsTable = event.tableComponent;
           studentsTable.showCell(event.row, studentsTable.getNamedColumnIndex("removeButton"));
         });
 

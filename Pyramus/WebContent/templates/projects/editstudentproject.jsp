@@ -72,7 +72,7 @@
           case 'okClick':
             var modulesTable = getIxTableById('modulesTable');
             var coursesTable = getIxTableById('coursesTable');
-modulesTable.detachFromDom();              
+            modulesTable.detachFromDom();              
             for (var i = 0, len = event.results.modules.length; i < len; i++) {
               var moduleId = event.results.modules[i].id;
               var moduleName = event.results.modules[i].name;
@@ -85,7 +85,7 @@ modulesTable.detachFromDom();
                 }
               }
             }
-                modulesTable.reattachToDom();              
+            modulesTable.reattachToDom();              
             
             checkModulesMessage();
             
@@ -285,7 +285,7 @@ modulesTable.detachFromDom();
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableEditModuleRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               redirectTo(GLOBAL_contextPath + '/modules/editmodule.page?module=' + moduleId);
             } 
@@ -296,7 +296,7 @@ modulesTable.detachFromDom();
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/search.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableFindCourseRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var row = event.row;
               
               var academicTermId = table.getCellValue(row, table.getNamedColumnIndex('academicTerm'));
@@ -347,7 +347,7 @@ modulesTable.detachFromDom();
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
               checkModulesMessage();
             } 
           }, {
@@ -416,7 +416,7 @@ modulesTable.detachFromDom();
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableEditCourseRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
             } 
@@ -428,16 +428,16 @@ modulesTable.detachFromDom();
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
             onclick: function (event) {
-              var moduleId = event.tableObject.getCellValue(event.row, event.tableObject.getNamedColumnIndex('moduleId'));
+              var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
               var moduleTables = getIxTableById('modulesTable');
               var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
               if (moduleTablesRow >= 0) { 
                 moduleTables.showRow(moduleTablesRow);
               }
               
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
               
-              if (event.tableObject.getRowCount() == 0) {
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noCoursesAddedMessageContainer').setStyle({
                   display: ''
                 });

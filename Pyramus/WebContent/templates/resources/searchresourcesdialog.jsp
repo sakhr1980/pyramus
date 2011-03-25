@@ -128,7 +128,7 @@
             selectable: false,
             paramName: 'name',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               table.disableRow(event.row);
               var resourceId = table.getCellValue(event.row, table.getNamedColumnIndex('resourceId'));
               var resourceName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
@@ -159,7 +159,7 @@
             selectable: false,
             paramName: 'name',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var resourceId = table.getCellValue(event.row, table.getNamedColumnIndex('resourceId'));
               table.deleteRow(event.row);
               var rowIndex = getResourceRowIndex('searchResultsTable', resourceId);

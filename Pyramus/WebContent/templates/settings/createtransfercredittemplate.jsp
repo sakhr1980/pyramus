@@ -140,8 +140,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="settings.createTransferCreditTemplate.coursesTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noCoursesAddedMessageContainer').setStyle({
                   display: ''
                 });

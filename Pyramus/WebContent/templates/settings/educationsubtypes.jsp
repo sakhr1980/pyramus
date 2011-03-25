@@ -50,7 +50,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.educationSubtypes.educationSubtypesTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var educationTypeColumn = table.getNamedColumnIndex('educationTypeId');
               var existingSubtype = table.getCellValue(event.row, table.getNamedColumnIndex('educationSubtypeId')) != -1;
               for (var i = 0; i < table.getColumnCount(); i++) {
@@ -96,7 +96,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.educationSubtypes.educationSubtypesTableArchiveTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var educationSubtypeId = table.getCellValue(event.row, table.getNamedColumnIndex('educationSubtypeId'));
               var educationSubtypeName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.educationSubtypes.educationSubtypeArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(educationSubtypeName);
@@ -140,8 +140,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="settings.educationSubtypes.educationSubtypesTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noEducationSubtypesAddedMessageContainer').setStyle({
                   display: ''
                 });

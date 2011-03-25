@@ -138,7 +138,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               for (var i = 0; i < table.getColumnCount(); i++) {
                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
               }
@@ -400,7 +400,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableArchiveTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var creditId = table.getCellValue(event.row, table.getNamedColumnIndex('creditId'));
               var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('courseName'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=grading.manageTransferCredits.transferCreditArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(courseName);
@@ -446,8 +446,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="grading.manageTransferCredits.transferCreditsTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noTransferCreditsAddedMessageContainer').setStyle({
                   display: ''
                 });

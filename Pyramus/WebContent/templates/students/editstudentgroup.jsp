@@ -121,7 +121,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="students.editStudentGroup.usersTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             } 
           }, {
             dataType: 'hidden',
@@ -197,7 +197,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/info.png',
             tooltip: '<fmt:message key="students.editStudentGroup.studentsTableStudentInfoTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
               var button = table.getCellEditor(event.row, table.getNamedColumnIndex('studentInfoButton'));
               openStudentInfoPopupOnElement(button, abstractStudentId);
@@ -229,7 +229,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="students.editStudentGroup.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
               if (studentsTable.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
@@ -253,7 +253,7 @@
 	      </c:forEach>
 	
 	      studentsTable.addListener("rowAdd", function (event) {
-	        var studentsTable = event.tableObject;
+	        var studentsTable = event.tableComponent;
 	        studentsTable.showCell(event.row, studentsTable.getNamedColumnIndex("removeButton"));
 	      });
 	      

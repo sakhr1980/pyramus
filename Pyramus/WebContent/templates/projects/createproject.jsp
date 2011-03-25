@@ -116,6 +116,7 @@
             }
           }, {
             header : '<fmt:message key="projects.createProject.moduleTableOptionalityHeader"/>',
+            width : 150,
             right : 40,
             dataType : 'select',
             editable: true,
@@ -147,8 +148,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.createProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noModulesAddedMessageContainer').setStyle({
                   display: ''
                 });
@@ -183,15 +184,15 @@
           <!--  Basic tab -->
 
           <div id="basic" class="tabContent">
-		        <div class="genericFormSection">
-	              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	                <jsp:param name="titleLocale" value="projects.createProject.nameTitle"/>
-	                <jsp:param name="helpLocale" value="projects.createProject.nameHelp"/>
-	              </jsp:include>
-	              <input type="text" name="name" class="required" size="40"/>
-		        </div>
-		        
-		        <div class="genericFormSection">
+            <div class="genericFormSection">
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="projects.createProject.nameTitle"/>
+                  <jsp:param name="helpLocale" value="projects.createProject.nameHelp"/>
+                </jsp:include>
+                <input type="text" name="name" class="required" size="40"/>
+            </div>
+            
+            <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="projects.createProject.tagsTitle"/>
                 <jsp:param name="helpLocale" value="projects.createProject.tagsHelp"/>
@@ -199,7 +200,7 @@
               <input type="text" id="tags" name="tags" size="40"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
-	      
+        
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="projects.createProject.descriptionTitle"/>
@@ -207,7 +208,7 @@
               </jsp:include>
               <textarea ix:cktoolbar="projectDescription" name="description" ix:ckeditor="true"></textarea>
             </div>
-	          
+            
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="projects.createProject.optionalStudiesTitle"/>
@@ -218,7 +219,7 @@
                 <c:forEach var="optionalStudiesLengthTimeUnit" items="${optionalStudiesLengthTimeUnits}">
                   <option value="${optionalStudiesLengthTimeUnit.id}">${optionalStudiesLengthTimeUnit.name}</option> 
                 </c:forEach>
-              </select>            
+              </select>
             </div>
           </div>
           
@@ -236,9 +237,9 @@
             <div id="modulesContainer">
               <div id="modulesTableContainer"></div>
             </div>
-  				</div>
-  			</div>
-  		</div>
+          </div>
+        </div>
+      </div>
 
       <div class="genericFormSubmitSectionOffTab">
         <input type="submit" class="formvalid" value="<fmt:message key="projects.createProject.saveButton"/>">

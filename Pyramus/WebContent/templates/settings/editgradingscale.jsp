@@ -42,7 +42,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.editGradingScale.gradeTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               for (var i = 0; i < table.getColumnCount(); i++) {
                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
               }
@@ -92,8 +92,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="settings.editGradingScale.gradeTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noGradesAddedMessageContainer').setStyle({
                   display: ''
                 });

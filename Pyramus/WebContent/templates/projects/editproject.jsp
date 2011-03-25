@@ -118,6 +118,7 @@
           }, {
             header : '<fmt:message key="projects.editProject.moduleTableOptionalityHeader"/>',
             right : 40,
+            width : 150,
             dataType : 'select',
             paramName: 'optionality',
             editable: true,
@@ -159,8 +160,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noModulesAddedMessageContainer').setStyle({
                   display: ''
                 });
@@ -223,45 +224,45 @@
           <!--  Basic tab -->
 
           <div id="basic" class="tabContent">
-	          <input type="hidden" name="project" value="${project.id}"/>
-	          
-	          <div class="genericFormSection">
+            <input type="hidden" name="project" value="${project.id}"/>
+            
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editProject.nameTitle"/>
                   <jsp:param name="helpLocale" value="projects.editProject.nameHelp"/>
                 </jsp:include>
-	            <input type="text" class="required" name="name" value="${fn:escapeXml(project.name)}" size="40"/>
-	          </div>
+              <input type="text" class="required" name="name" value="${fn:escapeXml(project.name)}" size="40"/>
+            </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		            <jsp:param name="titleLocale" value="projects.editProject.tagsTitle"/>
-		            <jsp:param name="helpLocale" value="projects.editProject.tagsHelp"/>
-		          </jsp:include>
-		          <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
-		          <div id="tags_choices" class="autocomplete_choices"></div>
-		        </div>
-	      
-	          <div class="genericFormSection">
+                <jsp:param name="titleLocale" value="projects.editProject.tagsTitle"/>
+                <jsp:param name="helpLocale" value="projects.editProject.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
+        
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editProject.descriptionTitle"/>
                   <jsp:param name="helpLocale" value="projects.editProject.descriptionHelp"/>
                 </jsp:include>
-	            <textarea ix:cktoolbar="projectDescription" name="description" ix:ckeditor="true">${project.description}</textarea>
-	          </div>
-	
-	          <div class="genericFormSection">
+              <textarea ix:cktoolbar="projectDescription" name="description" ix:ckeditor="true">${project.description}</textarea>
+            </div>
+  
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editProject.optionalStudiesTitle"/>
                   <jsp:param name="helpLocale" value="projects.editProject.optionalStudiesHelp"/>
                 </jsp:include>
-	            <input type="text" name="optionalStudiesLength" class="required" value="${project.optionalStudiesLength.units}" size="15"/>
-	            <select name="optionalStudiesLengthTimeUnit">           
-	              <c:forEach var="optionalStudiesLengthTimeUnit" items="${optionalStudiesLengthTimeUnits}">
-	                <option value="${optionalStudiesLengthTimeUnit.id}" <c:if test="${project.optionalStudiesLength.unit.id == optionalStudiesLengthTimeUnit.id}">selected="selected"</c:if>>${optionalStudiesLengthTimeUnit.name}</option> 
-	              </c:forEach>
-	            </select>            
-	          </div>
+              <input type="text" name="optionalStudiesLength" class="required" value="${project.optionalStudiesLength.units}" size="15"/>
+              <select name="optionalStudiesLengthTimeUnit">           
+                <c:forEach var="optionalStudiesLengthTimeUnit" items="${optionalStudiesLengthTimeUnits}">
+                  <option value="${optionalStudiesLengthTimeUnit.id}" <c:if test="${project.optionalStudiesLength.unit.id == optionalStudiesLengthTimeUnit.id}">selected="selected"</c:if>>${optionalStudiesLengthTimeUnit.name}</option> 
+                </c:forEach>
+              </select>
+            </div>
           </div>
 
          <!--  Modules tab -->
@@ -280,8 +281,8 @@
             </div>
           </div>
 
-  		  </div>
-  		</div>
+        </div>
+      </div>
       
       <div class="genericFormSubmitSectionOffTab">
         <input type="submit" class="formvalid" value="<fmt:message key="projects.editProject.saveButton"/>">

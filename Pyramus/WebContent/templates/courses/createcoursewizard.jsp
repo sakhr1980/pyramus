@@ -35,7 +35,7 @@
             dataType: 'text',
             editable: false,
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               table.setActiveRows([event.row]);
               $('selectedModuleId').value = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               $('createCourseButton').disabled = false;

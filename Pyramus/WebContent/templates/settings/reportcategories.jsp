@@ -49,7 +49,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="settings.reportCategories.reportCategoriesTableEditTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               for (var i = 0; i < table.getColumnCount(); i++) {
                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
               }
@@ -70,7 +70,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="settings.reportCategories.reportCategoriesTableDeleteTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var reportCategoryId = table.getCellValue(event.row, table.getNamedColumnIndex('reportCategoryId'));
               var reportCategoryName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.reportCategories.reportCategoryDeleteConfirmDialogContent&localeParams=" + encodeURIComponent(reportCategoryName);
@@ -114,8 +114,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="settings.reportCategories.reportCategoriesTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
-              if (event.tableObject.getRowCount() == 0) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noReportCategoriesAddedMessageContainer').setStyle({
                   display: ''
                 });

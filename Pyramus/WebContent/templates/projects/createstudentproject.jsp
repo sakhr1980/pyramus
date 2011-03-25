@@ -41,7 +41,7 @@
             dataType: 'text',
             editable: false,
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               table.setActiveRows([event.row]);
               $('selectedStudentId').value = table.getCellValue(event.row, table.getNamedColumnIndex('studentId'));
               $('createStudentProjectButton').disabled = false;
@@ -61,7 +61,7 @@
             dataType: 'text',
             editable: false,
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               table.setActiveRows([event.row]);
               $('selectedProjectId').value = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
             },

@@ -133,7 +133,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="courses.searchCourses.courseTableViewRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/viewcourse.page?course=' + courseId);
             } 
@@ -144,7 +144,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.searchCourses.courseTableEditRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
             } 
@@ -155,7 +155,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="courses.searchCourses.courseTableArchiveRowTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=courses.searchCourses.courseArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(courseName);

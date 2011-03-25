@@ -84,7 +84,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="modules.searchModules.modulesTableEditModuleTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               redirectTo(GLOBAL_contextPath + '/modules/editmodule.page?module=' + moduleId);
             }
@@ -95,7 +95,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-add.png',
             tooltip: '<fmt:message key="modules.searchModules.modulesTableCreateCourseTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               redirectTo(GLOBAL_contextPath + '/courses/createcourse.page?module=' + moduleId);
             }
@@ -106,7 +106,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
             tooltip: '<fmt:message key="modules.searchModules.modulesTableArchiveModuleTooltip"/>',
             onclick: function (event) {
-              var table = event.tableObject;
+              var table = event.tableComponent;
               var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
               var moduleName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
               var url = GLOBAL_contextPath + "/simpledialog.page?localeId=modules.searchModules.moduleArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(moduleName);

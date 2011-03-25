@@ -127,12 +127,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="users.createUser.emailTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         emailTable.addListener("rowAdd", function (event) {
-          var emailTable = event.tableObject; 
+          var emailTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           emailTable.showCell(event.row, emailTable.getNamedColumnIndex(enabledButton));
         });
@@ -207,7 +207,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-add.png',
             tooltip: '<fmt:message key="users.createUser.addressTableAddTooltip"/>',
             onclick: function (event) {
-              addAddressTableRow(event.tableObject);
+              addAddressTableRow(event.tableComponent);
             }
           }, {
             width: 30,
@@ -218,12 +218,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="users.createUser.addressTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         addressTable.addListener("rowAdd", function (event) {
-          var addressTable = event.tableObject; 
+          var addressTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           addressTable.showCell(event.row, addressTable.getNamedColumnIndex(enabledButton));
         });
@@ -270,7 +270,7 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-add.png',
             tooltip: '<fmt:message key="users.createUser.phoneTableAddTooltip"/>',
             onclick: function (event) {
-              addPhoneTableRow(event.tableObject);
+              addPhoneTableRow(event.tableComponent);
             }
           }, {
             width: 30,
@@ -281,12 +281,12 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="users.createUser.phoneTableRemoveTooltip"/>',
             onclick: function (event) {
-              event.tableObject.deleteRow(event.row);
+              event.tableComponent.deleteRow(event.row);
             }
           }]
         });
         phoneTable.addListener("rowAdd", function (event) {
-          var phoneTable = event.tableObject; 
+          var phoneTable = event.tableComponent; 
           var enabledButton = event.row == 0 ? 'addButton' : 'removeButton';
           phoneTable.showCell(event.row, phoneTable.getNamedColumnIndex(enabledButton));
         });

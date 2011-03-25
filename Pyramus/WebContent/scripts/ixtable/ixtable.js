@@ -42,7 +42,7 @@ IxTable = Class.create({
     var classNames = "ixTable";
     
     if (options.rowHoverEffect === true)
-      classNames += " ixTableRowHoverEffect"
+      classNames += " ixTableRowHoverEffect";
     
     this.domNode = Builder.node("div", {
       className : classNames
@@ -221,7 +221,7 @@ IxTable = Class.create({
       this._content.appendChild(rowElements[i]);
       
       this.fire("rowAdd", {
-        tableObject: this,
+        tableComponent: this,
         row: rowElements[i]._rowNumber
       });
     }
@@ -592,7 +592,7 @@ IxTable = Class.create({
   },
   _deleteRow: function (rowNumber) {
     this.fire("beforeRowDelete", {
-      tableObject: this,
+      tableComponent: this,
       row: rowNumber
     });
     
@@ -620,7 +620,7 @@ IxTable = Class.create({
     this._setRowCount(this.getRowCount() - 1);
     
     this.fire("rowDelete", {
-      tableObject: this, 
+      tableComponent: this, 
       row: rowNumber
     });
 
@@ -688,7 +688,7 @@ IxTable = Class.create({
       row = row.up(".ixTableRow");
     if (row) {
       this.fire("rowClick", {
-        tableObject: this,
+        tableComponent: this,
         row: row._rowNumber
       });
     }
@@ -1621,15 +1621,10 @@ IxTableControllers.registerController(new IxRadioButtonTableEditorController());
 IxDateTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var cellEditor = this._createEditorElement("input", name, "ixTableCellEditorDate", {name: name, type: "text"}, columnDefinition);
-    
-    // TODO: implement columnDefinition.required
-    
     /***
      * TODO: Change listener !!!
      ***/
-    
     // Event.observe(cellEditor, "change", this._fieldValueChangeListener);
-    
     return cellEditor;
   },
   buildViewer: function ($super, name, columnDefinition) {
@@ -1638,14 +1633,26 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   disableEditor: function ($super, handlerInstance) {
     if (handlerInstance._editable == false)
       handlerInstance.addClassName("ixTableCellViewerDisabled");
-    else
-      handlerInstance._component.disable();
+    else {
+      if (handlerInstance._component) {
+        handlerInstance._component.disable();
+      }
+      else {
+        handlerInstance._pendingEditable = false;
+      }
+    }
   },
   enableEditor: function ($super, handlerInstance) {
     if (handlerInstance._editable == false)
       handlerInstance.removeClassName("ixTableCellViewerDisabled");
-    else
-      handlerInstance._component.enable();
+    else {
+      if (handlerInstance._component) {
+        handlerInstance._component.enable();
+      }
+      else {
+        handlerInstance._pendingEditable = true;
+      }
+    }
   },
   getEditorValue: function ($super, handlerInstance) {
     if (handlerInstance._editable != true)
@@ -1655,7 +1662,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   },
   setEditorValue: function ($super, handlerInstance, value) {
     if (handlerInstance._editable != true) {
-      if (value) {
+      if (value && value !== '') {
         var date = new Date();
         date.setTime(value);
         // TODO: move dateformatting to conf ...
@@ -1665,10 +1672,12 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         this._setViewerValue(handlerInstance, value, '');
       }
     } else {
-      if (handlerInstance._component)
-        handlerInstance._component.setTimestamp(value);
-      else {
-        handlerInstance._pendingValue = value;
+      if (value && value !== '') {
+        if (handlerInstance._component)
+          handlerInstance._component.setTimestamp(value);
+        else {
+          handlerInstance._pendingValue = value;
+        }
       }
     }
   },
@@ -1695,7 +1704,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
           handlerInstance._onRowAdd = function (event) {
             var row = _this.getEditorRow(this);
             if (row == event.row) {
-              event.tableObject.removeListener("rowAdd", this);
+              event.tableComponent.removeListener("rowAdd", this);
               this._onRowAdd = undefined;
               _this._replaceDateField(this);
             } 
@@ -1714,9 +1723,23 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   },
   _replaceDateField: function (handlerInstance) {
     handlerInstance._component = replaceDateField(handlerInstance);
+    if (handlerInstance._columnDefinition && handlerInstance._columnDefinition.required) {
+      handlerInstance._component.addDayClass('required');
+      handlerInstance._component.addMonthClass('required');
+      handlerInstance._component.addYearClass('required');
+    }
     if (handlerInstance._pendingValue) {
       this.setEditorValue(handlerInstance, handlerInstance._pendingValue);
       handlerInstance._pendingValue = undefined;
+    }
+    if (handlerInstance._pendingEditable) {
+      if (handlerInstance._pendingEditable === false) {
+        handlerInstance._component.disable();
+      }
+      else {
+        handlerInstance._component.enable();
+      }
+      handlerInstance._pendingEditable = undefined;
     }
   },
   detachContentHandler: function ($super, handlerInstance) {
@@ -1757,7 +1780,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         
         if (this.isDisabled(handlerInstance) != true) { 
           handlerInstance._columnDefinition.onclick.call(window, {
-            tableObject: handlerInstance._table,
+            tableComponent: handlerInstance._table,
             row: this.getEditorRow(handlerInstance),
             column: this.getEditorColumn(handlerInstance)
           });
@@ -1821,7 +1844,7 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
   getDataType: function ($super) {
     return "button";  
   },
-  getMode: function ($super) { 
+  getMode: function ($super) {
     return IxTableControllers.EDITMODE_NOT_EDITABLE;
   },
   _onClick: function (event) {
@@ -1831,7 +1854,7 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
       
       if (this.isDisabled(handlerInstance) != true) { 
         handlerInstance._columnDefinition.onclick.call(window, {
-          tableObject: handlerInstance._table,
+          tableComponent: handlerInstance._table,
           row: this.getEditorRow(handlerInstance),
           column: this.getEditorColumn(handlerInstance)
         });
@@ -1927,7 +1950,7 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
     if (handlerInstance._columnDefinition.onclick) {
       if (this.isDisabled(handlerInstance) != true) { 
         handlerInstance._columnDefinition.onclick.call(window, {
-          tableObject: handlerInstance._table,
+          tableComponent: handlerInstance._table,
           row: this.getEditorRow(handlerInstance),
           column: this.getEditorColumn(handlerInstance)
         });
