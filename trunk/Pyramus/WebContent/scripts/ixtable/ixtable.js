@@ -1638,7 +1638,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         handlerInstance._component.disable();
       }
       else {
-        handlerInstance._pendingEditable = false;
+        handlerInstance._pendingEnable = false;
       }
     }
   },
@@ -1650,7 +1650,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         handlerInstance._component.enable();
       }
       else {
-        handlerInstance._pendingEditable = true;
+        handlerInstance._pendingEnable = true;
       }
     }
   },
@@ -1732,14 +1732,14 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
       this.setEditorValue(handlerInstance, handlerInstance._pendingValue);
       handlerInstance._pendingValue = undefined;
     }
-    if (handlerInstance._pendingEditable) {
-      if (handlerInstance._pendingEditable === false) {
+    if (handlerInstance._pendingEnable != undefined) {
+      if (handlerInstance._pendingEnable == false) {
         handlerInstance._component.disable();
       }
       else {
         handlerInstance._component.enable();
       }
-      handlerInstance._pendingEditable = undefined;
+      handlerInstance._pendingEnable = undefined;
     }
   },
   detachContentHandler: function ($super, handlerInstance) {
