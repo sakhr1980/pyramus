@@ -43,6 +43,7 @@ public class SearchStudentProjectCoursesJSONRequestController implements JSONReq
       Map<String, Object> courseInfo = new HashMap<String, Object>();
       courseInfo.put("id", course.getId());
       courseInfo.put("name", course.getName());
+      courseInfo.put("nameExtension", course.getNameExtension());
       courseInfo.put("moduleId", course.getModule().getId());
       if (course.getBeginDate() != null)
         courseInfo.put("beginDate", course.getBeginDate().getTime());
