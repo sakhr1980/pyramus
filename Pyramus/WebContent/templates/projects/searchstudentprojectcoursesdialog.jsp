@@ -52,7 +52,11 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name.escapeHTML(), results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
+              var courseName = results[i].name;
+              if (results[i].nameExtension) {
+                courseName += " (" + results[i].nameExtension + ")";
+              }
+              resultsTable.addRow([courseName.escapeHTML(), results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
               var rowIndex = getCourseRowIndex('coursesTable', results[i].id);
               if (rowIndex != -1) {
                 resultsTable.disableRow(resultsTable.getRowCount() - 1);
