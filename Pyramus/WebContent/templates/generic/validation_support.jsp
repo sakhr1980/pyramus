@@ -64,26 +64,6 @@
         });
       };
 
-      function initializeDateField(dateFieldComponent) {
-        // initializeValidation(dateFieldComponent.getDOMNode());
-        
-        dateFieldComponent.addListener("change", function (event) {
-          var component = event.dateFieldComponent;
-
-          validationDelegator = IxValidationDelegatorVault.getDelegator(component.getYearField());
-          if (validationDelegator)
-            validationDelegator.validate(true);
-
-          validationDelegator = IxValidationDelegatorVault.getDelegator(component.getMonthField());
-          if (validationDelegator)
-            validationDelegator.validate(true);
-
-          var validationDelegator = IxValidationDelegatorVault.getDelegator(component.getDayField());
-          if (validationDelegator)
-            validationDelegator.validate(true);
-        });
-      }
-    
       document.observe("dom:loaded", function(event) {
         // Initialize normal validation
         initializeValidation();
@@ -100,18 +80,18 @@
           initializeTable(event.memo.tableComponent);
         });
 
-        // Initialize validation for existing date fields
-
-        var dateFields = getIxDateFields();
-        for (var i = 0, l = dateFields.length; i < l; i++) {
-          initializeDateField(dateFields[i]);
-        };
-
         // Start listening for draft restoring
 
         Event.observe(document, "ix:draftRestore", function (event) {
           revalidateAll(true);
         });
+      });
+      
+      document.observe("ix:dateFieldReplace", function(event) {
+        var dateField = event.memo.dateField;
+        initializeElementValidation(dateField.getYearField());
+        initializeElementValidation(dateField.getMonthField());
+        initializeElementValidation(dateField.getDayField());
       });
     </script>
     

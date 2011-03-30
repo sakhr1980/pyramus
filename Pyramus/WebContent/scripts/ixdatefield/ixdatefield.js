@@ -1,7 +1,6 @@
 IxDateField = Class.create({
   initialize : function(options) {
     var element = options.element;
-  
     this._paramName = element.name;
     
     var idAttr = element.getAttribute("ix:datefieldid");
@@ -14,6 +13,17 @@ IxDateField = Class.create({
     this._monthInput = Builder.node("input", {id: this._paramName + "_-mm", name: this._paramName + "_-mm", type: 'text', maxlength: 2, className: 'ixDateFieldMonth'});
     this._yearInput = Builder.node("input", {id: this._paramName + '_', name: this._paramName + '_', type: 'text', maxlength: 4, className: 'ixDateFieldYear split-date'});
     this._timestampInput = Builder.node("input", {id: this._paramName, name: this._paramName, type: 'hidden'});
+    
+    if (options.yearClass)
+      this.addYearClass(options.yearClass);
+    if (options.monthClass)
+      this.addMonthClass(options.monthClass);
+    if (options.dayClass)
+      this.addDayClass(options.dayClass);
+    if (options.value != undefined)
+      this.setTimestamp(options.value);
+    if (options.enabled === false)
+      this.disable();
    
     this._dayFieldValueChangeListener = this._onDayFieldValueChange.bindAsEventListener(this);
     this._monthFieldValueChangeListener = this._onMonthFieldValueChange.bindAsEventListener(this);
@@ -125,6 +135,9 @@ IxDateField = Class.create({
     
     parent.removeChild(node);
     datePickerController.create(this._yearInput);
+    document.fire("ix:dateFieldReplace", {
+      dateField: this
+    });
   },
   destroy: function() {
     datePickerController.datePickers[this._yearInput.id].destroy();
@@ -184,8 +197,8 @@ var __ixDateFields = new Array();
 
 Object.extend(IxDateField.prototype,fni.events.FNIEventSupport);
 
-function replaceDateField(field) {
-  var dateField = new IxDateField({ element: field });
+function replaceDateField(field, options) {
+  var dateField = new IxDateField(Object.extend({ element: field }, options||{}));
     __ixDateFields.push(dateField);
   return dateField;
 }
