@@ -461,6 +461,15 @@ public class ProjectDAO extends PyramusDAO {
 
     s.delete(studentProjectModule);
   }
+
+  @SuppressWarnings("unchecked")
+  public List<StudentProject> listStudentsStudentProjects(Student student) {
+    Session s = getHibernateSession();
+    return s.createCriteria(StudentProject.class)
+      .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
+  }
   
 }
 

@@ -1,5 +1,6 @@
 package fi.pyramus.dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -373,8 +374,12 @@ public class StudentDAO extends PyramusDAO {
     return searchAbstractStudentsBasic(resultsPerPage, page, queryText, StudentFilter.SKIP_INACTIVE);
   }
 
-  @SuppressWarnings("unchecked")
   public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText, StudentFilter studentFilter) {
+    return searchAbstractStudentsBasic(resultsPerPage, page, queryText, studentFilter, null, null);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText, StudentFilter studentFilter, StudyProgramme studyProgramme, StudentGroup studentGroup) {
 
     int firstResult = page * resultsPerPage;
 
@@ -396,6 +401,9 @@ public class StudentDAO extends PyramusDAO {
           queryBuilder.append(")");
         }
         
+        if (studyProgramme != null)
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
+
         queryBuilder.append("+(");
         addTokenizedSearchCriteria(queryBuilder, "active", "true", false);
         addTokenizedSearchCriteria(queryBuilder, "inactive", "true", false);
@@ -419,10 +427,13 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "inactiveEmails", queryText, false);
           addTokenizedSearchCriteria(queryBuilder, "inactiveTags", queryText, false);
           queryBuilder.append(")");
-          
-          addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
-          addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
         }
+
+        if (studyProgramme != null)
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
+
+        addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
       break;
       case SKIP_INACTIVE:
         
@@ -440,26 +451,61 @@ public class StudentDAO extends PyramusDAO {
           queryBuilder.append(")");
         }
 
+        if (studyProgramme != null)
+          addTokenizedSearchCriteria(queryBuilder, "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
+
         addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
-        
       break;
     }
-      
+
     Session s = getHibernateSession();
+    
+    List<Long> studentIds = null;
+    
+    if (studentGroup != null) {
+      studentIds = new ArrayList<Long>();
+      
+      for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+        studentIds.add(sgs.getStudent().getId());
+      }
+//      switch (studentFilter) {
+//        case INCLUDE_INACTIVE:
+//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+//            studentIds.add(sgs.getStudent().getId());
+//          }
+//        break;
+//        case ONLY_INACTIVE:
+//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+//            if ((!sgs.getStudent().getActive()) && (sgs.getStudent().getAbstractStudent().getActive()=="true"))
+//              studentIds.add(sgs.getStudent().getId());
+//          }
+//        break;
+//        case SKIP_INACTIVE:
+//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+//            if (sgs.getStudent().getActive())
+//              studentIds.add(sgs.getStudent().getId());
+//          }
+//        break;
+//      }
+    }
+    
     FullTextSession fullTextSession = Search.getFullTextSession(s);
 
     try {
       String queryString = queryBuilder.toString();
-      
+      System.out.println(queryString);
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       Query luceneQuery = parser.parse(queryString);
-    
+
       FullTextQuery query = fullTextSession
           .createFullTextQuery(luceneQuery, AbstractStudent.class)
           .setSort(
               new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastNameSortable", SortField.STRING),
                   new SortField("firstNameSortable", SortField.STRING) })).setFirstResult(firstResult).setMaxResults(resultsPerPage);
 
+      if (studentGroup != null)
+        query.enableFullTextFilter("StudentIdFilter").setParameter("studentIds", studentIds);
+      
       int hits = query.getResultSize();
       int pages = hits / resultsPerPage;
       if (hits % resultsPerPage > 0) {
