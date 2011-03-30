@@ -13,5 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/PyramusDomainModelExtension"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/com.sun.enterprise.jst.server.runtimeTarget/GlassFish Server Open Source Edition 3 (Java EE 6)"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/PyramusCommon"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

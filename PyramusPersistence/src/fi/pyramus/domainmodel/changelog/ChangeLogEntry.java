@@ -46,14 +46,6 @@ public class ChangeLogEntry {
     this.entityId = entityId;
   }
   
-  public String getIp() {
-    return ip;
-  }
-  
-  public void setIp(String ip) {
-    this.ip = ip;
-  }
-
   public Date getTime() {
     return time;
   }
@@ -84,8 +76,6 @@ public class ChangeLogEntry {
 
   @NotEmpty
   private String entityId;
-  
-  private String ip;
 
   private Date time;
 
