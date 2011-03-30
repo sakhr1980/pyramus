@@ -490,29 +490,29 @@
                   <div id="contactEntries.${student.id}"></div>
 
                   <script type="text/javascript">
-		                <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-		                  addEntryRow(
-		                      ${student.id}, 
-		                      ${contactEntry.id}, 
-		                      ${contactEntry.entryDate.time}, 
-		                      '${contactEntry.type}', 
-		                      '${fn:escapeXml(contactEntry.creatorName)}', 
-		                      '${fn:escapeXml(fn:replace(contactEntry.text, newLineChar, ""))}'
-		                  );
-		
-		                  <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
-		                  <c:if test="${!comment.archived}">
-		                  addCommentRow(
-		                      ${comment.entry.id}, 
-		                      ${comment.id},
-		                      ${student.id}, 
-		                      ${comment.commentDate.time}, 
-		                      '${fn:escapeXml(comment.creatorName)}', 
-		                      '${fn:escapeXml(fn:replace(comment.text, newLineChar, ""))}'
-		                  );
-		                  </c:if>
-		                  </c:forEach>
-		                </c:forEach>
+                    <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
+                      addEntryRow(
+                          ${student.id}, 
+                          ${contactEntry.id}, 
+                          ${contactEntry.entryDate.time}, 
+                          '${contactEntry.type}', 
+                          '${fn:escapeXml(contactEntry.creatorName)}', 
+                          '${fn:replace(fn:replace(contactEntry.text, newLineChar, ""), "'", "\\'")}'
+                      );
+    
+                      <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
+                      <c:if test="${!comment.archived}">
+                      addCommentRow(
+                          ${comment.entry.id}, 
+                          ${comment.id},
+                          ${student.id}, 
+                          ${comment.commentDate.time}, 
+                          '${fn:escapeXml(comment.creatorName)}', 
+                          '${fn:replace(fn:replace(comment.text, newLineChar, ""), "'", "\\'")}'
+                      );
+                      </c:if>
+                      </c:forEach>
+                    </c:forEach>
                   </script>
                 </div>
 
@@ -523,12 +523,6 @@
                     <input type="hidden" name="commentCreatorName" value=""/>
                     <input type="hidden" name="commentDate.${student.id}" value=""/>
                     <div class="genericFormSection">  
-                    <!--                           
-                      <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                        <jsp:param name="titleLocale" value="students.manageStudentContactEntries.comments.textTitle"/>
-                        <jsp:param name="helpLocale" value="students.manageStudentContactEntries.comments.textHelp"/>
-                      </jsp:include>
-                    --> 
                       <textarea name="commentText.${student.id}" cols="40" rows="4" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
                     </div>            
                     <div>
@@ -542,51 +536,51 @@
                   <div class="studentContactLogViewTitle" id="studentContactLogNewEntryTitle"><fmt:message key="students.viewStudent.contactLogNewEntryTitle"/></div>
                   <div class="studentContactLogViewTitle" id="studentContactLogEditEntryTitle" style="display:none;"><fmt:message key="students.viewStudent.contactLogEditEntryTitle"/></div>
                   <div class="studentContactNewEntryFormContainer">
-		                <form method="post" id="newContactEntryForm.${student.id}" onsubmit="saveEvent(event, ${student.id});">
-		                  <input type="hidden" name="studentId" value="${student.id}"/>
-		                  <input type="hidden" name="entryId" value="-1"/>
-	
-		                  <div class="genericFormSection">                            
-		                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		                      <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.typeTitle"/>
-		                      <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.typeHelp"/>
-		                    </jsp:include> 
-		                    <select name="entryType">
-		                      <option value="OTHER"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.other"/></option>
-		                      <option value="LETTER"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.letter"/></option>
-		                      <option value="EMAIL"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.email"/></option>
-		                      <option value="PHONE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.phone"/></option>
-		                      <option value="CHATLOG"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.chatlog"/></option>
-		                      <option value="SKYPE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.skype"/></option>
-		                      <option value="FACE2FACE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.face2face"/></option>
-		                    </select>
-		                  </div>            
-		                  <div class="genericFormSection">                            
-		                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		                      <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.fromTitle"/>
-		                      <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.fromHelp"/>
-		                    </jsp:include> 
-		                    <input type="text" name="entryCreatorName"/>
-		                  </div> 
-		                  <div class="genericFormSection">                            
-		                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		                      <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.dateTitle"/>
-		                      <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.dateHelp"/>
-		                    </jsp:include> 
-		                    <input type="text" name="entryDate.${student.id}" ix:datefieldid="entryDate.${student.id}" ix:datefield="true"/>
-		                  </div>
-		                  <div class="genericFormSection">                            
-		                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		                      <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.textTitle"/>
-		                      <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.textHelp"/>
-		                    </jsp:include> 
-		                    <textarea name="entryText.${student.id}" cols="60" rows="6" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
-		                  </div>            
-		                  <div>
-		                    <input type="submit" name="submitContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.newContactLogEntryBtn"/>">
-		                    <input type="button" name="clearContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.resetContactLogEntryFormBtn"/>" onClick="resetEntryForm2(event, ${student.id});">
-		                  </div> 
-	                  </form>
+                    <form method="post" id="newContactEntryForm.${student.id}" onsubmit="saveEvent(event, ${student.id});">
+                      <input type="hidden" name="studentId" value="${student.id}"/>
+                      <input type="hidden" name="entryId" value="-1"/>
+  
+                      <div class="genericFormSection">                            
+                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.typeTitle"/>
+                          <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.typeHelp"/>
+                        </jsp:include> 
+                        <select name="entryType">
+                          <option value="OTHER"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.other"/></option>
+                          <option value="LETTER"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.letter"/></option>
+                          <option value="EMAIL"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.email"/></option>
+                          <option value="PHONE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.phone"/></option>
+                          <option value="CHATLOG"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.chatlog"/></option>
+                          <option value="SKYPE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.skype"/></option>
+                          <option value="FACE2FACE"><fmt:message key="students.manageStudentContactEntries.contactEntry.types.face2face"/></option>
+                        </select>
+                      </div>            
+                      <div class="genericFormSection">                            
+                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.fromTitle"/>
+                          <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.fromHelp"/>
+                        </jsp:include> 
+                        <input type="text" name="entryCreatorName"/>
+                      </div> 
+                      <div class="genericFormSection">                            
+                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.dateTitle"/>
+                          <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.dateHelp"/>
+                        </jsp:include> 
+                        <input type="text" name="entryDate.${student.id}" ix:datefieldid="entryDate.${student.id}" ix:datefield="true"/>
+                      </div>
+                      <div class="genericFormSection">                            
+                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.textTitle"/>
+                          <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.textHelp"/>
+                        </jsp:include> 
+                        <textarea name="entryText.${student.id}" cols="60" rows="6" ix:cktoolbar="studentContactEntryText" ix:ckeditor="true"></textarea>
+                      </div>            
+                      <div>
+                        <input type="submit" name="submitContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.newContactLogEntryBtn"/>">
+                        <input type="button" name="clearContactLogEntryButton" value="<fmt:message key="students.manageStudentContactEntries.resetContactLogEntryFormBtn"/>" onClick="resetEntryForm2(event, ${student.id});">
+                      </div> 
+                    </form>
                   </div>
                 </div>  
                 <div class="columnClear"></div>         

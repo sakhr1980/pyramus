@@ -90,6 +90,11 @@
   padding-top:3px;
 }
 
+.ixTableCellViewerAutoCompleteSelect {
+  width: 100%;
+  padding-top:3px;
+}
+
 .ixTableCellViewerNumber {
   width: 100%;
   text-align: right; 
@@ -264,4 +269,3 @@ div.ixTableRowButton:hover{
 .ixTableColumnHeaderFiltered {
   font-style:italic;
 }
-

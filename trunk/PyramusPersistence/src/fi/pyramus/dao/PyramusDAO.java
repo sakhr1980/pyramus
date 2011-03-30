@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.ejb.EntityManagerImpl;
 import org.hibernate.search.FullTextSession;
@@ -39,11 +40,13 @@ public class PyramusDAO {
     String inputText = value.replaceAll(" +", " ");
     String[] tokens = escapeSearchCriteria(inputText).split("[ ,]");
     for (String token : tokens) {
-      queryBuilder.append(' ');
-      if (required)
-        queryBuilder.append("+");
-
-      queryBuilder.append(fieldName).append(':').append(token);
+      if (!StringUtils.isBlank(token)) {
+        queryBuilder.append(' ');
+        if (required) {
+          queryBuilder.append("+");
+        }
+        queryBuilder.append(fieldName).append(':').append(token);
+      }
     }
   }
   
@@ -51,10 +54,12 @@ public class PyramusDAO {
     String inputText = value.replaceAll(" +", " ");
     String[] tokens = escapeSearchCriteria(inputText).split("[ ,]");
     for (String token : tokens) {
-      if (required)
-        queryBuilder.append("+");
-
-      queryBuilder.append('(').append(fieldName1).append(':').append(token).append(' ').append(fieldName2).append(':').append(token).append(')');
+      if (!StringUtils.isBlank(token)) {
+        if (required) {
+          queryBuilder.append("+");
+        }
+        queryBuilder.append('(').append(fieldName1).append(':').append(token).append(' ').append(fieldName2).append(':').append(token).append(')');
+      }
     }
   }
   
