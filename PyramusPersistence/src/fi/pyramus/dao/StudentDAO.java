@@ -430,7 +430,7 @@ public class StudentDAO extends PyramusDAO {
         }
 
         if (studyProgramme != null)
-          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
+          addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", studyProgramme.getId().toString(), true);
 
         addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
         addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
@@ -493,7 +493,7 @@ public class StudentDAO extends PyramusDAO {
 
     try {
       String queryString = queryBuilder.toString();
-      System.out.println(queryString);
+
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       Query luceneQuery = parser.parse(queryString);
 
