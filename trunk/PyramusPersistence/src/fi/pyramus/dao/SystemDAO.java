@@ -1,6 +1,5 @@
 package fi.pyramus.dao;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +127,7 @@ public class SystemDAO extends PyramusDAO {
   // JPA methods
 
   @SuppressWarnings({ "unchecked", "rawtypes" }) 
-  public Object findEntityById(Class referencedClass, Long id) {
+  public Object findEntityById(Class referencedClass, Object id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(referencedClass, id);
   }
@@ -137,23 +136,14 @@ public class SystemDAO extends PyramusDAO {
     EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
     return entityType.getId(entityType.getIdType().getJavaType());
   }
-  
-  public Object getEntityId(Object entity) {
-    Class<?> entityClass = entity.getClass();
-    SingularAttribute<?, ?> idAttribute = getEntityIdAttribute(entityClass);
-    Field idField = getField(entityClass, idAttribute.getName());
-    idField.setAccessible(true);
-    try {
-      return idField.get(entity);
-    } catch (IllegalArgumentException e) {
-      return null;
-    } catch (IllegalAccessException e) {
-      return null;
-    }
-  }
-  
+
   public Set<EntityType<?>> getEntities() {
     return getEntityManager().getMetamodel().getEntities();
+  }
+  
+  public javax.persistence.metamodel.Attribute<?, ?> getEntityAttribute(Class<?> entityClass, String fieldName) {
+    EntityType<?> entityType = getEntityManager().getMetamodel().entity(entityClass);
+    return entityType.getAttribute(fieldName);
   }
   
   public Set<javax.persistence.metamodel.Attribute<?, ?>> getEntityAttributes(Class<?> entityClass) {
@@ -165,20 +155,6 @@ public class SystemDAO extends PyramusDAO {
     }
     
     return result;
-  }
-  
-  private Field getField(Class<?> clazz, String name) {
-    try {
-      return clazz.getDeclaredField(name);
-    } catch (SecurityException e) {
-      return null;
-    } catch (NoSuchFieldException e) {
-      Class<?> superClass = clazz.getSuperclass();
-      if (superClass != null && !Object.class.equals(superClass))
-        return getField(superClass, name);
-    }
-    
-    return null;
   }
   
   // Hibernate methods

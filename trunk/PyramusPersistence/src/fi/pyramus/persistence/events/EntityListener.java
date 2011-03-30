@@ -1,8 +1,6 @@
 package fi.pyramus.persistence.events;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,12 +21,13 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
 import javax.persistence.metamodel.Attribute;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.ejb.event.EJB3FlushEventListener;
 import org.hibernate.event.FlushEvent;
 
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.util.ReflectionApiUtils;
 
 public class EntityListener extends EJB3FlushEventListener {
 
@@ -42,17 +41,24 @@ public class EntityListener extends EJB3FlushEventListener {
 
   @PostPersist
   void onPostPersist(Object entity) {
-    if (TrackedEntityUtils.isTrackedEntity(entity.getClass().getName())) {
+    String entityName = entity.getClass().getName();
+    
+    if (TrackedEntityUtils.isTrackedEntity(entityName)) {
       try {
-        Session session = createSession();
-
-        MapMessage message = session.createMapMessage();
-        message.setLong("time", System.currentTimeMillis());
-        message.setString("entity", entity.getClass().getName());
-        message.setString("eventType", EventType.Create.name());
-        message.setObject("id", getEntityId(entity));
-
-        sendMessage(session, message);
+        Object id = getEntityId(entity);
+        if (id != null) {
+          Session session = createSession();
+  
+          MapMessage message = session.createMapMessage();
+          message.setLong("time", System.currentTimeMillis());
+          message.setString("entity", entity.getClass().getName());
+          message.setString("eventType", EventType.Create.name());
+          message.setObject("id", id);
+          
+          sendMessage(session, message);
+        
+          prepareUpdateBatch(entity, id, entityName);
+        }
       } catch (JMSException e) {
         throw new EventException(e);
       } catch (NamingException e) {
@@ -63,42 +69,20 @@ public class EntityListener extends EJB3FlushEventListener {
 
   @PostLoad
   void onPostLoad(Object entity) {
-    SystemDAO systemDAO = new SystemDAO();
-
     String entityName = entity.getClass().getName();
 
     if (TrackedEntityUtils.isTrackedEntity(entityName)) {
       Object id = getEntityId(entity);
       if (id != null) {
-        Map<String, Object> updateBatch = getEntityStateData().getUpdateBatch(entityName, id);
-        if (updateBatch == null) {
-          updateBatch = getEntityStateData().addUpdateBatch(entityName, id);
-
-          Set<javax.persistence.metamodel.Attribute<?, ?>> attributes = systemDAO.getEntityAttributes(entity.getClass());
-          for (Attribute<?, ?> attribute : attributes) {
-            if (!attribute.isCollection() && !attribute.isAssociation()) {
-              String fieldName = attribute.getName();
-
-              if (TrackedEntityUtils.isTrackedProperty(entityName, fieldName)) {
-                try {
-                  updateBatch.put(fieldName, getFieldValue(entity, fieldName));
-                } catch (IllegalArgumentException e) {
-                  throw new EventException(e);
-                } catch (IllegalAccessException e) {
-                  throw new EventException(e);
-                } catch (InvocationTargetException e) {
-                  throw new EventException(e);
-                }
-              } 
-            }
-          }
-        }
+        prepareUpdateBatch(entity, id, entityName);
       }
     }
   }
 
   @PostUpdate
   void onPostUpdate(Object entity) {
+    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+
     String entityName = entity.getClass().getName();
 
     if (TrackedEntityUtils.isTrackedEntity(entityName)) {
@@ -111,8 +95,23 @@ public class EntityListener extends EJB3FlushEventListener {
         Map<String, Object[]> changedFields = new HashMap<String, Object[]>();
         for (String fieldName : updateBatch.keySet()) {
           try {
+            Attribute<?, ?> attribute = systemDAO.getEntityAttribute(entity.getClass(), fieldName);
+            Object newValue = null;
             Object oldValue = updateBatch.get(fieldName);
-            Object newValue = getFieldValue(entity, fieldName);
+            
+            switch (attribute.getPersistentAttributeType()) {
+              case BASIC:
+                newValue = ReflectionApiUtils.getObjectFieldValue(entity, fieldName, true);
+              break;
+              case ONE_TO_ONE:
+              case MANY_TO_ONE:
+                Object joinedEntity = ReflectionApiUtils.getObjectFieldValue(entity, fieldName, true);
+                if (joinedEntity != null) {
+                  newValue = getEntityId(attribute.getJavaType(), joinedEntity);
+                }
+              break;
+            }
+            
             if ((oldValue != newValue) && ((oldValue == null) || (!oldValue.equals(newValue)))) {
               changedFields.put(fieldName, new Object[] { oldValue, newValue });
             }
@@ -182,55 +181,61 @@ public class EntityListener extends EJB3FlushEventListener {
       }
     }
   }
-
+  
   private Object getEntityId(Object entity) {
+    return getEntityId(entity.getClass(), entity);
+  }
+  
+  private Object getEntityId(Class<?> entityClass, Object entity) {
     SystemDAO systemDAO = new SystemDAO();
-    return systemDAO.getEntityId(entity);
+    Attribute<?, ?> idAttribute = systemDAO.getEntityIdAttribute(entityClass);
+    try {
+      return ReflectionApiUtils.getObjectFieldValue(entity, idAttribute.getName(), true);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
-  private Object getFieldValue(Object entity, String name) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-    Method getterMethod = getMethod(entity.getClass(), "get" + StringUtils.capitalize(name));
-    if (getterMethod != null) {
-      return getterMethod.invoke(entity);
-    } else {
-      Field field = getField(entity.getClass(), name);
-      if (field != null) {
-        field.setAccessible(true);
-        return field.get(entity);
-      } else {
-        return null;
+  private void prepareUpdateBatch(Object entity, Object id, String entityName) {
+    SystemDAO systemDAO = new SystemDAO();
+    
+    Map<String, Object> updateBatch = getEntityStateData().getUpdateBatch(entityName, id);
+    if (updateBatch == null) {
+      updateBatch = getEntityStateData().addUpdateBatch(entityName, id);
+
+      Set<javax.persistence.metamodel.Attribute<?, ?>> attributes = systemDAO.getEntityAttributes(entity.getClass());
+      for (Attribute<?, ?> attribute : attributes) {
+        String fieldName = attribute.getName();
+
+        if (TrackedEntityUtils.isTrackedProperty(entityName, fieldName)) {
+          Object value = null;
+          try {
+            switch (attribute.getPersistentAttributeType()) {
+              case BASIC:
+                value = ReflectionApiUtils.getObjectFieldValue(entity, fieldName, true);
+              break;
+              case ONE_TO_ONE:
+              case MANY_TO_ONE:
+                Object joinedEntity = ReflectionApiUtils.getObjectFieldValue(entity, fieldName, true);
+                if (joinedEntity != null) {
+                  value = getEntityId(attribute.getJavaType(), joinedEntity);
+                }
+              break;
+            }
+            
+            updateBatch.put(fieldName, value);
+          } catch (IllegalArgumentException e) {
+            throw new EventException(e);
+          } catch (IllegalAccessException e) {
+            throw new EventException(e);
+          } catch (InvocationTargetException e) {
+            throw new EventException(e);
+          }
+        } 
       }
     }
   }
 
-  private Method getMethod(Class<?> entityClass, String name) {
-    try {
-      return entityClass.getDeclaredMethod(name);
-    } catch (SecurityException e) {
-      return null;
-    } catch (NoSuchMethodException e) {
-      Class<?> superClass = entityClass.getSuperclass();
-      if (superClass != null && !Object.class.equals(superClass))
-        return getMethod(superClass, name);
-    }
-
-    return null;
-  }
-
-  private Field getField(Class<?> entityClass, String name) {
-    try {
-      return entityClass.getDeclaredField(name);
-    } catch (SecurityException e) {
-      return null;
-    } catch (NoSuchFieldException e) {
-      Class<?> superClass = entityClass.getSuperclass();
-      if (superClass != null && !Object.class.equals(superClass))
-        return getField(superClass, name);
-    }
-
-    return null;
-  }
-  
   private void sendMessage(Session session, Message message) throws NamingException, JMSException {
     Topic topic = getTopic();
     MessageProducer producer = session.createProducer(topic);

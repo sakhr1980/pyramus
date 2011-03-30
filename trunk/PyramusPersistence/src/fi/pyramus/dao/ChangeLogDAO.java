@@ -18,7 +18,7 @@ public class ChangeLogDAO extends PyramusDAO {
   
   /* ChangeLogEntry */
   
-  public ChangeLogEntry createChangeLogEntry(ChangeLogEntryEntity entity, ChangeLogEntryType type, String entityId, Date time, User user, String ip) {
+  public ChangeLogEntry createChangeLogEntry(ChangeLogEntryEntity entity, ChangeLogEntryType type, String entityId, Date time, User user) {
     EntityManager entityManager = getEntityManager();
 
     ChangeLogEntry changeLogEntry = new ChangeLogEntry();
@@ -27,7 +27,6 @@ public class ChangeLogDAO extends PyramusDAO {
     changeLogEntry.setType(type);
     changeLogEntry.setTime(time);
     changeLogEntry.setUser(user);
-    changeLogEntry.setIp(ip);
     
     entityManager.persist(changeLogEntry);
     
