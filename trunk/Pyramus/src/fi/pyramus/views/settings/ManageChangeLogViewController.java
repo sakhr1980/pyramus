@@ -12,7 +12,6 @@ import javax.persistence.Version;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -48,11 +47,17 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
         
         Set<Attribute<?, ?>> attributes = systemDAO.getEntityAttributes(entityClass);
         for (Attribute<?, ?> attribute : attributes) {
-          if ((attribute.getPersistentAttributeType() == PersistentAttributeType.BASIC) && (!attribute.equals(idAttribute)) && !this.isVersion(entityClass, attribute)) {
-            String propertyName = attribute.getName();
-            TrackedEntityProperty trackedEntityProperty = changeLogDAO.findTrackedEntityPropertyByEntityAndProperty(entityName, propertyName);
-            ManageChangeLogViewEntityPropertyBean propertyBean = new ManageChangeLogViewEntityPropertyBean(propertyName, StringUtils.capitalize(propertyName), trackedEntityProperty != null);
-            properties.add(propertyBean);
+          switch (attribute.getPersistentAttributeType()) {
+            case BASIC:
+            case ONE_TO_ONE:
+            case MANY_TO_ONE:
+              if ((!attribute.equals(idAttribute)) && !this.isVersion(entityClass, attribute)) {
+                String propertyName = attribute.getName();
+                TrackedEntityProperty trackedEntityProperty = changeLogDAO.findTrackedEntityPropertyByEntityAndProperty(entityName, propertyName);
+                ManageChangeLogViewEntityPropertyBean propertyBean = new ManageChangeLogViewEntityPropertyBean(propertyName, StringUtils.capitalize(propertyName), trackedEntityProperty != null);
+                properties.add(propertyBean);
+              }
+            break;
           }
         }
         

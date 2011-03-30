@@ -72,6 +72,9 @@
         <dependent-module archiveName="PyramusOpenIdPlugin.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusOpenIdPlugin/PyramusOpenIdPlugin">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="PyramusCommon.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusCommon/PyramusCommon">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="Pyramus"/>
         <property name="java-output-path"/>
     </wb-module>

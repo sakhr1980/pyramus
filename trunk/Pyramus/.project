@@ -8,6 +8,7 @@
 		<project>Pyramus</project>
 		<project>PyramusPluginCore</project>
 		<project>PyramusOpenIdPlugin</project>
+		<project>PyramusCommon</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
