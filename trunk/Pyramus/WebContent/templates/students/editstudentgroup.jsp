@@ -210,7 +210,7 @@
             editable: false
           }, {
             header : '<fmt:message key="students.editStudentGroup.studentsTableStudyProgrammeHeader"/>',
-            width: 100,
+            width: 150,
             left: 230,
             dataType : 'select',
             editable: true,

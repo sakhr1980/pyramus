@@ -147,6 +147,7 @@ IxTable = Class.create({
   _addRows: function (rowDatas, editable) {
     var rowNumber = this.getRowCount() - 1;
     var rowElements = new Array(); 
+    var columnCount = this.options.columns.length;
     
     for (var rowIndex = 0, rowCount = rowDatas.length; rowIndex < rowCount; rowIndex++) {
       rowNumber++;
@@ -169,7 +170,7 @@ IxTable = Class.create({
         }
       }
 
-      for (var i = 0; i < this.options.columns.length; i++) {
+      for (var i = 0; i < columnCount; i++) {
         var column = this.options.columns[i];
         var name = this.options.id ? this.options.id + '.' + rowNumber + '.' + (column.paramName ? column.paramName : i) : '';
         
@@ -199,10 +200,10 @@ IxTable = Class.create({
         
         var cellContentHandler = this._createCellContentHandler(name, column, editable); 
         rowContent.appendChild(cell);
-        IxTableControllers.getController(column.dataType).attachContentHandler(this, cell, cellContentHandler);
+        var cellController = IxTableControllers.getController(column.dataType);
+        cellController.attachContentHandler(this, cell, cellContentHandler);
+        cellController.setEditorValue(cellContentHandler, values[i]);
         
-        this.setCellValue(rowNumber, i, values[i]);
-
         if (this._hasHeader == true) {
           this._headerRow.setStyle({
             display: ''
@@ -219,11 +220,21 @@ IxTable = Class.create({
     
     for (var i = 0, l = rowElements.length; i < l; i++) {
       this._content.appendChild(rowElements[i]);
+      var rowNumber = rowElements[i]._rowNumber;
       
       this.fire("rowAdd", {
         tableComponent: this,
-        row: rowElements[i]._rowNumber
+        row: rowNumber
       });
+      
+      for (var j = 0; j < columnCount; j++) {
+        this.fire("cellValueChange", {
+          tableComponent: this,
+          row: rowNumber,
+          column: j, 
+          value: rowDatas[i][j]
+        });
+      }
     }
     
     return rowNumber;
@@ -1722,25 +1733,22 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     }
   },
   _replaceDateField: function (handlerInstance) {
-    handlerInstance._component = replaceDateField(handlerInstance);
     if (handlerInstance._columnDefinition && handlerInstance._columnDefinition.required) {
-      handlerInstance._component.addDayClass('required');
-      handlerInstance._component.addMonthClass('required');
-      handlerInstance._component.addYearClass('required');
+      handlerInstance._component = replaceDateField(handlerInstance, {
+        yearClass: 'required',
+        monthClass: 'required',
+        dayClass: 'required',
+        value: handlerInstance._pendingValue,
+        enabled: handlerInstance._pendingEnable||true
+      });      
+    } else {
+      handlerInstance._component = replaceDateField(handlerInstance, {
+        value: handlerInstance._pendingValue,
+        enabled: handlerInstance._pendingEnable||true
+      });
     }
-    if (handlerInstance._pendingValue) {
-      this.setEditorValue(handlerInstance, handlerInstance._pendingValue);
-      handlerInstance._pendingValue = undefined;
-    }
-    if (handlerInstance._pendingEnable != undefined) {
-      if (handlerInstance._pendingEnable == false) {
-        handlerInstance._component.disable();
-      }
-      else {
-        handlerInstance._component.enable();
-      }
-      handlerInstance._pendingEnable = undefined;
-    }
+    handlerInstance._pendingValue = undefined;
+    handlerInstance._pendingEnable = undefined;
   },
   detachContentHandler: function ($super, handlerInstance) {
     if (handlerInstance._editable == true) {

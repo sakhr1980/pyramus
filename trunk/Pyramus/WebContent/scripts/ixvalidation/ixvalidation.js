@@ -308,11 +308,7 @@ IxValidationDelegator = Class.create({
     this._validate(requiredCheckAsUnknown, this._validators, IxFieldValidator.STATUS_UNKNOWN);
   },
   getStatus: function () {
-    if (this._field.hasClassName('invalid'))
-      return IxFieldValidator.STATUS_INVALID;
-    if (this._field.hasClassName('valid'))
-      return IxFieldValidator.STATUS_VALID;
-    return IxFieldValidator.STATUS_UNKNOWN;
+    return this._field._validity||IxFieldValidator.STATUS_UNKNOWN;
   },
   isMandatory: function () {
     return this._field.hasClassName('required');
@@ -332,6 +328,7 @@ IxValidationDelegator = Class.create({
     return true;
   },
   _validate: function (requiredCheckAsUnknown, validators, initialStatus) {
+    var oldStatus = this.getStatus();
     var status = initialStatus;
     
     if (this._isVisible()) {
@@ -366,19 +363,29 @@ IxValidationDelegator = Class.create({
       status = IxFieldValidator.STATUS_VALID;
     }
     
-    this._field.removeClassName('valid');
-    this._field.removeClassName('invalid');
-    
-    switch (status) {
-      case IxFieldValidator.STATUS_INVALID:
-        this._field.addClassName('invalid');
-      break;
-      case IxFieldValidator.STATUS_VALID:
-        this._field.addClassName('valid');
-      break;
-    }
-    
-    formValidationHook(this._field.form);
+    if (oldStatus != status) {
+      this._field._validity = status;
+      
+      switch (status) {
+        case IxFieldValidator.STATUS_UNKNOWN:
+          if (oldStatus == IxFieldValidator.STATUS_VALID)
+            this._field.removeClassName('valid');
+          else
+            this._field.removeClassName('invalid');
+          formValidationHook(this._field.form, !this.isMandatory());          
+        break;
+        case IxFieldValidator.STATUS_INVALID:
+          this._field.removeClassName('valid');
+          this._field.addClassName('invalid');
+          formValidationHook(this._field.form, true);
+        break;
+        case IxFieldValidator.STATUS_VALID:
+          this._field.removeClassName('invalid');
+          this._field.addClassName('valid');
+          formValidationHook(this._field.form, false);
+        break;
+      }
+    } 
   },
   _getLinkedValidators: function (validators) {
     var result = new Array();
@@ -470,6 +477,23 @@ function initializeValidation(container) {
   delete uniqueDelegators;
 };
 
+function initializeElementValidation(element) {
+  var delegator = IxValidationDelegatorVault.getDelegator(element);
+  if (!delegator) {
+    delegator = new IxValidationDelegator(element);
+    IxValidationDelegatorVault.setDelegator(element, delegator);
+  } 
+  
+  var validators = IxFieldValidatorVault.getValidators();
+  for (var i = 0, l = validators.length; i < l; i++) {
+    var validator = validators[i];
+    if (element.hasClassName(validator.className))
+      delegator.addValidator(validator);       
+  }
+
+  delegator.validate(true);
+};
+
 function deinitializeValidation(container) {
   var c = container||document.body;
   for (var i = 0, l = c.childNodes.length; i < l; i++) {
@@ -487,28 +511,30 @@ function revalidateAll(requiredCheckAsUnknown) {
   }
 };
 
-function formValidationHook(formElement) {
+function formValidationHook(formElement, isInvalid) {
   if (formElement) {
     formElement = $(formElement);
     var formValidButton = formElement.down(".formvalid");
-    
     if (formValidButton) {
-      var valid = true;
-      var delegators = IxValidationDelegatorVault.getFormDelegators(formElement);
-      for (var i = 0, l = delegators.length; i < l; i++) {
-        switch (delegators[i].getStatus()) {
-          case IxFieldValidator.STATUS_INVALID:
-            valid = false;
-          break;
-          case IxFieldValidator.STATUS_UNKNOWN:
-            if (delegators[i].isMandatory()) {
+      var valid = !isInvalid;
+      
+      if (valid) {
+        var delegators = IxValidationDelegatorVault.getFormDelegators(formElement);
+        for (var i = 0, l = delegators.length; i < l; i++) {
+          switch (delegators[i].getStatus()) {
+            case IxFieldValidator.STATUS_INVALID:
               valid = false;
-            }
-          break;
-        }
+            break;
+            case IxFieldValidator.STATUS_UNKNOWN:
+              if (delegators[i].isMandatory()) {
+                valid = false;
+              }
+            break;
+          }
 
-        if (valid == false) {
-          break;
+          if (valid == false) {
+            break;
+          }
         }
       }
       

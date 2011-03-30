@@ -5,23 +5,21 @@ var DRAFTUI;
 var __STOPDRAFTING = false;
 
 function storeLatestDraftDataHash(draftData) {
-  var hash = hex_md5(draftData);
+  var hash = checksum(draftData);
   $(document.body).getStorage().set("latestDraftDataHash", hash);
   return hash;
 }
 
 function getLatestDraftDataHash() {
   var hash = $(document.body).getStorage().get("latestDraftDataHash");  
-  if (!hash) {
+  if (!hash)
     hash = storeLatestDraftDataHash(DRAFTAPI.createFormDraft());
-  }
-  
   return hash;
 }
 
 function isDraftEqualToLatestDraft(draftData) {
   var hash = getLatestDraftDataHash();
-  return hex_md5(draftData) == hash;
+  return checksum(draftData) == hash;
 }
 
 function initDrafting(options) {
@@ -73,4 +71,12 @@ function deleteFormDraft(onSuccess) {
       }
     }
   });
+}
+
+function checksum(s) {
+  var i;
+  var chk = s.length;
+  for (i = 0, l = s.length; i < l; i++)
+    chk += (s.charCodeAt(i) * i);
+  return chk;
 }
