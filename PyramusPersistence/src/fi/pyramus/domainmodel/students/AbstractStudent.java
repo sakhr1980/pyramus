@@ -1,10 +1,10 @@
 package fi.pyramus.domainmodel.students;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -22,11 +22,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FullTextFilterDef;
+import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -36,6 +39,7 @@ import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.persistence.search.filters.StudentIdFilterFactory;
 import fi.pyramus.persistence.usertypes.Sex;
 import fi.pyramus.persistence.usertypes.SexUserType;
 
@@ -50,6 +54,12 @@ import fi.pyramus.persistence.usertypes.SexUserType;
 @Entity
 @Indexed
 @TypeDefs({ @TypeDef(name = "Sex", typeClass = SexUserType.class) })
+@FullTextFilterDefs (
+  @FullTextFilterDef (
+     name="StudentIdFilter",
+     impl=StudentIdFilterFactory.class
+  )
+)
 public class AbstractStudent {
 
   /**

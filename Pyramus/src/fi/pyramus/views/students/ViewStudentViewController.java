@@ -1,5 +1,6 @@
 package fi.pyramus.views.students;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -15,15 +16,19 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
+import fi.pyramus.domainmodel.projects.StudentProject;
+import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -63,6 +68,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
@@ -111,6 +117,10 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
     Map<Long, List<CourseAssessment>> courseAssesments = new HashMap<Long, List<CourseAssessment>>();
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
+    Map<Long, List<StudentProjectBean>> studentProjects = new HashMap<Long, List<StudentProjectBean>>();
+    Map<Long, CourseAssessment> courseAssessmentsByCourseStudent = new HashMap<Long, CourseAssessment>();
+    // StudentProject.id -> List of module beans
+    Map<Long, List<StudentProjectModuleBean>> studentProjectModules = new HashMap<Long, List<StudentProjectModuleBean>>();
     final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
     
     for (int i = 0; i < students.size(); i++) {
@@ -121,7 +131,18 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     	 */
     	
     	List<CourseStudent> courseStudentsByStudent = courseDAO.listCourseStudentsByStudent(student);
+    	Map<Long, List<CourseStudent>> courseStudentsByModule = new HashMap<Long, List<CourseStudent>>();
+      for (CourseStudent courseStudent : courseStudentsByStudent) {
+        Long moduleId = courseStudent.getCourse().getModule().getId(); 
 
+        List<CourseStudent> list = courseStudentsByModule.get(moduleId);
+        if (list == null)
+          list = new ArrayList<CourseStudent>();
+        
+        list.add(courseStudent);
+        courseStudentsByModule.put(moduleId, list);
+      }
+    	
     	Collections.sort(courseStudentsByStudent, new Comparator<CourseStudent>() {
         private String getCourseAssessmentCompareStr(CourseStudent courseStudent) {
           String result = "";
@@ -140,8 +161,6 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           return s1.compareToIgnoreCase(s2);
         }
       });
-
-    	courseStudents.put(student.getId(), courseStudentsByStudent);
 
     	/**
     	 * Contact log entries
@@ -218,6 +237,11 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
        */
       
       List<CourseAssessment> courseAssessmentsByStudent = gradingDAO.listCourseAssessmentsByStudent(student);
+
+      for (CourseAssessment courseAssessment : courseAssessmentsByStudent) {
+        Long courseStudentId = courseAssessment.getCourseStudent().getId(); 
+        courseAssessmentsByCourseStudent.put(courseStudentId, courseAssessment);
+      }
       
       Collections.sort(courseAssessmentsByStudent, new Comparator<CourseAssessment>() {
         private String getCourseAssessmentCompareStr(CourseAssessment courseAssessment) {
@@ -262,11 +286,87 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
           return s1.compareToIgnoreCase(s2);
         }
       });
+
+      /**
+       * Project beans setup
+       */
+      List<StudentProject> studentsStudentProjects = projectDAO.listStudentsStudentProjects(student);
+      List<StudentProjectBean> studentProjectBeans = new ArrayList<StudentProjectBean>();
+      for (StudentProject studentProject : studentsStudentProjects) {
+        int mandatoryModuleCount = 0;
+        int optionalModuleCount = 0;
+        int passedMandatoryModuleCount = 0;
+        int passedOptionalModuleCount = 0;
+        
+        List<StudentProjectModuleBean> studentProjectModuleBeans = new ArrayList<StudentProjectModuleBean>();
+        
+        /**
+         * Go through project modules to
+         *  a) count mandatory/optional modules
+         *  b) count mandatory/optional modules that have passing grade on them
+         *  c) create beans to be passed to jsp
+         */
+        
+        for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
+          boolean hasCourse = courseStudentsByModule.containsKey(studentProjectModule.getModule().getId());
+          boolean hasPassingGrade = false;
+          List<CourseStudent> courseStudentList = courseStudentsByModule.get(studentProjectModule.getModule().getId());
+          List<TransferCredit> transferCreditList = new ArrayList<TransferCredit>();
+
+          // Find out if there is a course that has passing grade for the module
+          if (courseStudentList != null) {
+            for (CourseStudent cs : courseStudentList) {
+              CourseAssessment ca = courseAssessmentsByCourseStudent.get(cs.getId());
+              if (ca != null) {
+                if (ca.getGrade().getPassingGrade()) {
+                  hasPassingGrade = true; 
+                  break;
+                }
+              }
+            }
+          } else
+            courseStudentList = new ArrayList<CourseStudent>();
+          
+          if ((studentProjectModule.getModule().getCourseNumber() != null) && (studentProjectModule.getModule().getCourseNumber() != -1) && (studentProjectModule.getModule().getSubject() != null)) {
+            for (TransferCredit tc : transferCreditsByStudent) {
+              if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
+                if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
+                  transferCreditList.add(tc);
+                  
+                  if (tc.getGrade().getPassingGrade())
+                    hasPassingGrade = true;
+                }
+              }
+            }
+          }
+          
+          if (studentProjectModule.getOptionality() == CourseOptionality.MANDATORY) {
+            mandatoryModuleCount++;
+            if (hasPassingGrade)
+              passedMandatoryModuleCount++;
+          } else if (studentProjectModule.getOptionality() == CourseOptionality.OPTIONAL) {
+            optionalModuleCount++;
+            if (hasPassingGrade)
+              passedOptionalModuleCount++;
+          }
+          
+          StudentProjectModuleBean moduleBean = new StudentProjectModuleBean(studentProjectModule, hasCourse, hasPassingGrade, courseStudentList, transferCreditList);
+          studentProjectModuleBeans.add(moduleBean);
+        }
+
+        // Add ModuleBeans to response
+        studentProjectModules.put(studentProject.getId(), studentProjectModuleBeans);
+        
+        StudentProjectBean bean = new StudentProjectBean(studentProject, mandatoryModuleCount, optionalModuleCount, passedMandatoryModuleCount, passedOptionalModuleCount);
+        studentProjectBeans.add(bean);
+      }
       
+      courseStudents.put(student.getId(), courseStudentsByStudent);
       courseAssesments.put(student.getId(), courseAssessmentsByStudent);
       contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), transferCreditsByStudent);
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
+      studentProjects.put(student.getId(), studentProjectBeans);
     }
     
     pageRequestContext.getRequest().setAttribute("students", students);
@@ -276,6 +376,9 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
     pageRequestContext.getRequest().setAttribute("courseAssesments", courseAssesments);
     pageRequestContext.getRequest().setAttribute("studentGroups", studentGroups);
+    pageRequestContext.getRequest().setAttribute("studentProjects", studentProjects);
+    pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
+    pageRequestContext.getRequest().setAttribute("courseAssesmentsByCourseStudent", courseAssessmentsByCourseStudent);
 
     pageRequestContext.setIncludeJSP("/templates/students/viewstudent.jsp");
   }
@@ -291,5 +394,79 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     return Messages.getInstance().getText(locale, "students.viewStudent.pageTitle");
   }
 
+  
+  public class StudentProjectBean {
+    private final StudentProject studentProject;
+    private final int passedOptionalModuleCount;
+    private final int mandatoryModuleCount;
+    private final int optionalModuleCount;
+    private final int passedMandatoryModuleCount;
+
+    public StudentProjectBean(StudentProject studentProject, int mandatoryModuleCount, int optionalModuleCount,
+        int passedMandatoryModuleCount, int passedOptionalModuleCount) {
+      this.studentProject = studentProject;
+      this.mandatoryModuleCount = mandatoryModuleCount;
+      this.optionalModuleCount = optionalModuleCount;
+      this.passedOptionalModuleCount = passedOptionalModuleCount;
+      this.passedMandatoryModuleCount = passedMandatoryModuleCount;
+    }
+
+    public StudentProject getStudentProject() {
+      return studentProject;
+    }
+
+    public int getPassedOptionalModuleCount() {
+      return passedOptionalModuleCount;
+    }
+
+    public int getMandatoryModuleCount() {
+      return mandatoryModuleCount;
+    }
+
+    public int getOptionalModuleCount() {
+      return optionalModuleCount;
+    }
+
+    public int getPassedMandatoryModuleCount() {
+      return passedMandatoryModuleCount;
+    }
+  }
+  
+  public class StudentProjectModuleBean {
+    private final StudentProjectModule studentProjectModule;
+    private final boolean hasCourse;
+    private final boolean hasPassingGrade;
+    private final List<CourseStudent> courseStudents;
+    private final List<TransferCredit> transferCredits;
+
+    public StudentProjectModuleBean(StudentProjectModule studentProjectModule, boolean hasCourse, boolean hasPassingGrade, 
+        List<CourseStudent> courseStudents, List<TransferCredit> transferCredits) {
+      this.studentProjectModule = studentProjectModule;
+      this.hasCourse = hasCourse;
+      this.hasPassingGrade = hasPassingGrade;
+      this.courseStudents = courseStudents;
+      this.transferCredits = transferCredits;
+    }
+
+    public StudentProjectModule getStudentProjectModule() {
+      return studentProjectModule;
+    }
+
+    public boolean isHasCourse() {
+      return hasCourse;
+    }
+
+    public boolean isHasPassingGrade() {
+      return hasPassingGrade;
+    }
+
+    public List<CourseStudent> getCourseStudents() {
+      return courseStudents;
+    }
+
+    public List<TransferCredit> getTransferCredits() {
+      return transferCredits;
+    }
+  }
 }
 

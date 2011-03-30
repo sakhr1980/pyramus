@@ -391,6 +391,55 @@
         return courseAssesmentsTable;
       }
 
+      function setupStudentProjectTable(studentId, projectId) {
+        var studentProjectModulesTable = new IxTable($('studentProjectModulesTable.' + studentId + '.' + projectId), {
+          id: 'studentProjectModulesTable.' + studentId + '.' + projectId,
+          rowHoverEffect: true,
+          columns : [{
+            header : '<fmt:message key="students.viewStudent.projectTableNameHeader"/>',
+            left: 8,
+            right: 8 + 120 + 8 + 120 + 8 + 140 + 8, 
+            dataType: 'text',
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
+          }, {
+            header : '<fmt:message key="students.viewStudent.projectTableOptionalityHeader"/>',
+            right :  8 + 120 + 8 + 120 + 8,
+            width: 140,
+            dataType : 'select',
+            editable: false,
+            options: [
+              {text: '', value: ''},
+              {text: '<fmt:message key="students.viewStudent.projectTableOptionalityMandatory"/>', value: 'MANDATORY'},
+              {text: '<fmt:message key="students.viewStudent.projectTableOptionalityOptional"/>', value: 'OPTIONAL'}
+            ]
+          }, {
+            header : '<fmt:message key="students.viewStudent.projectTableCourseGradeHeader"/>',
+            right: 8 + 120 + 8, 
+            width: 120,
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.viewStudent.projectTableTransferCreditGradeHeader"/>',
+            right: 8, 
+            width: 120,
+            dataType: 'text',
+            editable: false
+          }]
+        });
+  
+        return studentProjectModulesTable;
+      }
+      
       function onLoad(event) {
         var coursesTable;
         var transferCreditsTable;
@@ -449,9 +498,53 @@
               '']);
           </c:forEach>
           courseAssesmentsTable.addRows(rows);
+
+          var projectTable;
+          <c:forEach var="sp" items="${studentProjects[student.id]}">
+            rows.clear();
+            projectTable = setupStudentProjectTable(${student.id}, ${sp.studentProject.id});
+          
+            <c:forEach var="spm" items="${studentProjectModules[sp.studentProject.id]}">
+              <c:set var="moduleName" value="${spm.studentProjectModule.module.name}"/>
+              <c:set var="moduleOptionality" value="${spm.studentProjectModule.optionality}"/>
+              <c:set var="moduleHasCourse" value="${spm.hasCourse}"/>
+              <c:set var="moduleCourseGrades" value=""/>
+              <c:set var="moduleTransferCreditGrades" value=""/>
+  
+              <c:forEach var="cs" items="${spm.courseStudents}">
+                <c:set var="grade" value="${courseAssesmentsByCourseStudent[cs.id].grade.name}"/>
+                
+                <c:if test="${not empty grade}">
+                  <c:if test="${not empty moduleCourseGrades}">
+                    <c:set var="moduleCourseGrades" value="${moduleCourseGrades}, "/>
+                  </c:if>
+                  <c:set var="moduleCourseGrades" value="${moduleCourseGrades}${grade}"/>
+                </c:if>
+              </c:forEach>
+                  
+              <c:forEach var="tc" items="${spm.transferCredits}">
+                <c:set var="grade" value="${tc.grade.name}"/>
+                
+                <c:if test="${not empty grade}">
+                  <c:if test="${not empty moduleTransferCreditGrades}">
+                    <c:set var="moduleTransferCreditGrades" value="${moduleTransferCreditGrades}, "/>
+                  </c:if>
+                  <c:set var="moduleTransferCreditGrades" value="${moduleTransferCreditGrades}${grade}"/>
+                </c:if>
+              </c:forEach>
+              
+              rows.push([
+                  '${moduleName}', 
+                  '${moduleOptionality}', 
+                  '${moduleCourseGrades}', 
+                  '${moduleTransferCreditGrades}']
+              );
+            </c:forEach>
+            projectTable.addRows(rows);
+          </c:forEach>
         </c:forEach>
         
-             
+        
         var tabControl2 = new IxProtoTabs($('studentTabs'));
 
         <c:forEach var="student" items="${students}">
@@ -506,8 +599,11 @@
                   <a class="tabLabel" href="#contactlog.${student.id}">
                     <fmt:message key="students.viewStudent.contactLogTabLabel"/>
                   </a>
+                  <a class="tabLabel" href="#studentProject.${student.id}">
+                    <fmt:message key="students.viewStudent.studentProjectTabLabel"/>
+                  </a>
                 </div>
-            
+
                 <div id="basic.${student.id}" class="tabContent">    
                   <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
                   
@@ -1011,6 +1107,25 @@
                       </div>
                     </c:forEach>
                   </div>
+                </div>
+
+                <div id="studentProject.${student.id}" class="tabContent">
+<!--
+                  <div id="coursesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
+-->
+                  <c:forEach var="sp" items="${studentProjects[student.id]}">
+                    <div class="viewStudentProjectHeader">
+                      <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
+                      <span class="viewStudentProjectHeaderMandatory"><fmt:message key="students.viewStudent.projectHeaderMandatoryCourseCount"/> ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span> 
+                      <span class="viewStudentProjectHeaderOptional"><fmt:message key="students.viewStudent.projectHeaderOptionalCourseCount"/> ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
+                    </div>
+
+                    <div class="viewStudentStudentProjectTableContainer">                    
+                      <div id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>
+                    </div>
+                  </c:forEach>
+
+                
                 </div>
               </div>
             </div>  

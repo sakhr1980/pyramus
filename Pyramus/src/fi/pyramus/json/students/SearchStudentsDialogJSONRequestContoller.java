@@ -7,13 +7,17 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
+
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
+import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
@@ -26,6 +30,7 @@ import fi.pyramus.persistence.search.StudentFilter;
 public class SearchStudentsDialogJSONRequestContoller implements JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("maxResults"));
@@ -42,8 +47,18 @@ public class SearchStudentsDialogJSONRequestContoller implements JSONRequestCont
     
     String query = jsonRequestContext.getRequest().getParameter("query");
     StudentFilter studentFilter = (StudentFilter) jsonRequestContext.getEnum("studentFilter", StudentFilter.class);
+    StudyProgramme studyProgramme = null;
+    StudentGroup studentGroup = null;
+    
+    Long studyProgrammeId = jsonRequestContext.getLong("studyProgrammeId");
+    Long studentGroupId = jsonRequestContext.getLong("studentGroupId");
+    
+    if (studyProgrammeId.intValue() != -1)
+      studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
+    if (studentGroupId.intValue() != -1)
+      studentGroup = studentDAO.findStudentGroupById(studentGroupId);
 
-    searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, studentFilter);
+    searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, studentFilter, studyProgramme, studentGroup);
     
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<AbstractStudent> abstractStudents = searchResult.getResults();

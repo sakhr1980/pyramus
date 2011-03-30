@@ -267,6 +267,18 @@ h1.genericPageHeader{
 
 }
 
+.viewStudentProjectHeader {
+  margin: 4px 8px 4px 8px;
+}
+
+.viewStudentProjectHeaderName {
+  font-weight: bold;
+}
+
+.viewStudentStudentProjectTableContainer {
+  margin: 0px 8px 0px 8px;
+}
+
 /* Manage Course Assessments */
 
 #manageCourseAssessmentsStudentsTableContainer .ixTableRow:hover{
@@ -360,7 +372,7 @@ h1.genericPageHeader{
 
 #moduleSearchResultsTableContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #moduleSearchResultsTableContainer .ixTableRow:hover{
@@ -508,7 +520,7 @@ h1.genericPageHeader{
 
 #studentSearchResultsTableContainer .ixTableRow, #projectSearchResultsTableContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #studentSearchResultsTableContainer .ixTableRow:hover, #projectSearchResultsTableContainer .ixTableRow:hover{
@@ -613,7 +625,7 @@ h1.genericPageHeader{
 
 #createModuleCreateFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #createModuleCreateFormContainer .ixTableRow:hover{
@@ -625,7 +637,7 @@ h1.genericPageHeader{
 
 #editModuleEditFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #editModuleEditFormContainer .ixTableRow:hover{
@@ -778,7 +790,7 @@ h1.genericPageHeader{
 
 #createCourseCreateFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #createCourseCreateFormContainer .ixTableRow:hover{
@@ -790,7 +802,7 @@ h1.genericPageHeader{
 
 #editCourseEditFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #editCourseEditFormContainer .ixTableRow:hover{
@@ -899,7 +911,7 @@ h1.genericPageHeader{
 
 #createGradingScaleCreateFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #createGradingScaleCreateFormContainer .ixTableRow:hover{
@@ -911,7 +923,7 @@ h1.genericPageHeader{
 
 #editGradingScaleEditFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #editGradingScaleEditFormContainer .ixTableRow:hover{
@@ -924,7 +936,7 @@ h1.genericPageHeader{
 
 #listGradingScaleEditFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #listGradingScaleEditFormContainer .ixTableRow:hover{
@@ -939,7 +951,7 @@ h1.genericPageHeader{
 
 #manageAcademicTermsFormContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 #manageAcademicTermsFormContainer .ixTableRow:hover{
@@ -1279,6 +1291,10 @@ a.searchResultPageContainerActive{
   left:5px;
 }
 
+.modalSearchStudentsResultsContainer{
+  top:270px;
+}
+
 .modalSearchResultsTabLabel{
   position:absolute;
   z-index:2;
@@ -1311,7 +1327,7 @@ a.searchResultPageContainerActive{
 
 .modalSearchResultsContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 .modalSearchResultsContainer .ixTableRow:hover{
@@ -1422,7 +1438,7 @@ a.modalSearchResultPageContainerActive{
 
 .modalSelectedItemsContainer .ixTableRow{
   padding-top:4px;
-  cursor:normal;
+  cursor:default;
 }
 
 .modalSelectedItemsContainer .ixTableCell{
@@ -1570,7 +1586,7 @@ div.autocomplete_choices ul li.autocompleteGroupTitle{
 } 
 
 div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
-  background:#f2f2f2f;
+  background:#f2f2f2;
   color:#000;
   cursor:default; 
 }
