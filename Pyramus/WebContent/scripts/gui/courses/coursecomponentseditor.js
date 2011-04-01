@@ -223,7 +223,7 @@ CourseComponentsEditor = Class.create({
     var sum = 0;
     
     for (var i = 0, l = this._components.length; i < l; i++) {
-      sum += parseInt(this._components[i].getLength());
+      sum += parseFloat(this._components[i].getLength());
     }
     
     $(this._options.componentHoursSumElement).update(sum);
