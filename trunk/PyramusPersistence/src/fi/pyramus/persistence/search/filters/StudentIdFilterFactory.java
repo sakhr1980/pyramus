@@ -3,11 +3,8 @@ package fi.pyramus.persistence.search.filters;
 import java.util.List;
 
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.search.QueryWrapperFilter;
-import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermsFilter;
 import org.hibernate.search.annotations.Factory;
 import org.hibernate.search.annotations.Key;
 import org.hibernate.search.filter.FilterKey;
@@ -21,17 +18,13 @@ public class StudentIdFilterFactory {
 
   @Factory
   public Filter getFilter() {
-    BooleanQuery booleanQuery = new BooleanQuery();
-    booleanQuery.setMinimumNumberShouldMatch(1);
+    TermsFilter tf = new TermsFilter();
     
     for (int i = 0; i < studentIds.size(); i++) {
-      TermQuery termq = new TermQuery(new Term("students.id", studentIds.get(i).toString()));
-      booleanQuery.add(termq, BooleanClause.Occur.SHOULD);
+      tf.addTerm(new Term("students.id", studentIds.get(i).toString()));
     }
     
-    QueryWrapperFilter queryWrapperFilter = new QueryWrapperFilter(booleanQuery);
-
-    return queryWrapperFilter;
+    return tf;
   }
 
   @Key

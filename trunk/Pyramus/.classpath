@@ -72,5 +72,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/PyramusCommon"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lucene-queries-2.9.3">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

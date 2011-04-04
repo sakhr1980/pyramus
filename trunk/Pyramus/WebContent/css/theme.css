@@ -1291,7 +1291,7 @@ a.searchResultPageContainerActive{
   left:5px;
 }
 
-.modalSearchStudentsResultsContainer{
+.modalSearchResultsContainer.modalSearchStudentsResultsContainer{
   top:270px;
 }
 

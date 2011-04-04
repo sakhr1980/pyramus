@@ -432,7 +432,7 @@ public class StudentDAO extends PyramusDAO {
         if (studyProgramme != null)
           addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", studyProgramme.getId().toString(), true);
 
-        addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
+//        addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
         addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
       break;
       case SKIP_INACTIVE:
@@ -465,28 +465,25 @@ public class StudentDAO extends PyramusDAO {
     if (studentGroup != null) {
       studentIds = new ArrayList<Long>();
       
-      for (StudentGroupStudent sgs : studentGroup.getStudents()) {
-        studentIds.add(sgs.getStudent().getId());
+      switch (studentFilter) {
+        case INCLUDE_INACTIVE:
+          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+            studentIds.add(sgs.getStudent().getId());
+          }
+        break;
+        case ONLY_INACTIVE:
+          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+            if (!sgs.getStudent().getActive())
+              studentIds.add(sgs.getStudent().getId());
+          }
+        break;
+        case SKIP_INACTIVE:
+          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
+            if (sgs.getStudent().getActive())
+              studentIds.add(sgs.getStudent().getId());
+          }
+        break;
       }
-//      switch (studentFilter) {
-//        case INCLUDE_INACTIVE:
-//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
-//            studentIds.add(sgs.getStudent().getId());
-//          }
-//        break;
-//        case ONLY_INACTIVE:
-//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
-//            if ((!sgs.getStudent().getActive()) && (sgs.getStudent().getAbstractStudent().getActive()=="true"))
-//              studentIds.add(sgs.getStudent().getId());
-//          }
-//        break;
-//        case SKIP_INACTIVE:
-//          for (StudentGroupStudent sgs : studentGroup.getStudents()) {
-//            if (sgs.getStudent().getActive())
-//              studentIds.add(sgs.getStudent().getId());
-//          }
-//        break;
-//      }
     }
     
     FullTextSession fullTextSession = Search.getFullTextSession(s);

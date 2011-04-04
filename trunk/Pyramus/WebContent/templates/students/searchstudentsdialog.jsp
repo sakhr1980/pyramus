@@ -124,17 +124,13 @@
             var li = $(li);
             var idValue = li.down('input[name="id"]').value;
             idElement.value = idValue;
-//             inputElement.validate(false);
           }
         });
         
-        inputElement._keyUpListener = this._onTextInputKeyUp.bindAsEventListener(this);
-        Event.observe(inputElement, "keyup", inputElement._keyUpListener);
-      }
-      
-      function _onTextInputKeyUp(event) {
-        var idElement = $('studentGroup_id');
-        idElement.value = -1;
+        Event.observe(inputElement, "change", function() {
+          var idElement = $('studentGroup_id');
+          idElement.value = -1;
+        });
       }
       
       /**
