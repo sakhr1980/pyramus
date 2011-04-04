@@ -370,17 +370,19 @@ IxValidationDelegator = Class.create({
         case IxFieldValidator.STATUS_UNKNOWN:
           if (oldStatus == IxFieldValidator.STATUS_VALID)
             this._field.removeClassName('valid');
-          else
+          else if (oldStatus == IxFieldValidator.STATUS_INVALID)
             this._field.removeClassName('invalid');
           formValidationHook(this._field.form, !this.isMandatory());          
         break;
         case IxFieldValidator.STATUS_INVALID:
-          this._field.removeClassName('valid');
+          if (oldStatus == IxFieldValidator.STATUS_VALID)
+            this._field.removeClassName('valid');
           this._field.addClassName('invalid');
           formValidationHook(this._field.form, true);
         break;
         case IxFieldValidator.STATUS_VALID:
-          this._field.removeClassName('invalid');
+          if (oldStatus == IxFieldValidator.STATUS_INVALID)
+            this._field.removeClassName('invalid');
           this._field.addClassName('valid');
           formValidationHook(this._field.form, false);
         break;
