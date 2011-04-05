@@ -62,4 +62,15 @@ public class ReflectionApiUtils {
 
     return null;
   }
+  
+  public static boolean isInheritedFrom(Class<?> clazz, Class<?> from) {
+    if (clazz.equals(from))
+      return true;
+    
+    Class<?> superclass = clazz.getSuperclass();
+    if (superclass != null)
+      return isInheritedFrom(superclass, from);
+    
+    return false;
+  }
 }
