@@ -17,5 +17,10 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Commons Logging 1.1.1"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JTidy r938"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lucene-queries-2.9.3">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
