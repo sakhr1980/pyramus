@@ -1034,7 +1034,7 @@
                   <input type="text" name="endDate" ix:datefield="true"/>
                 </td>
                 <td>
-                  <input type="text" class="required" name="courseLength" value="${fn:escapeXml(module.courseLength.units)}" class="required" size="15"/>
+                  <input type="text" class="float required" name="courseLength" value="${fn:escapeXml(module.courseLength.units)}" class="required" size="15"/>
                   <select name="courseLengthTimeUnit">           
                     <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
                       <option value="${courseLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
