@@ -1,6 +1,7 @@
 package fi.pyramus.domainmodel.changelog;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,5 +55,6 @@ public class ChangeLogEntryProperty {
   @JoinColumn(name="entry")
   private ChangeLogEntry entry;
   
+  @Column (length=1073741824)
   private String value;
 }

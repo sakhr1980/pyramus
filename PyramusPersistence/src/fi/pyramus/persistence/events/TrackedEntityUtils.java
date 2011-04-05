@@ -20,10 +20,6 @@ public class TrackedEntityUtils {
     return field != null && fields.contains(field);
   }
   
-  public synchronized static void flushTrackedEntityFields() {
-    trackedEntities = null;
-  }
-  
   private synchronized static Map<String, Set<String>> getTrackedEntityMap() {
     if (trackedEntities == null) {
       trackedEntities = new HashMap<String, Set<String>>();

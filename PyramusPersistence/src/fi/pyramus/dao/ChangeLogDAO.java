@@ -53,6 +53,24 @@ public class ChangeLogDAO extends PyramusDAO {
     return changeLogEntryProperty;
   }
   
+  public ChangeLogEntryProperty findLatestEntryPropertyByEntryEntityProperty(ChangeLogEntryEntityProperty entryEntityProperty) {
+    EntityManager entityManager = getEntityManager();
+    
+    Query query = entityManager.createQuery(
+      "select " +  
+      "  p " +
+      "from " +   
+      "  fi.pyramus.domainmodel.changelog.ChangeLogEntryProperty p " +   
+      "where " +   
+      "  p.property = :property " +
+      "order by " + 
+      "  p.entry.time desc");
+    query.setParameter("property", entryEntityProperty);
+    query.setMaxResults(1);
+    @SuppressWarnings("unchecked") List<ChangeLogEntryProperty> result = query.getResultList();
+    return result.size() == 1 ? result.get(0) : null;
+  }
+  
   public ChangeLogEntryProperty findChangeLogEntryPropertyById(Long id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(ChangeLogEntryProperty.class, id);
