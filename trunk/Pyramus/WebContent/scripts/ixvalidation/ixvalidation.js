@@ -194,7 +194,7 @@ IxDateFieldDayValidator = Class.create(IxFieldValidator, {
 IxFloatValidValidator = Class.create(IxFieldValidator, {
   initialize : function($super) {
     $super();
-    this._validFloatMask = /^([0-9]*[,\.]{0,1}[0-9]*)$/;
+    this._validFloatMask = /(^[0-9]+[,\.][0-9]+$)|(^[0-9]+$)/;
   },
   validate: function ($super, field) {
     var value = this._getFieldValue(field);
@@ -252,6 +252,7 @@ IxTableAutoCompleteSelectFieldValidator = Class.create(IxFieldValidator, {
 });
 
 Object.extend(IxFieldValidator, {
+  STATUS_UNDEFINED: -1,
   STATUS_UNKNOWN: 0,
   STATUS_INVALID: 1,
   STATUS_VALID: 2,
@@ -308,7 +309,7 @@ IxValidationDelegator = Class.create({
     this._validate(requiredCheckAsUnknown, this._validators, IxFieldValidator.STATUS_UNKNOWN);
   },
   getStatus: function () {
-    return this._field._validity||IxFieldValidator.STATUS_UNKNOWN;
+    return this._field._validity == undefined ? IxFieldValidator.STATUS_UNDEFINED : this._field._validity;
   },
   isMandatory: function () {
     return this._field.hasClassName('required');
@@ -372,7 +373,7 @@ IxValidationDelegator = Class.create({
             this._field.removeClassName('valid');
           else if (oldStatus == IxFieldValidator.STATUS_INVALID)
             this._field.removeClassName('invalid');
-          formValidationHook(this._field.form, !this.isMandatory());          
+          formValidationHook(this._field.form, this.isMandatory());          
         break;
         case IxFieldValidator.STATUS_INVALID:
           if (oldStatus == IxFieldValidator.STATUS_VALID)

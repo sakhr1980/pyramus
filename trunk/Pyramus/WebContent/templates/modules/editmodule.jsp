@@ -325,7 +325,7 @@
                   <jsp:param name="titleLocale" value="modules.editModule.lengthTitle"/>
                   <jsp:param name="helpLocale" value="modules.editModule.lengthHelp"/>
                 </jsp:include>
-	            <input type="text" name="moduleLength" class="required" value="${module.courseLength.units}" size="15"/>
+	            <input type="text" name="moduleLength" class="float required" value="${module.courseLength.units}" size="15"/>
 	            <select name="moduleLengthTimeUnit">           
 	              <c:forEach var="moduleLengthTimeUnit" items="${moduleLengthTimeUnits}">
 	                <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 

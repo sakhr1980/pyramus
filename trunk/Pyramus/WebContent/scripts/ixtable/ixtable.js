@@ -1087,7 +1087,8 @@ Object.extend(IxTableEditorController.prototype,fni.events.FNIEventSupport);
 IxNumberTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
     var editor = this._createEditorElement("input", name, "ixTableCellEditorNumber", {type: "text", name: name}, columnDefinition);
-    
+
+    editor.addClassName("float");
     if (columnDefinition.required)
       editor.addClassName("required");
     

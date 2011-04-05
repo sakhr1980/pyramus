@@ -1449,7 +1449,7 @@
 	                <input type="text" name="endDate" ix:datefield="true" value="${course.endDate.time}"/>
 	              </td>
 	              <td>
-	                <input type="text" name="courseLength" class="required" value="${course.courseLength.units}" size="15"/>
+	                <input type="text" name="courseLength" class="float required" value="${course.courseLength.units}" size="15"/>
 	                <select name="courseLengthTimeUnit">           
 	                  <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
 	                    <option value="${courseLengthTimeUnit.id}" <c:if test="${course.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 

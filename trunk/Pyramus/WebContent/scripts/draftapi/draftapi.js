@@ -153,7 +153,14 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
               var options = selectController.getOptions(cellEditor);
               draftData.set(row + '.' + column + '.options', options);
             }
-          break;          
+          break;
+          case 'autoCompleteSelect':
+            var cellEditor = table.getCellEditor(row, column);
+            var autoSelectController = IxTableControllers.getController('autoCompleteSelect');
+            var displayValue = autoSelectController.getDisplayValue(cellEditor);
+            if (displayValue)
+              draftData.set(row + '.' + column + '.displayValue', displayValue);
+          break;
         } 
       }
     }
@@ -215,6 +222,13 @@ IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
               if (options)
                 selectController.setOptions(cellEditor, options);
             }
+          break;
+          case 'autoCompleteSelect':
+            var cellEditor = table.getCellEditor(row, column);
+            var autoSelectController = IxTableControllers.getController('autoCompleteSelect');
+            var displayValue = tableData[row + '.' + column + '.displayValue'];
+            if (displayValue)
+              autoSelectController.setDisplayValue(cellEditor, displayValue);
           break;
         }
         
