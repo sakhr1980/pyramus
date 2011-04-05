@@ -175,7 +175,7 @@ public class ChangeLogJPAEventsListener implements MessageListener {
         ChangeLogEntryProperty changeLogEntryProperty = changeLogDAO.findLatestEntryPropertyByEntryEntityProperty(changeLogEntryEntityProperty, String.valueOf(id));
         String oldValue = changeLogEntryProperty != null ? changeLogEntryProperty.getValue() : null;
 
-        if (newValue == null ? oldValue != null ? false : true : !newValue.equals(oldValue)) {
+        if (newValue == null ? oldValue != null ? true : false : !newValue.equals(oldValue)) {
           values.put(changeLogEntryEntityProperty, newValue);
         }
       }
