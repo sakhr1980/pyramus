@@ -13,6 +13,10 @@ public class SystemInfoViewController implements PyramusViewController {
     requestContext.getRequest().setAttribute("properties", System.getProperties());
     requestContext.getRequest().setAttribute("env", System.getenv());
     requestContext.getRequest().setAttribute("date", new Date());
+    requestContext.getRequest().setAttribute("freeMemory", Runtime.getRuntime().freeMemory());
+    requestContext.getRequest().setAttribute("totalMemory", Runtime.getRuntime().totalMemory());
+    requestContext.getRequest().setAttribute("availableProcessors", Runtime.getRuntime().availableProcessors());
+
     
     requestContext.setIncludeJSP("/templates/system/systeminfo.jsp");
   }
