@@ -41,7 +41,10 @@
         </div>
         
         <div id="general" class="tabContent">
-          Time: ${date}
+          <div>Time: ${date}</div>
+          <div>Free Memory: ${freeMemory}</div>
+          <div>Total Memory: ${totalMemory}</div>
+          <div>Available Processors: ${availableProcessors}</div>
         </div>
 
         <div id="properties" class="tabContent">
