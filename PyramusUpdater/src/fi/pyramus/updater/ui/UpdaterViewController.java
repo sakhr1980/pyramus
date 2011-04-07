@@ -13,6 +13,8 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -200,6 +202,15 @@ public class UpdaterViewController {
         }
       }
     }
+    
+    Collections.sort(updateFiles, new Comparator<UpdateFile>() {
+      @Override
+      public int compare(UpdateFile file1, UpdateFile file2) {
+        if (!file1.getUpdateVersion().equals(file2))
+          return file1.getUpdateVersion().isNewerThan(file2.getUpdateVersion()) ? 1 : -1;
+        return 0;
+      }
+    });
 
     return updateFiles;
   }

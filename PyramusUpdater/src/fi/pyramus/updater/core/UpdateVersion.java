@@ -23,6 +23,15 @@ public class UpdateVersion {
   }
   
   @Override
+  public boolean equals(Object object) {
+    if (object instanceof UpdateVersion) {
+      return toFloat() == ((UpdateVersion) object).toFloat();
+    }
+
+    return false;
+  }
+  
+  @Override
   public String toString() {
     return String.valueOf(getMajor() + getMinor());
   }
