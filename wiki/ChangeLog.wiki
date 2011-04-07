@@ -1,6 +1,22 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.41 (110405.12)
+
+  * Fixed a bug in retrieving auto-complete select field values from draft
+  * Fixed various numeric value validation issues
+  * Added new options for searching new course students by student groups and study programmes.   
+  * Fix for Issue #42 (Course Component Hours)
+  * Fixed a bug that caused searches to crash when the querying with comma(s) followed by spaces
+  * Fixed a bug in Manage Student Contact Entries view that no longer showed contact entry formatting
+  * Added name extension to the courses of the Search Courses dialog in the Student Project view
+  * Upgraded CKEditor to 3.5.2 version  
+  * Added validation of mandatories to date fields in tables
+  * User interface performance improvements
+  * Fixed a bug causing the Edit Course view to crash when the course had other costs in its cost plan
+  * Fix for Issue #36 (Adding personnel to courses broken)
+  * Fix for Issue #35 (Single quote characters in student names break the user interface)
+
 *Version 0.4 (110315.11)
 
   * Removed deprecated row delete support from the ixtable component
