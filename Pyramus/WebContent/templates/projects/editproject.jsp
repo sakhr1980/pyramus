@@ -5,7 +5,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="projects.editProject.pageTitle" /></title>
+    <title>
+      <fmt:message key="projects.editProject.pageTitle">
+        <fmt:param value="${project.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -60,8 +64,20 @@
                 }
               }
               modulesTable.reattachToDom();
-              if (getIxTableById('modulesTable').getRowCount() > 0) {
+              if (modulesTable.getRowCount() > 0) {
                 $('noModulesAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('editProjectModulesTotalContainer').setStyle({
+                  display: ''
+                });
+                $('editProjectModulesTotalValue').innerHTML = modulesTable.getRowCount(); 
+              }
+              else {
+                $('noModulesAddedMessageContainer').setStyle({
+                  display: ''
+                });
+                $('editProjectModulesTotalContainer').setStyle({
                   display: 'none'
                 });
               }
@@ -165,6 +181,18 @@
                 $('noModulesAddedMessageContainer').setStyle({
                   display: ''
                 });
+                $('editProjectModulesTotalContainer').setStyle({
+                  display: 'none'
+                });
+              }
+              else {
+                $('noModulesAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('editProjectModulesTotalContainer').setStyle({
+                  display: ''
+                });
+                $('editProjectModulesTotalValue').innerHTML = event.tableComponent.getRowCount(); 
               }
             } 
           }, {
@@ -195,7 +223,20 @@
               $('noModulesAddedMessageContainer').setStyle({
                 display: 'none'
               });
-            } 
+              $('editProjectModulesTotalContainer').setStyle({
+                display: ''
+              });
+              $('editProjectModulesTotalValue').innerHTML = modulesTable.getRowCount(); 
+            }
+            else {
+              $('noModulesAddedMessageContainer').setStyle({
+                display: ''
+              });
+              $('editProjectModulesTotalContainer').setStyle({
+                display: 'none'
+              });
+
+            }
           } 
         });
       }
@@ -205,7 +246,11 @@
   <body onLoad="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="projects.editProject.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="projects.editProject.pageTitle">
+        <fmt:param value="${project.name}"/>
+      </fmt:message>
+    </h1>
     
     <form id="projectForm" action="editproject.json" method="post" ix:jsonform="true" ix:useglasspane="true">
       <input type="hidden" name="version" value="${project.version}"/>
@@ -226,6 +271,24 @@
           <div id="basic" class="tabContent">
             <input type="hidden" name="project" value="${project.id}"/>
             
+            <!--  TODO italic tags to css -->
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editProject.creatorTitle"/>
+                <jsp:param name="helpLocale" value="projects.editProject.creatorHelp"/>
+              </jsp:include>
+              <span><i>${project.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.created}"/></i></span>    
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editProject.modifierTitle"/>
+                <jsp:param name="helpLocale" value="projects.editProject.modifierHelp"/>
+              </jsp:include>
+              <span><i>${project.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.lastModified}"/></i></span>    
+            </div>
+
             <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="projects.editProject.nameTitle"/>
@@ -279,6 +342,11 @@
             <div id="modulesContainer">
               <div id="modulesTableContainer"></div>
             </div>
+
+            <div id="editProjectModulesTotalContainer">
+              <fmt:message key="projects.editProject.modulesTotal"/> <span id="editProjectModulesTotalValue"></span>
+            </div>
+
           </div>
 
         </div>

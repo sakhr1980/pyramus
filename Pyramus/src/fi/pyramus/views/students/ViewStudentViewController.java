@@ -115,7 +115,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     Map<Long, List<CourseStudent>> courseStudents = new HashMap<Long, List<CourseStudent>>();
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
-    Map<Long, List<CourseAssessment>> courseAssesments = new HashMap<Long, List<CourseAssessment>>();
+    Map<Long, List<CourseAssessment>> courseAssessments = new HashMap<Long, List<CourseAssessment>>();
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
     Map<Long, List<StudentProjectBean>> studentProjects = new HashMap<Long, List<StudentProjectBean>>();
     Map<Long, CourseAssessment> courseAssessmentsByCourseStudent = new HashMap<Long, CourseAssessment>();
@@ -362,7 +362,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       }
       
       courseStudents.put(student.getId(), courseStudentsByStudent);
-      courseAssesments.put(student.getId(), courseAssessmentsByStudent);
+      courseAssessments.put(student.getId(), courseAssessmentsByStudent);
       contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), transferCreditsByStudent);
       studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
@@ -374,11 +374,11 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     pageRequestContext.getRequest().setAttribute("contactEntries", contactEntries);
     pageRequestContext.getRequest().setAttribute("contactEntryComments", contactEntryComments);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
-    pageRequestContext.getRequest().setAttribute("courseAssesments", courseAssesments);
+    pageRequestContext.getRequest().setAttribute("courseAssessments", courseAssessments);
     pageRequestContext.getRequest().setAttribute("studentGroups", studentGroups);
     pageRequestContext.getRequest().setAttribute("studentProjects", studentProjects);
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
-    pageRequestContext.getRequest().setAttribute("courseAssesmentsByCourseStudent", courseAssessmentsByCourseStudent);
+    pageRequestContext.getRequest().setAttribute("courseAssessmentsByCourseStudent", courseAssessmentsByCourseStudent);
 
     pageRequestContext.setIncludeJSP("/templates/students/viewstudent.jsp");
   }
@@ -391,7 +391,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "students.viewStudent.pageTitle");
+    return Messages.getInstance().getText(locale, "students.viewStudent.breadcrumb");
   }
 
   

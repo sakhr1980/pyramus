@@ -7,7 +7,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="courses.editCourse.pageTitle" /></title>
+    <title>
+      <fmt:message key="courses.editCourse.pageTitle">
+        <fmt:param value="${course.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -112,10 +116,10 @@
         dialog.open();
       }
 
-      function addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName, lodging) {
+      function addNewCourseStudent(abstractStudentId, studentId, studentName, lodging) {
         var table = getIxTableById('studentsTable');
         var rowIndex = table.addRow(['', '', studentName, studentId, 10, new Date().getTime(), 0, '', lodging, abstractStudentId, -1, 1, '', '', '']);
-        table.hideCell(rowIndex, studentsTable.getNamedColumnIndex('evaluateButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('evaluateButton'));
         for (var i = 3; i < 9; i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -123,6 +127,10 @@
         $('noStudentsAddedMessageContainer').setStyle({
           display: 'none'
         });
+        $('editCourseStudentsTotalContainer').setStyle({
+          display: ''
+        });
+        $('editCourseStudentsTotalValue').innerHTML = table.getRowCount(); 
       };
 
       function openSearchStudentsDialog() {
@@ -160,7 +168,7 @@
                 var lodging = event.results.students[i].lodging;
                 var index = getStudentRowIndex(studentId);
                 if (index == -1) {
-                  addNewCourseStudent(studentsTable, abstractStudentId, studentId, studentName, lodging);
+                  addNewCourseStudent(abstractStudentId, studentId, studentName, lodging);
                 } 
               }
               studentsTable.reattachToDom();
@@ -422,20 +430,20 @@
           resourceSearchUrl: '${pageContext.request.contextPath}/resources/searchresourcesautocomplete.binary',
           resourceSearchParamName: 'query',
           resourceSearchProgressImageUrl: '${pageContext.request.contextPath}/gfx/progress_small.gif',
-	        nameHeader: '<fmt:message key="courses.editCourse.componentsNameHeader"/>',
-	        lengthHeader: '<fmt:message key="courses.editCourse.componentsLengthHeader"/>',
+          nameHeader: '<fmt:message key="courses.editCourse.componentsNameHeader"/>',
+          lengthHeader: '<fmt:message key="courses.editCourse.componentsLengthHeader"/>',
           componentUnit: '<fmt:message key="courses.editCourse.componentUnit"/>',
-	        materialResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceMaterialResourceUnit"/>',
-	        workResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceWorkResourceUnit"/>',
-	        descriptionHeader: '<fmt:message key="courses.editCourse.componentsDescriptionHeader"/>',
-	        editButtonTooltip: '<fmt:message key="courses.editCourse.componentsEditButtonTooltip"/>',
-	        removeButtonTooltip: '<fmt:message key="courses.editCourse.componentsRemoveButtonTooltip"/>',
-	        archiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsArchiveButtonTooltip"/>',
+          materialResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceMaterialResourceUnit"/>',
+          workResourceUnit: '<fmt:message key="courses.editCourse.componentsResourceWorkResourceUnit"/>',
+          descriptionHeader: '<fmt:message key="courses.editCourse.componentsDescriptionHeader"/>',
+          editButtonTooltip: '<fmt:message key="courses.editCourse.componentsEditButtonTooltip"/>',
+          removeButtonTooltip: '<fmt:message key="courses.editCourse.componentsRemoveButtonTooltip"/>',
+          archiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsArchiveButtonTooltip"/>',
           archiveConfirmTitle: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogTitle"/>',
           archiveConfirmContentLocale: 'courses.editCourse.archiveComponentConfirmDialogContent',
           archiveConfirmOkLabel: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogOkLabel"/>',
           archiveConfirmCancelLabel: '<fmt:message key="courses.editCourse.archiveComponentConfirmDialogCancelLabel"/>',
-	        resourceNameTitle: '<fmt:message key="courses.editCourse.componentsResourceNameTitle"/>',
+          resourceNameTitle: '<fmt:message key="courses.editCourse.componentsResourceNameTitle"/>',
           resourceUsageTitle: '<fmt:message key="courses.editCourse.componentsResourceUsageTitle"/>',
           resourceRemoveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceRemoveButtonTooltip"/>',
           resourceArchiveButtonTooltip: '<fmt:message key="courses.editCourse.componentsResourceArchiveButtonTooltip"/>',
@@ -448,41 +456,41 @@
         
         <c:if test="${fn:length(courseComponents) gt 0}">
         
-	        $('noComponentsAddedMessageContainer').setStyle({
-	          display: 'none'
-	        });
-	        $('componentHoursTotalContainer').setStyle({
-	          display: ''
-	        });
-	        
-	        var componentEditor;
-	        var resourceCategory;
-	        
-	        <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
-	          componentEditor = componentsEditor.addCourseComponent(
-	            ${component.id}, 
-	            '${fn:escapeXml(component.name)}', 
-	            ${component.length.units}, 
-	            '${fn:escapeXml(component.description)}');
-	          
-	          <c:forEach var="componentResource" items="${component.resources}">
-		          if (!componentEditor.hasResourceCategory(${componentResource.resource.category.id})) {
-		            resourceCategory = componentEditor.addResourceCategory(
-		                ${componentResource.resource.category.id}, 
-		                '${fn:escapeXml(componentResource.resource.category.name)}');
-		          }
-		            
-		          componentEditor.addResource(${componentResource.resource.category.id}, 
-		              ${componentResource.id}, 
-		              ${componentResource.resource.id},
-		              '${componentResource.resource.resourceType}',
-		              '${fn:escapeXml(componentResource.resource.name)}', 
-		              ${componentResource.usagePercent},
-		              ${componentResource.usagePercent / 100});
-	          </c:forEach>
-	          
-	        </c:forEach>
-	      </c:if>
+          $('noComponentsAddedMessageContainer').setStyle({
+            display: 'none'
+          });
+          $('componentHoursTotalContainer').setStyle({
+            display: ''
+          });
+          
+          var componentEditor;
+          var resourceCategory;
+          
+          <c:forEach var="component" items="${courseComponents}" varStatus="componentsVs">
+            componentEditor = componentsEditor.addCourseComponent(
+              ${component.id}, 
+              '${fn:escapeXml(component.name)}', 
+              ${component.length.units}, 
+              '${fn:escapeXml(component.description)}');
+            
+            <c:forEach var="componentResource" items="${component.resources}">
+              if (!componentEditor.hasResourceCategory(${componentResource.resource.category.id})) {
+                resourceCategory = componentEditor.addResourceCategory(
+                    ${componentResource.resource.category.id}, 
+                    '${fn:escapeXml(componentResource.resource.category.name)}');
+              }
+                
+              componentEditor.addResource(${componentResource.resource.category.id}, 
+                  ${componentResource.id}, 
+                  ${componentResource.resource.id},
+                  '${componentResource.resource.resourceType}',
+                  '${fn:escapeXml(componentResource.resource.name)}', 
+                  ${componentResource.usagePercent},
+                  ${componentResource.usagePercent / 100});
+            </c:forEach>
+            
+          </c:forEach>
+        </c:if>
       }
       
       function addNewComponent() {
@@ -1067,8 +1075,21 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.editCourse.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableComponent.deleteRow(event.row);
-              if (studentsTable.getRowCount() == 0) {
+              var table = event.tableComponent;
+              table.deleteRow(event.row);
+              if (table.getRowCount() > 0) {
+                $('noStudentsAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('editCourseStudentsTotalContainer').setStyle({
+                  display: ''
+                });
+                $('editCourseStudentsTotalValue').innerHTML = table.getRowCount(); 
+              }
+              else {
+                $('editCourseStudentsTotalContainer').setStyle({
+                  display: 'none'
+                });
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
                 });
@@ -1112,7 +1133,19 @@
                       onSuccess: function (jsonResponse) {
                         var table = getIxTableById('studentsTable');
                         table.deleteRow(archivedStudentRowIndex);
-                        if (table.getRowCount() == 0) {
+                        if (table.getRowCount() > 0) {
+                          $('noStudentsAddedMessageContainer').setStyle({
+                            display: 'none'
+                          });
+                          $('editCourseStudentsTotalContainer').setStyle({
+                            display: ''
+                          });
+                          $('editCourseStudentsTotalValue').innerHTML = table.getRowCount(); 
+                        }
+                        else {
+                          $('editCourseStudentsTotalContainer').setStyle({
+                            display: 'none'
+                          });
                           $('noStudentsAddedMessageContainer').setStyle({
                             display: ''
                           });
@@ -1155,18 +1188,18 @@
           cellEditor = studentsTable.getCellEditor(rowIndex, studentIdColumnIndex);
           
           <c:forEach var="courseStudentStudent" items="${courseStudentsStudents[courseStudent.id]}">
-	        <c:choose>
-	          <c:when test="${courseStudentStudent.studyProgramme ne null}">
-	            <c:set var="studyProgrammeName">${fn:escapeXml(courseStudentStudent.studyProgramme.name)}</c:set>
-	          </c:when>
-	          <c:otherwise>
-	            <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
-	          </c:otherwise>
-	        </c:choose>
-	
-	        <c:if test="${!courseStudentStudent.active}">
-	          <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
-	        </c:if>
+          <c:choose>
+            <c:when test="${courseStudentStudent.studyProgramme ne null}">
+              <c:set var="studyProgrammeName">${fn:escapeXml(courseStudentStudent.studyProgramme.name)}</c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="studyProgrammeName"><fmt:message key="courses.editCourse.studentsTableNoStudyProgrammeLabel"/></c:set>
+            </c:otherwise>
+          </c:choose>
+  
+          <c:if test="${!courseStudentStudent.active}">
+            <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
+          </c:if>
             
             selectController.addOption(cellEditor, 
                 ${courseStudentStudent.id},
@@ -1185,11 +1218,25 @@
           studentsTable.showCell(event.row, studentsTable.getNamedColumnIndex("removeButton"));
         });
 
-        <c:if test="${fn:length(courseStudents) gt 0}">
-          $('noStudentsAddedMessageContainer').setStyle({
-            display: 'none'
-          });
-        </c:if>
+        <c:choose>
+          <c:when test="${fn:length(courseStudents) gt 0}">
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('editCourseStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('editCourseStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
+          </c:when>
+          <c:otherwise>
+            $('editCourseStudentsTotalContainer').setStyle({
+              display: 'none'
+            });
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: ''
+            });
+          </c:otherwise>
+        </c:choose>
       }
 
       function loadStudentStudyProgrammes(rowIndex, studentId) {
@@ -1214,9 +1261,22 @@
       
       function initializeDraftListener() {
         Event.observe(document, "ix:draftRestore", function (event) {
-          if (getIxTableById('studentsTable').getRowCount() > 0) {
+          var table = getIxTableById('studentsTable');
+          if (table.getRowCount() > 0) {
+            $('editCourseStudentsTotalContainer').setStyle({
+              display: ''
+            });
             $('noStudentsAddedMessageContainer').setStyle({
               display: 'none'
+            });
+            $('editCourseStudentsTotalValue').innerHTML = table.getRowCount(); 
+          }
+          else {
+            $('editCourseStudentsTotalContainer').setStyle({
+              display: 'none'
+            });
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: ''
             });
           }
         });
@@ -1278,57 +1338,79 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="courses.editCourse.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="courses.editCourse.pageTitle">
+        <fmt:param value="${course.name}"/>
+      </fmt:message>
+    </h1>
     
     <div id="editCourseEditFormContainer">
-	    <div class="genericFormContainer">
-	      <form action="editcourse.json" method="post" ix:jsonform="true" ix:useglasspane="true">
-	        <input type="hidden" name="course" value="${course.id}"/>
+      <div class="genericFormContainer">
+        <form action="editcourse.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+          <input type="hidden" name="course" value="${course.id}"/>
           <input type="hidden" name="version" value="${course.version}"/>
-	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#basic"><fmt:message key="courses.editCourse.basicTabTitle" /></a>
-	          <a class="tabLabel" href="#components"><fmt:message key="courses.editCourse.componentsTabTitle" /></a>
-	          <a class="tabLabel" href="#costplan"><fmt:message key="courses.editCourse.costPlanTabTitle" /></a>
-	          <a class="tabLabel" href="#students"><fmt:message key="courses.editCourse.StudentsTabTitle" /></a>
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#basic"><fmt:message key="courses.editCourse.basicTabTitle" /></a>
+            <a class="tabLabel" href="#components"><fmt:message key="courses.editCourse.componentsTabTitle" /></a>
+            <a class="tabLabel" href="#costplan"><fmt:message key="courses.editCourse.costPlanTabTitle" /></a>
+            <a class="tabLabel" href="#students"><fmt:message key="courses.editCourse.StudentsTabTitle" /></a>
             <ix:extensionHook name="courses.editCourse.tabLabels"/>
-	        </div>
-	
-	        <div id="basic" class="tabContent">
-	          <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
+          </div>
+  
+          <div id="basic" class="tabContent">
+            <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
+
+            <!--  TODO italic tags to css -->
           
-	          <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.editCourse.moduleTitle"/>
-                  <jsp:param name="helpLocale" value="courses.editCourse.moduleHelp"/>
-                </jsp:include>    
-	            <i>${course.module.name}</i>
-	          </div>
-	    
-	          <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.editCourse.nameTitle"/>
-                  <jsp:param name="helpLocale" value="courses.editCourse.nameHelp"/>
-                </jsp:include>    
-	            <input type="text" class="required" name="name" value="${fn:escapeXml(course.name)}" size="40">
-	          </div>
-	           
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.creatorTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.creatorHelp"/>
+              </jsp:include>
+              <span><i>${course.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.created}"/></i></span>    
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.modifierTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.modifierHelp"/>
+              </jsp:include>
+              <span><i>${course.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.lastModified}"/></i></span>    
+            </div>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	              <jsp:param name="titleLocale" value="courses.editCourse.tagsTitle"/>
-	              <jsp:param name="helpLocale" value="courses.editCourse.tagsHelp"/>
+                <jsp:param name="titleLocale" value="courses.editCourse.moduleTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.moduleHelp"/>
+              </jsp:include>    
+              <span><i>${course.module.name}</i></span>
+            </div>
+      
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.nameTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.nameHelp"/>
+              </jsp:include>    
+              <input type="text" class="required" name="name" value="${fn:escapeXml(course.name)}" size="40">
+            </div>
+             
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.nameExtensionTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.nameExtensionHelp"/>
+              </jsp:include>    
+              <input type="text" name="nameExtension" value="${fn:escapeXml(course.nameExtension)}" size="40">
+            </div>
+      
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.tagsTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.tagsHelp"/>
               </jsp:include>
               <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
-	          
-	          <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.editCourse.nameExtensionTitle"/>
-                  <jsp:param name="helpLocale" value="courses.editCourse.nameExtensionHelp"/>
-                </jsp:include>    
-	            <input type="text" name="nameExtension" value="${fn:escapeXml(course.nameExtension)}" size="40">
-	          </div>
-	    
+
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.stateTitle"/>
@@ -1353,7 +1435,7 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.educationTypesTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.educationTypesHelp"/>
               </jsp:include>
-  	          <div class="editCourseFormSectionEducationType">
+              <div class="editCourseFormSectionEducationType">
                 <c:forEach var="educationType" items="${educationTypes}">
                   <div class="editCourseFormSectionEducationTypeCell">
                     <div class="editCourseFormSectionEducationTypeTitle">
@@ -1373,16 +1455,16 @@
                     </c:forEach>
                   </div>
                 </c:forEach>
-  	          </div>
+              </div>
             </div>
-	
-	          <div class="genericFormSection">  
+  
+            <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.subjectTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.subjectHelp"/>
               </jsp:include>    
-	            <select name="subject">           
-	              <c:forEach var="subject" items="${subjects}">
+              <select name="subject">           
+                <c:forEach var="subject" items="${subjects}">
                   <c:choose>
                     <c:when test="${empty subject.code}">
                       <c:choose>
@@ -1405,13 +1487,13 @@
                       </c:choose>
                     </c:otherwise>
                   </c:choose>
-	              </c:forEach>
+                </c:forEach>
                 <c:if test="${course.subject.archived == true}">
                   <option value="${course.subject.id}" selected="selected">${course.subject.name} (${course.subject.code})*</option>
                 </c:if>
-	            </select>
-	          </div>
-	          
+              </select>
+            </div>
+            
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.courseNumberTitle"/>
@@ -1420,51 +1502,50 @@
               <input type="text" name="courseNumber" value="${course.courseNumber}" size="2">
             </div>
 
-	          <table>
-	            <tr>
-	              <td>
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="courses.editCourse.beginsTitle"/>
-                      <jsp:param name="helpLocale" value="courses.editCourse.beginsHelp"/>
-                    </jsp:include>    
-                  </td>
-	              <td>
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="courses.editCourse.endsTitle"/>
-                      <jsp:param name="helpLocale" value="courses.editCourse.endsHelp"/>
-                    </jsp:include>    
-                  </td>
-	              <td>
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="courses.editCourse.lengthTitle"/>
-                      <jsp:param name="helpLocale" value="courses.editCourse.lengthHelp"/>
-                    </jsp:include>    
-                  </td>
-	            </tr>
-	            <tr>
-	              <td>
-	                <input type="text" name="beginDate" ix:datefield="true" value="${course.beginDate.time}"/>
-	              </td>
-	              <td>
-	                <input type="text" name="endDate" ix:datefield="true" value="${course.endDate.time}"/>
-	              </td>
-	              <td>
-	                <input type="text" name="courseLength" class="float required" value="${course.courseLength.units}" size="15"/>
-	                <select name="courseLengthTimeUnit">           
-	                  <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
-	                    <option value="${courseLengthTimeUnit.id}" <c:if test="${course.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
-	                  </c:forEach>
-	                </select>   
-	              </td>
-	            </tr>
-	          </table>
+            <table>
+              <tr>
+                <td>
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="courses.editCourse.beginsTitle"/>
+                    <jsp:param name="helpLocale" value="courses.editCourse.beginsHelp"/>
+                  </jsp:include>    
+                </td>
+                <td>
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="courses.editCourse.endsTitle"/>
+                    <jsp:param name="helpLocale" value="courses.editCourse.endsHelp"/>
+                  </jsp:include>    
+                </td>
+                <td>
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="courses.editCourse.lengthTitle"/>
+                    <jsp:param name="helpLocale" value="courses.editCourse.lengthHelp"/>
+                  </jsp:include>    
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input type="text" name="beginDate" ix:datefield="true" value="${course.beginDate.time}"/>
+                </td>
+                <td>
+                  <input type="text" name="endDate" ix:datefield="true" value="${course.endDate.time}"/>
+                </td>
+                <td>
+                  <input type="text" name="courseLength" class="float required" value="${course.courseLength.units}" size="15"/>
+                  <select name="courseLengthTimeUnit">           
+                    <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
+                      <option value="${courseLengthTimeUnit.id}" <c:if test="${course.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
+                    </c:forEach>
+                  </select>   
+                </td>
+              </tr>
+            </table>
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.localTeachingDaysTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.localTeachingDaysHelp"/>
               </jsp:include>    
-            
               <input type="text" class="float" name="localTeachingDays" value="${fn:escapeXml(course.localTeachingDays)}" size="5">
             </div>
 
@@ -1498,17 +1579,16 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.assessingHoursTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.assessingHoursHelp"/>
               </jsp:include>    
-            
               <input type="text" class="float" name="assessingHours" value="${fn:escapeXml(course.assessingHours)}" size="5">
             </div>
 
-	          <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="courses.editCourse.descriptionTitle"/>
-                  <jsp:param name="helpLocale" value="courses.editCourse.descriptionHelp"/>
-                </jsp:include>    
-	            <textarea ix:cktoolbar="courseDescription" name="description" ix:ckeditor="true">${course.description}</textarea>
-	          </div>
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.descriptionTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.descriptionHelp"/>
+              </jsp:include>    
+              <textarea ix:cktoolbar="courseDescription" name="description" ix:ckeditor="true">${course.description}</textarea>
+            </div>
 
             <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="openSearchUsersDialog();"><fmt:message key="courses.editCourse.addPersonLink"/></span>
@@ -1516,10 +1596,10 @@
             <div id="personnelTable"> </div>
 
             <ix:extensionHook name="courses.editCourse.tabs.basic"/>
-	        </div>
-	    
-	        <div id="components" class="tabContentixTableFormattedData hiddenTab">
-	          <div class="genericTableAddRowContainer">
+          </div>
+      
+          <div id="components" class="tabContentixTableFormattedData hiddenTab">
+            <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="addNewComponent();"><fmt:message key="courses.editCourse.addComponentLink"/></span>
             </div>
             
@@ -1527,93 +1607,93 @@
               <span><fmt:message key="courses.editCourse.noComponentsAddedPreFix"/> <span onclick="addNewComponent();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noComponentsAddedClickHereLink"/></span>.</span>
             </div>
             
-	          <div id="editCourseComponentsList">
-	            
-	          </div>
-	          
-	          <div id="componentHoursTotalContainer" style="display:none;">
+            <div id="editCourseComponentsList">
+              
+            </div>
+            
+            <div id="componentHoursTotalContainer" style="display:none;">
               <span><fmt:message key="courses.editCourse.totalComponentHoursLabel"/></span>
               <span id="componentHoursTotalValueContainer">0</span>
             </div>
             
             <ix:extensionHook name="courses.editCourse.tabs.components"/>
-	        </div>
-	        
-	        <div id="costplan" class="tabContent hiddenTab">
+          </div>
+          
+          <div id="costplan" class="tabContent hiddenTab">
             <div id="courseIncomeContainer">
-	            <div id="courseIncomesTitle" class="genericFormTitle">
-	              <div class="genericFormTitleText"><fmt:message key="courses.editCourse.courseIncomesTitle"/></div>
-	            </div>
-	          
-		          <div class="courseCostsPlanTableContainer">
-		            <div class="genericFormTitle courseCostsPlanTableTitle">
-                      <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerCourseIncomesTitle" /></div>
-                    </div>
-		            <div class="courseCostsPlanTableAddRowContainer" onclick="addCourseIncomeRow();"></div>
-		          
-		            <div id="courseIncomesTable"> </div>
-		            <div class="courseCostsPlanTableTotal"> 
-		              <div class="courseCostsPlanTableTotalTitle">
-		                <fmt:message key="courses.editCourse.courseIncomesTableTotalTitle"/>
-		              </div> 
-		              <div class="courseCostsPlanTableTotalValue" id="courseIncomesTableTotal"> 0 </div> 
-		            </div>
-		          </div>
-		      
-		          <div class="courseCostsPlanTableContainer">
-		            <div class="genericFormTitle courseCostsPlanTableTitle">
-                      <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerStudentIncomesTitle" /></div>
-                    </div>
-		            <div class="courseCostsPlanTableAddRowContainer" onclick="addStudentIncomeRow();"></div>
-		          
-		            <div id="studentIncomesTable"> </div>
-		            <div class="courseCostsPlanTableTotal"> 
-		              <div class="courseCostsPlanTableTotalTitle">
-		                <fmt:message key="courses.editCourse.studentIncomesTableTotalTitle"/>
-		              </div> 
-		              <div class="courseCostsPlanTableTotalValue" id="studentIncomesTableTotal"> 0 </div> 
-		            </div>
-		          </div>
-		          
-		          <div class="courseCostsPlanTableContainer">
-		            <div class="genericFormTitle courseCostsPlanTableTitle">
-                      <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerGradeIncomesTitle" /></div>
-                    </div>
-		            <div class="courseCostsPlanTableAddRowContainer" onclick="addGradeIncomeRow();"></div>
-		          
-		            <div id="gradeIncomesTable"> </div>
-		            <div class="courseCostsPlanTableTotal"> 
-		              <div class="courseCostsPlanTableTotalTitle">
-		                <fmt:message key="courses.editCourse.gradeIncomesTableTotalTitle"/>
-		              </div> 
-		              <div class="courseCostsPlanTableTotalValue" id="gradeIncomesTableTotal"> 0 </div> 
-		            </div>
-		          </div>
-		    
-		          <div class="courseCostsPlanTableContainer">
-		            <div class="genericFormTitle courseCostsPlanTableTitle">
-                      <div class="genericFormTitleText"><fmt:message key="courses.editCourse.otherIncomesTitle" /></div>
-                    </div>
-		            <div class="courseCostsPlanTableAddRowContainer" onclick="addOtherIncomeRow();"></div>
-		          
-		            <div id="otherIncomesTable"> </div>
-		            <div class="courseCostsPlanTableTotal"> 
-		              <div class="courseCostsPlanTableTotalTitle">
-		                <fmt:message key="courses.editCourse.otherIncomesTableTotalTitle"/>
-		              </div> 
-		              <div class="courseCostsPlanTableTotalValue" id="otherIncomesTableTotal"> 0 </div> 
-		            </div>
-		          </div>
-		          
-		          <div id="courseIncomeTotalContainer">
-		            <div id="courseIncomeTotalTitle">
-		              <fmt:message key="courses.editCourse.courseIncomeTotalTitle"/>
-		            </div>
-		            <div id="courseIncomeTotalValue"> 0 </div>
-		          </div>
-		          
-	          </div>
-	          
+              <div id="courseIncomesTitle" class="genericFormTitle">
+                <div class="genericFormTitleText"><fmt:message key="courses.editCourse.courseIncomesTitle"/></div>
+              </div>
+            
+              <div class="courseCostsPlanTableContainer">
+                <div class="genericFormTitle courseCostsPlanTableTitle">
+                  <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerCourseIncomesTitle" /></div>
+                </div>
+                <div class="courseCostsPlanTableAddRowContainer" onclick="addCourseIncomeRow();"></div>
+              
+                <div id="courseIncomesTable"> </div>
+                <div class="courseCostsPlanTableTotal"> 
+                  <div class="courseCostsPlanTableTotalTitle">
+                    <fmt:message key="courses.editCourse.courseIncomesTableTotalTitle"/>
+                  </div> 
+                  <div class="courseCostsPlanTableTotalValue" id="courseIncomesTableTotal"> 0 </div> 
+                </div>
+              </div>
+          
+              <div class="courseCostsPlanTableContainer">
+                <div class="genericFormTitle courseCostsPlanTableTitle">
+                  <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerStudentIncomesTitle" /></div>
+                </div>
+                <div class="courseCostsPlanTableAddRowContainer" onclick="addStudentIncomeRow();"></div>
+              
+                <div id="studentIncomesTable"> </div>
+                <div class="courseCostsPlanTableTotal"> 
+                  <div class="courseCostsPlanTableTotalTitle">
+                    <fmt:message key="courses.editCourse.studentIncomesTableTotalTitle"/>
+                  </div> 
+                  <div class="courseCostsPlanTableTotalValue" id="studentIncomesTableTotal"> 0 </div> 
+                </div>
+              </div>
+              
+              <div class="courseCostsPlanTableContainer">
+                <div class="genericFormTitle courseCostsPlanTableTitle">
+                  <div class="genericFormTitleText"><fmt:message key="courses.editCourse.incomePerGradeIncomesTitle" /></div>
+                </div>
+                <div class="courseCostsPlanTableAddRowContainer" onclick="addGradeIncomeRow();"></div>
+              
+                <div id="gradeIncomesTable"> </div>
+                <div class="courseCostsPlanTableTotal"> 
+                  <div class="courseCostsPlanTableTotalTitle">
+                    <fmt:message key="courses.editCourse.gradeIncomesTableTotalTitle"/>
+                  </div> 
+                  <div class="courseCostsPlanTableTotalValue" id="gradeIncomesTableTotal"> 0 </div> 
+                </div>
+              </div>
+        
+              <div class="courseCostsPlanTableContainer">
+                <div class="genericFormTitle courseCostsPlanTableTitle">
+                  <div class="genericFormTitleText"><fmt:message key="courses.editCourse.otherIncomesTitle" /></div>
+                </div>
+                <div class="courseCostsPlanTableAddRowContainer" onclick="addOtherIncomeRow();"></div>
+              
+                <div id="otherIncomesTable"> </div>
+                <div class="courseCostsPlanTableTotal"> 
+                  <div class="courseCostsPlanTableTotalTitle">
+                    <fmt:message key="courses.editCourse.otherIncomesTableTotalTitle"/>
+                  </div> 
+                  <div class="courseCostsPlanTableTotalValue" id="otherIncomesTableTotal"> 0 </div> 
+                </div>
+              </div>
+              
+              <div id="courseIncomeTotalContainer">
+                <div id="courseIncomeTotalTitle">
+                  <fmt:message key="courses.editCourse.courseIncomeTotalTitle"/>
+                </div>
+                <div id="courseIncomeTotalValue"> 0 </div>
+              </div>
+              
+            </div>
+            
             <div id="courseCostContainer">
             
               <div id="courseCostsTitle" class="genericFormTitle">
@@ -1643,7 +1723,7 @@
                 <div id="studentResourcesTable"> </div>
                 <div class="courseCostsPlanTableTotal"> 
                   <div class="courseCostsPlanTableTotalTitle"> 
-                     <fmt:message key="courses.editCourse.studentResourcesTableTotalTitle"/>
+                    <fmt:message key="courses.editCourse.studentResourcesTableTotalTitle"/>
                   </div> 
                   <div class="courseCostsPlanTableTotalValue" id="studentResourcesTableTotal"> 0 </div> 
                 </div>
@@ -1688,37 +1768,37 @@
             </div>
             <div style="clear:both; height:1px;"></div>
             <ix:extensionHook name="courses.editCourse.tabs.costPlan"/>
-	        </div>
-	    
-	        <div id="students" class="tabContentixTableFormattedData hiddenTab">
-	          <div class="courseStudentsTableContainer">
-		          <div class="genericTableAddRowContainer">
-	              <span class="genericTableAddRowLinkContainer" onclick="openSearchStudentsDialog();"><fmt:message key="courses.editCourse.addStudentLink"/></span>
-	            </div>
-<!--
-              <div class="genericTableFilterActiveContainer">
-                <span class="genericTableFilterActiveLinkContainer" onclick="filterOnlyActiveStudents();"><fmt:message key="courses.editCourse.filterActiveStudentsLink"/></span>
+          </div>
+      
+          <div id="students" class="tabContentixTableFormattedData hiddenTab">
+            <div class="courseStudentsTableContainer">
+              <div class="genericTableAddRowContainer">
+                <span class="genericTableAddRowLinkContainer" onclick="openSearchStudentsDialog();"><fmt:message key="courses.editCourse.addStudentLink"/></span>
               </div>
--->
-	              
-	            <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-	              <span><fmt:message key="courses.editCourse.noStudentsAddedPreFix"/> <span onclick="openSearchStudentsDialog();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noStudentsAddedClickHereLink"/></span>.</span>
-	            </div>
-	          
-	            <div id="courseStudentsTable"> </div>
-	          </div>
+                
+              <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+                <span><fmt:message key="courses.editCourse.noStudentsAddedPreFix"/> <span onclick="openSearchStudentsDialog();" class="genericTableAddRowLink"><fmt:message key="courses.editCourse.noStudentsAddedClickHereLink"/></span>.</span>
+              </div>
+            
+              <div id="courseStudentsTable"> </div>
+
+              <div id="editCourseStudentsTotalContainer">
+                <fmt:message key="courses.editCourse.studentsTotal"/> <span id="editCourseStudentsTotalValue"></span>
+              </div>
+
+            </div>
             <ix:extensionHook name="courses.editCourse.tabs.students"/>
-	        </div>
-	    
+          </div>
+      
           <ix:extensionHook name="courses.editCourse.tabs"/>
 
-	        <div class="genericFormSubmitSectionOffTab">
-	          <input type="submit" class="formvalid" value="<fmt:message key="courses.editCourse.saveButton"/>">
-	        </div>
-	
-	      </form>
-	    </div>
-	  </div>
+          <div class="genericFormSubmitSectionOffTab">
+            <input type="submit" class="formvalid" value="<fmt:message key="courses.editCourse.saveButton"/>">
+          </div>
+  
+        </form>
+      </div>
+    </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>

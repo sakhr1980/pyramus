@@ -88,12 +88,13 @@
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
             }
-
-            if (studentsTable.getRowCount() > 0) {
-              $('noStudentsAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('createCourseStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('createCourseStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
           }
         });   
       };
@@ -828,11 +829,21 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="courses.createCourse.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
-              event.tableComponent.deleteRow(event.row);
+              var table = event.tableComponent;
+              table.deleteRow(event.row);
               if (studentsTable.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
                 });
+                $('createCourseStudentsTotalContainer').setStyle({
+                  display: 'none'
+                });
+              }
+              else {
+                $('createCourseStudentsTotalContainer').setStyle({
+                  display: ''
+                });
+                $('createCourseStudentsTotalValue').innerHTML = table.getRowCount(); 
               }
             } 
           }]        
@@ -1299,6 +1310,11 @@
               </div>
             
               <div id="courseStudentsTable"> </div>
+
+              <div id="createCourseStudentsTotalContainer" style="display:none;">
+                <fmt:message key="courses.createCourse.studentsTotal"/> <span id="createCourseStudentsTotalValue"></span>
+              </div>
+
             </div>
             <ix:extensionHook name="courses.createCourse.tabs.students"/>
           </div>

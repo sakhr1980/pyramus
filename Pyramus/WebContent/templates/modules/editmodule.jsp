@@ -8,7 +8,11 @@
 
 <html>
   <head>
-    <title><fmt:message key="modules.editModule.pageTitle"/></title>
+    <title>
+      <fmt:message key="modules.editModule.pageTitle">
+        <fmt:param value="${module.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -212,80 +216,103 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="modules.editModule.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="modules.editModule.pageTitle">
+        <fmt:param value="${module.name}"/>
+      </fmt:message>
+    </h1>
     
     <div id="editModuleEditFormContainer"> 
-	    <div class="genericFormContainer"> 
-	  	  <form action="editmodule.json" method="post" ix:jsonform="true" ix:useglasspane="true">
-	        <input type="hidden" name="moduleId" value="${module.id}"></input>
-	        <input type="hidden" name="version" value="${module.version}"/>
-	      
-	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#basic">
-	            <fmt:message key="modules.editModule.tabLabelBasic"/>
-	          </a>
-	          <a class="tabLabel" href="#components">
-	            <fmt:message key="modules.editModule.tabLabelComponents"/>
-	          </a>
+      <div class="genericFormContainer"> 
+        <form action="editmodule.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+          <input type="hidden" name="moduleId" value="${module.id}"></input>
+          <input type="hidden" name="version" value="${module.version}"/>
+        
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#basic">
+              <fmt:message key="modules.editModule.tabLabelBasic"/>
+            </a>
+            <a class="tabLabel" href="#components">
+              <fmt:message key="modules.editModule.tabLabelComponents"/>
+            </a>
             <ix:extensionHook name="modules.editModule.tabLabels"/>
-	        </div>
-	       
-	        <div id="basic" class="tabContent">
-	          <div id="basicTabRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
-         	  <div class="genericFormSection">
+          </div>
+         
+          <div id="basic" class="tabContent">
+            <div id="basicTabRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
+            
+            <!--  TODO italic tags to css -->
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="modules.editModule.creatorTitle"/>
+                <jsp:param name="helpLocale" value="modules.editModule.creatorHelp"/>
+              </jsp:include>
+              <span><i>${module.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${module.created}"/></i></span>    
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="modules.editModule.modifierTitle"/>
+                <jsp:param name="helpLocale" value="modules.editModule.modifierHelp"/>
+              </jsp:include>
+              <span><i>${module.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${module.lastModified}"/></i></span>    
+            </div>
+
+             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.editModule.nameTitle"/>
                 <jsp:param name="helpLocale" value="modules.editModule.nameHelp"/>
               </jsp:include>
-    	    		<input type="text" name="name" class="required" value="${fn:escapeXml(module.name)}" size="40">
-	      	  </div>
-	      	   
+              <input type="text" name="name" class="required" value="${fn:escapeXml(module.name)}" size="40">
+            </div>
+             
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-		            <jsp:param name="titleLocale" value="modules.editModule.tagsTitle"/>
-		            <jsp:param name="helpLocale" value="modules.editModule.tagsHelp"/>
-		          </jsp:include>
-		          <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
-		          <div id="tags_choices" class="autocomplete_choices"></div>
-		        </div>
-	          
+                <jsp:param name="titleLocale" value="modules.editModule.tagsTitle"/>
+                <jsp:param name="helpLocale" value="modules.editModule.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
+            
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.editModule.educationTypesTitle"/>
                 <jsp:param name="helpLocale" value="modules.editModule.educationTypesHelp"/>
               </jsp:include>
-  	          <div class="editModuleFormSectionEducationType">
-  	            <c:forEach var="educationType" items="${educationTypes}">
-  	              <div class="editModuleFormSectionEducationTypeCell">
-  	                <div class="editModuleFormSectionEducationTypeTitle">
+              <div class="editModuleFormSectionEducationType">
+                <c:forEach var="educationType" items="${educationTypes}">
+                  <div class="editModuleFormSectionEducationTypeCell">
+                    <div class="editModuleFormSectionEducationTypeTitle">
                       <div class="editModuleFormSectionEducationTypeTitleText">${educationType.name}</div>
                     </div>
-  	                <c:forEach var="educationSubtype" items="${educationType.unarchivedSubtypes}">
-  	                  <c:set var="key" value="${educationType.id}.${educationSubtype.id}"/>
-  	                  <c:choose>
-  	                    <c:when test="${enabledEducationTypes[key]}">
-  	                      <input type="checkbox" name="educationType.${key}" checked="checked"/>                      
-  	                    </c:when>
-  	                    <c:otherwise>
-  	                      <input type="checkbox" name="educationType.${key}"/>                      
-  	                    </c:otherwise>
-  	                  </c:choose>
-  	                  ${educationSubtype.name}<br/>
-  	                </c:forEach>
-  	              </div>
-  	            </c:forEach>
+                    <c:forEach var="educationSubtype" items="${educationType.unarchivedSubtypes}">
+                      <c:set var="key" value="${educationType.id}.${educationSubtype.id}"/>
+                      <c:choose>
+                        <c:when test="${enabledEducationTypes[key]}">
+                          <input type="checkbox" name="educationType.${key}" checked="checked"/>                      
+                        </c:when>
+                        <c:otherwise>
+                          <input type="checkbox" name="educationType.${key}"/>                      
+                        </c:otherwise>
+                      </c:choose>
+                      ${educationSubtype.name}<br/>
+                    </c:forEach>
+                  </div>
+                </c:forEach>
               </div>
             </div>
-	          
-	          <div class="genericFormSection">  
+            
+            <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.editModule.subjectTitle"/>
                 <jsp:param name="helpLocale" value="modules.editModule.subjectHelp"/>
               </jsp:include>
                 
-	            <select name="subject">           
-	              <c:forEach var="subject" items="${subjects}">
-	                <c:choose>
+              <select name="subject">           
+                <c:forEach var="subject" items="${subjects}">
+                  <c:choose>
                     <c:when test="${empty subject.code}">
                       <c:choose>
                         <c:when test="${subject.id == module.subject.id}">
@@ -307,9 +334,9 @@
                       </c:choose>
                     </c:otherwise>
                   </c:choose>
-	              </c:forEach>
-	            </select>
-	          </div>
+                </c:forEach>
+              </select>
+            </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -319,33 +346,33 @@
                     
               <input type="text" name="courseNumber" value="${module.courseNumber}" size="2">
             </div>
-	          
-	          <div class="genericFormSection">
+            
+            <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="modules.editModule.lengthTitle"/>
                   <jsp:param name="helpLocale" value="modules.editModule.lengthHelp"/>
                 </jsp:include>
-	            <input type="text" name="moduleLength" class="float required" value="${module.courseLength.units}" size="15"/>
-	            <select name="moduleLengthTimeUnit">           
-	              <c:forEach var="moduleLengthTimeUnit" items="${moduleLengthTimeUnits}">
-	                <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
-	              </c:forEach>
-	            </select>            
-	          </div>
-	  
-	          <div class="genericFormSection">  
+              <input type="text" name="moduleLength" class="float required" value="${module.courseLength.units}" size="15"/>
+              <select name="moduleLengthTimeUnit">           
+                <c:forEach var="moduleLengthTimeUnit" items="${moduleLengthTimeUnits}">
+                  <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
+                </c:forEach>
+              </select>            
+            </div>
+    
+            <div class="genericFormSection">  
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="modules.editModule.descriptionTitle"/>
                   <jsp:param name="helpLocale" value="modules.editModule.descriptionHelp"/>
                 </jsp:include>
 
-	            <textarea ix:cktoolbar="moduleDescription" name="description" ix:ckeditor="true">${module.description}</textarea>
-	          </div>
+              <textarea ix:cktoolbar="moduleDescription" name="description" ix:ckeditor="true">${module.description}</textarea>
+            </div>
             <ix:extensionHook name="modules.editModule.tabs.basic"/>
-	        </div>
-	        
-	        <div id="components" class="tabContentixTableFormattedData">
-	          <div class="genericTableAddRowContainer">
+          </div>
+          
+          <div id="components" class="tabContentixTableFormattedData">
+            <div class="genericTableAddRowContainer">
               <span class="genericTableAddRowLinkContainer" onclick="addComponentsTableRow();"><fmt:message key="modules.createModule.addComponentLink"/></span>
             </div>
               
@@ -353,23 +380,23 @@
               <span><fmt:message key="modules.createModule.noComponentsAddedPreFix"/> <span onclick="addComponentsTableRow();" class="genericTableAddRowLink"><fmt:message key="modules.createModule.noComponentsAddedClickHereLink"/></span>.</span>
             </div>
             
-	          <div id="componentsTable"></div>
+            <div id="componentsTable"></div>
             <!-- TODO Lankinen taitaa komponenttien yhteistunnit kauniiksi -->
             <div id="componentHoursTotalContainer" style="display:none;">
               <span><fmt:message key="modules.editModule.totalComponentHoursLabel"/></span>
               <span id="componentHoursTotalValueContainer">0</span>
             </div>
             <ix:extensionHook name="modules.editModule.tabs.components"/>
-	        </div>
+          </div>
 
           <ix:extensionHook name="modules.editModule.tabs"/>
-	        
-	        <div class="genericFormSubmitSectionOffTab">
-	          <input type="submit" class="formvalid" name="editmodule" value="<fmt:message key="modules.editModule.saveButton"/>">
-	        </div>
-	      </form>
-	    </div>
-	  </div>
+          
+          <div class="genericFormSubmitSectionOffTab">
+            <input type="submit" class="formvalid" name="editmodule" value="<fmt:message key="modules.editModule.saveButton"/>">
+          </div>
+        </form>
+      </div>
+    </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>

@@ -85,7 +85,7 @@ public class EditStudentGroupViewController implements PyramusViewController, Br
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "students.editStudentGroup.pageTitle");
+    return Messages.getInstance().getText(locale, "students.editStudentGroup.breadcrumb");
   }
 
 }

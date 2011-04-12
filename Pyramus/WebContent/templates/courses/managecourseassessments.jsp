@@ -302,6 +302,9 @@
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(assessments[courseStudent.id].assessingUser.fullName)}');
         </c:forEach>
         studentsTable.reattachToDom();
+        if (studentsTable.getRowCount() > 0) {
+          $('manageCourseAssessmentsStudentsTotalValue').innerHTML = studentsTable.getRowCount();
+        }
       }
       
       function setupRelatedCommands() {
@@ -342,16 +345,16 @@
     <h1 class="genericPageHeader"><fmt:message key="courses.manageCourseAssessments.pageTitle" /></h1>
     
     <div id="manageCourseAssessmentsEditFormContainer">
-	    <div class="genericFormContainer">
-	      <form action="savecourseassessments.json" method="post" ix:jsonform="true" ix:useglasspane="true">
-	        <input type="hidden" name="course" value="${course.id}"/>
+      <div class="genericFormContainer">
+        <form action="savecourseassessments.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+          <input type="hidden" name="course" value="${course.id}"/>
           <input type="hidden" name="version" value="${course.version}"/>
 
-	        <div class="tabLabelsContainer" id="tabs">
-	          <a class="tabLabel" href="#students"><fmt:message key="courses.manageCourseAssessments.studentsTabTitle" /></a>
-	        </div>
-	
-	        <div id="students" class="tabContent">
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#students"><fmt:message key="courses.manageCourseAssessments.studentsTabTitle" /></a>
+          </div>
+  
+          <div id="students" class="tabContent">
             <div id="relatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
 
             <div class="genericFormSection">                            
@@ -362,23 +365,30 @@
               <div>${course.name}</div>
             </div>
 
-	          <div id="manageCourseAssessmentsStudentsTableContainer">
+            <div id="manageCourseAssessmentsStudentsTableContainer">
               <c:if test="${fn:length(courseStudents) eq 0}">
-  	            <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-  	              <span><fmt:message key="courses.manageCourseAssessments.noStudentsAddedMessage"/></span>
-  	            </div>
+                <div id="noStudentsAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+                  <span><fmt:message key="courses.manageCourseAssessments.noStudentsAddedMessage"/></span>
+                </div>
               </c:if>
-	          
-	            <div id="studentsTable"> </div>
-	          </div>
-	        </div>
-	    
-	        <div class="genericFormSubmitSectionOffTab">
-	          <input type="submit" class="formvalid" value="<fmt:message key="courses.manageCourseAssessments.saveButton"/>">
-	        </div>
-	      </form>
-	    </div>
-	  </div>
+            
+              <div id="studentsTable"> </div>
+
+              <c:if test="${fn:length(courseStudents) gt 0}">
+                <div id="manageCourseAssessmentsStudentsTotalContainer">
+                  <fmt:message key="courses.manageCourseAssessments.studentsTotal"/> <span id="manageCourseAssessmentsStudentsTotalValue"></span>
+                </div>
+              </c:if>
+
+            </div>
+          </div>
+      
+          <div class="genericFormSubmitSectionOffTab">
+            <input type="submit" class="formvalid" value="<fmt:message key="courses.manageCourseAssessments.saveButton"/>">
+          </div>
+        </form>
+      </div>
+    </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>

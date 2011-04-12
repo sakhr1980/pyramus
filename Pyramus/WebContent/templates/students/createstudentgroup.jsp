@@ -33,12 +33,13 @@
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
             }
-
-            if (studentsTable.getRowCount() > 0) {
-              $('noStudentsAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('createStudentGroupStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('createStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
           }
         });   
       };
@@ -219,10 +220,22 @@
             tooltip: '<fmt:message key="students.createStudentGroup.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
               event.tableComponent.deleteRow(event.row);
-              if (studentsTable.getRowCount() == 0) {
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
                 });
+                $('createStudentGroupStudentsTotalContainer').setStyle({
+                  display: 'none'
+                });
+              }
+              else {
+                $('noStudentsAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('createStudentGroupStudentsTotalContainer').setStyle({
+                  display: ''
+                });
+                $('createStudentGroupStudentsTotalValue').innerHTML = event.tableComponent.getRowCount(); 
               }
             } 
           }]        
@@ -292,7 +305,7 @@
 
               <input type="text" name="beginDate" ix:datefield="true"/>
             </div>
-  
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="students.createStudentGroup.descriptionTitle"/>
@@ -321,6 +334,11 @@
               </div>
             
               <div id="studentsTable"> </div>
+
+              <div id="createStudentGroupStudentsTotalContainer" style="display:none;">
+                <fmt:message key="students.createStudentGroup.studentsTotal"/> <span id="createStudentGroupStudentsTotalValue"></span>
+              </div>
+
             </div>
             <ix:extensionHook name="students.createStudentGroup.tabs.students"/>
           </div>

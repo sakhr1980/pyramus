@@ -100,7 +100,7 @@ public class EditStudentProjectViewController implements PyramusViewController, 
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "projects.editStudentProject.pageTitle");
+    return Messages.getInstance().getText(locale, "projects.editStudentProject.breadcrumb");
   }
 
   public class StudentProjectModuleBean {

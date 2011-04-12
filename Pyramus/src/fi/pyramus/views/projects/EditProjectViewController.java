@@ -70,7 +70,7 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "projects.editProject.pageTitle");
+    return Messages.getInstance().getText(locale, "projects.editProject.breadcrumb");
   }
 
 }
