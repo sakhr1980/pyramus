@@ -279,6 +279,28 @@ h1.genericPageHeader{
   margin: 0px 8px 0px 8px;
 }
 
+/* View Student - Courses */
+
+.viewStudentCoursesTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+/* View Student - Grades */
+
+.viewStudentCourseAssessmentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.viewStudentTransferCreditsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
 /* Manage Course Assessments */
 
 #manageCourseAssessmentsStudentsTableContainer .ixTableRow:hover{
@@ -287,6 +309,21 @@ h1.genericPageHeader{
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   border-radius:3px;
+}
+
+#manageCourseAssessmentsStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+/* Edit Course - Students */
+
+#editCourseStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
 }
 
 /* View Course - Basic Info */
@@ -308,7 +345,6 @@ h1.genericPageHeader{
   display:table;
   width:100%;
   padding:6px 0px 6px 0px;
-
 }
 
 #studentViewBasicInfoWrapper .studentViewFormDataText, #studentViewContactInfoWrapper .studentViewFormDataText, #studentViewEducationInfoWrapper .studentViewFormDataText, #studentViewAdditionalInfoWrapper .studentViewFormDataText{
@@ -318,6 +354,14 @@ h1.genericPageHeader{
 
 .studentViewFormDataText p{
   margin-top:0px;
+}
+
+/* View Course - Students */
+
+#viewCourseStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
 }
 
 /* Create Course: Module search */
@@ -389,6 +433,15 @@ h1.genericPageHeader{
 
 #moduleSearchResultsTableContainer .ixTableRowContent{
   height:22px;
+}
+
+/* Create Course - Students */
+
+#createCourseStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
 }
 
 /* Create Student Project */
@@ -2040,4 +2093,62 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   border-radius:3px;
   -moz-border-radius:3px;
   -webkit-border:3px;
+}
+
+/* Create Project - Modules */
+
+#createProjectModulesTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+/* Edit Project - Modules */
+
+#editProjectModulesTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+/* Edit Student Project - Courses and Modules */
+
+#editStudentProjectCoursesTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+#editStudentProjectModulesTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+/* Create Student Group - Students */
+
+#createStudentGroupStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+/* Edit Student Group - Students */
+
+#editStudentGroupStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+/* View Student Group - Students */
+
+#viewStudentGroupStudentsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
 }

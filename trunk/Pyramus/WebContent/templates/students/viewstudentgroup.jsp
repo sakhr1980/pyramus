@@ -6,7 +6,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="students.viewStudentGroup.pageTitle" /></title>
+    <title>
+      <fmt:message key="students.viewStudentGroup.pageTitle">
+        <fmt:param value="${studentGroup.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -108,6 +112,9 @@
           ]);
         </c:forEach>
         studentsTable.addRows(rows);
+        if (studentsTable.getRowCount() > 0) {
+          $('viewStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount();
+        }
       }
 
       function setupRelatedCommands() {
@@ -136,7 +143,11 @@
   </head>
   <body onload="onLoad(event);">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
-    <h1 class="genericPageHeader"><fmt:message key="students.viewStudentGroup.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="students.viewStudentGroup.pageTitle">
+        <fmt:param value="${studentGroup.name}"/>
+      </fmt:message>
+    </h1>
   
     <div class="genericFormContainer">
       <div class="tabLabelsContainer" id="tabs">
@@ -146,14 +157,6 @@
         
       <div id="basic" class="tabContent">
         <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
-        
-        <div class="genericFormSection">
-          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="students.viewStudentGroup.nameTitle" />
-            <jsp:param name="helpLocale" value="students.viewStudentGroup.nameHelp" />
-          </jsp:include> 
-          <div>${studentGroup.name}</div>
-        </div>
         
         <c:choose>
           <c:when test="${not empty studentGroup.tags}">
@@ -201,14 +204,16 @@
   
       <div id="students" class="tabContent hiddenTab">
         <div id="studentsTable"></div>
-  
-        <c:choose>
-          <c:when test="${fn:length(studentGroup.students) le 0}">
-            <div class="genericTableNotAddedMessageContainer">
-              <fmt:message key="students.viewStudentGroup.noStudents" />
-            </div>
-          </c:when>
-        </c:choose>
+        <c:if test="${fn:length(studentGroup.students) le 0}">
+          <div class="genericTableNotAddedMessageContainer">
+            <fmt:message key="students.viewStudentGroup.noStudents" />
+          </div>
+        </c:if>
+        <c:if test="${fn:length(studentGroup.students) gt 0}">
+          <div id="viewStudentGroupStudentsTotalContainer">
+            <fmt:message key="students.viewStudentGroup.studentsTotal"/> <span id="viewStudentGroupStudentsTotalValue"></span>
+          </div>
+        </c:if>
       </div>
     </div>
   

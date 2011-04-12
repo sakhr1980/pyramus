@@ -6,7 +6,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head> 
-    <title><fmt:message key="students.viewStudent.pageTitle"></fmt:message></title>
+    <title>
+      <fmt:message key="students.viewStudent.pageTitle">
+        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/datefield_support.jsp"></jsp:include>
@@ -280,7 +284,7 @@
       }
       
       function setupCourseAssessmentsTab(studentId) {
-        var courseAssesmentsTable = new IxTable($('courseAssessmentsTableContainer.' + studentId), {
+        var courseAssessmentsTable = new IxTable($('courseAssessmentsTableContainer.' + studentId), {
           id: 'courseAssessmentsTable.' + studentId,
           rowHoverEffect: true,
           columns : [{
@@ -388,7 +392,7 @@
           }]
         });
   
-        return courseAssesmentsTable;
+        return courseAssessmentsTable;
       }
 
       function setupStudentProjectTable(studentId, projectId) {
@@ -443,7 +447,7 @@
       function onLoad(event) {
         var coursesTable;
         var transferCreditsTable;
-        var courseAssesmentsTable;
+        var courseAssessmentsTable;
         
         <c:forEach var="student" items="${students}">
           // Setup basics
@@ -463,6 +467,14 @@
             rows.push(['${courseName}', '${studentCourse.participationType.name}', '${studentCourse.enrolmentTime.time}', ${studentCourse.id}, ${studentCourse.course.id}, '', '']);
           </c:forEach>
           coursesTable.addRows(rows);
+          if (coursesTable.getRowCount() > 0) {
+            $('viewStudentCoursesTotalValue.' + ${student.id}).innerHTML = coursesTable.getRowCount();
+          }
+          else {
+            $('viewStudentCoursesTotalContainer.' + ${student.id}).setStyle({
+              display: 'none'
+            });
+          }
           
           // Setup grade tabs
           transferCreditsTable = setupTransferCreditsTab(${student.id});
@@ -480,24 +492,40 @@
               '${fn:escapeXml(studentTransferCredit.assessingUser.fullName)}']);
           </c:forEach>
           transferCreditsTable.addRows(rows);
+          if (transferCreditsTable.getRowCount() > 0) {
+            $('viewStudentTransferCreditsTotalValue.' + ${student.id}).innerHTML = transferCreditsTable.getRowCount(); 
+          }
+          else {
+            $('viewStudentTransferCreditsTotalContainer.' + ${student.id}).setStyle({
+              display: 'none'
+            });
+          }
                                        
-          courseAssesmentsTable = setupCourseAssessmentsTab(${student.id});
+          courseAssessmentsTable = setupCourseAssessmentsTab(${student.id});
 
           rows.clear();
-          <c:forEach var="studentCourseAssesment" items="${courseAssesments[student.id]}">
+          <c:forEach var="studentCourseAssessment" items="${courseAssessments[student.id]}">
              rows.push([
-              '${fn:escapeXml(studentCourseAssesment.courseStudent.course.name)}',
-              '${fn:escapeXml(studentCourseAssesment.courseStudent.course.subject.name)}',
-              '${studentCourseAssesment.date.time}',
-              '${studentCourseAssesment.courseStudent.course.courseLength.units}',
-              '${fn:escapeXml(studentCourseAssesment.courseStudent.course.courseLength.unit.name)}',
-              '${fn:escapeXml(studentCourseAssesment.grade.name)}',
-              '${fn:escapeXml(studentCourseAssesment.grade.gradingScale.name)}',
-              '${fn:escapeXml(studentCourseAssesment.assessingUser.fullName)}',
-              '${studentCourseAssesment.courseStudent.id}',
+              '${fn:escapeXml(studentCourseAssessment.courseStudent.course.name)}',
+              '${fn:escapeXml(studentCourseAssessment.courseStudent.course.subject.name)}',
+              '${studentCourseAssessment.date.time}',
+              '${studentCourseAssessment.courseStudent.course.courseLength.units}',
+              '${fn:escapeXml(studentCourseAssessment.courseStudent.course.courseLength.unit.name)}',
+              '${fn:escapeXml(studentCourseAssessment.grade.name)}',
+              '${fn:escapeXml(studentCourseAssessment.grade.gradingScale.name)}',
+              '${fn:escapeXml(studentCourseAssessment.assessingUser.fullName)}',
+              '${studentCourseAssessment.courseStudent.id}',
               '']);
           </c:forEach>
-          courseAssesmentsTable.addRows(rows);
+          courseAssessmentsTable.addRows(rows);
+          if (courseAssessmentsTable.getRowCount() > 0) {
+            $('viewStudentCourseAssessmentsTotalValue.' + ${student.id}).innerHTML = courseAssessmentsTable.getRowCount(); 
+          }
+          else {
+            $('viewStudentCourseAssessmentsTotalContainer.' + ${student.id}).setStyle({
+              display: 'none'
+            });
+          }
 
           var projectTable;
           <c:forEach var="sp" items="${studentProjects[student.id]}">
@@ -512,7 +540,7 @@
               <c:set var="moduleTransferCreditGrades" value=""/>
   
               <c:forEach var="cs" items="${spm.courseStudents}">
-                <c:set var="grade" value="${courseAssesmentsByCourseStudent[cs.id].grade.name}"/>
+                <c:set var="grade" value="${courseAssessmentsByCourseStudent[cs.id].grade.name}"/>
                 
                 <c:if test="${not empty grade}">
                   <c:if test="${not empty moduleCourseGrades}">
@@ -561,7 +589,11 @@
   <body onload="onLoad(event);">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="students.viewStudent.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="students.viewStudent.pageTitle">
+        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
+      </fmt:message>
+    </h1>
   
     <div id="viewStudentViewContainer">
       <div class="genericFormContainer">
@@ -1024,13 +1056,15 @@
         
                 <div id="courses.${student.id}" class="tabContent">
                   <div id="coursesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-                  
                   <div class="genericFormSection">                              
                     <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                       <jsp:param name="titleLocale" value="students.viewStudent.coursesTitle"/>
                       <jsp:param name="helpLocale" value="students.viewStudent.coursesHelp"/>
                     </jsp:include> 
                     <div id="viewStudentStudentCoursesTableContainer"><div id="coursesTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentCoursesTotalContainer.${student.id}" class="viewStudentCoursesTotalContainer">
+                      <fmt:message key="students.viewStudent.coursesTotal"/> <span id="viewStudentCoursesTotalValue.${student.id}"></span>
+                    </div>
                   </div>
                 </div>
   
@@ -1043,6 +1077,9 @@
                       <jsp:param name="helpLocale" value="students.viewStudent.courseAssessmentsHelp"/>
                     </jsp:include> 
                     <div id="viewStudentCourseAssessmentsTableContainer"><div id="courseAssessmentsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentCourseAssessmentsTotalContainer.${student.id}" class="viewStudentCourseAssessmentsTotalContainer">
+                      <fmt:message key="students.viewStudent.courseAssessmentsTotal"/> <span id="viewStudentCourseAssessmentsTotalValue.${student.id}"></span>
+                    </div>
                   </div>
                   
                   <div class="genericFormSection">                                  
@@ -1051,7 +1088,11 @@
                       <jsp:param name="helpLocale" value="students.viewStudent.transferCreditsHelp"/>
                     </jsp:include> 
                     <div id="viewStudentTransferCreditsTableContainer"><div id="transferCreditsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentTransferCreditsTotalContainer.${student.id}" class="viewStudentTransferCreditsTotalContainer">
+                      <fmt:message key="students.viewStudent.transferCreditsTotal"/> <span id="viewStudentTransferCreditsTotalValue.${student.id}"></span>
+                    </div>
                   </div>
+
                 </div> 
 
                 <div id="contactlog.${student.id}" class="tabContent">

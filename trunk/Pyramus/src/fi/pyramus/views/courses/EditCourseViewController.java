@@ -139,7 +139,7 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "courses.editCourse.pageTitle");
+    return Messages.getInstance().getText(locale, "courses.editCourse.breadcrumb");
   }
 
 }

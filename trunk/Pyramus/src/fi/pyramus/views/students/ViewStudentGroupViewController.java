@@ -68,7 +68,7 @@ public class ViewStudentGroupViewController implements PyramusViewController, Br
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "students.viewStudentGroup.pageTitle");
+    return Messages.getInstance().getText(locale, "students.viewStudentGroup.breadcrumb");
   }
 
 }

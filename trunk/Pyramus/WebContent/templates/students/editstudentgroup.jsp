@@ -6,7 +6,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="students.editStudentGroup.pageTitle" /></title>
+    <title>
+      <fmt:message key="students.editStudentGroup.pageTitle">
+        <fmt:param value="${studentGroup.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -33,12 +37,13 @@
             for (var j = 0, l = jsonResponse.studentStudyProgrammes.length; j < l; j++) {
               IxTableControllers.getController('select').addOption(cellEditor , jsonResponse.studentStudyProgrammes[j].studentId, jsonResponse.studentStudyProgrammes[j].studyProgrammeName);
             }
-
-            if (studentsTable.getRowCount() > 0) {
-              $('noStudentsAddedMessageContainer').setStyle({
-                display: 'none'
-              });
-            }
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('editStudentGroupStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('editStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
           }
         });   
       };
@@ -130,14 +135,14 @@
         });
 
         <c:forEach var="user" items="${studentGroup.users}">
-        usersTable.addRow([
-          ${user.user.id},
-          '${fn:escapeXml(user.user.fullName)}',
-          '',
-          ${user.id}
-        ]);
-      </c:forEach>
-    }
+          usersTable.addRow([
+            ${user.user.id},
+            '${fn:escapeXml(user.user.fullName)}',
+            '',
+            ${user.id}
+          ]);
+        </c:forEach>
+      }
       
       function openSearchUsersDialog() {
         var dialog = new IxDialog({
@@ -230,10 +235,22 @@
             tooltip: '<fmt:message key="students.editStudentGroup.studentsTableRemoveRowTooltip"/>',
             onclick: function (event) {
               event.tableComponent.deleteRow(event.row);
-              if (studentsTable.getRowCount() == 0) {
+              if (event.tableComponent.getRowCount() == 0) {
                 $('noStudentsAddedMessageContainer').setStyle({
                   display: ''
                 });
+                $('editStudentGroupStudentsTotalContainer').setStyle({
+                  display: 'none'
+                });
+              }
+              else {
+                $('noStudentsAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('editStudentGroupStudentsTotalContainer').setStyle({
+                  display: ''
+                });
+                $('editStudentGroupStudentsTotalValue').innerHTML = event.tableComponent.getRowCount(); 
               }
             } 
           }, {
@@ -243,24 +260,24 @@
         });
 
         <c:forEach var="student" items="${studentGroupStudents}">
-	        loadStudentStudyProgrammes(
-	            studentsTable,
-	            ${student.student.abstractStudent.id},
-	            "${fn:escapeXml(student.student.lastName)}, ${fn:escapeXml(student.student.firstName)}", 
-	            ${student.student.id},
+          loadStudentStudyProgrammes(
+              studentsTable,
+              ${student.student.abstractStudent.id},
+              "${fn:escapeXml(student.student.lastName)}, ${fn:escapeXml(student.student.firstName)}", 
+              ${student.student.id},
               ${student.id}
-	        );
-	      </c:forEach>
-	
-	      studentsTable.addListener("rowAdd", function (event) {
-	        var studentsTable = event.tableComponent;
-	        studentsTable.showCell(event.row, studentsTable.getNamedColumnIndex("removeButton"));
-	      });
-	      
+          );
+        </c:forEach>
+  
+        studentsTable.addListener("rowAdd", function (event) {
+          var studentsTable = event.tableComponent;
+          studentsTable.showCell(event.row, studentsTable.getNamedColumnIndex("removeButton"));
+        });
+        
         <c:if test="${fn:length(studentGroup.students) gt 0}">
-	        $('noStudentsAddedMessageContainer').setStyle({
-	          display: 'none'
-	        });
+          $('noStudentsAddedMessageContainer').setStyle({
+            display: 'none'
+          });
         </c:if>
       }
 
@@ -286,14 +303,34 @@
                   jsonResponse.studentStudyProgrammes[j].studyProgrammeName, 
                   jsonResponse.studentStudyProgrammes[j].studentId == studentId);
             }
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('editStudentGroupStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('editStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
           }
         });   
       }
       
       function initializeDraftListener() {
         Event.observe(document, "ix:draftRestore", function (event) {
-          if (getIxTableById('studentsTable').getRowCount() > 0) {
+          var studentsTable = getIxTableById('studentsTable'); 
+          if (studentsTable.getRowCount() > 0) {
             $('noStudentsAddedMessageContainer').setStyle({
+              display: 'none'
+            });
+            $('editStudentGroupStudentsTotalContainer').setStyle({
+              display: ''
+            });
+            $('editStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount(); 
+          }
+          else {
+            $('noStudentsAddedMessageContainer').setStyle({
+              display: ''
+            });
+            $('editStudentGroupStudentsTotalContainer').setStyle({
               display: 'none'
             });
           }
@@ -325,7 +362,11 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="students.editStudentGroup.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="students.editStudentGroup.pageTitle">
+        <fmt:param value="${studentGroup.name}"/>
+      </fmt:message>
+    </h1>
     
     <div id="createStudentGroupCreateFormContainer">
       <div class="genericFormContainer">
@@ -349,12 +390,12 @@
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-	              <jsp:param name="titleLocale" value="students.editStudentGroup.tagsTitle"/>
-	              <jsp:param name="helpLocale" value="students.editStudentGroup.tagsHelp"/>
-	            </jsp:include>
-	            <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
-	            <div id="tags_choices" class="autocomplete_choices"></div>
-	          </div>
+                <jsp:param name="titleLocale" value="students.editStudentGroup.tagsTitle"/>
+                <jsp:param name="helpLocale" value="students.editStudentGroup.tagsHelp"/>
+              </jsp:include>
+              <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
+              <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
@@ -393,6 +434,11 @@
               </div>
             
               <div id="studentsTable"> </div>
+
+              <div id="editStudentGroupStudentsTotalContainer" style="display:none;">
+                <fmt:message key="students.editStudentGroup.studentsTotal"/> <span id="editStudentGroupStudentsTotalValue"></span>
+              </div>
+
             </div>
             <ix:extensionHook name="students.editStudentGroup.tabs.students"/>
           </div>

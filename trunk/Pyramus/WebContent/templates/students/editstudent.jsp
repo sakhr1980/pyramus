@@ -7,7 +7,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="students.editStudent.pageTitle"></fmt:message></title>
+    <title>
+      <fmt:message key="students.editStudent.pageTitle">
+        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
@@ -532,7 +536,11 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
   
-    <h1 class="genericPageHeader"><fmt:message key="students.editStudent.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="students.editStudent.pageTitle">
+        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
+      </fmt:message>
+    </h1>
   
     <div id="editStudentEditFormContainer"> 
       <div class="genericFormContainer"> 

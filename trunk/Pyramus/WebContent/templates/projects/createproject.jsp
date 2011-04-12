@@ -63,6 +63,18 @@
                 $('noModulesAddedMessageContainer').setStyle({
                   display: 'none'
                 });
+                $('createProjectModulesTotalContainer').setStyle({
+                  display: ''
+                });
+                $('createProjectModulesTotalValue').innerHTML = modulesTable.getRowCount(); 
+              }
+              else {
+                $('noModulesAddedMessageContainer').setStyle({
+                  display: ''
+                });
+                $('createProjectModulesTotalContainer').setStyle({
+                  display: 'none'
+                });
               }
             break;
           }
@@ -153,6 +165,18 @@
                 $('noModulesAddedMessageContainer').setStyle({
                   display: ''
                 });
+                $('createProjectModulesTotalContainer').setStyle({
+                  display: 'none'
+                });
+              }
+              else {
+                $('noModulesAddedMessageContainer').setStyle({
+                  display: 'none'
+                });
+                $('createProjectModulesTotalContainer').setStyle({
+                  display: ''
+                });
+                $('createProjectModulesTotalValue').innerHTML = event.tableComponent.getRowCount(); 
               }
             } 
           }, {
@@ -237,6 +261,11 @@
             <div id="modulesContainer">
               <div id="modulesTableContainer"></div>
             </div>
+
+            <div id="createProjectModulesTotalContainer" style="display:none;">
+              <fmt:message key="projects.createProject.modulesTotal"/> <span id="createProjectModulesTotalValue"></span>
+            </div>
+
           </div>
         </div>
       </div>

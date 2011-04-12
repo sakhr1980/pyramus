@@ -94,7 +94,7 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "modules.editModule.pageTitle");
+    return Messages.getInstance().getText(locale, "modules.editModule.breadcrumb");
   }
 
 }
