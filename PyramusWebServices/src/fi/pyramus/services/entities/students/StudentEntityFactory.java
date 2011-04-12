@@ -61,6 +61,7 @@ public class StudentEntityFactory implements EntityFactory<StudentEntity> {
     
     return new StudentEntity(student.getId(), abstractStudentEntity, emails, student.getFirstName(), student.getLastName(),
         tags, addresses, phoneNumberStr, student.getAdditionalInfo(), parentalInfo, student.getStudyTimeEnd(), 
-        nationalityEntity, languageEntity, municipalityEntity, schoolEntity, studyProgramme, student.getArchived());
+        nationalityEntity, languageEntity, municipalityEntity, schoolEntity, studyProgramme, student.getArchived(), 
+        student.getStudyStartDate(), student.getStudyEndDate());
   }
 }
