@@ -13,7 +13,7 @@ public class StudentEntity {
   
   public StudentEntity(Long id, AbstractStudentEntity abstractStudent, String[] emails, String firstName, String lastName, String[] tags, AddressEntity[] addresses,
       String phone, String additionalInfo, String parentalInfo, Date studyTimeEnd, NationalityEntity nationality, LanguageEntity language,
-      MunicipalityEntity municipality, SchoolEntity school, StudyProgrammeEntity studyProgramme, Boolean archived) {
+      MunicipalityEntity municipality, SchoolEntity school, StudyProgrammeEntity studyProgramme, Boolean archived, Date studyStartDate, Date studyEndDate) {
     super();
     this.id = id;
     this.abstractStudent = abstractStudent;
@@ -32,6 +32,8 @@ public class StudentEntity {
     this.school = school;
     this.archived = archived;
     this.studyProgramme = studyProgramme;
+    this.studyStartDate = studyStartDate;
+    this.studyEndDate = studyEndDate;
   }
 
   public Long getId() {
@@ -102,6 +104,22 @@ public class StudentEntity {
     return tags;
   }
 
+  public void setStudyEndDate(Date studyEndDate) {
+    this.studyEndDate = studyEndDate;
+  }
+
+  public Date getStudyEndDate() {
+    return studyEndDate;
+  }
+
+  public void setStudyStartDate(Date studyStartDate) {
+    this.studyStartDate = studyStartDate;
+  }
+
+  public Date getStudyStartDate() {
+    return studyStartDate;
+  }
+
   private Long id;
   private AbstractStudentEntity abstractStudent;
   private String[] emails;
@@ -111,6 +129,8 @@ public class StudentEntity {
   private String additionalInfo;
   private String parentalInfo;
   private Date studyTimeEnd;
+  private Date studyStartDate;
+  private Date studyEndDate;
   private NationalityEntity nationality;
   private LanguageEntity language;
   private MunicipalityEntity municipality;

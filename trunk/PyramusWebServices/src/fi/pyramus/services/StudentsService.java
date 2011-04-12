@@ -124,6 +124,27 @@ public class StudentsService extends PyramusService {
     return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listStudents());
   }
 
+  public StudentEntity[] listStudentsByStudyProgramme(Long studyProgrammeId) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
+    StudyProgramme studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
+    
+    return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listStudentsByStudyProgramme(studyProgramme));
+  }
+  
+  public StudentEntity[] listActiveStudents() {
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listActiveStudents());
+  }
+
+  public StudentEntity[] listActiveStudentsByStudyProgramme(Long studyProgrammeId) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudyProgramme studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
+    return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listActiveStudentsByStudyProgramme(studyProgramme));
+  }
+  
   public StudentEntity createStudent(Long abstractStudentId, String firstName, String lastName, String nickname, String phone, String additionalInfo,
       String parentalInfo, Date studyTimeEnd, Long activityTypeId, Long examinationTypeId, Long educationalLevelId, String education, Long nationalityId,
       Long municipalityId, Long languageId, Long schoolId, Long studyProgrammeId, Double previousStudies, Date studyStartDate, Date studyEndDate,
