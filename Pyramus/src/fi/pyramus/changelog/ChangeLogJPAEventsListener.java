@@ -14,9 +14,11 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.persistence.metamodel.Attribute;
 
+import fi.pyramus.PyramusRuntimeException;
 import fi.pyramus.dao.ChangeLogDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.UserDAO;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntry;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntity;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntityProperty;
@@ -27,7 +29,7 @@ import fi.pyramus.persistence.events.EventType;
 import fi.pyramus.persistence.events.TrackedEntityUtils;
 import fi.pyramus.util.ReflectionApiUtils;
 
-@MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic") }, mappedName = "jms/JPAEvents")
+@MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue") }, mappedName = "jms/JPAEvents")
 public class ChangeLogJPAEventsListener implements MessageListener {
 
   public void onMessage(Message message) {
@@ -47,18 +49,20 @@ public class ChangeLogJPAEventsListener implements MessageListener {
         break;
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new PyramusRuntimeException(e);
     }
   }
   
   private void handleCreate(MapMessage mapMessage) throws JMSException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, InvocationTargetException  {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
-
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    
+    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
     Date time = new Date(mapMessage.getLong("time"));
-    User loggedUser = null; // TODO
     
     Class<?> entityClass = Class.forName(entityClassName);
     Object entity = systemDAO.findEntityById(entityClass, id);
@@ -109,11 +113,13 @@ public class ChangeLogJPAEventsListener implements MessageListener {
   
   private void handleDelete(MapMessage mapMessage) throws JMSException  {
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
+    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;    
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
     Date time = new Date(mapMessage.getLong("time"));
-    User loggedUser = null; // TODO
     
     // First we need to check if ChangeLogEntryEntity is already in the database
     ChangeLogEntryEntity changeLogEntryEntity = changeLogDAO.findChangeLogEntryEntityByName(entityClassName);
@@ -129,11 +135,14 @@ public class ChangeLogJPAEventsListener implements MessageListener {
   private void handleUpdate(MapMessage mapMessage) throws JMSException, ClassNotFoundException, IllegalArgumentException, IllegalAccessException, InvocationTargetException  {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
+    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;    
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
     Date time = new Date(mapMessage.getLong("time"));
-    User loggedUser = null; // TODO
+
     Class<?> entityClass = Class.forName(entityClassName);
     Object entity = systemDAO.findEntityById(entityClass, id);
     Map<ChangeLogEntryEntityProperty, String> values = new HashMap<ChangeLogEntryEntityProperty, String>();
