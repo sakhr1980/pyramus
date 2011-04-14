@@ -26,9 +26,7 @@ public class RoleUserType implements UserType {
   }
 
   public boolean equals(Object x, Object y) throws HibernateException {
-    if (x == null || y == null)
-      return false;
-    return x.equals(y);
+    return x == null && y == null ? true : x == null || y == null ? false : x.equals(y);
   }
 
   public int hashCode(Object x) throws HibernateException {
