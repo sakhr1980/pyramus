@@ -24,9 +24,7 @@ public class CourseOptionalityUserType implements UserType {
   }
 
   public boolean equals(Object x, Object y) throws HibernateException {
-    if (x == null || y == null)
-      return false;
-    return x.equals(y);
+    return x == null && y == null ? true : x == null || y == null ? false : x.equals(y);
   }
 
   public int hashCode(Object x) throws HibernateException {
@@ -50,7 +48,7 @@ public class CourseOptionalityUserType implements UserType {
       st.setNull(index, Hibernate.INTEGER.sqlType());
     }
     else {
-      st.setLong(index, ((CourseOptionality) value).getValue());
+      st.setInt(index, ((CourseOptionality) value).getValue());
     }
   }
 
