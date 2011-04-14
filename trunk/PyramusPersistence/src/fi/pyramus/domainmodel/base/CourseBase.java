@@ -268,8 +268,6 @@ public abstract class CourseBase implements ArchivableEntity {
    * @param courseLength The course length of this course base
    */
   public void setCourseLength(EducationalLength courseLength) {
-    if (courseLength == null)
-      courseLength = new EducationalLength();
     this.courseLength = courseLength;
   }
 
@@ -279,8 +277,6 @@ public abstract class CourseBase implements ArchivableEntity {
    * @return The course length of this course base
    */
   public EducationalLength getCourseLength() {
-    if (courseLength == null)
-      courseLength = new EducationalLength();
     return courseLength;
   }
 

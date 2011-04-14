@@ -19,6 +19,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.DateBridge;
@@ -215,6 +216,7 @@ public class Course extends CourseBase implements ArchivableEntity {
     return endDate;
   }
   
+  @Transient
   public Integer getStudentCount() {
     return courseStudents.size();
   }
