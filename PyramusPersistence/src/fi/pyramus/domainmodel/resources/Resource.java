@@ -113,6 +113,7 @@ public class Resource implements ArchivableEntity {
   }
   
   @Field (index = Index.UN_TOKENIZED)
+  @Transient
   public ResourceType getResourceType() {
     throw new HibernateException("Unimplemented resource type");
   }

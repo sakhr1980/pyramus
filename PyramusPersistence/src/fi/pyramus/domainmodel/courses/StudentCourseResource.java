@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -69,6 +70,7 @@ public class StudentCourseResource {
     return hourlyCost;
   }
 
+  @Transient
   public Integer getUnits() {
     return course.getStudentCount();
   }

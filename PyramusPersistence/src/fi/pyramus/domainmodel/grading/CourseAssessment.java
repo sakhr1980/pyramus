@@ -32,11 +32,6 @@ public class CourseAssessment extends Credit {
     return courseStudent != null ? courseStudent.getStudent() : null;
   }
   
-  @Override
-  public CreditType getCreditType() {
-    return CreditType.CourseAssessment;
-  }
-  
   @ManyToOne
   @JoinColumn(unique=true, name="courseStudent")
   private CourseStudent courseStudent;

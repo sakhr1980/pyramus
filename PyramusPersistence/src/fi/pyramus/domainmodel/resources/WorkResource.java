@@ -2,6 +2,7 @@ package fi.pyramus.domainmodel.resources;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -36,6 +37,7 @@ public class WorkResource extends Resource {
   }
   
   @Override
+  @Transient
   public ResourceType getResourceType() {
     return ResourceType.WORK_RESOURCE;
   }

@@ -30,7 +30,7 @@ public class TransferCredit extends Credit {
 
   public TransferCredit() {
     super();
-    setCreditType(CreditType.CourseAssessment);
+    setCreditType(CreditType.TransferCredit);
   }
 
   public String getCourseName() {
@@ -87,11 +87,6 @@ public class TransferCredit extends Credit {
   
   public void setStudent(Student student) {
     this.student = student;
-  }
-
-  @Override
-  public CreditType getCreditType() {
-    return CreditType.TransferCredit;
   }
 
   @ManyToOne  
