@@ -6,22 +6,24 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.Topic;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
 import javax.persistence.metamodel.Attribute;
+import javax.servlet.http.HttpSession;
 
 import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.util.ReflectionApiUtils;
+import fi.pyramus.util.ThreadSessionContainer;
 
 public class EntityListener {
 
   private static final long serialVersionUID = -1109310014693855151L;
-
+  
   @PostPersist
   void onPostPersist(Object entity) {
     String entityName = entity.getClass().getName();
@@ -36,6 +38,7 @@ public class EntityListener {
           message.setString("entity", entity.getClass().getName());
           message.setString("eventType", EventType.Create.name());
           message.setObject("id", id);
+          message.setLong("loggedUserId", getLoggedUserId());
           
           sendMessage(session, message);
         }
@@ -47,7 +50,7 @@ public class EntityListener {
     }
   }
 
-  @PostUpdate
+   @PostUpdate
   void onPostUpdate(Object entity) {
     String entityName = entity.getClass().getName();
    
@@ -62,6 +65,7 @@ public class EntityListener {
           message.setString("entity", entity.getClass().getName());
           message.setString("eventType", EventType.Update.name());
           message.setObject("id", id);
+          message.setLong("loggedUserId", getLoggedUserId());
           
           sendMessage(session, message);
         }
@@ -73,7 +77,7 @@ public class EntityListener {
     }
   }
 
-  @PreRemove
+   @PreRemove
   void onPreRemove(Object entity) {
     String entityName = entity.getClass().getName();
     
@@ -86,7 +90,8 @@ public class EntityListener {
         message.setString("entity", entityName);
         message.setString("eventType", EventType.Delete.name());
         message.setObject("id", getEntityId(entity));
-
+        message.setLong("loggedUserId", getLoggedUserId());
+        
         sendMessage(session, message);
       } catch (JMSException e) {
         throw new EventException(e);
@@ -111,8 +116,8 @@ public class EntityListener {
   }
 
   private void sendMessage(Session session, Message message) throws NamingException, JMSException {
-    Topic topic = getTopic();
-    MessageProducer producer = session.createProducer(topic);
+    Queue queue = getQueue();
+    MessageProducer producer = session.createProducer(queue);
     producer.send(message);
   }
 
@@ -127,7 +132,17 @@ public class EntityListener {
     return (ConnectionFactory) new InitialContext().lookup("jms/JPAEventsFactory");
   }
 
-  private Topic getTopic() throws NamingException {
-    return (Topic) new InitialContext().lookup("jms/JPAEvents");
+  private Queue getQueue() throws NamingException {
+    return (Queue) new InitialContext().lookup("jms/JPAEvents");
   }
- }
+  
+  private Long getLoggedUserId() {
+    HttpSession httpSession = ThreadSessionContainer.getSession();
+    if (httpSession != null) {
+      return (Long) httpSession.getAttribute("loggedUserId");
+    }
+    
+    return null;
+  }
+
+}
