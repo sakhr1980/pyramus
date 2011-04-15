@@ -252,8 +252,7 @@ public class StudentDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(Student.class)
       .add(Restrictions.eq("archived", Boolean.FALSE))
-      .add(Restrictions.isNull("studyEndDate"))
-      .add(Restrictions.gt("studyEndDate", new Date()))
+      .add(Restrictions.or(Restrictions.isNull("studyEndDate"), Restrictions.gt("studyEndDate", new Date())))
       .list();
   }
 
@@ -272,8 +271,7 @@ public class StudentDAO extends PyramusDAO {
     return s.createCriteria(Student.class)
       .add(Restrictions.eq("archived", Boolean.FALSE))
       .add(Restrictions.eq("studyProgramme", studyProgramme))
-      .add(Restrictions.isNull("studyEndDate"))
-      .add(Restrictions.gt("studyEndDate", new Date()))
+      .add(Restrictions.or(Restrictions.isNull("studyEndDate"), Restrictions.gt("studyEndDate", new Date())))
       .list();
   }
   

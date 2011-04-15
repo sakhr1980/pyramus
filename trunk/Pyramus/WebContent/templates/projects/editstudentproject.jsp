@@ -254,7 +254,7 @@
             paramName: 'academicTerm',
             editable: true,
             options: [
-              {text: "", value: -1}
+              {text: ""}
               <c:if test="${not empty academicTerms}">,</c:if>
               <c:forEach var="academicTerm" items="${academicTerms}" varStatus="vs">
                 {text: "${academicTerm.name}", value: ${academicTerm.id}}

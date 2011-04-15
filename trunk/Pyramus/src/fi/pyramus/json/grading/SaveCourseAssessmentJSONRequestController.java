@@ -29,7 +29,7 @@ public class SaveCourseAssessmentJSONRequestController implements JSONRequestCon
     
     CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
     User assessingUser = userDAO.getUser(assessingUserId);
-    Grade grade = gradingDAO.findGradeById(gradeId);
+    Grade grade = gradeId == null ? null : gradingDAO.findGradeById(gradeId);
 
     CourseAssessment assessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
     

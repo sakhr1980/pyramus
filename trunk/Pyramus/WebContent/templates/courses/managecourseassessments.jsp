@@ -112,7 +112,7 @@
             editable: false,
             paramName: 'gradeId',
             options: [
-              {text: "-", value: -1}
+              {text: "-"}
               <c:if test="${fn:length(gradingScales) gt 0}">,</c:if>
               <c:forEach var="gradingScale" items="${gradingScales}" varStatus="vs">
                 {text: "${fn:escapeXml(gradingScale.name)}", optionGroup: true, 
@@ -287,11 +287,19 @@
         
         studentsTable.detachFromDom();
         <c:forEach var="courseStudent" items="${courseStudents}" varStatus="status">
+          <c:choose>
+            <c:when test="${courseStudent.student.studyProgramme ne null}">
+              <c:set var="studyProgrammeName">${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="studyProgrammeName"><fmt:message key="courses.manageCourseAssessments.studentsTableNoStudyProgrammeLabel"/></c:set>
+            </c:otherwise>
+          </c:choose>
           rowIndex = studentsTable.addRow([
             '',
             '',
             "${fn:escapeXml(courseStudent.student.lastName)}, ${fn:escapeXml(courseStudent.student.firstName)}", 
-            "${fn:escapeXml(courseStudent.student.studyProgramme.name)}", 
+            "${studyProgrammeName}", 
             '${assessments[courseStudent.id].grade.id}',
             '${courseStudent.participationType.id}',
             '${assessments[courseStudent.id].assessingUser.id}',

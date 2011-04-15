@@ -104,16 +104,8 @@ public class StudentEntity {
     return tags;
   }
 
-  public void setStudyEndDate(Date studyEndDate) {
-    this.studyEndDate = studyEndDate;
-  }
-
   public Date getStudyEndDate() {
     return studyEndDate;
-  }
-
-  public void setStudyStartDate(Date studyStartDate) {
-    this.studyStartDate = studyStartDate;
   }
 
   public Date getStudyStartDate() {

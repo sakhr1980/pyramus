@@ -110,7 +110,7 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "students.editStudent.pageBreadcrumbTitle");
+    return Messages.getInstance().getText(locale, "students.editStudent.breadcrumb");
   }
 
 }
