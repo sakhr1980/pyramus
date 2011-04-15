@@ -103,7 +103,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
       Long studentProjectModuleId = jsonRequestContext.getLong(colPrefix + ".studentProjectModuleId");
       CourseOptionality optionality = (CourseOptionality) jsonRequestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
       Long studyTermId = jsonRequestContext.getLong(colPrefix + ".academicTerm");
-      AcademicTerm academicTerm = studyTermId == -1 ? null : baseDAO.getAcademicTerm(studyTermId);
+      AcademicTerm academicTerm = studyTermId == null ? null : baseDAO.getAcademicTerm(studyTermId);
       
       if (studentProjectModuleId == -1) {
         Long moduleId = jsonRequestContext.getLong(colPrefix + ".moduleId");
