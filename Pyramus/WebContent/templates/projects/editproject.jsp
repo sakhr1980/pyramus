@@ -275,16 +275,16 @@
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.editProject.creatorTitle"/>
-                <jsp:param name="helpLocale" value="projects.editProject.creatorHelp"/>
+                <jsp:param name="titleLocale" value="projects.editProject.createdTitle"/>
+                <jsp:param name="helpLocale" value="projects.editProject.createdHelp"/>
               </jsp:include>
               <span><i>${project.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.created}"/></i></span>    
             </div>
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.editProject.modifierTitle"/>
-                <jsp:param name="helpLocale" value="projects.editProject.modifierHelp"/>
+                <jsp:param name="titleLocale" value="projects.editProject.modifiedTitle"/>
+                <jsp:param name="helpLocale" value="projects.editProject.modifiedHelp"/>
               </jsp:include>
               <span><i>${project.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.lastModified}"/></i></span>    
             </div>

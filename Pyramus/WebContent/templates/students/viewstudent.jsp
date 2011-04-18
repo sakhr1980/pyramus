@@ -468,10 +468,10 @@
           </c:forEach>
           coursesTable.addRows(rows);
           if (coursesTable.getRowCount() > 0) {
-            $('viewStudentCoursesTotalValue.' + ${student.id}).innerHTML = coursesTable.getRowCount();
+            $('viewStudentCoursesTotalValue.${student.id}').innerHTML = coursesTable.getRowCount();
           }
           else {
-            $('viewStudentCoursesTotalContainer.' + ${student.id}).setStyle({
+            $('viewStudentCoursesTotalContainer.${student.id}').setStyle({
               display: 'none'
             });
           }
@@ -493,10 +493,10 @@
           </c:forEach>
           transferCreditsTable.addRows(rows);
           if (transferCreditsTable.getRowCount() > 0) {
-            $('viewStudentTransferCreditsTotalValue.' + ${student.id}).innerHTML = transferCreditsTable.getRowCount(); 
+            $('viewStudentTransferCreditsTotalValue.${student.id}').innerHTML = transferCreditsTable.getRowCount(); 
           }
           else {
-            $('viewStudentTransferCreditsTotalContainer.' + ${student.id}).setStyle({
+            $('viewStudentTransferCreditsTotalContainer.${student.id}').setStyle({
               display: 'none'
             });
           }
@@ -519,10 +519,10 @@
           </c:forEach>
           courseAssessmentsTable.addRows(rows);
           if (courseAssessmentsTable.getRowCount() > 0) {
-            $('viewStudentCourseAssessmentsTotalValue.' + ${student.id}).innerHTML = courseAssessmentsTable.getRowCount(); 
+            $('viewStudentCourseAssessmentsTotalValue.${student.id}').innerHTML = courseAssessmentsTable.getRowCount(); 
           }
           else {
-            $('viewStudentCourseAssessmentsTotalContainer.' + ${student.id}).setStyle({
+            $('viewStudentCourseAssessmentsTotalContainer.${student.id}').setStyle({
               display: 'none'
             });
           }

@@ -7,7 +7,7 @@
   <head>
     <title>
       <fmt:message key="projects.editStudentProject.pageTitle">
-        <fmt:param value="${studentProject.student.firstName} ${studentProject.student.lastName}"/>
+        <fmt:param value="${studentProject.student.fullName}"/>
         <fmt:param value="${studentProject.name}"/>
       </fmt:message>
     </title>
@@ -578,7 +578,7 @@
     
     <h1 class="genericPageHeader">
       <fmt:message key="projects.editStudentProject.pageTitle">
-        <fmt:param value="${studentProject.student.firstName} ${studentProject.student.lastName}"/>
+        <fmt:param value="${studentProject.student.fullName}"/>
         <fmt:param value="${studentProject.name}"/>
       </fmt:message>
     </h1>
@@ -608,16 +608,16 @@
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.editStudentProject.creatorTitle"/>
-                <jsp:param name="helpLocale" value="projects.editStudentProject.creatorHelp"/>
+                <jsp:param name="titleLocale" value="projects.editStudentProject.createdTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.createdHelp"/>
               </jsp:include>
               <span><i>${studentProject.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${studentProject.created}"/></i></span>    
             </div>
 
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.editStudentProject.modifierTitle"/>
-                <jsp:param name="helpLocale" value="projects.editStudentProject.modifierHelp"/>
+                <jsp:param name="titleLocale" value="projects.editStudentProject.modifiedTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.modifiedHelp"/>
               </jsp:include>
               <span><i>${studentProject.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${studentProject.lastModified}"/></i></span>    
             </div>
@@ -627,7 +627,7 @@
                 <jsp:param name="titleLocale" value="projects.editStudentProject.studentTitle"/>
                 <jsp:param name="helpLocale" value="projects.editStudentProject.studentHelp"/>
               </jsp:include>
-              <div>${studentProject.student.firstName} ${studentProject.student.lastName}</div>
+              <div>${studentProject.student.lastName}, ${studentProject.student.firstName}</div>
             </div>
   
             <div class="genericFormSection">
