@@ -58,7 +58,7 @@ public class ChangeLogJPAEventsListener implements MessageListener {
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
-    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    Long loggedUserId = mapMessage.itemExists("loggedUserId") ? mapMessage.getLong("loggedUserId") : null;
     User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
@@ -115,7 +115,7 @@ public class ChangeLogJPAEventsListener implements MessageListener {
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
-    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    Long loggedUserId = mapMessage.itemExists("loggedUserId") ? mapMessage.getLong("loggedUserId") : null;
     User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;    
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
@@ -137,7 +137,7 @@ public class ChangeLogJPAEventsListener implements MessageListener {
     ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
-    Long loggedUserId = mapMessage.getLong("loggedUserId");
+    Long loggedUserId = mapMessage.itemExists("loggedUserId") ? mapMessage.getLong("loggedUserId") : null;
     User loggedUser = loggedUserId != null ? userDAO.getUser(loggedUserId) : null;    
     String entityClassName = mapMessage.getString("entity");
     Object id = mapMessage.getObject("id");
