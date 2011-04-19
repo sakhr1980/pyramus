@@ -32,14 +32,17 @@ public class EntityListener {
         Object id = getEntityId(entity);
         if (id != null) {
           Session session = createSession();
-  
+          
           MapMessage message = session.createMapMessage();
           message.setLong("time", System.currentTimeMillis());
           message.setString("entity", entity.getClass().getName());
           message.setString("eventType", EventType.Create.name());
           message.setObject("id", id);
-          message.setLong("loggedUserId", getLoggedUserId());
           
+          Long loggedUserId = getLoggedUserId();
+          if (loggedUserId != null)
+            message.setLong("loggedUserId", loggedUserId);
+
           sendMessage(session, message);
         }
       } catch (JMSException e) {
@@ -65,8 +68,11 @@ public class EntityListener {
           message.setString("entity", entity.getClass().getName());
           message.setString("eventType", EventType.Update.name());
           message.setObject("id", id);
-          message.setLong("loggedUserId", getLoggedUserId());
           
+          Long loggedUserId = getLoggedUserId();
+          if (loggedUserId != null)
+            message.setLong("loggedUserId", loggedUserId);
+
           sendMessage(session, message);
         }
       } catch (JMSException e) {
@@ -84,14 +90,17 @@ public class EntityListener {
     if (TrackedEntityUtils.isTrackedEntity(entityName)) {
       try {
         Session session = createSession();
-
+        
         MapMessage message = session.createMapMessage();
         message.setLong("time", System.currentTimeMillis());
         message.setString("entity", entityName);
         message.setString("eventType", EventType.Delete.name());
         message.setObject("id", getEntityId(entity));
-        message.setLong("loggedUserId", getLoggedUserId());
         
+        Long loggedUserId = getLoggedUserId();
+        if (loggedUserId != null)
+          message.setLong("loggedUserId", loggedUserId);
+
         sendMessage(session, message);
       } catch (JMSException e) {
         throw new EventException(e);
