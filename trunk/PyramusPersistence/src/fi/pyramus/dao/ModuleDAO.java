@@ -27,6 +27,7 @@ import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
@@ -48,13 +49,16 @@ public class ModuleDAO extends PyramusDAO {
 
     Date now = new Date(System.currentTimeMillis());
 
+    EducationalLength educationalLength = new EducationalLength();
+    educationalLength.setUnit(moduleLengthTimeUnit);
+    educationalLength.setUnits(moduleLength);
+
     Module module = new Module();
     module.setName(name);
     module.setDescription(description);
     module.setSubject(subject);
     module.setCourseNumber(courseNumber);
-    module.getCourseLength().setUnit(moduleLengthTimeUnit);
-    module.getCourseLength().setUnits(moduleLength);
+    module.setCourseLength(educationalLength);
 
     module.setCreator(creatingUser);
     module.setCreated(now);
@@ -78,14 +82,21 @@ public class ModuleDAO extends PyramusDAO {
 
   public void updateModule(Module module, String name, Subject subject, Integer courseNumber, Double length, EducationalTimeUnit lengthTimeUnit, String description, User user) {
     Session s = getHibernateSession();
+
     Date now = new Date(System.currentTimeMillis());
+
+    EducationalLength educationalLength = module.getCourseLength();
+    if (educationalLength == null) {
+      educationalLength = new EducationalLength();
+    }
+    educationalLength.setUnit(lengthTimeUnit);
+    educationalLength.setUnits(length);
     
     module.setName(name);
     module.setDescription(description);
     module.setSubject(subject);
     module.setCourseNumber(courseNumber);
-    module.getCourseLength().setUnit(lengthTimeUnit);
-    module.getCourseLength().setUnits(length);
+    module.setCourseLength(educationalLength);
     module.setLastModifier(user);
     module.setLastModified(now);
     s.saveOrUpdate(module);
