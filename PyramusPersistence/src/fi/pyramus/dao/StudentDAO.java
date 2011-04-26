@@ -1179,6 +1179,14 @@ public class StudentDAO extends PyramusDAO {
         .list();
   }
   
+  public void endStudentStudies(Student student, Date endDate, StudentStudyEndReason endReason, String endReasonText) {
+    Session s = getHibernateSession();
+    student.setStudyEndDate(endDate);
+    student.setStudyEndReason(endReason);
+    student.setStudyEndText(endReasonText);
+    s.saveOrUpdate(student);
+  }
+  
   public StudentContactLogEntry findStudentContactLogEntryById(Long entryId) {
     Session s = getHibernateSession();
     return (StudentContactLogEntry) s.load(StudentContactLogEntry.class, entryId);
