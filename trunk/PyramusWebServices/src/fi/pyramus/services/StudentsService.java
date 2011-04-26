@@ -113,6 +113,15 @@ public class StudentsService extends PyramusService {
     validateEntity(abstractStudent);
     return EntityFactoryVault.buildFromDomainObject(abstractStudent);
   }
+  
+  public void endStudentStudies(Long studentId, Date endDate, Long endReasonId, String endReasonText) {
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    Student student = studentDAO.getStudent(studentId);
+    if (student != null) {
+      StudentStudyEndReason endReason = endReasonId == null ? null : studentDAO.getStudentStudyEndReason(endReasonId);
+      studentDAO.endStudentStudies(student, endDate, endReason, endReasonText);
+    }
+  }
 
   public StudentEntity getStudentById(Long studentId) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
