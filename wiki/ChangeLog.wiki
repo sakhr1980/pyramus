@@ -2,10 +2,12 @@
 #labels Featured
 
 *Version 0.43 (110426.14)
+
   * Fixed a bug causing module and course creation to crash
   * Added more functionality to support third party application integration to Pyramus
 
 *Version 0.42 (110419.13)
+
   * Added more detailed page titles to various views of the application
   * Added information about the creator and last modifier to most views
   * Added row count information to most lists in the application
