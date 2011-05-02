@@ -280,9 +280,20 @@ public class StudentDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(Student.class)
         .add(Restrictions.eq("archived", Boolean.FALSE))
-        .add(Restrictions.eq("abstractStudent", abstractStudent)).list();
+        .add(Restrictions.eq("abstractStudent", abstractStudent))
+        .list();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<Student> listActiveStudentsByAbstractStudent(AbstractStudent abstractStudent) {
+    Session s = getHibernateSession();
+    return s.createCriteria(Student.class)
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .add(Restrictions.eq("abstractStudent", abstractStudent))
+      .add(Restrictions.or(Restrictions.isNull("studyEndDate"), Restrictions.gt("studyEndDate", new Date())))
+      .list();
+  }
+  
   public StudentActivityType getStudentActivityType(Long id) {
     Session s = getHibernateSession();
     return (StudentActivityType) s.load(StudentActivityType.class, id);
