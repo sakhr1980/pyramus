@@ -142,6 +142,22 @@ public class StudentsService extends PyramusService {
     return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listStudentsByStudyProgramme(studyProgramme));
   }
   
+  public StudentEntity[] listStudentsByAbstractStudent(Long abstractStudentId) {
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
+    AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
+
+    return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listStudentsByAbstractStudent(abstractStudent));
+  }
+  
+  public StudentEntity[] listActiveStudentsByAbstractStudent(Long abstractStudentId) {
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
+    AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
+
+    return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listActiveStudentsByAbstractStudent(abstractStudent));
+  }
+
   public StudentEntity[] listActiveStudents() {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listActiveStudents());
