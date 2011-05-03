@@ -57,21 +57,28 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     }
     
     Set<Long> studentProjectCourseModuleIds = new HashSet<Long>(); 
+    Set<Long> studentProjectModuleIds = new HashSet<Long>(); 
     for (CourseStudent courseStudent : courseStudents) {
       studentProjectCourseModuleIds.add(courseStudent.getCourse().getModule().getId());
     }
     
     List<StudentProjectModuleBean> studentProjectModules = new ArrayList<StudentProjectModuleBean>();
-    
     for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
       StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
       studentProjectModules.add(studentProjectModuleBean);
+      studentProjectModuleIds.add(studentProjectModule.getModule().getId());
+    }
+
+    List<StudentProjectCourseStudentBean> courseStudentBeans = new ArrayList<StudentProjectCourseStudentBean>();
+    for (CourseStudent courseStudent : courseStudents) {
+      StudentProjectCourseStudentBean courseStudentBean = new StudentProjectCourseStudentBean(courseStudent, studentProjectModuleIds.contains(courseStudent.getCourse().getModule().getId()));
+      courseStudentBeans.add(courseStudentBean);
     }
     
     List<Student> students = studentDAO.listStudentsByAbstractStudent(studentProject.getStudent().getAbstractStudent());
 
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
-    pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
+    pageRequestContext.getRequest().setAttribute("courseStudents", courseStudentBeans);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
     pageRequestContext.getRequest().setAttribute("students", students);
@@ -120,5 +127,24 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     
     private StudentProjectModule studentProjectModule;
     private Boolean hasCourseEquivalent;
+  }
+  
+  public class StudentProjectCourseStudentBean {
+    
+    public StudentProjectCourseStudentBean(CourseStudent courseStudent, Boolean hasModuleEquivalent) {
+      this.courseStudent = courseStudent;
+      this.hasModuleEquivalent = hasModuleEquivalent;
+    }
+    
+    public Boolean getHasModuleEquivalent() {
+      return hasModuleEquivalent;
+    }
+    
+    public CourseStudent getCourseStudent() {
+      return courseStudent;
+    }
+    
+    private CourseStudent courseStudent;
+    private Boolean hasModuleEquivalent;
   }
 }
