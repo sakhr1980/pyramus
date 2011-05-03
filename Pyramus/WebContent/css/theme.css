@@ -2115,7 +2115,7 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 
 /* Edit Student Project - Courses and Modules */
 
-#editStudentProjectCoursesTotalContainer {
+#editStudentProjectCoursesTotalContainer,#editStudentProjectOOPCoursesTotalContainer {
   display: inline-block;   
   font-weight: bold;
   margin-top: 8px;
