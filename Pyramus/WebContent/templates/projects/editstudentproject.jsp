@@ -24,6 +24,16 @@
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
     <script type="text/javascript">
+      function redoFilters() {
+        var table1 = getIxTableById('modulesTable');
+        var table2 = getIxTableById('coursesTable');
+        var table3 = getIxTableById('outOfProjectCoursesTable');
+        
+        table1.applyFilters();
+        table2.applyFilters();
+        table3.applyFilters();
+      }
+    
       function checkModulesMessage() {
         var table = getIxTableById('modulesTable');
         var allMessageVisible = false;
@@ -98,7 +108,7 @@
 
         var selectedModules = new Array();
         var modulesTable = getIxTableById('modulesTable');
-        for (var i = 0; i < modulesTable.getRowCount() - 1; i++) {
+        for (var i = 0; i < modulesTable.getRowCount(); i++) {
           var moduleName = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('name'));
           var moduleId = modulesTable.getCellValue(i, modulesTable.getNamedColumnIndex('moduleId'));
           selectedModules.push({
@@ -136,9 +146,7 @@
                   
                   var courseRowIndex = getCourseTableModuleRowIndex(coursesTable, moduleId);
                   if (courseRowIndex >= 0) {
-                    modulesTable.hideRow(rowNumber);
-                    coursesTable.showRow(courseRowIndex);
-                    oopCoursesTable.hideRow(courseRowIndex);
+                    redoFilters();
                   }
                 }
               }
@@ -184,8 +192,7 @@
                 var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
                 var index = getCourseTableCourseRowIndex(coursesTable, courseId);
                 if (index == -1) {
-                  var insertionTable = moduleTablesRow >= 0 ? coursesTable : oopCoursesTable;
-                  insertionTable.addRow([
+                  var c1row = coursesTable.addRow([
                     courseName,
                     participationType,
                     beginDate||'',
@@ -196,14 +203,22 @@
                     moduleId,
                     courseId,
                     -1]);
-                }
-                
-                if (moduleTablesRow >= 0) { 
-                  moduleTables.hideRow(moduleTablesRow);
+                  var c2row = oopCoursesTable.addRow([
+                     courseName,
+                     participationType,
+                     beginDate||'',
+                     endDate||'',
+                     'OPTIONAL',
+                     '',
+                     '',
+                     moduleId,
+                     courseId,
+                     -1]);
                 }
               }
               coursesTable.reattachToDom();
               
+              redoFilters();
               checkModulesMessage();
               checkCoursesMessage();
             break;
@@ -372,8 +387,6 @@
                 var dlg = event.dialog;
                 switch (event.name) {
                   case 'okClick':
-                    table.hideRow(row);
-                    
                     var moduleId = table.getCellValue(row, table.getNamedColumnIndex('moduleId'));
                     var courseId = event.results.courseId;
                     var name = event.results.name;
@@ -384,7 +397,10 @@
 
                     var coursesTable = getIxTableById('coursesTable'); 
                     coursesTable.addRow([name, participationType, beginDate, endDate, optionality, '', '', moduleId, courseId, -1]);
+                    var oopCoursesTable = getIxTableById('outOfProjectCoursesTable'); 
+                    oopCoursesTable.addRow([name, participationType, beginDate, endDate, optionality, '', '', moduleId, courseId, -1]);
                   
+                    redoFilters();
                     checkModulesMessage();
                     checkCoursesMessage();
                   break;
@@ -399,8 +415,18 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
+              var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
+              var coursesTable = getIxTableById('coursesTable');
+              var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
+              var courseRow = getCourseTableModuleRowIndex(coursesTable, moduleId);
+              
+              if (courseRow >= 0) { 
+                redoFilters();
+              }
+              
               event.tableComponent.deleteRow(event.row);
               checkModulesMessage();
+              checkCoursesMessage();
             } 
           }, {
             dataType: 'hidden',
@@ -487,6 +513,8 @@
                 moduleTables.showRow(moduleTablesRow);
               }
               
+              var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
+              oopCoursesTable.deleteRow(event.row);
               event.tableComponent.deleteRow(event.row);
 
               checkModulesMessage();
@@ -580,6 +608,8 @@
                 moduleTables.showRow(moduleTablesRow);
               }
               
+              var coursesTable = getIxTableById('coursesTable');
+              coursesTable.deleteRow(event.row);
               event.tableComponent.deleteRow(event.row);
               
               checkModulesMessage();
@@ -609,10 +639,6 @@
             '',
             ${studentProjectModule.studentProjectModule.module.id},
             ${studentProjectModule.studentProjectModule.id}]);
-          
-          if (${studentProjectModule.hasCourseEquivalent}) {
-            modulesTable.hideRow(rowId);
-          }
         </c:forEach>
         modulesTable.reattachToDom();
         
@@ -642,9 +668,6 @@
           
           coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
           
-          if (!${courseStudent.hasModuleEquivalent})
-            coursesTable.hideRow(rowId);
-          
           rowId = outOfProjectCoursesTable.addRow([
              '${fn:escapeXml(courseName)}',
              '${courseStudent.courseStudent.participationType.name}',
@@ -658,12 +681,128 @@
              ${courseStudent.courseStudent.id}]);
           outOfProjectCoursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
           
-          if (${courseStudent.hasModuleEquivalent})
-            outOfProjectCoursesTable.hideRow(rowId);
         </c:forEach>
         outOfProjectCoursesTable.reattachToDom();
         coursesTable.reattachToDom();
 
+        modulesTable.addFilter({
+          execute: function (event) {
+            var table = event.tableComponent;
+            var coursesTable = getIxTableById('coursesTable');
+            if (coursesTable) {
+              var colIndex = coursesTable.getNamedColumnIndex('moduleId');
+              
+              var hideArray = new Array();
+              
+              for (var i = 0; i < coursesTable.getRowCount(); i++) {
+                var moduleId = coursesTable.getCellValue(i, colIndex);
+                var moduleTableRow = getModuleTableModuleRowIndex(table, moduleId);
+                if (moduleTableRow >= 0) { 
+                  hideArray.push(moduleTableRow);
+                }
+              }
+  
+              if (hideArray.size() > 0)
+                table.hideRows(hideArray.toArray());
+            }
+          },
+          getColumn: function() {
+            return -1;
+          }
+        });
+
+        coursesTable.addFilter({
+          execute: function (event) {
+            var table = event.tableComponent;
+            var modulesTable = getIxTableById('modulesTable');
+            if (modulesTable) {
+              var colIndex = modulesTable.getNamedColumnIndex('moduleId');
+              
+              var hideArray = new Array();
+              var tempArray = new Array();
+              
+              for (var i = modulesTable.getRowCount() - 1; i >= 0; i--) {
+                var moduleId = modulesTable.getCellValue(i, colIndex);
+                var coursesTableRow = getCourseTableModuleRowIndex(table, moduleId);
+                if (coursesTableRow >= 0) { 
+                  tempArray.push(coursesTableRow);
+                }
+              }
+
+              for (var i = 0; i < table.getRowCount(); i++) {
+                if (tempArray.indexOf(i) == -1)
+                  hideArray.push(i);
+              }
+              
+              if (hideArray.size() > 0)
+                table.hideRows(hideArray.toArray());
+            }
+          },
+          getColumn: function() {
+            return -1;
+          }
+        });
+
+        outOfProjectCoursesTable.addFilter({
+          execute: function (event) {
+            var table = event.tableComponent;
+            var modulesTable = getIxTableById('modulesTable');
+            if (modulesTable) {
+              var colIndex = modulesTable.getNamedColumnIndex('moduleId');
+              
+              var hideArray = new Array();
+              
+              for (var i = modulesTable.getRowCount() - 1; i >= 0; i--) {
+                var moduleId = modulesTable.getCellValue(i, colIndex);
+                var coursesTableRow = getCourseTableModuleRowIndex(table, moduleId);
+                if (coursesTableRow >= 0) { 
+                   hideArray.push(coursesTableRow);
+                }
+              }
+  
+              if (hideArray.size() > 0)
+                table.hideRows(hideArray.toArray());
+            }
+          },
+          getColumn: function() {
+            return -1;
+          }
+        });
+
+        coursesTable.addListener("cellValueChange", function (event) {
+          var column = event.column;
+          var coursesTable = getIxTableById('coursesTable');
+          var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
+          var tableColumnIndex = coursesTable.getNamedColumnIndex('optionality');
+          
+          if ((column == tableColumnIndex) && (coursesTable.getRowCount() == oopCoursesTable.getRowCount())) {
+            var row = event.row;
+            var value = event.value;
+
+            var oopValue = oopCoursesTable.getCellValue(row, column);
+            
+            if (oopValue != value)
+              oopCoursesTable.setCellValue(row, column, value);
+          }
+        });
+
+        outOfProjectCoursesTable.addListener("cellValueChange", function (event) {
+          var column = event.column;
+          var coursesTable = getIxTableById('coursesTable');
+          var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
+          var tableColumnIndex = coursesTable.getNamedColumnIndex('optionality');
+          
+          if ((column == tableColumnIndex) && (coursesTable.getRowCount() == oopCoursesTable.getRowCount())) {
+            var row = event.row;
+            var value = event.value;
+
+            var cValue = coursesTable.getCellValue(row, column);
+            
+            if (cValue != value)
+              coursesTable.setCellValue(row, column, value);
+          }
+        });
+        
         checkModulesMessage();
         checkCoursesMessage();
         
