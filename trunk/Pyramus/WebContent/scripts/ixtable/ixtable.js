@@ -522,10 +522,15 @@ IxTable = Class.create({
     });
     
     var column = filter.getColumn();
-    var columnHeaderCell = this._headerCells[column];
-    
-    if (columnHeaderCell)
-      columnHeaderCell.addClassName("ixTableColumnHeaderFiltered");
+    if (column >= 0) {
+      var columnHeaderCell = this._headerCells[column];
+      
+      if (columnHeaderCell)
+        columnHeaderCell.addClassName("ixTableColumnHeaderFiltered");
+    }
+  },
+  applyFilters: function () {
+    this._redoFilters();
   },
   _redoFilters: function () {
     if (this.fire("beforeFiltering", { tableComponent: this })) {
