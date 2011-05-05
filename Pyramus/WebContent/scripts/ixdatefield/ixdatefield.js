@@ -67,13 +67,8 @@ IxDateField = Class.create({
     this._monthInput.value = (date.getMonth() + 1).toPaddedString(2);
     this._dayInput.value = (date.getDate()).toPaddedString(2);
 
-    date.setUTCFullYear(this.getYear());
-    date.setUTCMonth(this.getMonth() - 1);
-    date.setUTCDate(this.getDay());
-    date.setUTCHours(0);
-    date.setUTCMilliseconds(0);
-    date.setUTCMinutes(0);
-    date.setUTCSeconds(0);
+    date.setUTCFullYear(this.getYear(), this.getMonth() - 1, this.getDay());
+    date.setUTCHours(0, 0, 0, 0);
     this._timestampInput.value = date.getTime();
   },
   getDay : function() {
@@ -177,10 +172,7 @@ IxDateField = Class.create({
       else {
         var date = new Date();
         date.setUTCFullYear(this.getYear(), this.getMonth() - 1, this.getDay());
-        date.setUTCHours(0);
-        date.setUTCMilliseconds(0);
-        date.setUTCMinutes(0);
-        date.setUTCSeconds(0);
+        date.setUTCHours(0, 0, 0, 0);
         this._timestampInput.value = date.getTime();
       }
     } finally {
