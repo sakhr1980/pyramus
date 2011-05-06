@@ -68,7 +68,7 @@ public class EditStudentJSONRequestController implements JSONRequestController {
 	    String lastName = requestContext.getString("lastName." + student.getId());
 	    String nickname = requestContext.getString("nickname." + student.getId());
 	    String additionalInfo = requestContext.getString("additionalInfo." + student.getId());
-	    String additionalContactInfo = requestContext.getString("additionalContactInfo." + student.getId());
+	    String additionalContactInfo = requestContext.getString("otherContactInfo." + student.getId());
 	    String education = requestContext.getString("education." + student.getId());
 	    Double previousStudies = requestContext.getDouble("previousStudies." + student.getId());
 	    Date studyTimeEnd = requestContext.getDate("studyTimeEnd." + student.getId());
