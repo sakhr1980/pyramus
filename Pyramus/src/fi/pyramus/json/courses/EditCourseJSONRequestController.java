@@ -32,6 +32,8 @@ import fi.pyramus.domainmodel.courses.BasicCourseResource;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
 import fi.pyramus.domainmodel.courses.CourseComponentResource;
+import fi.pyramus.domainmodel.courses.CourseDescription;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -175,6 +177,36 @@ public class EditCourseJSONRequestController implements JSONRequestController {
       }
     }
 
+    // Course Descriptions
+    
+    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    Set<CourseDescription> nonExistingDescriptions = new HashSet<CourseDescription>();
+    
+    for (CourseDescriptionCategory cat: descriptionCategories) {
+      String varName = "courseDescription." + cat.getId().toString();
+      Long descriptionCatId = requestContext.getLong(varName + ".catId");
+      String descriptionText = requestContext.getString(varName + ".text");
+
+      CourseDescription oldDesc = courseDAO.findCourseDescriptionByCourseAndCategory(course, cat);
+
+      if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
+        // Description has been submitted from form 
+        if (oldDesc != null)
+          courseDAO.updateCourseDescription(oldDesc, course, cat, descriptionText);
+        else
+          courseDAO.createCourseDescription(course, cat, descriptionText);
+      } else {
+        // Description wasn't submitted from form, if it exists, it's marked for deletion 
+        if (oldDesc != null)
+          nonExistingDescriptions.add(oldDesc);
+      }
+    }
+    
+    // Delete non existing descriptions
+    for (CourseDescription desc: nonExistingDescriptions) {
+      courseDAO.deleteCourseDescription(desc);
+    }
+    
     // Personnel
 
     Set<Long> existingIds = new HashSet<Long>();

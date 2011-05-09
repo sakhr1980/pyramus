@@ -11,6 +11,7 @@ import fi.pyramus.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
+import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
@@ -44,6 +45,7 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
 
     Long moduleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("module"));
     Module module = moduleDAO.getModule(moduleId);
@@ -73,6 +75,8 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     }
     
     pageRequestContext.getRequest().setAttribute("enabledEducationTypes", enabledEducationTypes);
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptions(module));
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     pageRequestContext.setIncludeJSP("/templates/modules/editmodule.jsp");
   }
 

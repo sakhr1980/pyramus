@@ -12,6 +12,7 @@ import java.util.Vector;
 import org.apache.commons.lang.StringUtils;
 
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -23,8 +24,8 @@ import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 
@@ -74,6 +75,20 @@ public class CreateModuleJSONRequestController implements JSONRequestController 
     // Tags
     
     moduleDAO.setModuleTags(module, tagEntities);
+    
+    // Course Descriptions
+    
+    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    
+    for (CourseDescriptionCategory cat: descriptionCategories) {
+      String varName = "courseDescription." + cat.getId().toString();
+      Long descriptionCatId = requestContext.getLong(varName + ".catId");
+      String descriptionText = requestContext.getString(varName + ".text");
+
+      if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
+        courseDAO.createCourseDescription(module, cat, descriptionText);
+      }
+    }
     
     // Module components
 
