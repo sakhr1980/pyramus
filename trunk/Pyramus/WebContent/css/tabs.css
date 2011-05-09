@@ -187,3 +187,51 @@ a.activeTabLabel{
 	left:0;
 	right:0;
 }
+
+.tabAdd {
+	position: relative;
+}
+
+.ixPrototabsContextMenu {
+  /*border: solid 1px;
+  background: #ffffff;*/
+  position: absolute;
+  left: -2px;
+  top: 0px;
+  padding: 4px 4px 4px 4px;
+  z-index: 2;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+  text-align: left;
+  
+  background: #739de7;
+  border:1px solid #739DE7;
+  color:#fff;
+  margin-top:24px;
+}
+
+.ixPrototabsContextMenuItem {
+  padding: 2px 8px 2px 8px;
+  cursor:pointer;
+  white-space: nowrap;
+}
+
+.ixPrototabsContextMenuItemDisabled {
+  color: #aaaafa;
+}
+
+.ixPrototabsContextMenuItem:hover {
+  /*background: #cecece;*/
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
+
+  background:#5b87d4;
+}
+
+.ixPrototabsContextMenuItemSpacer {
+  background:#5b87d4;
+  height:1px;
+  margin:4px 8px 4px 8px;
+}

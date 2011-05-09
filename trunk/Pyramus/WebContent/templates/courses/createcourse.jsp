@@ -864,6 +864,28 @@
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        var descTabControl = new IxProtoTabs($('descriptionTabs'), {
+          tabAddContextMenu: [
+            <c:forEach var="category" varStatus="vs" items="${courseDescriptionCategories}">
+            <c:if test="${not vs.first}">,</c:if>
+            {
+              text: '${category.name}',
+              onclick: function (event) {
+                var descName = 'courseDescription.' + '${category.id}';
+                var tabContent = descTabControl.addTab(descName, '${category.name}');
+                tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea ix:cktoolbar="courseDescription" name="' + descName + '.text" ix:ckeditor="true"></textarea>');
+                CKEDITOR.replace(descName + '.text');
+                descTabControl.setActiveTab(descName);
+              },
+              isEnabled: function () {
+                var input = document.forms[0]['courseDescription.${category.id}.catId']; 
+                return !input;
+              }
+            }
+            </c:forEach>
+          ]            
+        });
+        
         setupTags();
         setupPersonnelTable();
         setupComponents();
@@ -1104,9 +1126,26 @@
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.createCourse.descriptionTitle"/>
                 <jsp:param name="helpLocale" value="courses.createCourse.descriptionHelp"/>
-              </jsp:include>
+              </jsp:include>    
 
-              <textarea ix:cktoolbar="courseDescription" name="description" ix:ckeditor="true">${module.description}</textarea>
+              <div class="tabLabelsContainer" id="descriptionTabs">
+                <a class="tabLabel" href="#descGeneric"><fmt:message key="courses.editCourse.genericDescriptionTabTitle" /></a>
+
+                <c:forEach var="cDesc" items="${courseDescriptions}">              
+                  <a class="tabLabel" href="#courseDescription.${cDesc.category.id}">${cDesc.category.name}</a>
+                </c:forEach>
+              </div>
+      
+              <div id="descGeneric" class="tabContent">
+                <textarea ix:cktoolbar="courseDescription" name="description" ix:ckeditor="true">${module.description}</textarea>
+              </div>
+
+              <c:forEach var="cDesc" items="${courseDescriptions}">              
+                <div id="courseDescription.${cDesc.category.id}" class="tabContent">
+                  <input type="hidden" name="courseDescription.${cDesc.category.id}.catId" value="${cDesc.category.id}"/>
+                  <textarea ix:cktoolbar="courseDescription" name="courseDescription.${cDesc.category.id}.text" ix:ckeditor="true">${cDesc.description}</textarea>
+                </div>
+              </c:forEach>
             </div>
 
             <div class="genericTableAddRowContainer">

@@ -40,6 +40,8 @@ import fi.pyramus.domainmodel.courses.BasicCourseResource;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
 import fi.pyramus.domainmodel.courses.CourseComponentResource;
+import fi.pyramus.domainmodel.courses.CourseDescription;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -1353,4 +1355,87 @@ public class CourseDAO extends PyramusDAO {
     s.delete(courseStudent);
   }
 
+  
+  /*  Course Description  */
+  
+  public CourseDescription createCourseDescription(CourseBase courseBase, CourseDescriptionCategory category, String description) {
+    EntityManager entityManager = getEntityManager();
+    
+    CourseDescription courseDescription = new CourseDescription();
+    courseDescription.setCourseBase(courseBase);
+    courseDescription.setCategory(category);
+    courseDescription.setDescription(description);
+    
+    entityManager.persist(courseDescription);
+
+    return courseDescription;
+  }
+  
+  public CourseDescription updateCourseDescription(CourseDescription courseDescription, CourseBase courseBase, CourseDescriptionCategory category, String description) {
+    EntityManager entityManager = getEntityManager();
+    
+    courseDescription.setCourseBase(courseBase);
+    courseDescription.setCategory(category);
+    courseDescription.setDescription(description);
+    
+    entityManager.persist(courseDescription);
+
+    return courseDescription;
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<CourseDescription> listCourseDescriptions(CourseBase courseBase) {
+    Session s = getHibernateSession();
+    return s.createCriteria(CourseDescription.class).add(Restrictions.eq("courseBase", courseBase)).list();
+  }
+
+  public void deleteCourseDescription(CourseDescription desc) {
+    Session s = getHibernateSession();
+    s.delete(desc);
+  }
+  
+  public CourseDescription findCourseDescriptionById(Long courseDescriptionId) {
+    Session s = getHibernateSession();
+    return (CourseDescription) s.load(CourseDescription.class, courseDescriptionId);
+  }
+  
+  public CourseDescription findCourseDescriptionByCourseAndCategory(CourseBase courseBase, CourseDescriptionCategory category) {
+    Session s = getHibernateSession();
+    return (CourseDescription) s.createCriteria(CourseDescription.class)
+      .add(Restrictions.eq("courseBase", courseBase))
+      .add(Restrictions.eq("category", category))
+      .uniqueResult();
+  }
+  
+  public CourseDescriptionCategory createCourseDescriptionCategory(String name) {
+    EntityManager entityManager = getEntityManager();
+    
+    CourseDescriptionCategory category = new CourseDescriptionCategory();
+    category.setName(name);
+
+    entityManager.persist(category);
+
+    return category;
+  }
+
+  public CourseDescriptionCategory updateCourseDescriptionCategory(CourseDescriptionCategory category, String name) {
+    EntityManager entityManager = getEntityManager();
+    
+    category.setName(name);
+
+    entityManager.persist(category);
+
+    return category;
+  }
+  
+  public CourseDescriptionCategory findCourseDescriptionCategoryById(Long categoryId) {
+    Session s = getHibernateSession();
+    return (CourseDescriptionCategory) s.load(CourseDescriptionCategory.class, categoryId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<CourseDescriptionCategory> listCourseDescriptionCategories() {
+    Session s = getHibernateSession();
+    return s.createCriteria(CourseDescriptionCategory.class).list();
+  }
 }

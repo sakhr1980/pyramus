@@ -11,6 +11,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.CourseBase;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationSubtype;
@@ -20,6 +21,7 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -35,6 +37,8 @@ import fi.pyramus.persistence.search.SearchTimeFilterMode;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.courses.CourseComponentEntity;
+import fi.pyramus.services.entities.courses.CourseDescriptionCategoryEntity;
+import fi.pyramus.services.entities.courses.CourseDescriptionEntity;
 import fi.pyramus.services.entities.courses.CourseEducationSubtypeEntity;
 import fi.pyramus.services.entities.courses.CourseEducationTypeEntity;
 import fi.pyramus.services.entities.courses.CourseEnrolmentTypeEntity;
@@ -410,6 +414,25 @@ public class CoursesService extends PyramusService {
     SearchResult<Course> searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState, subject, tFilterMode, timeframeStart, timeframeEnd, true);
     
     return new CourseEntitySearchResult(searchResult.getPage(), searchResult.getPages(), searchResult.getTotalHitCount(), (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(searchResult.getResults()));
+  }
+  
+  public CourseDescriptionCategoryEntity[] listCourseDescriptionCategories() {
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    return (CourseDescriptionCategoryEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptionCategories());
+  }
+
+  public CourseDescriptionEntity[] listCourseDescriptions(Long courseId) {
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseBase courseBase = courseDAO.getCourse(courseId);
+    return (CourseDescriptionEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptions(courseBase));
+  }
+
+  public CourseDescriptionEntity getCourseDescriptionByCourseIdAndCategoryId(Long courseId, Long categoryId) {
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseBase courseBase = courseDAO.getCourse(courseId);
+    CourseDescriptionCategory category = courseDAO.findCourseDescriptionCategoryById(categoryId);
+    
+    return (CourseDescriptionEntity) EntityFactoryVault.buildFromDomainObject(courseDAO.findCourseDescriptionByCourseAndCategory(courseBase, category));
   }
   
 }

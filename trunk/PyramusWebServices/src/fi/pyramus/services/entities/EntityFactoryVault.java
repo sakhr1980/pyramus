@@ -22,6 +22,8 @@ import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.pyramus.domainmodel.courses.CourseDescription;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseStudent;
@@ -63,6 +65,10 @@ import fi.pyramus.services.entities.base.SubjectEntity;
 import fi.pyramus.services.entities.base.SubjectEntityFactory;
 import fi.pyramus.services.entities.courses.CourseComponentEntity;
 import fi.pyramus.services.entities.courses.CourseComponentEntityFactory;
+import fi.pyramus.services.entities.courses.CourseDescriptionCategoryEntity;
+import fi.pyramus.services.entities.courses.CourseDescriptionCategoryEntityFactory;
+import fi.pyramus.services.entities.courses.CourseDescriptionEntity;
+import fi.pyramus.services.entities.courses.CourseDescriptionEntityFactory;
 import fi.pyramus.services.entities.courses.CourseEducationSubtypeEntity;
 import fi.pyramus.services.entities.courses.CourseEducationSubtypeEntityFactory;
 import fi.pyramus.services.entities.courses.CourseEducationTypeEntity;
@@ -209,6 +215,14 @@ public class EntityFactoryVault {
   public static CourseEntity buildFromDomainObject(Course course) {
     return (CourseEntity) EntityFactoryVault.getEntityFactory(CourseEntity.class).buildFromDomainObject(course);
   }
+
+  public static CourseDescriptionEntity buildFromDomainObject(CourseDescription courseDescription) {
+    return (CourseDescriptionEntity) EntityFactoryVault.getEntityFactory(CourseDescriptionEntity.class).buildFromDomainObject(courseDescription);
+  }
+
+  public static CourseDescriptionCategoryEntity buildFromDomainObject(CourseDescriptionCategory category) {
+    return (CourseDescriptionCategoryEntity) EntityFactoryVault.getEntityFactory(CourseDescriptionCategoryEntity.class).buildFromDomainObject(category);
+  }
   
   public static ModuleEntity buildFromDomainObject(Module module) {
     return (ModuleEntity) EntityFactoryVault.getEntityFactory(ModuleEntity.class).buildFromDomainObject(module);
@@ -305,6 +319,8 @@ public class EntityFactoryVault {
     registerEntityFactory(CourseEducationSubtype.class, CourseEducationSubtypeEntity.class, new CourseEducationSubtypeEntityFactory());
     registerEntityFactory(CourseUser.class, CourseUserEntity.class, new CourseUserEntityFactory());
     registerEntityFactory(CourseUserRole.class, CourseUserRoleEntity.class, new CourseUserRoleEntityFactory());
+    registerEntityFactory(CourseDescriptionCategory.class, CourseDescriptionCategoryEntity.class, new CourseDescriptionCategoryEntityFactory());
+    registerEntityFactory(CourseDescription.class, CourseDescriptionEntity.class, new CourseDescriptionEntityFactory());
     
     /* Grading */
     

@@ -1,22 +1,24 @@
 IxProtoTabs = Class.create({
-  initialize: function (tabId) {
+  initialize: function (tabId, options) {
     this._tabContainer = $(tabId);
     this._listeners = null;
+    this._options = options;
     this._labelClickListener = this._onLabelClick.bindAsEventListener(this); 
     this._tabNames = new Array(); 
     this._tabs = new Hash();
     this._labels = new Hash();
 		this._initializedTabs = new Array();
-    
+
     this._labelElements = this._tabContainer.getElementsByTagName("a"); 
     for (var i = 0; i < this._labelElements.length; i++) { 
-       var element = this._labelElements[i];   
-       var tabName = this._getLinkkedTabName(element);
-       Event.observe(element, "click", this._labelClickListener);
-       this._tabNames.push(tabName);
-       this._labels.set(tabName, element);
-     }
-   
+      var element = this._labelElements[i];   
+      var tabName = this._getLinkkedTabName(element);
+       
+      Event.observe(element, "click", this._labelClickListener);
+      this._tabNames.push(tabName);
+      this._labels.set(tabName, element);
+    }
+    
     for (var i = 0; i < this._tabNames.length; i++) {
       var tabElement = $(this._tabNames[i]);
       if ((tabElement != null) && (tabElement != undefined)) {
@@ -46,6 +48,48 @@ IxProtoTabs = Class.create({
        
       this.setActiveTab(selectedTab);
     }
+
+    if (this._options) {
+      if (this._options.tabAddContextMenu || this._options.tabAddAction) {
+        this._addTabButton = new Element("a", {className: "tabAdd tabLabel", href: "#+"} );
+        this._addTabButton.update("+");
+        this._labelAddClickListener = this._onLabelAddClick.bindAsEventListener(this); 
+        Event.observe(this._addTabButton, "click", this._labelAddClickListener);
+        this._tabContainer.appendChild(this._addTabButton);
+        
+        if (this._options.tabAddContextMenu)
+          this._contextMenuItemClickListener = this._onContextMenuItemClick.bindAsEventListener(this);
+      }
+    }
+  },
+  addTab: function (name, caption) {
+    var newTabLabel = new Element("a", {className: "tabLabel", href: "#" + name} );
+    newTabLabel.update(caption);
+    
+    if (!this._addTabButton)
+      this._tabContainer.appendChild(newTabLabel);
+    else
+      this._tabContainer.insertBefore(newTabLabel, this._addTabButton);
+
+    var afterElement = this._tabContainer.parentNode;
+    var newTabContent = new Element("div", { id: name, className: "tabContent hiddenTab" });
+    
+    if (this._tabNames.length > 0) {
+      afterElement = $(this._tabNames[this._tabNames.length - 1]);
+    }
+    
+    if (afterElement.nextSibling) {
+      this._tabContainer.parentNode.insertBefore(newTabContent, afterElement.nextSibling);
+    } else {
+      this._tabContainer.parentNode.appendChild(newTabContent);
+    }
+    
+    Event.observe(newTabLabel, "click", this._labelClickListener);
+    this._tabNames.push(name);
+    this._labels.set(name, newTabLabel);
+    this._tabs.set(name, newTabContent);
+    
+    return newTabContent;
   },
   setActiveTab: function (name) {
     var tab = this._tabs.get(name);
@@ -106,6 +150,94 @@ IxProtoTabs = Class.create({
     
     var tabName = this._getLinkkedTabName(element);
     this.setActiveTab(tabName);
+  },
+  _onLabelAddClick: function (event) {
+    Event.stop(event);
+    
+    if (this._options.tabAddAction)
+      this._options.tabAddAction();
+    else {
+      if (this._options.tabAddContextMenu) {
+        var contextMenuButton = Event.element(event);
+        var contextMenu = this._options.tabAddContextMenu;
+        
+        var menuContainer = new Element("span", {className: "ixPrototabsContextMenu"} );
+        var menuContainerPad = new Element("span", {className: "ixPrototabsContextMenuPad"} );
+        menuContainerPad.appendChild(menuContainer);
+        
+        for (var i = 0, l = contextMenu.length; i < l; i++) {
+          var menuItem = contextMenu[i];
+          var menuElement = new Element("div");
+          menuElement._menuItem = menuItem;
+
+          if (!("-" === menuItem.text)) {
+            menuElement.addClassName("ixPrototabsContextMenuItem");
+            menuElement.update(menuItem.text);
+
+            if ((contextMenu[i].isEnabled == undefined) || (contextMenu[i].isEnabled()))
+              Event.observe(menuElement, "click", this._contextMenuItemClickListener);
+            else
+              menuElement.addClassName("ixPrototabsContextMenuItemDisabled");
+          } else {
+            menuElement.addClassName("ixPrototabsContextMenuItemSpacer");
+          }
+          menuContainer.appendChild(menuElement);
+        }
+        
+        var _this = this;
+        var windowMouseMove = function (event) {
+          var element = Event.element(event);
+          var overMenu = element.hasClassName('ixPrototabsContextMenu');
+          if (!overMenu) {
+            if (element.up('.ixPrototabsContextMenu'))
+              overMenu = true;
+          }
+          if (!overMenu) {
+            if (element.hasClassName('tabAdd') || element.up('.tabAdd'))
+              overMenu = true;
+          }
+        
+          if (!overMenu) {
+            $$('.ixPrototabsContextMenuPad').forEach(function (menu) {
+              $(menu).select('.ixPrototabsContextMenuItem').forEach(function (menuItem) {
+                if (!menuItem.hasClassName("ixPrototabsContextMenuItemSpacer"))
+                  Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
+              }); 
+              
+              $(menu).remove();
+            });
+            
+            Event.stopObserving(Prototype.Browser.IE ? document : window, "mousemove", windowMouseMove);
+          }
+        };
+        
+        Event.observe(Prototype.Browser.IE ? document : window, "mousemove", windowMouseMove);
+        
+        this._addTabButton.appendChild(menuContainerPad);
+      }
+    }
+    
+    this._fire({ 
+      action: "afterTabAdd",
+      event: event
+    });
+  },
+  _onContextMenuItemClick: function (event) {
+    var menuElement = Event.element(event);
+    var contextMenuElement = menuElement.parentNode.parentNode; // Pad node
+    
+    var menuItem = menuElement._menuItem;
+    var _this = this;
+    contextMenuElement.select('.ixTableCellContextMenuItem').forEach(function (menuItem) {
+      Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
+    }); 
+
+    contextMenuElement.remove();
+    
+    menuItem.onclick({
+      tabComponent: this,
+      menuItem: menuItem
+    });
   },
   _getLinkkedTabName: function (element) {
     var ind = element.href.indexOf("#");

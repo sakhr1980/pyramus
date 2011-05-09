@@ -117,6 +117,8 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("courseComponents", courseComponents);
     pageRequestContext.getRequest().setAttribute("courseStudentsStudents", courseStudentsStudents);
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptions(course));
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     
     pageRequestContext.setIncludeJSP("/templates/courses/editcourse.jsp");
   }

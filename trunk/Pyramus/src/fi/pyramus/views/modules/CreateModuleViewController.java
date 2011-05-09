@@ -6,6 +6,7 @@ import fi.pyramus.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
+import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
@@ -27,10 +28,12 @@ public class CreateModuleViewController implements PyramusViewController, Breadc
    */
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
 
     pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
     pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
     pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     pageRequestContext.setIncludeJSP("/templates/modules/createmodule.jsp");
   }
 

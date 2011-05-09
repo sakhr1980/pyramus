@@ -53,6 +53,28 @@
 
        function onLoad(event) {
          var tabControl = new IxProtoTabs($('tabs'));
+         var descTabControl = new IxProtoTabs($('descriptionTabs'), {
+           tabAddContextMenu: [
+             <c:forEach var="category" varStatus="vs" items="${courseDescriptionCategories}">
+             <c:if test="${not vs.first}">,</c:if>
+             {
+               text: '${category.name}',
+               onclick: function (event) {
+                 var descName = 'courseDescription.' + '${category.id}';
+                 var tabContent = descTabControl.addTab(descName, '${category.name}');
+                 tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea ix:cktoolbar="courseDescription" name="' + descName + '.text" ix:ckeditor="true"></textarea>');
+                 CKEDITOR.replace(descName + '.text');
+                 descTabControl.setActiveTab(descName);
+               },
+               isEnabled: function () {
+                 var input = document.forms[0]['courseDescription.${category.id}.catId']; 
+                 return !input;
+               }
+             }
+             </c:forEach>
+           ]            
+         });
+         
          setupTags();
          var componentsTable = new IxTable($('componentsTable'), {
            id : "componentsTable",
@@ -212,14 +234,21 @@
                 </c:forEach>
               </select>            
             </div>
-	    
-  	        <div class="genericFormSection">
+
+            <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.createModule.descriptionTitle"/>
                 <jsp:param name="helpLocale" value="modules.createModule.descriptionHelp"/>
-              </jsp:include>
-              <textarea ix:cktoolbar="moduleDescription" name="description" ix:ckeditor="true"></textarea>
-    	    	</div>
+              </jsp:include>    
+
+              <div class="tabLabelsContainer" id="descriptionTabs">
+                <a class="tabLabel" href="#descGeneric"><fmt:message key="modules.createModule.genericDescriptionTabTitle" /></a>
+              </div>
+      
+              <div id="descGeneric" class="tabContent">
+                <textarea ix:cktoolbar="moduleDescription" name="description" ix:ckeditor="true"></textarea>
+              </div>
+            </div>
 
             <ix:extensionHook name="modules.createModule.tabs.basic"/>
 	        </div>

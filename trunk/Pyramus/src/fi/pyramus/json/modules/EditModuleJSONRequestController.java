@@ -26,6 +26,8 @@ import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.courses.CourseDescription;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
@@ -70,6 +72,36 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       }
     }
 
+    // Course Descriptions
+    
+    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    Set<CourseDescription> nonExistingDescriptions = new HashSet<CourseDescription>();
+    
+    for (CourseDescriptionCategory cat: descriptionCategories) {
+      String varName = "courseDescription." + cat.getId().toString();
+      Long descriptionCatId = requestContext.getLong(varName + ".catId");
+      String descriptionText = requestContext.getString(varName + ".text");
+
+      CourseDescription oldDesc = courseDAO.findCourseDescriptionByCourseAndCategory(module, cat);
+
+      if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
+        // Description has been submitted from form 
+        if (oldDesc != null)
+          courseDAO.updateCourseDescription(oldDesc, module, cat, descriptionText);
+        else
+          courseDAO.createCourseDescription(module, cat, descriptionText);
+      } else {
+        // Description wasn't submitted from form, if it exists, it's marked for deletion 
+        if (oldDesc != null)
+          nonExistingDescriptions.add(oldDesc);
+      }
+    }
+    
+    // Delete non existing descriptions
+    for (CourseDescription desc: nonExistingDescriptions) {
+      courseDAO.deleteCourseDescription(desc);
+    }
+    
     // Remove education types and subtypes
 
     List<CourseEducationType> courseEducationTypes = module.getCourseEducationTypes();

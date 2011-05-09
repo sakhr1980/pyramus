@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -29,6 +30,7 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -37,7 +39,6 @@ import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
@@ -96,6 +97,21 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     // Tags
     
     courseDAO.setCourseTags(course, tagEntities);
+    
+    // Course Descriptions
+    
+    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    
+    for (CourseDescriptionCategory cat: descriptionCategories) {
+      String varName = "courseDescription." + cat.getId().toString();
+      Long descriptionCatId = requestContext.getLong(varName + ".catId");
+      String descriptionText = requestContext.getString(varName + ".text");
+
+      if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
+        // Description has been submitted from form 
+        courseDAO.createCourseDescription(course, cat, descriptionText);
+      }
+    }
     
     // Personnel
 
