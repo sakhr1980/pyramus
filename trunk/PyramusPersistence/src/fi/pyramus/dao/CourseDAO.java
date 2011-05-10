@@ -1438,4 +1438,17 @@ public class CourseDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(CourseDescriptionCategory.class).list();
   }
+  
+  public void copyCourseDescriptions(CourseBase fromCourseBase, CourseBase toCourseBase) {
+    List<CourseDescription> descriptions = listCourseDescriptions(fromCourseBase);
+    
+    for (CourseDescription desc : descriptions) {
+      CourseDescription existingDescription = findCourseDescriptionByCourseAndCategory(toCourseBase, desc.getCategory());
+
+      if (existingDescription == null)
+        createCourseDescription(toCourseBase, desc.getCategory(), desc.getDescription());
+      else
+        updateCourseDescription(existingDescription, toCourseBase, desc.getCategory(), desc.getDescription());
+    }
+  }
 }
