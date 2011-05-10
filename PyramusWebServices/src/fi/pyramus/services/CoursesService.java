@@ -91,6 +91,9 @@ public class CoursesService extends PyramusService {
 
     if (module != null) {
 
+      // Course Description copying from module to course
+      courseDAO.copyCourseDescriptions(module, course);
+      
       // Components
 
       List<ModuleComponent> moduleComponents = module.getModuleComponents();
