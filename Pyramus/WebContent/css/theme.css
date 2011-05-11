@@ -303,6 +303,10 @@ h1.genericPageHeader{
 
 /* Manage Course Assessments */
 
+#manageCourseAssessmentsStudentsTableContainer {
+  margin-top: 32px;
+}
+  
 #manageCourseAssessmentsStudentsTableContainer .ixTableRow:hover{
   background:#D7E3F9;
   color:#2351B1;

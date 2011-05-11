@@ -92,7 +92,7 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
    * @return The localized name of this page
    */
   public String getName(Locale locale) {
-    return Messages.getInstance().getText(locale, "courses.manageCourseAssessments.pageTitle");
+    return Messages.getInstance().getText(locale, "courses.manageCourseAssessments.breadcrumb");
   }
 
 }
