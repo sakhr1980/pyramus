@@ -101,7 +101,11 @@
   padding-top:3px;
 }
 
-.ixTableCellEditorButton {
+.ixTableHeaderCellImage {
+  padding:3px 3px 3px 3px;
+}
+	
+.ixTableCellEditorButton, .ixTableHeaderCellImageButton {
   border: 1px solid #739de7;
   background-repeat: no-repeat;
   background-position: center;
@@ -113,6 +117,12 @@
   width:16px;
   height:16px;
   padding:2px 2px 2px 2px;
+}
+
+.ixTableHeaderCellImageButtonDisabled {
+  opacity: 0.33;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=33)";
+  cursor: default;
 }
 
 .ixTableRowButton {
