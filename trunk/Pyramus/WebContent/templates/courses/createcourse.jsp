@@ -873,8 +873,8 @@
               onclick: function (event) {
                 var descName = 'courseDescription.' + '${category.id}';
                 var tabContent = descTabControl.addTab(descName, '${category.name}');
-                tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea ix:cktoolbar="courseDescription" name="' + descName + '.text" ix:ckeditor="true"></textarea>');
-                CKEDITOR.replace(descName + '.text');
+                tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea name="' + descName + '.text" ix:ckeditor="true"></textarea>');
+                CKEDITOR.replace(descName + '.text', { toolbar: "courseDescription", language: document.getCookie('pyramusLocale') });
                 descTabControl.setActiveTab(descName);
               },
               isEnabled: function () {

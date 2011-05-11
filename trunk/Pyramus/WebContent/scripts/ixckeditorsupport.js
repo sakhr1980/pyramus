@@ -11,12 +11,13 @@ document.observe("dom:loaded", function(event) {
       });
     }
     
-    var options = {};
+    var options = {
+      language: document.getCookie('pyramusLocale')        
+    };
     var toolbar = ckEditors[i].getAttribute('ix:cktoolbar');
     if (toolbar) {
       options = Object.extend(options, {
-        toolbar: toolbar,
-        language: document.getCookie('pyramusLocale')
+        toolbar: toolbar
       });
     }
     
