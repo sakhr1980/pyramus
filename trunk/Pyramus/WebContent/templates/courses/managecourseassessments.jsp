@@ -7,7 +7,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title><fmt:message key="courses.manageCourseAssessments.pageTitle" /></title>
+    <title>
+      <fmt:message key="courses.manageCourseAssessments.pageTitle">
+        <fmt:param value="${course.name}"/>
+      </fmt:message>
+    </title>
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
@@ -350,7 +354,11 @@
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
-    <h1 class="genericPageHeader"><fmt:message key="courses.manageCourseAssessments.pageTitle" /></h1>
+    <h1 class="genericPageHeader">
+      <fmt:message key="courses.editCourse.pageTitle">
+        <fmt:param value="${course.name}"/>
+      </fmt:message>
+    </h1>
     
     <div id="manageCourseAssessmentsEditFormContainer">
       <div class="genericFormContainer">
@@ -364,14 +372,6 @@
   
           <div id="students" class="tabContent">
             <div id="relatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
-
-            <div class="genericFormSection">                            
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="courses.manageCourseAssessments.courseNameTitle"/>
-                <jsp:param name="helpLocale" value="courses.manageCourseAssessments.courseNameHelp"/>
-              </jsp:include> 
-              <div>${course.name}</div>
-            </div>
 
             <div id="manageCourseAssessmentsStudentsTableContainer">
               <c:if test="${fn:length(courseStudents) eq 0}">
