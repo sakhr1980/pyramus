@@ -17,6 +17,7 @@ IxTableControllers = {
 IxTable = Class.create({
   initialize : function(parentNode, options) {
     this._rowClickListener = this._onRowClick.bindAsEventListener(this);
+    this._headerClickListener = this._onHeaderClick.bindAsEventListener(this);
     this._activeRows = new Hash();
     this._rowElements = new Hash();
     this._filters = new Array();
@@ -60,13 +61,34 @@ IxTable = Class.create({
       
       this._hasHeader = this._hasHeader || !((column.header == '') || (!column.header));
       
-      var headerTextNode = Builder.node("div", {
-        className : "ixTableHeaderCellText"
-      }, [ column.header ]);
+      var headerContent = undefined;
+
+      if (column.headerimg) {
+        var headerImgClassNames = "ixTableHeaderCellImage";
+        if (column.headerimg.onclick)
+          headerImgClassNames = headerImgClassNames + " ixTableHeaderCellImageButton";
+        
+        headerContent = new Element("img", { 
+          src: column.headerimg.imgsrc, 
+          title: column.headerimg.tooltip ? column.headerimg.tooltip : '', 
+          className: headerImgClassNames
+        });
+        
+        if (column.headerimg.onclick) {
+          headerContent._headerOnClick = column.headerimg.onclick;
+          Event.observe(headerContent, "click", this._headerClickListener);
+        }
+      }
+      
+      if (!headerContent) {
+        headerContent = Builder.node("div", {
+          className : "ixTableHeaderCellText"
+        }, [ column.header ]);
+      }
       
       var headerCell = Builder.node("div", {
         className : "ixTableHeaderCell"
-      }, [ headerTextNode ]);
+      }, [ headerContent ]);
       
 
       this._clearColumnFiltersClickListener = this._onClearColumnFiltersClickListener.bindAsEventListener(this);
@@ -245,14 +267,29 @@ IxTable = Class.create({
     this._redoSort();
   },
   hideRow: function (rowNumber) {
-    var rowElement = this.getRowElement(rowNumber); 
-    if (rowElement.visible())
+    var rowElement = this.getRowElement(rowNumber);
+    var doHide = rowElement.visible();
+
+    if (doHide && this.fire("beforeRowVisibilityChange", {
+      tableComponent: this,
+      rows: [ rowNumber ],
+      hidden: false
+    })) {
       rowElement.hide();
 
-    if (this.getVisibleRowCount() == 0 && this._hasHeader == true && this._filters.size() == 0) {
-      this._headerRow.setStyle({
-        display: 'none'
-      });
+      if (this.getVisibleRowCount() == 0 && this._hasHeader == true && this._filters.size() == 0) {
+        this._headerRow.setStyle({
+          display: 'none'
+        });
+      }
+      
+      if (doHide) {
+        this.fire("afterRowVisibilityChange", {
+          tableComponent: this,
+          rows: [ rowNumber ],
+          hidden: false
+        });
+      }
     }
   },
   hideRows: function (rowNumbers) {
@@ -262,35 +299,85 @@ IxTable = Class.create({
       hideRows.push(this.getRowElement(rowNumbers[i])); 
     }
     
-    this.detachFromDom();
-    hideRows.invoke("hide");
-    this.reattachToDom();
+    var doHide = hideRows.length > 0;
 
-    if (this.getVisibleRowCount() == 0 && this._hasHeader == true && this._filters.size() == 0) {
-      this._headerRow.setStyle({
-        display: 'none'
-      });
+    if (doHide && this.fire("beforeRowVisibilityChange", {
+      tableComponent: this,
+      rows: hideRows,
+      hidden: false
+    })) {
+      this.detachFromDom();
+      hideRows.invoke("hide");
+      this.reattachToDom();
+  
+      if (this.getVisibleRowCount() == 0 && this._hasHeader == true && this._filters.size() == 0) {
+        this._headerRow.setStyle({
+          display: 'none'
+        });
+      }
+  
+      if (doHide) {
+        this.fire("afterRowVisibilityChange", {
+          tableComponent: this,
+          rows: rowNumbers,
+          hidden: false
+        });
+      }
     }
   },
   showRow: function (rowNumber) {
-    this.getRowElement(rowNumber).show();
+    if (this.fire("beforeRowVisibilityChange", {
+      tableComponent: this,
+      rows: [ rowNumber ],
+      hidden: false
+    })) {
+      this.getRowElement(rowNumber).show();
 
-    this._headerRow.setStyle({
-      display: ''
-    });
-  },
-  showAllRows: function () {
-    this.detachFromDom();
-    for (var i = 0, len = this.getRowCount(); i < len; i++) {
-      var rowElement = this.getRowElement(i); 
-      if (!rowElement.visible())
-        rowElement.show();
-    }
-    this.reattachToDom();
-
-    if (this.getVisibleRowCount() > 0 && this._hasHeader == true) {
       this._headerRow.setStyle({
         display: ''
+      });
+      
+      this.fire("afterRowVisibilityChange", {
+        tableComponent: this,
+        rows: [ rowNumber ],
+        hidden: false
+      });
+    }
+  },
+  showAllRows: function () {
+    var rowNumbers = new Array();
+
+    for (var i = 0, len = this.getRowCount(); i < len; i++) {
+      var rowElement = this.getRowElement(i); 
+      if (!rowElement.visible()) {
+        rowNumbers.push(i);
+      }
+    }
+    
+    if (this.fire("beforeRowVisibilityChange", {
+      tableComponent: this,
+      rows: rowNumbers,
+      hidden: false
+    })) {
+      this.detachFromDom();
+      for (var i = 0, len = rowNumbers.length; i < len; i++) {
+        var rowElement = this.getRowElement(rowNumbers[i]); 
+        if (!rowElement.visible()) {
+          rowElement.show();
+        }
+      }
+      this.reattachToDom();
+  
+      if (this.getVisibleRowCount() > 0 && this._hasHeader == true) {
+        this._headerRow.setStyle({
+          display: ''
+        });
+      }
+  
+      this.fire("afterRowVisibilityChange", {
+        tableComponent: this,
+        rows: rowNumbers,
+        hidden: false
       });
     }
   },
@@ -374,6 +461,9 @@ IxTable = Class.create({
   },
   allowCellSelection: function (row, column) {
     
+  },
+  getHeaderCell: function (column) {
+    return this._headerCells[column];
   },
   getColumnCount: function () {
     return this.options.columns.length;
@@ -709,6 +799,15 @@ IxTable = Class.create({
       });
     }
   },
+  _onHeaderClick: function (event) {
+    var elem = Event.element(event);
+
+    if (elem._headerOnClick) {
+      elem._headerOnClick({
+        tableComponent: this
+      });
+    }
+  },
   _createCellContentHandler: function (name, columnDefinition, editable) {
     var controller = IxTableControllers.getController(columnDefinition.dataType);
     
@@ -913,6 +1012,7 @@ IxTableEditorController = Class.create({
     var table = handlerInstance._table;
     var cell = handlerInstance._cell;
     var visible = this.isVisible(handlerInstance); 
+    var cellValue = this.getEditorValue(handlerInstance);
     
     this.detachContentHandler(handlerInstance);
     
@@ -924,7 +1024,7 @@ IxTableEditorController = Class.create({
     else 
       this.hide(newHandler);
     
-    this.setEditorValue(newHandler, this.getEditorValue(handlerInstance));
+    this.setEditorValue(newHandler, cellValue);
     this.destroyHandler(handlerInstance);
 
     return newHandler;
@@ -1674,8 +1774,12 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
   getEditorValue: function ($super, handlerInstance) {
     if (handlerInstance._editable != true)
       return this._getViewerValue(handlerInstance);
-    else
-      return handlerInstance._component.getTimestamp();  
+    else {
+      if (handlerInstance._component)
+        return handlerInstance._component.getTimestamp();
+      else
+        return handlerInstance._pendingValue;
+    }
   },
   setEditorValue: function ($super, handlerInstance, value) {
     if (handlerInstance._editable != true) {

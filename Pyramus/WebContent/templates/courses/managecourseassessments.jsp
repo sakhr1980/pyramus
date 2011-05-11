@@ -26,6 +26,48 @@
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
     <script type="text/javascript">
+      var MAX_EDITALLROWS = 30;
+
+      function setRowEditable(table, rowIndex) {
+        var modifiedCol = table.getNamedColumnIndex('modified');
+        
+        if (table.getCellValue(rowIndex, modifiedCol) == 0) {
+          var gradeCol = table.getNamedColumnIndex('gradeId');
+          var participationCol = table.getNamedColumnIndex('participationType');
+          var assessingUserCol = table.getNamedColumnIndex('assessingUserId');
+          var assessmentDateCol = table.getNamedColumnIndex('assessmentDate');
+
+          table.setCellEditable(rowIndex, gradeCol, table.isCellEditable(rowIndex, gradeCol) == false);
+          table.setCellEditable(rowIndex, participationCol, table.isCellEditable(rowIndex, participationCol) == false);
+          table.setCellEditable(rowIndex, assessingUserCol, table.isCellEditable(rowIndex, assessingUserCol) == false);
+          table.setCellEditable(rowIndex, assessmentDateCol, table.isCellEditable(rowIndex, assessmentDateCol) == false);
+
+          var value = table.getCellValue(rowIndex, assessmentDateCol);
+          if (!(value && value !== ''))
+            table.setCellValue(rowIndex, assessmentDateCol, new Date().getTime());
+
+          value = table.getCellValue(rowIndex, assessingUserCol);
+          if (!(value && value !== '')) {
+            table.setCellValue(rowIndex, assessingUserCol, '${loggedUserId}');
+            IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(rowIndex, assessingUserCol), '${fn:escapeXml(loggedUserName)}');
+          }
+
+          table.setCellValue(rowIndex, modifiedCol, 1);
+        }
+      } 
+
+      function checkEditAllBtnStatus(table) {
+        var headerCell = table.getHeaderCell(table.getNamedColumnIndex('editRowButton'));
+        var buttonElement = headerCell.down('.ixTableHeaderCellImageButton');
+        
+        if (buttonElement) {
+          if (table.getVisibleRowCount() > MAX_EDITALLROWS) {
+            buttonElement.addClassName('ixTableHeaderCellImageButtonDisabled');            
+          } else {
+            buttonElement.removeClassName('ixTableHeaderCellImageButtonDisabled');            
+          }
+        }
+      }
 
       function setupStudentsTable() {
         var studentsTable = new IxTable($('studentsTable'), {
@@ -44,35 +86,39 @@
               openStudentInfoPopupOnElement(button, abstractStudentId);
             } 
           }, {
+            headerimg: {
+              imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+              tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditAllTooltip"/>',
+              onclick: function (event) {
+                var table = event.tableComponent;
+                if (table.getVisibleRowCount() <= MAX_EDITALLROWS) {
+                  var glassPane = new IxGlassPane(document.body, { });
+                  table.detachFromDom();
+                  glassPane.show();
+                  
+                  setTimeout(function () {
+                    for (var i = 0, len = table.getRowCount(); i < len; i++) {
+                      if (table.isRowVisible(i))
+                        setRowEditable(table, i);
+                    }
+                    table.reattachToDom();
+  
+                    glassPane.hide();
+                    delete glassPane;
+                  }, 0);
+                }
+              }
+            },
             left: 38,
             width: 22,
+            paramName: 'editRowButton',
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
-              var modifiedCol = table.getNamedColumnIndex('modified');
-              
-              if (table.getCellValue(event.row, modifiedCol) == 0) {
-                var gradeCol = studentsTable.getNamedColumnIndex('gradeId');
-                var participationCol = studentsTable.getNamedColumnIndex('participationType');
-                var assessingUserCol = studentsTable.getNamedColumnIndex('assessingUserId');
-                var assessmentDateCol = studentsTable.getNamedColumnIndex('assessmentDate');
-  
-                table.setCellEditable(event.row, gradeCol, table.isCellEditable(event.row, gradeCol) == false);
-                table.setCellEditable(event.row, participationCol, table.isCellEditable(event.row, participationCol) == false);
-                table.setCellEditable(event.row, assessingUserCol, table.isCellEditable(event.row, assessingUserCol) == false);
-                table.setCellEditable(event.row, assessmentDateCol, table.isCellEditable(event.row, assessmentDateCol) == false);
 
-                if (table.getCellValue(event.row, assessmentDateCol) == '')
-                  table.setCellValue(event.row, assessmentDateCol, new Date().getTime());
-                if (table.getCellValue(event.row, assessingUserCol) == '') {
-                  table.setCellValue(event.row, assessingUserCol, '${loggedUserId}');
-                  IxTableControllers.getController('autoCompleteSelect').setDisplayValue(table.getCellEditor(event.row, assessingUserCol), '${fn:escapeXml(loggedUserName)}');
-                }
-
-                table.setCellValue(event.row, modifiedCol, 1);
-              }
+              setRowEditable(table, event.row);
             }
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableNameHeader"/>',
@@ -286,6 +332,11 @@
           }]        
         });
 
+        studentsTable.addListener("afterRowVisibilityChange", function (event) {
+          var table = event.tableComponent;
+          checkEditAllBtnStatus(table);
+        });
+        
         var rowIndex;
         var userColumnIndex = studentsTable.getNamedColumnIndex('assessingUserId');
         
@@ -317,6 +368,8 @@
         if (studentsTable.getRowCount() > 0) {
           $('manageCourseAssessmentsStudentsTotalValue').innerHTML = studentsTable.getRowCount();
         }
+
+        checkEditAllBtnStatus(studentsTable);
       }
       
       function setupRelatedCommands() {
