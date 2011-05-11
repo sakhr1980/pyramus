@@ -355,7 +355,7 @@
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
     
     <h1 class="genericPageHeader">
-      <fmt:message key="courses.editCourse.pageTitle">
+      <fmt:message key="courses.manageCourseAssessments.pageTitle">
         <fmt:param value="${course.name}"/>
       </fmt:message>
     </h1>
