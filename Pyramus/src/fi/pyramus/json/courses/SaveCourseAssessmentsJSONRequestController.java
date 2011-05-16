@@ -50,7 +50,7 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
         Long assessingUserId = requestContext.getLong(colPrefix + ".assessingUserId");
         User assessingUser = userDAO.getUser(assessingUserId);
         Long gradeId = requestContext.getLong(colPrefix + ".gradeId");
-        Grade grade = gradingDAO.findGradeById(gradeId);
+        Grade grade = gradeId == null ? null : gradingDAO.findGradeById(gradeId);
         Date assessmentDate = requestContext.getDate(colPrefix + ".assessmentDate");
 
         Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
