@@ -192,6 +192,8 @@
 .tabAdd {
 	position: relative;
 	cursor: pointer;
+	padding: 0 8px 1px;
+	font-size: 160%;
 }
 
 .ixPrototabsContextMenu {
