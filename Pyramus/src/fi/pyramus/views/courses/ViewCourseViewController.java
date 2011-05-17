@@ -59,6 +59,7 @@ public class ViewCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("courseUsers", courseUsers);
     pageRequestContext.getRequest().setAttribute("courseComponents", courseDAO.listCourseComponents(course));
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(course));
     
     pageRequestContext.setIncludeJSP("/templates/courses/viewcourse.jsp");
   }

@@ -326,6 +326,20 @@
               </jsp:include>
               <div class="genericViewFormDataText">${course.description}</div>
             </div>
+
+            <c:forEach var="cDesc" items="${courseDescriptions}">
+              <div class="genericFormSection">
+                <c:set var="descLocaleText">
+                  <fmt:message key="courses.viewCourse.courseDescriptionTitle"/> (${cDesc.category.name})
+                </c:set>
+              
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleText" value="${descLocaleText}" />
+                  <jsp:param name="helpLocale" value="courses.viewCourse.courseDescriptionHelp" />
+                </jsp:include>
+                <div class="genericViewFormDataText">${cDesc.description}</div>
+              </div>
+            </c:forEach>
             
           </div>
           <!--  Course Basic Info Ends -->
