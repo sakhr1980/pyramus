@@ -20,7 +20,7 @@ public class SaveCourseDescriptionCategoriesJSONRequestController implements JSO
       String name = jsonRequestContext.getRequest().getParameter(colPrefix + ".name");
       Long categoryId = jsonRequestContext.getLong(colPrefix + ".categoryId");
       
-      if (categoryId == -1) {
+      if (categoryId == null) {
         category = courseDAO.createCourseDescriptionCategory(name); 
       } else {
         category = courseDAO.findCourseDescriptionCategoryById(categoryId);

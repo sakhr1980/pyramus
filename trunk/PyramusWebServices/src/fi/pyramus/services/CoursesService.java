@@ -424,10 +424,10 @@ public class CoursesService extends PyramusService {
     return (CourseDescriptionCategoryEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptionCategories());
   }
 
-  public CourseDescriptionEntity[] listCourseDescriptions(Long courseId) {
+  public CourseDescriptionEntity[] listCourseDescriptionsByCourseId(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     CourseBase courseBase = courseDAO.getCourse(courseId);
-    return (CourseDescriptionEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptions(courseBase));
+    return (CourseDescriptionEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptionsByCourseBase(courseBase));
   }
 
   public CourseDescriptionEntity getCourseDescriptionByCourseIdAndCategoryId(Long courseId, Long categoryId) {

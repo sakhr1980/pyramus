@@ -37,11 +37,6 @@ public class Subject implements ArchivableEntity {
     return id;
   }
 
-  @SuppressWarnings("unused")
-  private void setId(Long id) {
-    this.id = id;
-  }
-
   public void setName(String name) {
     this.name = name;
   }

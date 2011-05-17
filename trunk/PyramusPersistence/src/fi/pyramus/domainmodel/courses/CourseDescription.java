@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 
-import org.hibernate.search.annotations.DocumentId;
-
 import fi.pyramus.domainmodel.base.CourseBase;
 
 @Entity
@@ -25,16 +23,6 @@ public class CourseDescription {
    */
   public Long getId() {
     return id;
-  }
-
-  /**
-   * Sets the identifier of this entity.
-   * 
-   * @param id The identifier of this entity
-   */
-  @SuppressWarnings("unused")
-  private void setId(Long id) {
-    this.id = id;
   }
   
   public void setCourseBase(CourseBase courseBase) {
@@ -62,7 +50,6 @@ public class CourseDescription {
   }
 
   @Id
-  @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseDescription")  
   @TableGenerator(name="CourseDescription", allocationSize=1)
   private Long id;
@@ -76,6 +63,6 @@ public class CourseDescription {
   private CourseDescriptionCategory category;
   
   @Basic (fetch = FetchType.LAZY)
-  @Column (length=1073741824)
+  @Column (length=2147483647)
   private String description;
 }

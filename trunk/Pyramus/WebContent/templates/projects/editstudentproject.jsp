@@ -84,9 +84,15 @@
             display: ''
           });
           $('editStudentProjectCoursesTotalValue').innerHTML = coursesTable.getVisibleRowCount(); 
+          $('coursesContainer').setStyle({
+            display: ''
+          });
         }
         else {
           $('editStudentProjectCoursesTotalContainer').setStyle({
+            display: 'none'
+          });
+          $('coursesContainer').setStyle({
             display: 'none'
           });
         }
@@ -95,10 +101,16 @@
           $('editStudentProjectOOPCoursesTotalContainer').setStyle({
             display: ''
           });
-          $('editStudentProjectOOPCoursesTotalValue').innerHTML = outOfProjectCoursesTable.getVisibleRowCount(); 
+          $('editStudentProjectOOPCoursesTotalValue').innerHTML = outOfProjectCoursesTable.getVisibleRowCount();
+          $('oopCoursesContainer').setStyle({
+            display: ''
+          });
         }
         else {
           $('editStudentProjectOOPCoursesTotalContainer').setStyle({
+            display: 'none'
+          });
+          $('oopCoursesContainer').setStyle({
             display: 'none'
           });
         }
@@ -535,7 +547,7 @@
         var outOfProjectCoursesTable = new IxTable($('outOfProjectCoursesTableContainer'), {
           id: 'outOfProjectCoursesTable',
           columns : [ {
-            header : '<fmt:message key="projects.editStudentProject.coursesTableNameHeader"/>',
+            header : '<fmt:message key="projects.editStudentProject.oopCoursesTableNameHeader"/>',
             left: 8,
             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8,
             dataType : 'text',
@@ -552,26 +564,26 @@
               }
             }
           }, {
-            header : '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeHeader"/>',
+            header : '<fmt:message key="projects.editStudentProject.oopCoursesTableStudentsParticipationTypeHeader"/>',
             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8,
             width : 150,
             dataType : 'text',
             editable: false,
             paramName: 'name'
           }, {
-            header : '<fmt:message key="projects.editStudentProject.coursesTableBeginDateHeader"/>',
+            header : '<fmt:message key="projects.editStudentProject.oopCoursesTableBeginDateHeader"/>',
             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8,
             width : 150,
             dataType : 'date',
             editable: false
           }, {
-            header : '<fmt:message key="projects.editStudentProject.coursesTableEndDateHeader"/>',
+            header : '<fmt:message key="projects.editStudentProject.oopCoursesTableEndDateHeader"/>',
             width: 150,
             right : 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8,
             dataType : 'date',
             editable: false
           }, {
-            header : '<fmt:message key="projects.editStudentProject.coursesTableOptionalityHeader"/>',
+            header : '<fmt:message key="projects.editStudentProject.oopCoursesTableOptionalityHeader"/>',
             right : 8 + 22 + 8 + 22 + 8,
             width: 100,
             dataType : 'select',
@@ -587,7 +599,7 @@
             right: 8 + 22 + 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
-            tooltip: '<fmt:message key="projects.editStudentProject.coursesTableEditCourseRowTooltip"/>',
+            tooltip: '<fmt:message key="projects.editStudentProject.oopCoursesTableEditCourseRowTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
@@ -599,7 +611,7 @@
             dataType: 'button',
             paramName: 'removeButton',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
+            tooltip: '<fmt:message key="projects.editStudentProject.oopCoursesTableDeleteRowTooltip"/>',
             onclick: function (event) {
               var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
               var moduleTables = getIxTableById('modulesTable');
@@ -646,39 +658,39 @@
         outOfProjectCoursesTable.detachFromDom();
         <c:forEach var="courseStudent" items="${courseStudents}">
           <c:choose>
-            <c:when test="${fn:length(courseStudent.courseStudent.course.nameExtension) gt 0}">
-              <c:set var="courseName">${courseStudent.courseStudent.course.name} (${courseStudent.courseStudent.course.nameExtension})</c:set>  
+            <c:when test="${fn:length(courseStudent.course.nameExtension) gt 0}">
+              <c:set var="courseName">${courseStudent.course.name} (${courseStudent.course.nameExtension})</c:set>  
             </c:when>
             <c:otherwise>
-              <c:set var="courseName">${courseStudent.courseStudent.course.name}</c:set>  
+              <c:set var="courseName">${courseStudent.course.name}</c:set>  
             </c:otherwise>
           </c:choose>
         
           rowId = coursesTable.addRow([
             '${fn:escapeXml(courseName)}',
-            '${courseStudent.courseStudent.participationType.name}',
-            ${courseStudent.courseStudent.course.beginDate.time},
-            ${courseStudent.courseStudent.course.endDate.time},
-              '${courseStudent.courseStudent.optionality}',
+            '${courseStudent.participationType.name}',
+            ${courseStudent.course.beginDate.time},
+            ${courseStudent.course.endDate.time},
+            '${courseStudent.optionality}',
             '',
             '',
-            ${courseStudent.courseStudent.course.module.id},
-            ${courseStudent.courseStudent.course.id},
-            ${courseStudent.courseStudent.id}]);
+            ${courseStudent.course.module.id},
+            ${courseStudent.course.id},
+            ${courseStudent.id}]);
           
           coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
           
           rowId = outOfProjectCoursesTable.addRow([
              '${fn:escapeXml(courseName)}',
-             '${courseStudent.courseStudent.participationType.name}',
-             ${courseStudent.courseStudent.course.beginDate.time},
-             ${courseStudent.courseStudent.course.endDate.time},
-               '${courseStudent.courseStudent.optionality}',
+             '${courseStudent.participationType.name}',
+             ${courseStudent.course.beginDate.time},
+             ${courseStudent.course.endDate.time},
+             '${courseStudent.optionality}',
              '',
              '',
-             ${courseStudent.courseStudent.course.module.id},
-             ${courseStudent.courseStudent.course.id},
-             ${courseStudent.courseStudent.id}]);
+             ${courseStudent.course.module.id},
+             ${courseStudent.course.id},
+             ${courseStudent.id}]);
           outOfProjectCoursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
           
         </c:forEach>
@@ -771,7 +783,7 @@
 
         coursesTable.addListener("cellValueChange", function (event) {
           var column = event.column;
-          var coursesTable = getIxTableById('coursesTable');
+          var coursesTable = event.tableComponent;
           var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
           var tableColumnIndex = coursesTable.getNamedColumnIndex('optionality');
           
@@ -789,7 +801,7 @@
         outOfProjectCoursesTable.addListener("cellValueChange", function (event) {
           var column = event.column;
           var coursesTable = getIxTableById('coursesTable');
-          var oopCoursesTable = getIxTableById('outOfProjectCoursesTable');
+          var oopCoursesTable = event.tableComponent;
           var tableColumnIndex = coursesTable.getNamedColumnIndex('optionality');
           
           if ((column == tableColumnIndex) && (coursesTable.getRowCount() == oopCoursesTable.getRowCount())) {
@@ -1005,7 +1017,7 @@
               <span><fmt:message key="projects.editStudentProject.noCoursesAddedPreFix"/> <span onclick="openSearchCoursesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noCoursesAddedClickHereLink"/></span>.</span>
             </div>
 
-            <div id="coursesContainer">
+            <div id="oopCoursesContainer">
               <div id="outOfProjectCoursesTableContainer"></div>
             </div>
 

@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.search.annotations.DocumentId;
-
 @Entity
 public class CourseDescriptionCategory {
 
@@ -21,16 +19,6 @@ public class CourseDescriptionCategory {
   public Long getId() {
     return id;
   }
-
-  /**
-   * Sets the identifier of this entity.
-   * 
-   * @param id The identifier of this entity
-   */
-  @SuppressWarnings("unused")
-  private void setId(Long id) {
-    this.id = id;
-  }
   
   public void setName(String name) {
     this.name = name;
@@ -41,7 +29,6 @@ public class CourseDescriptionCategory {
   }
 
   @Id
-  @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseDescriptionCategory")  
   @TableGenerator(name="CourseDescriptionCategory", allocationSize=1)
   private Long id;

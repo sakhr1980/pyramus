@@ -65,7 +65,7 @@ IxTable = Class.create({
 
       if (column.headerimg) {
         var headerImgClassNames = "ixTableHeaderCellImage";
-        if (column.headerimg.onclick)
+        if (typeof(column.headerimg.onclick) == "function")
           headerImgClassNames = headerImgClassNames + " ixTableHeaderCellImageButton";
         
         headerContent = new Element("img", { 
@@ -74,13 +74,12 @@ IxTable = Class.create({
           className: headerImgClassNames
         });
         
-        if (column.headerimg.onclick) {
+        if (typeof(column.headerimg.onclick) == "function") {
           headerContent._headerOnClick = column.headerimg.onclick;
+          headerContent._columnIndex = i;
           Event.observe(headerContent, "click", this._headerClickListener);
         }
-      }
-      
-      if (!headerContent) {
+      } else {
         headerContent = Builder.node("div", {
           className : "ixTableHeaderCellText"
         }, [ column.header ]);
@@ -283,20 +282,20 @@ IxTable = Class.create({
         });
       }
       
-      if (doHide) {
-        this.fire("afterRowVisibilityChange", {
-          tableComponent: this,
-          rows: [ rowNumber ],
-          hidden: false
-        });
-      }
+      this.fire("afterRowVisibilityChange", {
+        tableComponent: this,
+        rows: [ rowNumber ],
+        hidden: true
+      });
     }
   },
   hideRows: function (rowNumbers) {
     var hideRows = new Array();
     
     for (var i = 0, len = rowNumbers.length; i < len; i++) {
-      hideRows.push(this.getRowElement(rowNumbers[i])); 
+      var rowElem = this.getRowElement(rowNumbers[i]);
+      if (rowElem.visible())
+        hideRows.push(rowElem); 
     }
     
     var doHide = hideRows.length > 0;
@@ -316,22 +315,23 @@ IxTable = Class.create({
         });
       }
   
-      if (doHide) {
-        this.fire("afterRowVisibilityChange", {
-          tableComponent: this,
-          rows: rowNumbers,
-          hidden: false
-        });
-      }
+      this.fire("afterRowVisibilityChange", {
+        tableComponent: this,
+        rows: rowNumbers,
+        hidden: true
+      });
     }
   },
   showRow: function (rowNumber) {
-    if (this.fire("beforeRowVisibilityChange", {
+    var rowElement = this.getRowElement(rowNumber);
+    var doShow = !rowElement.visible();
+    
+    if (doShow && this.fire("beforeRowVisibilityChange", {
       tableComponent: this,
       rows: [ rowNumber ],
-      hidden: false
+      hidden: true
     })) {
-      this.getRowElement(rowNumber).show();
+      rowElement.show();
 
       this._headerRow.setStyle({
         display: ''
@@ -346,26 +346,25 @@ IxTable = Class.create({
   },
   showAllRows: function () {
     var rowNumbers = new Array();
+    var rowElements = new Array();
 
     for (var i = 0, len = this.getRowCount(); i < len; i++) {
       var rowElement = this.getRowElement(i); 
       if (!rowElement.visible()) {
         rowNumbers.push(i);
+        rowElements.push(rowElement);
       }
     }
+
+    var doShow = rowElements.length > 0;
     
-    if (this.fire("beforeRowVisibilityChange", {
+    if (doShow && this.fire("beforeRowVisibilityChange", {
       tableComponent: this,
       rows: rowNumbers,
-      hidden: false
+      hidden: true
     })) {
       this.detachFromDom();
-      for (var i = 0, len = rowNumbers.length; i < len; i++) {
-        var rowElement = this.getRowElement(rowNumbers[i]); 
-        if (!rowElement.visible()) {
-          rowElement.show();
-        }
-      }
+      rowElements.invoke("show");
       this.reattachToDom();
   
       if (this.getVisibleRowCount() > 0 && this._hasHeader == true) {
@@ -417,13 +416,18 @@ IxTable = Class.create({
   },
   setCellValue: function (row, column, value) {
     var handlerInstance = this.getCellEditor(row, column);
-    IxTableControllers.getController(handlerInstance._dataType).setEditorValue(handlerInstance, value);
-    this.fire("cellValueChange", {
-      tableComponent: this,
-      row: row,
-      column: column, 
-      value: value
-    });
+    var controller = IxTableControllers.getController(handlerInstance._dataType);
+    var oldValue = controller.getEditorValue(handlerInstance);
+    
+    if (oldValue != value) {
+      controller.setEditorValue(handlerInstance, value);
+      this.fire("cellValueChange", {
+        tableComponent: this,
+        row: row,
+        column: column, 
+        value: value
+      });
+    }
   },
   copyCellValue: function(column, fromRow, toRow) {
     var fromInstance = this.getCellEditor(fromRow, column);
@@ -611,12 +615,15 @@ IxTable = Class.create({
       tableComponent: this 
     });
     
-    var column = filter.getColumn();
-    if (column >= 0) {
-      var columnHeaderCell = this._headerCells[column];
+    if (typeof(filter.getColumn) == "function") {
+      var column = filter.getColumn();
       
-      if (columnHeaderCell)
-        columnHeaderCell.addClassName("ixTableColumnHeaderFiltered");
+      if ((column != undefined) && (column >= 0)) {
+        var columnHeaderCell = this._headerCells[column];
+        
+        if (columnHeaderCell)
+          columnHeaderCell.addClassName("ixTableColumnHeaderFiltered");
+      }
     }
   },
   applyFilters: function () {
@@ -802,9 +809,10 @@ IxTable = Class.create({
   _onHeaderClick: function (event) {
     var elem = Event.element(event);
 
-    if (elem._headerOnClick) {
+    if (typeof(elem._headerOnClick) == "function") {
       elem._headerOnClick({
-        tableComponent: this
+        tableComponent: this,
+        columnIndex: elem._columnIndex
       });
     }
   },
@@ -1893,7 +1901,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     }
     
     if (handlerInstance) {
-      if (handlerInstance._columnDefinition.onclick) {
+      if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
         Event.stop(event);
         
         if (this.isDisabled(handlerInstance) != true) { 
@@ -1967,7 +1975,7 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
   },
   _onClick: function (event) {
     var handlerInstance = Event.element(event);
-    if (handlerInstance._columnDefinition.onclick) {
+    if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
       Event.stop(event);
       
       if (this.isDisabled(handlerInstance) != true) { 
@@ -2065,7 +2073,7 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
       }
     }
     
-    if (handlerInstance._columnDefinition.onclick) {
+    if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
       if (this.isDisabled(handlerInstance) != true) { 
         handlerInstance._columnDefinition.onclick.call(window, {
           tableComponent: handlerInstance._table,
