@@ -1412,6 +1412,7 @@ public class CourseDAO extends PyramusDAO {
     
     CourseDescriptionCategory category = new CourseDescriptionCategory();
     category.setName(name);
+    category.setArchived(Boolean.FALSE);
 
     entityManager.persist(category);
 
@@ -1436,7 +1437,7 @@ public class CourseDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<CourseDescriptionCategory> listCourseDescriptionCategories() {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseDescriptionCategory.class).list();
+    return s.createCriteria(CourseDescriptionCategory.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
   
   public void copyCourseDescriptions(CourseBase fromCourseBase, CourseBase toCourseBase) {

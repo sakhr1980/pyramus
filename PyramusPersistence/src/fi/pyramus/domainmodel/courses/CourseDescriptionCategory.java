@@ -28,6 +28,24 @@ public class CourseDescriptionCategory {
     return name;
   }
 
+  /**
+   * Sets the archived flag of this object.
+   * 
+   * @param archived The archived flag of this object
+   */
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+
+  /**
+   * Returns the archived flag of this object.
+   * 
+   * @return The archived flag of this object
+   */
+  public Boolean getArchived() {
+    return archived;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseDescriptionCategory")  
   @TableGenerator(name="CourseDescriptionCategory", allocationSize=1)
@@ -36,4 +54,8 @@ public class CourseDescriptionCategory {
   @NotNull
   @Column(nullable = false)
   private String name;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean archived = Boolean.FALSE;
 }
