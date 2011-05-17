@@ -75,7 +75,7 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     }
     
     pageRequestContext.getRequest().setAttribute("enabledEducationTypes", enabledEducationTypes);
-    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptions(module));
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(module));
     pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     pageRequestContext.setIncludeJSP("/templates/modules/editmodule.jsp");
   }

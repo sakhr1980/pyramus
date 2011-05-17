@@ -1319,6 +1319,7 @@
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         var descTabControl = new IxProtoTabs($('descriptionTabs'), {
+          <c:if test="${fn:length(courseDescriptionCategories) gt 0}">
           tabAddContextMenu: [
             <c:forEach var="category" varStatus="vs" items="${courseDescriptionCategories}">
             <c:if test="${not vs.first}">,</c:if>
@@ -1327,18 +1328,19 @@
               onclick: function (event) {
                 var descName = 'courseDescription.' + '${category.id}';
                 var tabContent = descTabControl.addTab(descName, '${category.name}');
-                tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea name="' + descName + '.text" ix:ckeditor="true"></textarea>');
+                tabContent.update('<input type="hidden" name="' + descName + '.catId" id="' + descName + '.catId" value="${category.id}"/><textarea name="' + descName + '.text" ix:ckeditor="true"></textarea>');
 
                 CKEDITOR.replace(descName + '.text', { toolbar: "courseDescription", language: document.getCookie('pyramusLocale') });
                 descTabControl.setActiveTab(descName);
               },
               isEnabled: function () {
-                var input = document.forms[0]['courseDescription.${category.id}.catId']; 
-                return !input;
+                var catIdElement = $('courseDescription.${category.id}.catId');
+                return catIdElement ? catIdElement.value === ${category.id} : true;
               }
             }
             </c:forEach>
-          ]            
+          ]
+          </c:if>
         });
         
         initializeDraftListener();
@@ -1626,7 +1628,7 @@
 
               <c:forEach var="cDesc" items="${courseDescriptions}">              
                 <div id="courseDescription.${cDesc.category.id}" class="tabContent">
-                  <input type="hidden" name="courseDescription.${cDesc.category.id}.catId" value="${cDesc.category.id}"/>
+                  <input type="hidden" name="courseDescription.${cDesc.category.id}.catId" id="courseDescription.${cDesc.category.id}.catId" value="${cDesc.category.id}"/>
                   <textarea ix:cktoolbar="courseDescription" name="courseDescription.${cDesc.category.id}.text" ix:ckeditor="true">${cDesc.description}</textarea>
                 </div>
               </c:forEach>

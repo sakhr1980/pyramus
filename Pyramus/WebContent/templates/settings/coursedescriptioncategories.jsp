@@ -25,7 +25,7 @@
 
       function addRow() {
         var table = getIxTableById('courseDescriptionCategoriesTable');
-        var rowIndex = table.addRow(['', '', -1]);
+        var rowIndex = table.addRow(['', '', '']);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -54,8 +54,8 @@
             }
           }, {
             header : '<fmt:message key="settings.courseDescriptionCategories.categoryNameTableHeader"/>',
-            left: 234,
-            right: 46,
+            left: 38,
+            right: 38,
             dataType: 'text',
             editable: false,
             paramName: 'name',

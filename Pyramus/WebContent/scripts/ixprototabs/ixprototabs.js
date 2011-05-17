@@ -50,8 +50,8 @@ IxProtoTabs = Class.create({
     }
 
     if (this._options) {
-      if (this._options.tabAddContextMenu || this._options.tabAddAction) {
-        this._addTabButton = new Element("a", {className: "tabAdd tabLabel", href: "#+"} );
+      if (this._options.tabAddContextMenu || (typeof(this._options.tabAddAction) == "function")) {
+        this._addTabButton = new Element("div", {className: "tabAdd tabLabel"} );
         this._addTabButton.update("+");
         this._labelAddClickListener = this._onLabelAddClick.bindAsEventListener(this); 
         Event.observe(this._addTabButton, "click", this._labelAddClickListener);
@@ -154,16 +154,14 @@ IxProtoTabs = Class.create({
   _onLabelAddClick: function (event) {
     Event.stop(event);
     
-    if (this._options.tabAddAction)
+    if (typeof(this._options.tabAddAction) == "function")
       this._options.tabAddAction();
     else {
       if (this._options.tabAddContextMenu) {
         var contextMenuButton = Event.element(event);
         var contextMenu = this._options.tabAddContextMenu;
         
-        var menuContainer = new Element("span", {className: "ixPrototabsContextMenu"} );
-        var menuContainerPad = new Element("span", {className: "ixPrototabsContextMenuPad"} );
-        menuContainerPad.appendChild(menuContainer);
+        var menuContainer = new Element("div", {className: "ixPrototabsContextMenu"} );
         
         for (var i = 0, l = contextMenu.length; i < l; i++) {
           var menuItem = contextMenu[i];
@@ -174,7 +172,7 @@ IxProtoTabs = Class.create({
             menuElement.addClassName("ixPrototabsContextMenuItem");
             menuElement.update(menuItem.text);
 
-            if ((contextMenu[i].isEnabled == undefined) || (contextMenu[i].isEnabled()))
+            if ((typeof(contextMenu[i].isEnabled) != "function") || (contextMenu[i].isEnabled()))
               Event.observe(menuElement, "click", this._contextMenuItemClickListener);
             else
               menuElement.addClassName("ixPrototabsContextMenuItemDisabled");
@@ -198,7 +196,7 @@ IxProtoTabs = Class.create({
           }
         
           if (!overMenu) {
-            $$('.ixPrototabsContextMenuPad').forEach(function (menu) {
+            $$('.ixPrototabsContextMenu').forEach(function (menu) {
               $(menu).select('.ixPrototabsContextMenuItem').forEach(function (menuItem) {
                 if (!menuItem.hasClassName("ixPrototabsContextMenuItemSpacer"))
                   Event.stopObserving(menuItem, "click", _this._contextMenuItemClickListener);
@@ -213,7 +211,7 @@ IxProtoTabs = Class.create({
         
         Event.observe(Prototype.Browser.IE ? document : window, "mousemove", windowMouseMove);
         
-        this._addTabButton.appendChild(menuContainerPad);
+        this._addTabButton.appendChild(menuContainer);
       }
     }
     
@@ -223,8 +221,9 @@ IxProtoTabs = Class.create({
     });
   },
   _onContextMenuItemClick: function (event) {
+    Event.stop(event);
     var menuElement = Event.element(event);
-    var contextMenuElement = menuElement.parentNode.parentNode; // Pad node
+    var contextMenuElement = menuElement.parentNode;
     
     var menuItem = menuElement._menuItem;
     var _this = this;

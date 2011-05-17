@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="/ix" prefix="ix"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
@@ -54,6 +55,7 @@
        function onLoad(event) {
          var tabControl = new IxProtoTabs($('tabs'));
          var descTabControl = new IxProtoTabs($('descriptionTabs'), {
+           <c:if test="${fn:length(courseDescriptionCategories) gt 0}">
            tabAddContextMenu: [
              <c:forEach var="category" varStatus="vs" items="${courseDescriptionCategories}">
              <c:if test="${not vs.first}">,</c:if>
@@ -62,17 +64,18 @@
                onclick: function (event) {
                  var descName = 'courseDescription.' + '${category.id}';
                  var tabContent = descTabControl.addTab(descName, '${category.name}');
-                 tabContent.update('<input type="hidden" name="' + descName + '.catId" value="${category.id}"/><textarea name="' + descName + '.text" ix:ckeditor="true"></textarea>');
+                 tabContent.update('<input type="hidden" name="' + descName + '.catId" id="' + descName + '.catId" value="${category.id}"/><textarea name="' + descName + '.text" ix:ckeditor="true"></textarea>');
                  CKEDITOR.replace(descName + '.text', { toolbar: "moduleDescription", language: document.getCookie('pyramusLocale') });
                  descTabControl.setActiveTab(descName);
                },
                isEnabled: function () {
-                 var input = document.forms[0]['courseDescription.${category.id}.catId']; 
-                 return !input;
+                 var catIdElement = $('courseDescription.${category.id}.catId');
+                 return catIdElement ? catIdElement.value === ${category.id} : true;
                }
              }
              </c:forEach>
-           ]            
+           ]
+           </c:if>
          });
          
          setupTags();

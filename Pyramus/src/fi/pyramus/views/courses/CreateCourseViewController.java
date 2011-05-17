@@ -81,7 +81,7 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
     pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("moduleComponents", moduleComponents);
-    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptions(module));
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(module));
     pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     
     pageRequestContext.setIncludeJSP("/templates/courses/createcourse.jsp");

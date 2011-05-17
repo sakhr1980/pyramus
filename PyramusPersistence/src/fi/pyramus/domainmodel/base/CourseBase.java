@@ -53,16 +53,6 @@ public abstract class CourseBase implements ArchivableEntity {
   }
 
   /**
-   * Sets the identifier of this entity.
-   * 
-   * @param id The identifier of this entity
-   */
-  @SuppressWarnings("unused")
-  private void setId(Long id) {
-    this.id = id;
-  }
-
-  /**
    * Returns the name of this entity.
    * 
    * @return The name of this entity

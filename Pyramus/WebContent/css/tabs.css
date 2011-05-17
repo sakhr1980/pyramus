@@ -8,7 +8,7 @@
   z-index:2;
 }
 
-a.tabLabel {
+.tabLabel {
   text-align:center;
   display:block;
   float:left;
@@ -27,7 +27,7 @@ a.tabLabel {
   line-height: 20px;
 }
 
-.containsNestedTabs a.tabLabel {
+.containsNestedTabs .tabLabel {
   text-align:center;
   display:block;
   float:left;
@@ -45,11 +45,11 @@ a.tabLabel {
   border:1px solid #e2e2e2;
 }
 
-a.tabLabel:hover{
+.tabLabel:hover{
   color:#2e5ec5;
 }
 
-a.activeTabLabel{
+.activeTabLabel{
   font-weight:bold;
   z-index:9999;
   display:block;
@@ -71,7 +71,7 @@ a.activeTabLabel{
   border-bottom: 1px solid #D1DFF8;
 }
 
-.containsNestedTabs a.activeTabLabel{
+.containsNestedTabs .activeTabLabel{
   font-weight:bold;
   z-index:9999;
   display:block;
@@ -191,6 +191,7 @@ a.activeTabLabel{
 
 .tabAdd {
 	position: relative;
+	cursor: pointer;
 }
 
 .ixPrototabsContextMenu {
