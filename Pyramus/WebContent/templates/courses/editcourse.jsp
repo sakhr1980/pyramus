@@ -1335,7 +1335,7 @@
               },
               isEnabled: function () {
                 var catIdElement = $('courseDescription.${category.id}.catId');
-                return catIdElement ? catIdElement.value == ${category.id} : true;
+                return catIdElement ? catIdElement.value != ${category.id} : true;
               }
             }
             </c:forEach>
