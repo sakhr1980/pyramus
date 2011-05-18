@@ -50,7 +50,7 @@ IxProtoTabs = Class.create({
     }
 
     if (this._options) {
-      if (this._options.tabAddContextMenu || (typeof(this._options.tabAddAction) == "function")) {
+      if (this._options.tabAddContextMenu || (Object.isFunction(this._options.tabAddAction))) {
         this._addTabButton = new Element("div", {className: "tabAdd tabLabel"} );
         this._addTabButton.update("+");
         this._labelAddClickListener = this._onLabelAddClick.bindAsEventListener(this); 
@@ -154,7 +154,7 @@ IxProtoTabs = Class.create({
   _onLabelAddClick: function (event) {
     Event.stop(event);
     
-    if (typeof(this._options.tabAddAction) == "function")
+    if (Object.isFunction(this._options.tabAddAction))
       this._options.tabAddAction();
     else {
       if (this._options.tabAddContextMenu) {
@@ -172,7 +172,7 @@ IxProtoTabs = Class.create({
             menuElement.addClassName("ixPrototabsContextMenuItem");
             menuElement.update(menuItem.text);
 
-            if ((typeof(contextMenu[i].isEnabled) != "function") || (contextMenu[i].isEnabled()))
+            if ((!Object.isFunction(contextMenu[i].isEnabled)) || (contextMenu[i].isEnabled()))
               Event.observe(menuElement, "click", this._contextMenuItemClickListener);
             else
               menuElement.addClassName("ixPrototabsContextMenuItemDisabled");
