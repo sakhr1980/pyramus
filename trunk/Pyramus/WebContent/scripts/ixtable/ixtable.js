@@ -65,7 +65,7 @@ IxTable = Class.create({
 
       if (column.headerimg) {
         var headerImgClassNames = "ixTableHeaderCellImage";
-        if (typeof(column.headerimg.onclick) == "function")
+        if (Object.isFunction(column.headerimg.onclick))
           headerImgClassNames = headerImgClassNames + " ixTableHeaderCellImageButton";
         
         headerContent = new Element("img", { 
@@ -74,7 +74,7 @@ IxTable = Class.create({
           className: headerImgClassNames
         });
         
-        if (typeof(column.headerimg.onclick) == "function") {
+        if (Object.isFunction(column.headerimg.onclick)) {
           headerContent._headerOnClick = column.headerimg.onclick;
           headerContent._columnIndex = i;
           Event.observe(headerContent, "click", this._headerClickListener);
@@ -615,7 +615,7 @@ IxTable = Class.create({
       tableComponent: this 
     });
     
-    if (typeof(filter.getColumn) == "function") {
+    if (Object.isFunction(filter.getColumn)) {
       var column = filter.getColumn();
       
       if ((column != undefined) && (column >= 0)) {
@@ -809,7 +809,7 @@ IxTable = Class.create({
   _onHeaderClick: function (event) {
     var elem = Event.element(event);
 
-    if (typeof(elem._headerOnClick) == "function") {
+    if (Object.isFunction(elem._headerOnClick)) {
       elem._headerOnClick({
         tableComponent: this,
         columnIndex: elem._columnIndex
@@ -1901,7 +1901,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     }
     
     if (handlerInstance) {
-      if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
+      if (Object.isFunction(handlerInstance._columnDefinition.onclick)) {
         Event.stop(event);
         
         if (this.isDisabled(handlerInstance) != true) { 
@@ -1975,7 +1975,7 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
   },
   _onClick: function (event) {
     var handlerInstance = Event.element(event);
-    if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
+    if (Object.isFunction(handlerInstance._columnDefinition.onclick)) {
       Event.stop(event);
       
       if (this.isDisabled(handlerInstance) != true) { 
@@ -2073,7 +2073,7 @@ IxTextTableEditorController = Class.create(IxTableEditorController, {
       }
     }
     
-    if (typeof(handlerInstance._columnDefinition.onclick) == "function") {
+    if (Object.isFunction(handlerInstance._columnDefinition.onclick)) {
       if (this.isDisabled(handlerInstance) != true) { 
         handlerInstance._columnDefinition.onclick.call(window, {
           tableComponent: handlerInstance._table,
