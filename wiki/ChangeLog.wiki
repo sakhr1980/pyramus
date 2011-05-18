@@ -1,6 +1,24 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.44 (110517.15)
+
+  * Added CourseDescription & CourseDescriptionCategory entities and their handlers to viewcourse, create/editcourse, create/editmodule and to webservices/dao
+  * Added CourseDescriptionCategory management view to settings
+  * Added CourseDescription copying to createcourse method of coursesservice (webservices)
+  * Added check to ixtable filters so that column does not need to be defined in filter class
+  * Added functionality to tab component to support "open new" -tab
+  * Added button to managecourseassessments to switch all (max 30) rows to edit mode at once
+  * Added methods to list Students by AbstractStudent to StudentsService
+  * Added listActiveStudentsByAbstractStudent to StudentDAO
+  * Changed EditStudentProject to show out  *of  *project courses in separate table instead of same table with courses that are part of the project
+  * Changed view title in Manage Course Assessments view
+  * Refix for bug #31 
+  * Fix for bug #50
+  * Fix for additional contact information not saved when editing a student
+  * Fixed issue in ckeditorsupport that ignored locale settings if toolbar wasn't specified
+  * Fixed tab component layout for IE
+
 *Version 0.43 (110426.14)
 
   * Fixed a bug causing module and course creation to crash
