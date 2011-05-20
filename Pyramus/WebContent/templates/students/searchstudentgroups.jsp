@@ -276,9 +276,9 @@
                 </jsp:include>
   
                 <div class="searchStudentGroupsTimeFrameContainer">
-                  <div class="searchStudentGroupsTimeFrameStartContainer"> <input type="text" name="timeframeStart" ix:datefield="true"/> </div> 
+                  <div class="searchStudentGroupsTimeFrameStartContainer"> <input type="text" name="timeframeStart" class="ixDateField"/> </div> 
                   <div class="searchStudentGroupsTimeFrameHyphenContainer">-</div> 
-                  <div class="searchStudentGroupsTimeFrameEndContainer"> <input type="text" name="timeframeEnd" ix:datefield="true"/> </div>
+                  <div class="searchStudentGroupsTimeFrameEndContainer"> <input type="text" name="timeframeEnd" class="ixDateField"/> </div>
                 </div>
               </div>
             </div>

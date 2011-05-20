@@ -1551,10 +1551,10 @@
               </tr>
               <tr>
                 <td>
-                  <input type="text" name="beginDate" ix:datefield="true" value="${course.beginDate.time}"/>
+                  <input type="text" name="beginDate" class="ixDateField" value="${course.beginDate.time}"/>
                 </td>
                 <td>
-                  <input type="text" name="endDate" ix:datefield="true" value="${course.endDate.time}"/>
+                  <input type="text" name="endDate" class="ixDateField" value="${course.endDate.time}"/>
                 </td>
                 <td>
                   <input type="text" name="courseLength" class="float required" value="${course.courseLength.units}" size="15"/>

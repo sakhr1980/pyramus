@@ -596,7 +596,7 @@
                 <jsp:param name="titleLocale" value="students.editStudent.birthdayTitle"/>
                 <jsp:param name="helpLocale" value="students.editStudent.birthdayHelp"/>
               </jsp:include>            
-              <input type="text" name="birthday" ix:datefield="true" value="${abstractStudent.birthday.time}">
+              <input type="text" name="birthday" class="ixDateField" value="${abstractStudent.birthday.time}">
             </div>
       
             <div class="genericFormSection">     
@@ -887,7 +887,7 @@
                   <jsp:param name="titleLocale" value="students.editStudent.studyTimeEndTitle"/>
                   <jsp:param name="helpLocale" value="students.editStudent.studyTimeEndHelp"/>
                 </jsp:include>
-                <input type="text" name="studyTimeEnd.${student.id}" ix:datefield="true" value="${fn:escapeXml(student.studyTimeEnd.time)}"/>
+                <input type="text" name="studyTimeEnd.${student.id}" class="ixDateField" value="${fn:escapeXml(student.studyTimeEnd.time)}"/>
               </div>
   
               <div class="genericFormSection">  
@@ -895,7 +895,7 @@
                   <jsp:param name="titleLocale" value="students.editStudent.studyStartDateTitle"/>
                   <jsp:param name="helpLocale" value="students.editStudent.studyStartDateHelp"/>
                 </jsp:include>
-                <input type="text" name="studyStartDate.${student.id}" ix:datefield="true" value="${fn:escapeXml(student.studyStartDate.time)}"/>
+                <input type="text" name="studyStartDate.${student.id}" class="ixDateField" value="${fn:escapeXml(student.studyStartDate.time)}"/>
               </div>
   
               <div class="genericFormSection">    
@@ -903,7 +903,7 @@
                   <jsp:param name="titleLocale" value="students.editStudent.studyEndDateTitle"/>
                   <jsp:param name="helpLocale" value="students.editStudent.studyEndDateHelp"/>
                 </jsp:include>
-                <input type="text" name="studyEndDate.${student.id}" ix:datefield="true" value="${fn:escapeXml(student.studyEndDate.time)}"/>
+                <input type="text" name="studyEndDate.${student.id}" class="ixDateField" value="${fn:escapeXml(student.studyEndDate.time)}"/>
               </div>
   
               <div class="genericFormSection">      

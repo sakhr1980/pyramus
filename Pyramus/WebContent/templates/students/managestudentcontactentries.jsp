@@ -567,7 +567,7 @@
                           <jsp:param name="titleLocale" value="students.manageStudentContactEntries.contactEntry.dateTitle"/>
                           <jsp:param name="helpLocale" value="students.manageStudentContactEntries.contactEntry.dateHelp"/>
                         </jsp:include> 
-                        <input type="text" name="entryDate.${student.id}" ix:datefieldid="entryDate.${student.id}" ix:datefield="true"/>
+                        <input type="text" name="entryDate.${student.id}" ix:datefieldid="entryDate.${student.id}" class="ixDateField"/>
                       </div>
                       <div class="genericFormSection">                            
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">

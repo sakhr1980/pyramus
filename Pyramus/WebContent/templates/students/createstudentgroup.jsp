@@ -303,7 +303,7 @@
                 <jsp:param name="helpLocale" value="students.createStudentGroup.beginsHelp"/>
               </jsp:include>
 
-              <input type="text" name="beginDate" ix:datefield="true"/>
+              <input type="text" name="beginDate" class="ixDateField"/>
             </div>
 
             <div class="genericFormSection">

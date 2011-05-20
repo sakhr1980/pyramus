@@ -403,7 +403,7 @@
                 <jsp:param name="helpLocale" value="students.editStudentGroup.beginsHelp"/>
               </jsp:include>
 
-              <input type="text" name="beginDate" ix:datefield="true" value="${studentGroup.beginDate.time}"/>
+              <input type="text" name="beginDate" class="ixDateField" value="${studentGroup.beginDate.time}"/>
             </div>
   
             <div class="genericFormSection">

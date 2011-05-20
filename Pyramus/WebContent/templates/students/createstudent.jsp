@@ -348,7 +348,7 @@
                 <jsp:param name="titleLocale" value="students.createStudent.birthdayTitle"/>
                 <jsp:param name="helpLocale" value="students.createStudent.birthdayHelp"/>
               </jsp:include>   
-              <input type="text" name="birthday" ix:datefield="true"/>
+              <input type="text" name="birthday" class="ixDateField"/>
             </div>
       
             <div class="genericFormSection">  
@@ -572,7 +572,7 @@
                 <jsp:param name="titleLocale" value="students.createStudent.studyTimeEndTitle"/>
                 <jsp:param name="helpLocale" value="students.createStudent.studyTimeEndHelp"/>
               </jsp:include>                                           
-              <input type="text" name="studyTimeEnd" ix:datefield="true"/>
+              <input type="text" name="studyTimeEnd" class="ixDateField"/>
             </div>
 
             <div class="genericFormSection">  
@@ -580,7 +580,7 @@
                 <jsp:param name="titleLocale" value="students.createStudent.studyStartDateTitle"/>
                 <jsp:param name="helpLocale" value="students.createStudent.studyStartDateHelp"/>
               </jsp:include>                                           
-              <input type="text" name="studyStartDate" ix:datefield="true"/>
+              <input type="text" name="studyStartDate" class="ixDateField"/>
             </div>
 
             <div class="genericFormSection">  
@@ -588,7 +588,7 @@
                 <jsp:param name="titleLocale" value="students.createStudent.studyEndDateTitle"/>
                 <jsp:param name="helpLocale" value="students.createStudent.studyEndDateHelp"/>
               </jsp:include>                                           
-              <input type="text" name="studyEndDate" ix:datefield="true"/>
+              <input type="text" name="studyEndDate" class="ixDateField"/>
             </div>
             
             <div class="genericFormSection">      
