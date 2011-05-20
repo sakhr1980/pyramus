@@ -27,6 +27,7 @@ IxDateField = Class.create({
     
     if (Prototype.Browser.IE) {
       this._timestampInput = new Element("input", {type: "hidden", name: this._paramName, value: value});
+      $(element).remove();
     } else {
       this._timestampInput = element;
       this._timestampInput.type = 'hidden';
