@@ -1,3 +1,5 @@
+var __ixDateFields = new Array(); 
+
 IxDateField = Class.create({
   initialize : function(options) {
     var element = options.element;
@@ -14,6 +16,8 @@ IxDateField = Class.create({
     else {
       this._id = 'ixdf-' + new Date().getTime();
     }
+    
+    __ixDateFields.push(this);
     
     var value = element.value;
     this._inputText = new Element("input", {id: this._paramName + "-text", maxlength: 10, className: "ixDateFieldText"});
@@ -165,6 +169,10 @@ IxDateField = Class.create({
       }
     });
     
+    if (value) {
+      this.setTimestamp(value);
+    }
+    
     initializeElementValidation(this._inputText);
   },
   hasValidValue: function () {
@@ -284,13 +292,10 @@ IxDateField = Class.create({
   }
 });
 
-var __ixDateFields = new Array(); 
-
 Object.extend(IxDateField.prototype,fni.events.FNIEventSupport);
 
 function replaceDateField(field, options) {
   var dateField = new IxDateField(Object.extend({ element: field }, options||{}));
-    __ixDateFields.push(dateField);
   return dateField;
 }
 
