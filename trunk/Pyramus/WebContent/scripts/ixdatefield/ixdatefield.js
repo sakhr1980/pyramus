@@ -21,10 +21,18 @@ IxDateField = Class.create({
     
     var value = element.value;
     this._inputText = new Element("input", {id: this._paramName + "-text", maxlength: 10, className: "ixDateFieldText"});
-    this._timestampInput = element;
-    this._timestampInput.type = 'hidden';
-    this._timestampInput.removeAttribute('ix:datefieldid');
-    this._timestampInput.removeClassName("ixDateField");
+    
+    var parent = element.parentNode;
+    var nextSibling = element.nextSibling;
+    
+    if (Prototype.Browser.IE) {
+      this._timestampInput = new Element("input", {type: "hidden", name: this._paramName, value: value});
+    } else {
+      this._timestampInput = element;
+      this._timestampInput.type = 'hidden';
+      this._timestampInput.removeAttribute('ix:datefieldid');
+      this._timestampInput.removeClassName("ixDateField");
+    }
     
     this._openButton = new Element("div", { className: "ixDateFieldOpenButton", title: getLocale().getText("generic.dateField.openButtonTooltip") });
     this._todayButton = new Element("div", { className: "ixDateFieldTodayButton", title: getLocale().getText("generic.dateField.todayButtonTooltip")});
@@ -33,9 +41,6 @@ IxDateField = Class.create({
     Event.observe(this._todayButton, "click", this._todayButtonClickListener);
     Event.observe(this._inputText, "change", this._inputTextChangeListener);
     Event.observe(this._inputText, "keyup", this._inputTextKeyUpListener);
-    
-    var parent = this._timestampInput.parentNode;
-    var nextSibling = this._timestampInput.nextSibling;
     
     this._domNode = new Element("div", {className: 'ixDateField', "ix:datefieldid": this._id});
     this._domNode.appendChild(this._timestampInput);
@@ -247,14 +252,24 @@ IxDateField = Class.create({
   destroy: function() {
     var nextSibling = this._domNode.nextSibling;
     var parent = this._domNode.parentNode;
-    this._timestampInput.type = 'text';
-    this._timestampInput.setAttribute('ix:datefieldid', this.getId());
-    this._timestampInput.addClassName("ixDateField");
-    
-    if (nextSibling) {
-      parent.insertBefore(this._timestampInput, nextSibling);
+    if (Prototype.Browser.IE) {
+      var inputElement = new Element("input", {type: "text", "ix:datefieldid": this.getId(), className: "ixDateField"});
+      if (nextSibling) {
+        parent.insertBefore(inputElement, nextSibling);
+      } else {
+        parent.appendChild(inputElement);
+      }
     } else {
-      parent.appendChild(this._timestampInput);
+      this._timestampInput.type = 'text';
+      this._timestampInput.setAttribute();
+      this._timestampInput.setAttribute('ix:datefieldid', this.getId());
+      this._timestampInput.addClassName("ixDateField");
+      
+      if (nextSibling) {
+        parent.insertBefore(this._timestampInput, nextSibling);
+      } else {
+        parent.appendChild(this._timestampInput);
+      }
     }
     
     Event.stopObserving(this._openButton, "click", this._openButtonClickListener);
