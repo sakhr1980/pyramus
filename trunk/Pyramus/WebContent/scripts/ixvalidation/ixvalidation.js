@@ -105,90 +105,28 @@ IxEmailFieldValidator = Class.create(IxFieldValidator, {
   className: 'email'
 });
 
-IxDateFieldYearValidator = Class.create(IxFieldValidator, {
+IxDateFieldTextValidator = Class.create(IxFieldValidator, {
   initialize : function($super) {
     $super();
-    this._validYearMask = /^([0-9]{4})$/;
   },
   validate: function ($super, field) {
     var value = this._getFieldValue(field);
     if (value) {
-      return this._validYearMask.test(value) ? IxFieldValidator.STATUS_VALID : IxFieldValidator.STATUS_INVALID;
-    } else {
-      return IxFieldValidator.STATUS_UNKNOWN;
-    }
-  },
-  getType: function ($super) {
-    return IxFieldValidator.TYPE_NORMAL;
-  },
-  className: 'ixDateFieldYear'
-});
-
-IxDateFieldMonthValidator = Class.create(IxFieldValidator, {
-  initialize : function($super) {
-    $super();
-    this._validMonthMask = /^(([0]{0,1}[0-9]{1})|([1]{1}[0-2]{1}))$/;
-  },
-  validate: function ($super, field) {
-    var value = this._getFieldValue(field);
-    if (value) {
-      return this._validMonthMask.test(value) ? IxFieldValidator.STATUS_VALID : IxFieldValidator.STATUS_INVALID;
-    } else {
-      return IxFieldValidator.STATUS_UNKNOWN;
-    }
-  },
-  getType: function ($super) {
-    return IxFieldValidator.TYPE_NORMAL;
-  },
-  className: 'ixDateFieldMonth'
-});
-
-IxDateFieldDayValidator = Class.create(IxFieldValidator, {
-  initialize : function($super) {
-    $super();
-    this._validDayMask = /^(([1-9]{1})|([1-2]{1}[0-9]{1})|([3]{1}[0-1]{1}))$/;
-  },
-  validate: function ($super, field) {
-    var result = IxFieldValidator.STATUS_UNKNOWN;
-    var value = this._getFieldValue(field);
-    if (value) {
-      if (value[0] == "0")
-        value = value.substring(1);
-      
-      var syntax = this._validDayMask.test(value);
-      if (syntax) {
-        var month;
-        var monthField = $(field.parentNode).down('.ixDateFieldMonth');  
-        var monthStr = monthField && monthField.hasClassName('valid') ? monthField.value : null;
-        if (monthStr)
-          month = monthStr[0] == "0" ? parseInt(monthStr.substring(1)) : parseInt(monthStr);
-            
-        var yearField = $(field.parentNode).down('.ixDateFieldYear');  
-        var year = yearField && monthField.hasClassName('valid') ? parseInt(yearField.value) : null;
-        
-        if (month && year) {
-          if (this._isValidDay(month, year, value))
-            result = IxFieldValidator.STATUS_VALID;
-          else
-            result = IxFieldValidator.STATUS_INVALID;
-        } else {
-          result = IxFieldValidator.STATUS_VALID;
-        }
+      var fieldId = field.parentNode.getAttribute('ix:datefieldid');
+      var component = fieldId ? getIxDateField(fieldId) : null;
+      if (component) {
+        return component.hasValidValue() ? IxFieldValidator.STATUS_VALID : IxFieldValidator.STATUS_INVALID;
       } else {
-        result = IxFieldValidator.STATUS_INVALID;
-      } 
+        return IxFieldValidator.STATUS_UNKNOWN;
+      }
+    } else {
+      return IxFieldValidator.STATUS_UNKNOWN;
     }
-      
-    return result;
-  },
-  _isValidDay: function (month, year, day) {
-    var d = new Date(year, month - 1, day);
-    return (d.getDate() == day) && (d.getFullYear() == year) && ((d.getMonth() + 1) == month);
   },
   getType: function ($super) {
     return IxFieldValidator.TYPE_NORMAL;
   },
-  className: 'ixDateFieldDay'
+  className: 'ixDateFieldText'
 });
 
 IxFloatValidValidator = Class.create(IxFieldValidator, {
@@ -445,9 +383,7 @@ IxValidationDelegatorVault = {
 IxFieldValidatorVault.registerValidator(new IxRequiredFieldValidator());
 IxFieldValidatorVault.registerValidator(new IxMaskFieldValidator());
 IxFieldValidatorVault.registerValidator(new IxEmailFieldValidator());
-IxFieldValidatorVault.registerValidator(new IxDateFieldYearValidator());
-IxFieldValidatorVault.registerValidator(new IxDateFieldMonthValidator());
-IxFieldValidatorVault.registerValidator(new IxDateFieldDayValidator());
+IxFieldValidatorVault.registerValidator(new IxDateFieldTextValidator());
 IxFieldValidatorVault.registerValidator(new IxFloatValidValidator());
 IxFieldValidatorVault.registerValidator(new IxNumberValidValidator());
 IxFieldValidatorVault.registerValidator(new IxEqualsFieldValidator());
