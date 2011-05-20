@@ -1,21 +1,34 @@
-@CHARSET "UTF-8";
+@charset "UTF-8";
 
-.ixDateField {
+.ixDateFieldOpenButton, .ixDateFieldTodayButton {
+    background-color: #FFFFFF;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1px solid #739DE7;
+    border-radius: 5px 5px 5px 5px;
+    cursor: pointer;
+    height: 16px;
+    padding: 2px;
+    width: 16px;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-left: 4px;
 }
 
-.ixDateFieldDay, .ixDateFieldMonth{
-  width: 20px;
-  margin-right: 2px;
+.ixDateFieldOpenButton {
+     background-image: url("../gfx/icons/16x16/apps/1day.png");
+}
+
+.ixDateFieldTodayButton {
+     background-image: url("../gfx/icons/16x16/apps/today.png");
+}
+
+.ixDateField input {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border: 1px solid #739DE7;
+  padding: 2px 4px 3px 0px;
   text-align: right;
-  border: 1px inset #DADADA;
-}
-
-.ixDateFieldYear{
-  width: 40px;
-  text-align: right;
-  border:1px inset #DADADA;
-}
-
-.ixDateField a.date-picker-control {
-  display: inline-block;
+  width: 68px;
 }
