@@ -1742,51 +1742,33 @@ IxRadioButtonTableEditorController = Class.create(IxTableEditorController, {
 });
 
 IxTableControllers.registerController(new IxRadioButtonTableEditorController());
-
 IxDateTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
-    var cellEditor = this._createEditorElement("input", name, "ixTableCellEditorDate", {name: name, type: "text"}, columnDefinition);
-    /***
-     * TODO: Change listener !!!
-     ***/
-    // Event.observe(cellEditor, "change", this._fieldValueChangeListener);
+    var cellEditor = this._createEditorElement("input", name, "", {name: name, type: "text"}, columnDefinition);
     return cellEditor;
   },
   buildViewer: function ($super, name, columnDefinition) {
     return this._createViewerElement("div", name, "ixTableCellViewerDate", {}, columnDefinition);
   },
   disableEditor: function ($super, handlerInstance) {
-    if (handlerInstance._editable == false)
+    if (handlerInstance._editable == false) {
       handlerInstance.addClassName("ixTableCellViewerDisabled");
-    else {
-      if (handlerInstance._component) {
-        handlerInstance._component.disable();
-      }
-      else {
-        handlerInstance._pendingEnable = false;
-      }
+    } else {
+      this._getEditorComponent(handlerInstance).disable();
     }
   },
   enableEditor: function ($super, handlerInstance) {
     if (handlerInstance._editable == false)
       handlerInstance.removeClassName("ixTableCellViewerDisabled");
     else {
-      if (handlerInstance._component) {
-        handlerInstance._component.enable();
-      }
-      else {
-        handlerInstance._pendingEnable = true;
-      }
+      this._getEditorComponent(handlerInstance).enable();
     }
   },
   getEditorValue: function ($super, handlerInstance) {
-    if (handlerInstance._editable != true)
+    if (handlerInstance._editable != true) {
       return this._getViewerValue(handlerInstance);
-    else {
-      if (handlerInstance._component)
-        return handlerInstance._component.getTimestamp();
-      else
-        return handlerInstance._pendingValue;
+    } else {
+      return this._getEditorComponent(handlerInstance).getTimestamp();
     }
   },
   setEditorValue: function ($super, handlerInstance, value) {
@@ -1796,17 +1778,14 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         date.setTime(value);
         // TODO: move dateformatting to conf ...
         this._setViewerValue(handlerInstance, value, date.getDate().toPaddedString(2) + '.' + (date.getMonth() + 1).toPaddedString(2) + '.' + date.getFullYear());
-      }
-      else {
+      } else {
         this._setViewerValue(handlerInstance, value, '');
       }
     } else {
       if (value && value !== '') {
-        if (handlerInstance._component)
-          handlerInstance._component.setTimestamp(value);
-        else {
-          handlerInstance._pendingValue = value;
-        }
+        this._getEditorComponent(handlerInstance).setTimestamp(value);
+      } else {
+        this._getEditorComponent(handlerInstance).clearValue();
       }
     }
   },
@@ -1814,68 +1793,17 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     var handlerInstance = $super(table, cell, handlerInstance);
     
     if (handlerInstance._editable == true) {
-      handlerInstance._cell = cell;
-      
-      var row = handlerInstance.up('.ixTableRow');
-      
-      if (table.isDetachedFromDom()) {
-        var _this = this;
-        handlerInstance._onAfterReattachToDom = function (event) {
-          _this._replaceDateField(this);
-          
-          event.tableComponent.removeListener("afterReattachToDom", this);
-        };
-        
-        table.addListener("afterReattachToDom", handlerInstance, handlerInstance._onAfterReattachToDom);
-      } else {
-        if (!row) {
-          var _this = this;
-          handlerInstance._onRowAdd = function (event) {
-            var row = _this.getEditorRow(this);
-            if (row == event.row) {
-              event.tableComponent.removeListener("rowAdd", this);
-              this._onRowAdd = undefined;
-              _this._replaceDateField(this);
-            } 
-          };
-
-          table.addListener("rowAdd", handlerInstance, handlerInstance._onRowAdd);
-        } else {
-          this._replaceDateField(handlerInstance);
-        }
-      }
       // TODO: Click support for editor
+      replaceDateField(handlerInstance);
     } else {
       handlerInstance._clickListener = this._onClick.bindAsEventListener(this);
       Event.observe(handlerInstance, "click", handlerInstance._clickListener); 
     }
   },
-  _replaceDateField: function (handlerInstance) {
-    if (handlerInstance._columnDefinition && handlerInstance._columnDefinition.required) {
-      handlerInstance._component = replaceDateField(handlerInstance, {
-        yearClass: 'required',
-        monthClass: 'required',
-        dayClass: 'required',
-        value: handlerInstance._pendingValue,
-        enabled: handlerInstance._pendingEnable||true
-      });      
-    } else {
-      handlerInstance._component = replaceDateField(handlerInstance, {
-        value: handlerInstance._pendingValue,
-        enabled: handlerInstance._pendingEnable||true
-      });
-    }
-    handlerInstance._pendingValue = undefined;
-    handlerInstance._pendingEnable = undefined;
-  },
   detachContentHandler: function ($super, handlerInstance) {
     if (handlerInstance._editable == true) {
-      var row = this.getEditorRow(handlerInstance);
-      var column = this.getEditorColumn(handlerInstance);
-      handlerInstance._table._unsetCellContentHandler(row, column);
-      handlerInstance._table = undefined;
-      handlerInstance._component.destroy();
       // TODO: Click support for editor
+      this._getEditorComponent(handlerInstance).destroy();
     } else {    
       Event.stopObserving(handlerInstance, "click", handlerInstance._clickListener);
       handlerInstance._clickListener = undefined;
@@ -1883,9 +1811,11 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     }
   }, 
   isDisabled: function ($super, handlerInstance) {
-    return false;
-    // TODO: 
-    // return handlerInstance.disabled;
+    if (handlerInstance._editable == true) {
+      return this._getEditorComponent(handlerInstance).isDisabled();
+    } else {    
+      return handlerInstance.hasClassName("ixTableCellViewerDisabled");
+    }
   },
   getDataType: function ($super) {
     return "date";  
@@ -1913,6 +1843,13 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
         }
       }
     }
+  },
+  _getEditorComponent: function (handlerInstance) {
+    var fieldId = handlerInstance.parentNode.getAttribute('ix:datefieldid');
+    if (fieldId)
+      return getIxDateField(fieldId);
+    else
+      return null;
   }
 });
 
