@@ -58,7 +58,7 @@
             projectName: searchModulesForm.project.value,
             tags: searchModulesForm.tags.value,
             page: page,
-            maxResults: 9
+            maxResults: 10
           },
           onSuccess: function (jsonResponse) {
             var resultsTable = getIxTableById('searchResultsTable');
@@ -215,12 +215,12 @@
               <div id="tags_choices" class="autocomplete_choices"></div>
             </div>
 	
-	          <div class="genericFormSubmitSection">
-	            <input type="submit" value="<fmt:message key="projects.searchModulesDialog.searchButton"/>">
-	          </div>
-	    
-	        </form>
-	      </div>
+            <div class="genericFormSubmitSection">
+              <input type="submit" value="<fmt:message key="projects.searchModulesDialog.searchButton"/>">
+            </div>
+      
+          </form>
+        </div>
       </div>
       
       <div id="searchResultsContainer" class="modalSearchResultsContainer">
