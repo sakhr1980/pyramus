@@ -58,7 +58,7 @@
         
         var dialog = new IxDialog({
           id : 'parametersDialog',
-          contentURL : '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}',
+          contentURL : '${pageContext.request.contextPath}/reports/viewreportparameters.binary?reportId=${report.id}',
           centered : true,
           showOk : true,
           showCancel : true,

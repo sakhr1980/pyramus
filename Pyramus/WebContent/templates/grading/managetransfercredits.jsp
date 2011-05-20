@@ -491,7 +491,13 @@
           
           transferCreditsTable.hideCell(rowIndex, removeButtonColumnIndex);
           transferCreditsTable.showCell(rowIndex, archiveButtonColumnIndex);
-          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:escapeXml(transferCredit.subject.name)}');
+          
+          <c:set var="subjectName">${transferCredit.subject.name}</c:set>
+          <c:if test="${transferCredit.subject.educationType ne null}">
+            <c:set var="subjectName">${subjectName} (${transferCredit.subject.educationType.name})</c:set>
+          </c:if>
+          
+          IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:escapeXml(subjectName)}');
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:escapeXml(transferCredit.school.name)}');
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(transferCredit.assessingUser.fullName)}');
         </c:forEach>

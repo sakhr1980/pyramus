@@ -22,6 +22,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -30,6 +31,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  * @author Pasi Kukkonen
  */
 @Entity
+@Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
 public class EducationType implements ArchivableEntity {
 
@@ -195,6 +197,7 @@ public class EducationType implements ArchivableEntity {
   @NotNull
   @Column(nullable = false)
   @NotEmpty
+  @Field (index = Index.TOKENIZED)
   private String name;
   
   @NotNull

@@ -49,10 +49,14 @@ public class SubjectsAutoCompleteBinaryRequestController implements BinaryReques
   }
   
   private void addSubject(StringBuilder resultBuilder, Subject subject) {
+    String subjectName = subject.getName();
+    if (subject.getEducationType() != null)
+      subjectName += " (" + subject.getEducationType().getName() + ")";
+    
     resultBuilder
       .append("<li>")
       .append("<span>")
-      .append(StringEscapeUtils.escapeHtml(subject.getName()))
+      .append(StringEscapeUtils.escapeHtml(subjectName))
       .append("</span>")
       .append("<input type=\"hidden\" name=\"id\" value=\"")
       .append(subject.getId())
