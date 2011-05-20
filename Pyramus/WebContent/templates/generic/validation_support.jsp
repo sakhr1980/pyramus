@@ -1,8 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
-
 <c:choose>
   <c:when test="${validationSupportIncluded != true}">
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/ixvalidation/ixvalidation.js"></script>
@@ -68,13 +66,14 @@
         // Initialize normal validation
         initializeValidation();
 
-        // Initialize validation for existing tables
-        var tables = getIxTables();
+        // If ixtable.js is loaded initialize validation for existing tables
+        if (Object.isFunction(getIxTables)) {
+	        var tables = getIxTables();
+	        for (var i = 0, l = tables.length; i < l; i++) {
+	          initializeTable(tables[i]);
+	        };
+        }
         
-        for (var i = 0, l = tables.length; i < l; i++) {
-          initializeTable(tables[i]);
-        };
-
         // Initialize validation for tables that will come
         Event.observe(document, "ix:tableAdd", function (event) {
           initializeTable(event.memo.tableComponent);

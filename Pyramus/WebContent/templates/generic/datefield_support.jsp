@@ -3,6 +3,7 @@
 
 <jsp:include page="event_support.jsp"></jsp:include>
 <jsp:include page="locale_support.jsp"></jsp:include>
+<jsp:include page="validation_support.jsp"></jsp:include>
 
 <c:choose>
   <c:when test="${datefieldSupportIncluded != true}">

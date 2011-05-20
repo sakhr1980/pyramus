@@ -111,7 +111,7 @@ IxDateField = Class.create({
         $super();
         
         var selectedTs = _this.getTimestamp();
-        if (selectedTs && selectedTs !== '') {
+        if (selectedTs) {
           var selectedDate = new Date(selectedTs);
           var cell = this._getCell(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate());
           if (cell) {
@@ -160,9 +160,14 @@ IxDateField = Class.create({
           _this._datePicker.setPosition(relativePosition.top, relativePosition.left);
         }
         
-        _this._datePicker.setCurrentDate(new Date(_this.getTimestamp()));
+        var currentTs = _this.getTimestamp();
+        
+        if (currentTs)
+          _this._datePicker.setCurrentDate(new Date(currentTs));
       }
     });
+    
+    initializeElementValidation(this._inputText);
   },
   hasValidValue: function () {
     return this._datePicker.getDatePickerFormatter().match(this._inputText.value);    
@@ -189,7 +194,7 @@ IxDateField = Class.create({
     this.setTimestamp(date.getTime());
   },
   setTimestamp : function(timestamp) {
-    if (timestamp && timestamp !== '') {
+    if (timestamp) {
       var date = new Date();
       date.setTime(timestamp);
       this._inputText.value = this._datePicker.getDatePickerFormatter().dateToString(date.getFullYear(), date.getMonth() + 1, date.getDate());
@@ -211,7 +216,7 @@ IxDateField = Class.create({
   },
   getTimestamp : function() {
     var timestamp = this._timestampInput.value;
-    if (timestamp && timestamp !== '')
+    if (timestamp)
       return new Number(this._timestampInput.value);
     else
       return '';
