@@ -222,7 +222,7 @@
             dynamicOptions: true,
             paramName: 'studentId',
             options: [
-            ]
+            ]            
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'

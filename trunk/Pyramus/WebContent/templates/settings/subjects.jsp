@@ -26,7 +26,7 @@
 
       function addSubjectsTableRow() {
         var table = getIxTableById('subjectsTable');
-        var rowIndex = table.addRow(['', '', '', '', '', -1, 1]);
+        var rowIndex = table.addRow(['', '', '', '', '', '', -1, 1]);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -50,9 +50,14 @@
             tooltip: '<fmt:message key="settings.subjects.subjectsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
-              for (var i = 0; i < table.getColumnCount(); i++) {
-                table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
-              }
+//               for (var i = 0; i < table.getColumnCount(); i++) {
+//                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
+//               }
+              
+              table.setCellEditable(event.row, table.getNamedColumnIndex('code'), table.isCellEditable(event.row, table.getNamedColumnIndex('code')) == false);
+              table.setCellEditable(event.row, table.getNamedColumnIndex('name'), table.isCellEditable(event.row, table.getNamedColumnIndex('name')) == false);
+              table.setCellEditable(event.row, table.getNamedColumnIndex('educationTypeId'), table.isCellEditable(event.row, table.getNamedColumnIndex('educationTypeId')) == false);
+              
               table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
             }
           }, {
@@ -65,11 +70,25 @@
           }, {
             header : '<fmt:message key="settings.subjects.subjectsTableNameHeader"/>',
             left : 8 + 22 + 8 + 100 + 8,
-            right : 8 + 22 + 8,
+            width : 300,
             dataType: 'text',
             editable: false,
             paramName: 'name',
             required: true
+          }, {
+            header : '<fmt:message key="settings.subjects.educationTypeHeader"/>',
+            left : 8 + 22 + 8 + 100 + 8 + 300 + 8,
+            right : 8 + 22 + 8,
+            dataType: 'select',
+            editable: false,
+            paramName: 'educationTypeId',
+            options: [
+              {text: "-", value: ''}<c:if test="${fn:length(educationTypes) gt 0}">,</c:if>
+              <c:forEach var="educationType" items="${educationTypes}" varStatus="vs">
+                {text: "${fn:escapeXml(educationType.name)}", value: ${educationType.id}}
+                <c:if test="${not vs.last}">,</c:if>
+              </c:forEach>
+            ]
           }, {
             right: 8,
             width: 22,
@@ -146,6 +165,7 @@
             '',
             '${fn:escapeXml(subject.code)}',
             '${fn:escapeXml(subject.name)}',
+            '${subject.educationType.id}',
             '',
             '',
             ${subject.id},

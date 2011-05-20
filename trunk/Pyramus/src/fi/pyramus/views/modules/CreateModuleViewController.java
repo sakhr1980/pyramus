@@ -1,6 +1,9 @@
 package fi.pyramus.views.modules;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import fi.pyramus.PageRequestContext;
 import fi.pyramus.I18N.Messages;
@@ -8,6 +11,8 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -29,9 +34,21 @@ public class CreateModuleViewController implements PyramusViewController, Breadc
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
 
-    pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
-    pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
+
+    // Subjects
+    Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
+    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    for (EducationType educationType : educationTypes) {
+      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+        subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+    }
+
+    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
+    pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", baseDAO.listEducationalTimeUnits());
     pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
     pageRequestContext.setIncludeJSP("/templates/modules/createmodule.jsp");

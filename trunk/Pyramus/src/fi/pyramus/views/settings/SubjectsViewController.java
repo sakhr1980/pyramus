@@ -25,6 +25,7 @@ public class SubjectsViewController implements PyramusViewController, Breadcrumb
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
+    pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
     pageRequestContext.setIncludeJSP("/templates/settings/subjects.jsp");
   }
 

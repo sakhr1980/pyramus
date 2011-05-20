@@ -25,6 +25,7 @@ public class StudyProgrammeCategoriesViewController implements PyramusViewContro
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     pageRequestContext.getRequest().setAttribute("studyProgrammeCategories", baseDAO.listStudyProgrammeCategories());
+    pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
     pageRequestContext.setIncludeJSP("/templates/settings/studyprogrammecategories.jsp");
   }
 

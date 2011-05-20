@@ -5,6 +5,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
@@ -20,14 +21,18 @@ public class SaveSubjectsJSONRequestController implements JSONRequestController 
       Long subjectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".subjectId"));
       String code = jsonRequestContext.getRequest().getParameter(colPrefix + ".code");
       String name = jsonRequestContext.getRequest().getParameter(colPrefix + ".name");
+      Long educationTypeId = jsonRequestContext.getLong(colPrefix + ".educationTypeId");
+      EducationType educationType = null;
+      if (educationTypeId != null)
+        educationType = baseDAO.getEducationType(educationTypeId);
       boolean modified = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter(colPrefix + ".modified")) == 1;
-   
+      
       if (subjectId == -1) {
-        baseDAO.createSubject(code, name); 
+        baseDAO.createSubject(code, name, educationType); 
       }
       else if (modified) {
         Subject subject = baseDAO.getSubject(subjectId);
-        baseDAO.updateSubject(subject, code, name);
+        baseDAO.updateSubject(subject, code, name, educationType);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

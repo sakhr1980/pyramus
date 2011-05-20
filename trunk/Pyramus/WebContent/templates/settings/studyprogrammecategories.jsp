@@ -26,7 +26,7 @@
 
       function addStudyProgrammeCategoriesTableRow() {
         var table = getIxTableById('studyProgrammeCategoriesTable');
-        var rowIndex = table.addRow(['', '', '', '', -1, 1]);
+        var rowIndex = table.addRow(['', '', '', '', '', -1, 1]);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -63,6 +63,20 @@
             editable: false,
             paramName: 'name',
             required: true
+          }, {
+            header : '<fmt:message key="settings.studyProgrammeCategories.educationTypeHeader"/>',
+            left : 8 + 22 + 8 + 300 + 8,
+            right : 8 + 22 + 8,
+            dataType: 'select',
+            editable: false,
+            paramName: 'educationTypeId',
+            options: [
+              {text: "-", value: ''}<c:if test="${fn:length(educationTypes) gt 0}">,</c:if>
+              <c:forEach var="educationType" items="${educationTypes}" varStatus="vs">
+                {text: "${fn:escapeXml(educationType.name)}", value: ${educationType.id}}
+                <c:if test="${not vs.last}">,</c:if>
+              </c:forEach>
+            ]
           }, {
             right: 8,
             width: 30,
@@ -137,6 +151,7 @@
           rows.push([
             '',
             '${fn:escapeXml(studyProgrammeCategory.name)}',
+            '${studyProgrammeCategory.educationType.id}',
             '',
             '',
             ${studyProgrammeCategory.id},

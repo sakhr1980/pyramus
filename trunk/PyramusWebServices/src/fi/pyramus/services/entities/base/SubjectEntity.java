@@ -3,11 +3,12 @@ package fi.pyramus.services.entities.base;
 
 public class SubjectEntity {
 
-  public SubjectEntity(Long id, String code, String name, Boolean archived) {
+  public SubjectEntity(Long id, String code, String name, EducationTypeEntity educationType, Boolean archived) {
     super();
     this.id = id;
     this.code = code;
     this.name = name;
+    this.educationType = educationType;
     this.archived = archived;
   }
 
@@ -27,8 +28,13 @@ public class SubjectEntity {
     return archived;
   }
 
-  private Long id;
-  private String code;
-  private String name;
-  private Boolean archived;
+  public EducationTypeEntity getEducationType() {
+    return educationType;
+  }
+
+  private final Long id;
+  private final String code;
+  private final String name;
+  private final Boolean archived;
+  private final EducationTypeEntity educationType;
 }
