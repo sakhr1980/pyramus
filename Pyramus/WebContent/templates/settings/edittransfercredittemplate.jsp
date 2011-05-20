@@ -34,6 +34,19 @@
           display: 'none'
         });
         table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        
+        // Ensure that the newly added row is visible on screen
+        
+        var rowElement = table.getRowElement(rowIndex);
+        var dimensions = rowElement.getDimensions();
+        var offset = rowElement.cumulativeOffset();
+        var viewportDimensions = document.viewport.getDimensions();
+        var viewportScrollOffsets = document.viewport.getScrollOffsets();
+        var elementBottom = offset.top + dimensions.height;
+        var viewportBottom = viewportScrollOffsets.top + viewportDimensions.height;
+        if (viewportBottom <= elementBottom) {
+          Effect.ScrollTo(rowElement, { duration:'0.2', offset: -20 });
+        }
       }
       
       function onLoad(event) {

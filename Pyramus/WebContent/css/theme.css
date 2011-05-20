@@ -2038,15 +2038,15 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 /* Search Modules Dialog*/
 
 #searchModulesDialogSearchContainer .modalSearchResultsContainer {
-  top: 205px;
+  top: 225px;
 }
 
 #searchModulesDialogSearchContainer .modalSearchResultsMessageContainer {
-  bottom: 275px;
+  bottom: 285px;
 }
 
 #searchModulesDialogSearchContainer .modalSearchResultsPagesContainer {
-  top: 285px;
+  top: 315px;
 }
 
 .fixedSizedContentContainer #GUI_contentContainer{
