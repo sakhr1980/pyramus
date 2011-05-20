@@ -140,7 +140,7 @@
                 <jsp:param name="titleLocale" value="grading.courseAssessment.assessmentDateTitle"/>
                 <jsp:param name="helpLocale" value="grading.courseAssessment.assessmentDateHelp"/>
               </jsp:include>
-              <input type="text" class="required" name="assessmentDate" ix:datefieldid="assessmentDate" ix:datefield="true" value="${gradeDate}"/>
+              <input type="text" class="required ixDateField" name="assessmentDate" ix:datefieldid="assessmentDate" value="${gradeDate}"/>
             </div>
 
             <div class="genericFormSection">  
