@@ -16,16 +16,14 @@ IxDateField = Class.create({
     }
     
     var value = element.value;
-    // TODO: DateFormat validator
     this._inputText = new Element("input", {id: this._paramName + "-text", maxlength: 10, className: "ixDateFieldText"});
     this._timestampInput = element;
     this._timestampInput.type = 'hidden';
     this._timestampInput.removeAttribute('ix:datefieldid');
     this._timestampInput.removeClassName("ixDateField");
     
-    // TODO: Button tooltips
-    this._openButton = new Element("div", { className: "ixDateFieldOpenButton" });
-    this._todayButton = new Element("div", { className: "ixDateFieldTodayButton" });
+    this._openButton = new Element("div", { className: "ixDateFieldOpenButton", title: getLocale().getText("generic.dateField.openButtonTooltip") });
+    this._todayButton = new Element("div", { className: "ixDateFieldTodayButton", title: getLocale().getText("generic.dateField.todayButtonTooltip")});
     
     Event.observe(this._openButton, "click", this._openButtonClickListener);
     Event.observe(this._todayButton, "click", this._todayButtonClickListener);
@@ -271,10 +269,12 @@ IxDateField = Class.create({
     } 
   },
   _onTodayButtonClick: function (event) {
-    this.setTimestamp(new Date().getTime());
+    if (!this.isDisabled())
+      this.setTimestamp(new Date().getTime());
   },
   _onOpenButtonClick: function (event) {
-    this._datePicker.click();
+    if (!this.isDisabled())
+      this._datePicker.click();
   },
   _onInputTextChange: function (event) {
      this._checkInputTextChange(); 
