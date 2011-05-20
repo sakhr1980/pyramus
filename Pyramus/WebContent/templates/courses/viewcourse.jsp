@@ -395,7 +395,10 @@
                 <jsp:param name="titleLocale" value="courses.viewCourse.subjectTitle" />
                 <jsp:param name="helpLocale" value="courses.viewCourse.subjectHelp" />
               </jsp:include>
-              <div class="genericViewFormDataText">${course.subject.name}</div>
+              <div class="genericViewFormDataText">
+                ${course.subject.name}
+                <c:if test="${course.subject.educationType ne null}">(${course.subject.educationType.name})</c:if>
+              </div>
             </div>
     
             <c:choose>

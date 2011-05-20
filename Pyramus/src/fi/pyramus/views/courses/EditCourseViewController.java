@@ -20,6 +20,8 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseComponent;
@@ -52,8 +54,8 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("course", course);
     
     // Create a hashmap of the education types and education subtypes selected in the course
-    
-    pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     Map<String, Boolean> enabledEducationTypes = new HashMap<String, Boolean>();
     for (CourseEducationType courseEducationType : course.getCourseEducationTypes()) {
       for (CourseEducationSubtype courseEducationSubtype : courseEducationType.getCourseEducationSubtypes()) {
@@ -106,10 +108,20 @@ public class EditCourseViewController implements PyramusViewController, Breadcru
       courseStudentsStudents.put(courseStudent.getId(), studentDAO.listStudentsByAbstractStudent(courseStudent.getStudent().getAbstractStudent()));
     }
     
+    // Subjects
+    Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
+    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    for (EducationType educationType : educationTypes) {
+      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+        subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+    }
+    
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
     pageRequestContext.getRequest().setAttribute("roles", courseDAO.listCourseUserRoles());
-    pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
+    pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
+    pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);

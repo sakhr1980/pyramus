@@ -56,7 +56,21 @@
             left : 308,
             dataType : 'text', 
             paramName: 'studyProgramme',
-            editable: false
+            editable: false,
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.byNotValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(undefined, false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
@@ -115,6 +129,15 @@
         if (studentsTable.getRowCount() > 0) {
           $('viewStudentGroupStudentsTotalValue').innerHTML = studentsTable.getRowCount();
         }
+        
+        studentsTable.addListener("afterFiltering", function (event) {
+          var visibleRows = event.tableComponent.getVisibleRowCount();
+          var totalRows = event.tableComponent.getRowCount();
+          if (visibleRows == totalRows)
+            $('viewStudentGroupStudentsTotalValue').innerHTML = totalRows;
+          else
+            $('viewStudentGroupStudentsTotalValue').innerHTML = visibleRows + " (" + totalRows + ")";
+        });
       }
 
       function setupRelatedCommands() {

@@ -335,30 +335,59 @@
               </jsp:include>
                 
               <select name="subject">           
-                <c:forEach var="subject" items="${subjects}">
+                <c:forEach var="educationType" items="${educationTypes}">
+                  <c:if test="${subjectsByEducationType[educationType.id] ne null}">
+                    <optgroup label="${educationType.name}">
+                      <c:forEach var="subject" items="${subjectsByEducationType[educationType.id]}">
+                        <c:choose>
+                          <c:when test="${empty subject.code}">
+                            <c:set var="subjectName">${subject.name}</c:set>
+                          </c:when>
+                          <c:otherwise>
+                            <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                          </c:otherwise>
+                        </c:choose>
+
+                        <c:choose>
+                          <c:when test="${subject.id == module.subject.id}">
+                            <option value="${subject.id}" selected="selected">${subjectName}</option>
+                          </c:when>
+                          <c:otherwise>
+                            <option value="${subject.id}">${subjectName}</option> 
+                          </c:otherwise>
+                        </c:choose>
+                      </c:forEach>
+
+                      <c:if test="${module.subject.archived == true and module.subject.educationType.id == educationType.id}">
+                        <option value="${module.subject.id}" selected="selected">${subjectName}*</option>
+                      </c:if>
+                    </optgroup>
+                  </c:if>
+                </c:forEach>
+
+                <c:forEach var="subject" items="${subjectsByNoEducationType}">
                   <c:choose>
                     <c:when test="${empty subject.code}">
-                      <c:choose>
-                        <c:when test="${subject.id == module.subject.id}">
-                          <option value="${subject.id}" selected="selected">${subject.name}</option>
-                        </c:when>
-                        <c:otherwise>
-                          <option value="${subject.id}">${subject.name}</option> 
-                        </c:otherwise>
-                      </c:choose>
+                      <c:set var="subjectName">${subject.name}</c:set>
                     </c:when>
                     <c:otherwise>
-                      <c:choose>
-                        <c:when test="${subject.id == module.subject.id}">
-                          <option value="${subject.id}" selected="selected">${subject.name} (${subject.code})</option>
-                        </c:when>
-                        <c:otherwise>
-                          <option value="${subject.id}">${subject.name} (${subject.code})</option> 
-                        </c:otherwise>
-                      </c:choose>
+                      <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                    </c:otherwise>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${subject.id == module.subject.id}">
+                      <option value="${subject.id}" selected="selected">${subjectName}</option>
+                    </c:when>
+                    <c:otherwise>
+                      <option value="${subject.id}">${subjectName}</option> 
                     </c:otherwise>
                   </c:choose>
                 </c:forEach>
+
+                <c:if test="${module.subject.archived == true and module.subject.educationType.id eq null}">
+                  <option value="${module.subject.id}" selected="selected">${module.subject.name} (${module.subject.code})*</option>
+                </c:if>
               </select>
             </div>
 

@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -81,6 +83,14 @@ public class Subject implements ArchivableEntity {
     return version;
   }
 
+  public void setEducationType(EducationType educationType) {
+    this.educationType = educationType;
+  }
+
+  public EducationType getEducationType() {
+    return educationType;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Subject")  
   @TableGenerator(name="Subject", allocationSize=1)
@@ -95,6 +105,10 @@ public class Subject implements ArchivableEntity {
   @Column (nullable = false)
   @Field(index=Index.TOKENIZED, store=Store.NO)
   private String name;
+  
+  @ManyToOne
+  @JoinColumn(name="educationType")
+  private EducationType educationType;
   
   @NotNull
   @Column(nullable = false)

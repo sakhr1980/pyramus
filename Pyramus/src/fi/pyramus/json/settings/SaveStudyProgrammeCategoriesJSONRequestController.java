@@ -5,6 +5,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.UserRole;
 import fi.pyramus.json.JSONRequestController;
@@ -19,14 +20,18 @@ public class SaveStudyProgrammeCategoriesJSONRequestController implements JSONRe
       String colPrefix = "studyProgrammeCategoriesTable." + i;
       Long studyProgrammeCategoryId = jsonRequestContext.getLong(colPrefix + ".studyProgrammeCategoryId");
       String name = jsonRequestContext.getString(colPrefix + ".name");
-      
+      Long educationTypeId = jsonRequestContext.getLong(colPrefix + ".educationTypeId");
+      EducationType educationType = null;
+      if (educationTypeId != null)
+        educationType = baseDAO.getEducationType(educationTypeId);
       boolean modified = jsonRequestContext.getInteger(colPrefix + ".modified") == 1;
+
       if (studyProgrammeCategoryId == -1) {
-        baseDAO.createStudyProgrammeCategory(name); 
+        baseDAO.createStudyProgrammeCategory(name, educationType); 
       }
       else if (modified) {
         StudyProgrammeCategory studyProgrammeCategory = baseDAO.getStudyProgrammeCategory(studyProgrammeCategoryId);
-        baseDAO.updateStudyProgrammeCategory(studyProgrammeCategory, name);
+        baseDAO.updateStudyProgrammeCategory(studyProgrammeCategory, name, educationType);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

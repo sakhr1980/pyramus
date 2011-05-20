@@ -254,7 +254,21 @@
             right: 8 + 230 + 8 + 200 + 8, 
             width: 100,
             dataType: 'text',
-            editable: false
+            editable: false,
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.byNotValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(undefined, false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingScaleHeader"/>',
             right: 8 + 230 + 8, 
@@ -352,7 +366,21 @@
             right: 8 + 22 + 8 + 200 + 8 + 200 + 8, 
             width: 100,
             dataType: 'text',
-            editable: false
+            editable: false,
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.byNotValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER(undefined, false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingScaleHeader"/>',
             right: 8 + 22 + 8 + 200 + 8, 
@@ -475,15 +503,29 @@
               display: 'none'
             });
           }
+
+          coursesTable.addListener("afterFiltering", function (event) {
+            var visibleRows = event.tableComponent.getVisibleRowCount();
+            var totalRows = event.tableComponent.getRowCount();
+            if (visibleRows == totalRows)
+              $('viewStudentCoursesTotalValue.${student.id}').innerHTML = totalRows;
+            else
+              $('viewStudentCoursesTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
+          });
           
           // Setup grade tabs
           transferCreditsTable = setupTransferCreditsTab(${student.id});
 
           rows.clear();
           <c:forEach var="studentTransferCredit" items="${transferCredits[student.id]}">
+            <c:set var="subjectName">${studentTransferCredit.subject.name}</c:set>
+            <c:if test="${studentTransferCredit.subject.educationType ne null}">
+              <c:set var="subjectName">${subjectName} (${studentTransferCredit.subject.educationType.name})</c:set>
+            </c:if>
+          
             rows.push([
               '${fn:escapeXml(studentTransferCredit.courseName)}',
-              '${fn:escapeXml(studentTransferCredit.subject.name)}',
+              '${fn:escapeXml(subjectName)}',
               '${studentTransferCredit.date.time}',
               '${studentTransferCredit.courseLength.units}',
               '${fn:escapeXml(studentTransferCredit.courseLength.unit.name)}',
@@ -500,14 +542,28 @@
               display: 'none'
             });
           }
-                                       
+          
+          transferCreditsTable.addListener("afterFiltering", function (event) {
+            var visibleRows = event.tableComponent.getVisibleRowCount();
+            var totalRows = event.tableComponent.getRowCount();
+            if (visibleRows == totalRows)
+              $('viewStudentTransferCreditsTotalValue.${student.id}').innerHTML = totalRows;
+            else
+              $('viewStudentTransferCreditsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
+          });
+          
           courseAssessmentsTable = setupCourseAssessmentsTab(${student.id});
 
           rows.clear();
           <c:forEach var="studentCourseAssessment" items="${courseAssessments[student.id]}">
-             rows.push([
+            <c:set var="subjectName">${studentCourseAssessment.courseStudent.course.subject.name}</c:set>
+            <c:if test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null}">
+              <c:set var="subjectName">${subjectName} (${studentCourseAssessment.courseStudent.course.subject.educationType.name})</c:set>
+            </c:if>
+            
+            rows.push([
               '${fn:escapeXml(studentCourseAssessment.courseStudent.course.name)}',
-              '${fn:escapeXml(studentCourseAssessment.courseStudent.course.subject.name)}',
+              '${fn:escapeXml(subjectName)}',
               '${studentCourseAssessment.date.time}',
               '${studentCourseAssessment.courseStudent.course.courseLength.units}',
               '${fn:escapeXml(studentCourseAssessment.courseStudent.course.courseLength.unit.name)}',
@@ -527,6 +583,15 @@
             });
           }
 
+          courseAssessmentsTable.addListener("afterFiltering", function (event) {
+            var visibleRows = event.tableComponent.getVisibleRowCount();
+            var totalRows = event.tableComponent.getRowCount();
+            if (visibleRows == totalRows)
+              $('viewStudentCourseAssessmentsTotalValue.${student.id}').innerHTML = totalRows;
+            else
+              $('viewStudentCourseAssessmentsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
+          });
+          
           var projectTable;
           <c:forEach var="sp" items="${studentProjects[student.id]}">
             rows.clear();

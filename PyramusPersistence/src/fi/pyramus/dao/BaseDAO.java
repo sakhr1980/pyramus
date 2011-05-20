@@ -20,6 +20,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
@@ -579,14 +580,16 @@ public class BaseDAO extends PyramusDAO {
    *          The subject code
    * @param name
    *          The subject name
+   * @param educationType 
    * 
    * @return The created subject
    */
-  public Subject createSubject(String code, String name) {
+  public Subject createSubject(String code, String name, EducationType educationType) {
     Session s = getHibernateSession();
     Subject subject = new Subject();
     subject.setName(name);
     subject.setCode(code);
+    subject.setEducationType(educationType);
     s.save(subject);
     return subject;
   }
@@ -1082,6 +1085,27 @@ public class BaseDAO extends PyramusDAO {
 
     return subjects;
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<Subject> listSubjectsByEducationType(EducationType educationType) {
+    Session s = getHibernateSession();
+
+    Criterion educationTypeRestriction = 
+      educationType != null ? Restrictions.eq("educationType", educationType) : Restrictions.isNull("educationType"); 
+    
+    List<Subject> subjects = s.createCriteria(Subject.class)
+        .add(Restrictions.eq("archived", Boolean.FALSE))
+        .add(educationTypeRestriction)
+        .list();
+
+    Collections.sort(subjects, new Comparator<Subject>() {
+      public int compare(Subject o1, Subject o2) {
+        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
+      }
+    });
+
+    return subjects;
+  }
 
   @SuppressWarnings("unchecked")
   public SearchResult<School> searchSchoolsBasic(int resultsPerPage, int page, String text) {
@@ -1376,11 +1400,13 @@ public class BaseDAO extends PyramusDAO {
    *          The subject code
    * @param name
    *          The subject name
+   * @param educationType 
    */
-  public void updateSubject(Subject subject, String code, String name) {
+  public void updateSubject(Subject subject, String code, String name, EducationType educationType) {
     Session s = getHibernateSession();
     subject.setCode(code);
     subject.setName(name);
+    subject.setEducationType(educationType);
     s.saveOrUpdate(subject);
   }
 
@@ -1451,22 +1477,24 @@ public class BaseDAO extends PyramusDAO {
     return (StudyProgrammeCategory) s.load(StudyProgrammeCategory.class, id);
   }
 
-  public StudyProgrammeCategory createStudyProgrammeCategory(String name) {
+  public StudyProgrammeCategory createStudyProgrammeCategory(String name, EducationType educationType) {
     EntityManager entityManager = getEntityManager();
 
     StudyProgrammeCategory studyProgrammeCategory = new StudyProgrammeCategory();
     studyProgrammeCategory.setArchived(Boolean.FALSE);
     studyProgrammeCategory.setName(name);
+    studyProgrammeCategory.setEducationType(educationType);
 
     entityManager.persist(studyProgrammeCategory);
 
     return studyProgrammeCategory;
   }
 
-  public void updateStudyProgrammeCategory(StudyProgrammeCategory studyProgrammeCategory, String name) {
+  public void updateStudyProgrammeCategory(StudyProgrammeCategory studyProgrammeCategory, String name, EducationType educationType) {
     EntityManager entityManager = getEntityManager();
 
     studyProgrammeCategory.setName(name);
+    studyProgrammeCategory.setEducationType(educationType);
 
     entityManager.persist(studyProgrammeCategory);
   }
