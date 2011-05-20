@@ -3,185 +3,279 @@ IxDateField = Class.create({
     var element = options.element;
     this._paramName = element.name;
     
+    this._inputTextChangeListener = this._onInputTextChange.bindAsEventListener(this);
+    this._inputTextKeyUpListener = this._onInputTextKeyUp.bindAsEventListener(this);
+    this._todayButtonClickListener = this._onTodayButtonClick.bindAsEventListener(this);
+    this._openButtonClickListener = this._onOpenButtonClick.bindAsEventListener(this);
+    
     var idAttr = element.getAttribute("ix:datefieldid");
     if (idAttr)
       this._id = idAttr;
-    else
-      this._id = null;
+    else {
+      this._id = 'ixdf-' + new Date().getTime();
+    }
     
-    this._dayInput = Builder.node("input", {id: this._paramName + "_-dd", name: this._paramName + "_-dd", type: 'text', maxlength: 2, className: 'ixDateFieldDay'});
-    this._monthInput = Builder.node("input", {id: this._paramName + "_-mm", name: this._paramName + "_-mm", type: 'text', maxlength: 2, className: 'ixDateFieldMonth'});
-    this._yearInput = Builder.node("input", {id: this._paramName + '_', name: this._paramName + '_', type: 'text', maxlength: 4, className: 'ixDateFieldYear split-date'});
-    this._timestampInput = Builder.node("input", {id: this._paramName, name: this._paramName, type: 'hidden'});
+    var value = element.value;
+    // TODO: DateFormat validator
+    this._inputText = new Element("input", {id: this._paramName + "-text", maxlength: 10, className: "ixDateFieldText"});
+    this._timestampInput = element;
+    this._timestampInput.type = 'hidden';
+    this._timestampInput.removeAttribute('ix:datefieldid');
+    this._timestampInput.removeClassName("ixDateField");
     
-    if (options.yearClass)
-      this.addYearClass(options.yearClass);
-    if (options.monthClass)
-      this.addMonthClass(options.monthClass);
-    if (options.dayClass)
-      this.addDayClass(options.dayClass);
-    if (options.value != undefined)
-      this.setTimestamp(options.value);
-    if (options.enabled === false)
-      this.disable();
-   
-    this._dayFieldValueChangeListener = this._onDayFieldValueChange.bindAsEventListener(this);
-    this._monthFieldValueChangeListener = this._onMonthFieldValueChange.bindAsEventListener(this);
-    this._yearFieldValueChangeListener = this._onYearFieldValueChange.bindAsEventListener(this);
-    this._timestampFieldValueChangeListener = this._onTimestampFieldValueChange.bindAsEventListener(this);
+    // TODO: Button tooltips
+    this._openButton = new Element("div", { className: "ixDateFieldOpenButton" });
+    this._todayButton = new Element("div", { className: "ixDateFieldTodayButton" });
     
-    Event.observe(this._dayInput, "change", this._dayFieldValueChangeListener);
-    Event.observe(this._monthInput, "change", this._monthFieldValueChangeListener);
-    Event.observe(this._yearInput, "change", this._yearFieldValueChangeListener);
+    Event.observe(this._openButton, "click", this._openButtonClickListener);
+    Event.observe(this._todayButton, "click", this._todayButtonClickListener);
+    Event.observe(this._inputText, "change", this._inputTextChangeListener);
+    Event.observe(this._inputText, "keyup", this._inputTextKeyUpListener);
+    
+    var parent = this._timestampInput.parentNode;
+    var nextSibling = this._timestampInput.nextSibling;
+    
+    this._domNode = new Element("div", {className: 'ixDateField', "ix:datefieldid": this._id});
+    this._domNode.appendChild(this._timestampInput);
+    this._domNode.appendChild(this._inputText);
+    this._domNode.appendChild(this._openButton);
+    this._domNode.appendChild(this._todayButton);
+    
+    if (nextSibling) {
+      parent.insertBefore(this._domNode, nextSibling);
+    } else {
+      parent.appendChild(this._domNode);
+    }
+    
+    var language = 'en';
+    var dateFormat;
+    var dateSeparator;
+    
+    if (Object.isFunction(getLocale)) { 
+      language = getLocale().getLanguage();
+      var pattern = getLocale().getDateFormat(false).getPattern();
+      
+      if (pattern.indexOf('/') > 0) {
+        dateSeparator = '/';
+      } else if (pattern.indexOf('.') > 0) {
+        dateSeparator = '.';
+      } else if (pattern.indexOf('-') > 0) {
+        dateSeparator = '-';
+      }
+      
+      if (dateSeparator) {
+        var components = pattern.split(dateSeparator);
+        dateFormat = new Array();
+        for (var i = 0, l = components.length; i < l; i++) {
+          var component = components[i].toLowerCase();
+          switch (component) {
+            case 'yy':
+              component = 'yyyy';
+            break;
+            case 'm':
+              component = 'mm';
+            break;
+            case 'd':
+              component = 'dd';
+            break;
+          } 
+          
+          dateFormat.push(component);
+        }
+      }
+    }
+    
+    // date format defaults to international date format yyyy-mm-dd (ISO 8601)
 
-    this._updatingTimestamp = false;
+    if (!dateFormat)
+      dateFormat = ['yyyy','mm','dd'];
+    if (!dateSeparator)
+      dateSeparator = '-';
     
-    this._domNode = Builder.node("div", {className: 'ixDateField'}, [
-      this._timestampInput,
-      this._dayInput,
-      this._monthInput,
-      this._yearInput
-    ]);
+    var _this = this;
+    var _DatePicker = Class.create(DatePicker, {
+      getDatePickerFormatter: function () {
+        if (!this._df) {
+          this._initCurrentDate(); 
+        }
+        return this._df;
+      },
+      setCurrentDate: function (date) {
+        this._maybeRedrawMonth([date.getUTCMonth(), date.getUTCFullYear()]);
+      },
+      _getCell: function (year, month, date) {
+        var cellId = $A([this._id_datepicker, this._df.dateToString(year, month + 1, date, '-')]).join('-');
+        return $(cellId);
+      },
+      _buildCalendar: function ($super) {
+        $super();
+        
+        var selectedTs = _this.getTimestamp();
+        if (selectedTs && selectedTs !== '') {
+          var selectedDate = new Date(selectedTs);
+          var cell = this._getCell(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate());
+          if (cell) {
+            cell.addClassName("selected");
+          }
+        }
+      },
+      _initCurrentDate: function ($super) {
+        if (!this._df) {
+          $super();
+        }
+      }
+    });
     
-    this.replaceNode(element);
+    this._datePicker = new _DatePicker({
+      relative: this._inputText,
+      keepFieldEmpty:true,
+      relativePosition: false,
+      language: language,
+      topOffset: 25,
+      leftOffset: 0,
+      dateFormat: [dateFormat, dateSeparator],
+      afterClose: function () {
+        if (_this._inputText.value) { 
+          var selectedDate = _this._datePicker.getDatePickerFormatter().match(_this._inputText.value);    
+          var date = new Date();
+          date.setUTCFullYear(selectedDate[0], selectedDate[1] - 1, selectedDate[2]);
+          date.setUTCHours(0, 0, 0, 0);
+          _this.setTimestamp(date.getTime());
+        } else {
+          _this.clearValue();
+        }
+      },
+      clickCallback: function () {
+        var relativeDimensions = $(_this._datePicker._relative).getDimensions();
+        var relativePosition =$(_this._datePicker._relative).cumulativeOffset();
+       
+        var pickerDimensions = $(_this._datePicker._div).getDimensions();
+        var pickerRight = relativePosition.left + pickerDimensions.width;
+        
+        var viewportWidth = document.viewport.getWidth();
+        
+        if (viewportWidth < pickerRight) {
+          _this._datePicker.setPosition(relativePosition.top, relativePosition.left - pickerDimensions.width + relativeDimensions.width);
+        } else {
+          _this._datePicker.setPosition(relativePosition.top, relativePosition.left);
+        }
+        
+        _this._datePicker.setCurrentDate(new Date(_this.getTimestamp()));
+      }
+    });
   },
-  getParamName : function() {
-    return this._paramName;
+  hasValidValue: function () {
+    return this._datePicker.getDatePickerFormatter().match(this._inputText.value);    
   },
   getId : function() {
     return this._id;
   },
   setDay : function(day) {
-    this._dayInput.value = day;
+    var date = new Date();
+    date.setTime(this.getTimestamp());
+    date.setDate(day);
+    this.setTimestamp(date.getTime());
   },
   setMonth : function(month) {
-    this._monthInput.value = month;
+    var date = new Date();
+    date.setTime(this.getTimestamp());
+    date.setMonth(month);
+    this.setTimestamp(date.getTime());
   },
   setYear : function(year) {
-    this._yearInput.value = year;
+    var date = new Date();
+    date.setTime(this.getTimestamp());
+    date.setFullYear(year);
+    this.setTimestamp(date.getTime());
   },
   setTimestamp : function(timestamp) {
-    var date = new Date();
-    date.setTime(timestamp);
-    this._yearInput.value = date.getFullYear();
-    this._monthInput.value = (date.getMonth() + 1).toPaddedString(2);
-    this._dayInput.value = (date.getDate()).toPaddedString(2);
-
-    date.setUTCFullYear(this.getYear(), this.getMonth() - 1, this.getDay());
-    date.setUTCHours(0, 0, 0, 0);
-    this._timestampInput.value = date.getTime();
-  },
-  getDay : function() {
-    return this._dayInput.value == '' ? NaN : new Number(this._dayInput.value);
-  },
-  getMonth : function() {
-    return this._monthInput.value == '' ? NaN : new Number(this._monthInput.value);
-  },
-  getYear : function() {
-    return this._yearInput.value == '' ? NaN : new Number(this._yearInput.value);
-  },
-  getTimestamp : function() {
-    return this._timestampInput.value == NaN ? '' : new Number(this._timestampInput.value);
-  },
-  getTimestampNode: function () {
-    return this._timestampInput;
-  },
-  disable: function () {
-    this._dayInput.disabled = true;
-    this._monthInput.disabled = true;
-    this._yearInput.disabled = true;
-  },
-  enable: function () {
-    this._dayInput.disabled = false;
-    this._monthInput.disabled = false;
-    this._yearInput.disabled = false;
-  },
-  getDOMNode: function () {
-    return this._domNode;
-  },
-  getDayField: function () {
-    return this._dayInput;
-  },
-  getMonthField: function () {
-    return this._monthInput;
-  },
-  getYearField: function () {
-    return this._yearInput;
-  },
-  addDayClass: function(className) {
-    this._dayInput.addClassName(className);
-  },
-  addMonthClass: function(className) {
-    this._monthInput.addClassName(className);
-  },
-  addYearClass: function(className) {
-    this._yearInput.addClassName(className);
-  },
-  replaceNode : function(node) {
-    var parent = node.parentNode;
-    parent.insertBefore(this._domNode, node);
-    
-    if (node.value) {
-      var initialValue = new Number(node.value);
-      if (initialValue != NaN) {
-        this.setTimestamp(initialValue);
-      }
-    }
-    
-    parent.removeChild(node);
-    datePickerController.create(this._yearInput);
-    document.fire("ix:dateFieldReplace", {
-      dateField: this
-    });
-  },
-  destroy: function() {
-    datePickerController.datePickers[this._yearInput.id].destroy();
-    datePickerController.datePickers[this._yearInput.id] = undefined;
-    delete datePickerController.datePickers[this._yearInput.id];
-    this._domNode.remove();
-    this._datePicker = undefined;
-  },
-  _onDayFieldValueChange : function(event) {
-    this._updateTimestampField();
-  },
-  _onMonthFieldValueChange : function(event) {
-    this._updateTimestampField();
-  },
-  _onYearFieldValueChange : function(event) {
-    this._updateTimestampField();
-  },
-  _onTimestampFieldValueChange: function (event) {
-    if (this._updatingTimestamp != true) {
-      this._updatingTimestamp = true;
-      try {
-        this.setTimestamp(this._timestampInput.value);
-      } finally {
-        this._updatingTimestamp = false;
-      }
-    }
-  },
-  _updateTimestampField : function() {
-    this._updatingTimestamp = true;
-    try {
-      var year = this.getYear();
-      var month = this.getMonth();
-      var day = this.getDay();
-      if (year == NaN || month == NaN || day == NaN) {
-        this._timestampInput.value = '';
-      }
-      else {
-        var date = new Date();
-        date.setUTCFullYear(this.getYear(), this.getMonth() - 1, this.getDay());
-        date.setUTCHours(0, 0, 0, 0);
-        this._timestampInput.value = date.getTime();
-      }
-    } finally {
-      this._updatingTimestamp = false;
+    if (timestamp && timestamp !== '') {
+      var date = new Date();
+      date.setTime(timestamp);
+      this._inputText.value = this._datePicker.getDatePickerFormatter().dateToString(date.getFullYear(), date.getMonth() + 1, date.getDate());
+      date.setUTCFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+      date.setUTCHours(0, 0, 0, 0);
+      this._timestampInput.value = date.getTime();
+      this._inputText.validate();
+    } else {
+      this.clearValue();
     }
     
     this.fire("change", {
       dateFieldComponent: this
     });
+  },
+  clearValue: function () {
+    this._inputText.value = '';
+    this._timestampInput.value = '';
+  },
+  getTimestamp : function() {
+    var timestamp = this._timestampInput.value;
+    if (timestamp && timestamp !== '')
+      return new Number(this._timestampInput.value);
+    else
+      return '';
+  },
+  getTimestampNode: function () {
+    return this._timestampInput;
+  },
+  disable: function () {
+    this._inputText.disabled = true;
+    this._inputText.setAttribute("disabled", "disabled");
+  },
+  enable: function () {
+    this._inputText.disabled = false;
+    this._inputText.removeAttribute("disabled");
+  },
+  isDisabled: function () {
+    return this._inputText.disabled;
+  },
+  getDOMNode: function () {
+    return this._domNode;
+  },
+  destroy: function() {
+    var nextSibling = this._domNode.nextSibling;
+    var parent = this._domNode.parentNode;
+    this._timestampInput.type = 'text';
+    this._timestampInput.setAttribute('ix:datefieldid', this.getId());
+    this._timestampInput.addClassName("ixDateField");
+    
+    if (nextSibling) {
+      parent.insertBefore(this._timestampInput, nextSibling);
+    } else {
+      parent.appendChild(this._timestampInput);
+    }
+    
+    Event.stopObserving(this._openButton, "click", this._openButtonClickListener);
+    Event.stopObserving(this._todayButton, "click", this._todayButtonClickListener);
+    Event.stopObserving(this._inputText, "change", this._inputTextChangeListener);
+    Event.stopObserving(this._inputText, "keyup", this._inputTextKeyUpListener);
+    
+    this._domNode.remove();
+  },
+  _checkInputTextChange: function () {
+    var selectedDate = this._datePicker.getDatePickerFormatter().match(this._inputText.value);
+    
+    if (selectedDate) {   
+      var date = new Date();
+      date.setUTCFullYear(selectedDate[0], selectedDate[1] - 1, selectedDate[2]);
+      date.setUTCHours(0, 0, 0, 0);
+      this._timestampInput.value = date.getTime();
+    } else {
+      this._timestampInput.value = '';
+    } 
+  },
+  _onTodayButtonClick: function (event) {
+    this.setTimestamp(new Date().getTime());
+  },
+  _onOpenButtonClick: function (event) {
+    this._datePicker.click();
+  },
+  _onInputTextChange: function (event) {
+     this._checkInputTextChange(); 
+  },
+  _onInputTextKeyUp: function (event) {
+    this._checkInputTextChange();
   }
 });
 
@@ -215,9 +309,9 @@ function replaceDateFields(container) {
   var dateFields;
   
   if (!container)
-    dateFields = $$("input[ix:datefield='true']");
+    dateFields = $$("input.ixDateField");
   else
-    dateFields = container.select("input[ix:datefield='true']");
+    dateFields = container.select("input.ixDateField");
   
   for (var i = 0; i < dateFields.length; i++) {
     replaceDateField(dateFields[i]);
