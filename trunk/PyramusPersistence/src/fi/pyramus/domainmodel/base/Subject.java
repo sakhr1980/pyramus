@@ -19,6 +19,7 @@ import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -106,6 +107,7 @@ public class Subject implements ArchivableEntity {
   @Field(index=Index.TOKENIZED, store=Store.NO)
   private String name;
   
+  @IndexedEmbedded
   @ManyToOne
   @JoinColumn(name="educationType")
   private EducationType educationType;

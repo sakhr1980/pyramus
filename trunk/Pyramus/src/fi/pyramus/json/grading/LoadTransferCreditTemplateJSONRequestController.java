@@ -25,6 +25,9 @@ public class LoadTransferCreditTemplateJSONRequestController implements JSONRequ
     
     for (TransferCreditTemplateCourse templateCourse : transferCreditTemplate.getCourses()) {
       Map<String, Object> result = new HashMap<String, Object>();
+      String subjectName = templateCourse.getSubject().getName();
+      if (templateCourse.getSubject().getEducationType() != null)
+        subjectName += " (" + templateCourse.getSubject().getEducationType().getName() + ")";
       
       result.put("courseId", templateCourse.getId());
       result.put("courseUnits", templateCourse.getCourseLength().getUnits());
@@ -33,7 +36,7 @@ public class LoadTransferCreditTemplateJSONRequestController implements JSONRequ
       result.put("courseNumber", templateCourse.getCourseNumber());
       result.put("courseOptionality", templateCourse.getOptionality().name());
       result.put("subjectId", templateCourse.getSubject().getId());
-      result.put("subjectName", templateCourse.getSubject().getName());
+      result.put("subjectName", subjectName);
 
       results.add(result);
     }

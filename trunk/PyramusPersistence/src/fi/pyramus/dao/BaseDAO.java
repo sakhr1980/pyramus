@@ -826,6 +826,7 @@ public class BaseDAO extends PyramusDAO {
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
       addTokenizedSearchCriteria(queryBuilder, "name", text, false);
+      addTokenizedSearchCriteria(queryBuilder, "educationType.name", text, false);   
       queryBuilder.append(")");
     }
 
