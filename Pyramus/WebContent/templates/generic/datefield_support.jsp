@@ -2,13 +2,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <jsp:include page="event_support.jsp"></jsp:include>
+<jsp:include page="locale_support.jsp"></jsp:include>
 
 <c:choose>
   <c:when test="${datefieldSupportIncluded != true}">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/date-picker/js/datepicker.js"></script>
-    <link href="${pageContext.request.contextPath}/scripts/date-picker/css/datepicker.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/ixdatefield/ixdatefield.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/prototype-datepicker-widget/datepicker.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ixdatefield.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/datepicker.css"/>
     <script type="text/javascript">
       document.observe("dom:loaded", function(event) {
         replaceDateFields();

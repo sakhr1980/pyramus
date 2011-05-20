@@ -86,13 +86,6 @@
           revalidateAll(true);
         });
       });
-      
-      document.observe("ix:dateFieldReplace", function(event) {
-        var dateField = event.memo.dateField;
-        initializeElementValidation(dateField.getYearField());
-        initializeElementValidation(dateField.getMonthField());
-        initializeElementValidation(dateField.getDayField());
-      });
     </script>
     
     <c:set scope="request" var="validationSupportIncluded" value="true"/>
