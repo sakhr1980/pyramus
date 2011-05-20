@@ -146,7 +146,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNameHeader"/>',
             left: 4 + 22 + 4,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 110 + 4,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4 + 87 + 3 + 110 + 4,
             dataType: 'autoComplete',
             required: true,
             editable: false,
@@ -187,7 +187,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseOptionalityHeader"/>',
             width: 110,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4 + 87 + 3,
             dataType: 'select',
             required: true,
             editable: false,
@@ -215,7 +215,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableCourseNumberHeader"/>',
             width : 87,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3 + 72 + 4,
             dataType: 'number',
             editorClassNames: "number",
             editable: false,
@@ -223,7 +223,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableGradeHeader"/>',
             width : 72,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3, 
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3 + 120 + 3, 
             dataType: 'select',
             editable: false,
             required: true,
@@ -250,7 +250,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSubjectHeader"/>',
             width : 120,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4 + 80 + 3,
             dataType: 'autoCompleteSelect',
             editable: false,
             required: true,
@@ -276,7 +276,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthHeader"/>',
             width : 80,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3 + 100 + 4,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3 + 100 + 4,
             dataType: 'number',
             required: true,
             editable: false,
@@ -300,7 +300,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableLengthUnitHeader"/>',
             width : 100,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3 + 120 + 3,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3 + 120 + 3,
             dataType: 'select',
             required: true,
             editable: false,
@@ -320,7 +320,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableSchoolHeader"/>',
             width : 120,
-            right: 4 + 22 + 4 + 110 + 4 + 110 + 3,
+            right: 4 + 22 + 4 + 141 + 4 + 110 + 3,
             dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
@@ -346,7 +346,7 @@
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableUserHeader"/>',
             width : 110,
-            right: 4 + 22 + 4 + 110 + 4,
+            right: 4 + 22 + 4 + 141 + 4,
             dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
@@ -371,7 +371,7 @@
             ]            
           }, {
             header : '<fmt:message key="grading.manageTransferCredits.transferCreditsTableDateHeader"/>',
-            width : 110,
+            width : 141,
             right: 4 + 22 + 4,
             dataType: 'date',
             required: true,
