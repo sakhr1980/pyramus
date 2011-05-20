@@ -333,9 +333,9 @@
                   </jsp:include>
     
                   <div class="searchCoursesTimeFrameContainer">
-                    <div class="searchCoursesTimeFrameStartContainer"> <input type="text" name="timeframeStart" ix:datefield="true"/> </div> 
+                    <div class="searchCoursesTimeFrameStartContainer"> <input type="text" name="timeframeStart" class="ixDateField"/> </div> 
                     <div class="searchCoursesTimeFrameHyphenContainer">-</div> 
-                    <div class="searchCoursesTimeFrameEndContainer"> <input type="text" name="timeframeEnd" ix:datefield="true"/> </div>
+                    <div class="searchCoursesTimeFrameEndContainer"> <input type="text" name="timeframeEnd" class="ixDateField"/> </div>
                   </div>
                 </div>
 

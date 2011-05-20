@@ -655,7 +655,7 @@
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableNameHeader"/>',
             left : 8 + 22 + 8,
-            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8 + 100 + 8,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 145 + 8 + 200 + 8 + 140 + 8,
             dataType : 'text',
             paramName: 'studentName',
             editable: false,
@@ -671,8 +671,8 @@
             }
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableStudyProgrammeHeader"/>',
-            width: 100,
-            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8 + 200 + 8,
+            width: 140,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 145 + 8 + 200 + 8,
             dataType : 'select',
             editable: true,
             dynamicOptions: true,
@@ -692,7 +692,7 @@
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
-            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 140 + 8,
+            right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8 + 145 + 8,
             dataType : 'select',
             editable: true,
             paramName: 'participationType',
@@ -720,7 +720,7 @@
             ]            
           }, {
             header : '<fmt:message key="courses.createCourse.studentsTableEnrolmentDateHeader"/>',
-            width: 140,
+            width: 145,
             right : 8 + 22 + 8 + 100 + 8 + 140 + 8 + 140 + 8,
             dataType: 'date',
             editable: true,
@@ -1063,10 +1063,10 @@
               </tr>
               <tr>
                 <td>
-                  <input type="text" name="beginDate" ix:datefield="true"/>
+                  <input type="text" name="beginDate" class="ixDateField"/>
                 </td>
                 <td>
-                  <input type="text" name="endDate" ix:datefield="true"/>
+                  <input type="text" name="endDate" class="ixDateField"/>
                 </td>
                 <td>
                   <input type="text" class="float required" name="courseLength" value="${fn:escapeXml(module.courseLength.units)}" class="required" size="15"/>

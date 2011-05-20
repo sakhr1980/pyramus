@@ -123,7 +123,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableNameHeader"/>',
             left : 8 + 22 + 8 + 22 + 8,
-            right : 8 + 150 + 8 + 180 + 8 + 160 + 8 + 120 + 8 + 100 + 8,
+            right : 8 + 145 + 8 + 180 + 8 + 160 + 8 + 120 + 8 + 100 + 8,
             dataType : 'text',
             paramName: 'studentName',
             editable: false,
@@ -140,7 +140,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableStudyProgrammeHeader"/>',
             width: 160,
-            right : 8 + 150 + 8 + 180 + 8 + 160 + 8 + 120 + 8,
+            right : 8 + 145 + 8 + 180 + 8 + 160 + 8 + 120 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'studyProgrammeName',
@@ -157,7 +157,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableGradeHeader"/>',
             width: 120,
-            right : 8 + 150 + 8 + 180 + 8 + 160 + 8,
+            right : 8 + 145 + 8 + 180 + 8 + 160 + 8,
             dataType : 'select',
             editable: false,
             paramName: 'gradeId',
@@ -200,7 +200,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableParticipationTypeHeader"/>',
             width: 160,
-            right : 8 + 150 + 8 + 180 + 8,
+            right : 8 + 145 + 8 + 180 + 8,
             dataType : 'select',
             editable: false,
             paramName: 'participationType',
@@ -244,7 +244,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessingUserHeader"/>',
             width : 180,
-            right: 8 + 150 + 8,
+            right: 8 + 145 + 8,
             dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
@@ -284,7 +284,7 @@
             ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessmentDateHeader"/>',
-            width: 150,
+            width: 145,
             right : 8,
             dataType: 'date',
             editable: false,
