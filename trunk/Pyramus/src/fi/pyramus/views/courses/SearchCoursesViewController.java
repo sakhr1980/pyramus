@@ -1,6 +1,9 @@
 package fi.pyramus.views.courses;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import fi.pyramus.PageRequestContext;
 import fi.pyramus.I18N.Messages;
@@ -8,6 +11,8 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -16,8 +21,21 @@ public class SearchCoursesViewController implements PyramusViewController, Bread
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+
+    // Subjects
+    Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
+    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    for (EducationType educationType : educationTypes) {
+      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+        subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+    }
+
+    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
+    pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
-    pageRequestContext.getRequest().setAttribute("subjects", baseDAO.listSubjects());
     pageRequestContext.setIncludeJSP("/templates/courses/searchcourses.jsp");
   }
 

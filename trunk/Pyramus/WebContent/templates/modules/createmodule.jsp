@@ -196,10 +196,10 @@
             </div>
 	          
 	          <div class="genericFormSection">  
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="modules.createModule.subjectTitle"/>
-                  <jsp:param name="helpLocale" value="modules.createModule.subjectHelp"/>
-                </jsp:include>
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="modules.createModule.subjectTitle"/>
+                <jsp:param name="helpLocale" value="modules.createModule.subjectHelp"/>
+              </jsp:include>
                 
 	            <select name="subject">           
                 <c:forEach var="educationType" items="${educationTypes}">

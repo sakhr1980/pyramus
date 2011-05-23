@@ -287,15 +287,46 @@
                   </jsp:include>
                   <select name="subject">
                     <option></option>           
-                    <c:forEach var="subject" items="${subjects}">
+                    <c:forEach var="educationType" items="${educationTypes}">
+                      <c:if test="${subjectsByEducationType[educationType.id] ne null}">
+                        <optgroup label="${educationType.name}">
+                          <c:forEach var="subject" items="${subjectsByEducationType[educationType.id]}">
+                            <c:choose>
+                              <c:when test="${empty subject.code}">
+                                <c:set var="subjectName">${subject.name}</c:set>
+                              </c:when>
+                              <c:otherwise>
+                                <c:set var="subjectName">
+                                  <fmt:message key="generic.subjectFormatterNoEducationType">
+                                    <fmt:param value="${subject.code}"/>
+                                    <fmt:param value="${subject.name}"/>
+                                  </fmt:message>
+                                </c:set>
+                              </c:otherwise>
+                            </c:choose>
+    
+                            <option value="${subject.id}">${subjectName}</option> 
+                          </c:forEach>
+                        </optgroup>
+                      </c:if>
+                    </c:forEach>
+    
+                    <c:forEach var="subject" items="${subjectsByNoEducationType}">
                       <c:choose>
                         <c:when test="${empty subject.code}">
-                          <option value="${subject.id}">${subject.name}</option> 
+                          <c:set var="subjectName">${subject.name}</c:set>
                         </c:when>
                         <c:otherwise>
-                          <option value="${subject.id}">${subject.name} (${subject.code})</option> 
+                          <c:set var="subjectName">
+                            <fmt:message key="generic.subjectFormatterNoEducationType">
+                              <fmt:param value="${subject.code}"/>
+                              <fmt:param value="${subject.name}"/>
+                            </fmt:message>
+                          </c:set>
                         </c:otherwise>
                       </c:choose>
+    
+                      <option value="${subject.id}">${subjectName}</option> 
                     </c:forEach>
                   </select>
                 </div>
