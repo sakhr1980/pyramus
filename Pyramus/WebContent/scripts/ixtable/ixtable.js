@@ -1771,7 +1771,7 @@ IxRadioButtonTableEditorController = Class.create(IxTableEditorController, {
 IxTableControllers.registerController(new IxRadioButtonTableEditorController());
 IxDateTableEditorController = Class.create(IxTableEditorController, {
   buildEditor: function ($super, name, columnDefinition) {
-    var cellEditor = this._createEditorElement("input", name, "", {name: name, type: "text"}, columnDefinition);
+    var cellEditor = this._createEditorElement("input", name, "ixTableCellEditorDate", {name: name, type: "text"}, columnDefinition);
     return cellEditor;
   },
   buildViewer: function ($super, name, columnDefinition) {
@@ -1831,6 +1831,7 @@ IxDateTableEditorController = Class.create(IxTableEditorController, {
     if (handlerInstance._editable == true) {
       // TODO: Click support for editor
       this._getEditorComponent(handlerInstance).destroy();
+      $super(handlerInstance);
     } else {    
       Event.stopObserving(handlerInstance, "click", handlerInstance._clickListener);
       handlerInstance._clickListener = undefined;
@@ -1903,9 +1904,6 @@ IxButtonTableEditorButtonController = Class.create(IxTableEditorController, {
     } else {
       throw new Error("Unable to build button without image");
     }
-  },
-  destroyHandler: function ($super, handlerInstance) { 
-    $super(handlerInstance);
   },
   attachContentHandler: function ($super, table, cell, handlerInstance) {
     var handlerInstance = $super(table, cell, handlerInstance);
