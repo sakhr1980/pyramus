@@ -518,10 +518,32 @@
 
           rows.clear();
           <c:forEach var="studentTransferCredit" items="${transferCredits[student.id]}">
-            <c:set var="subjectName">${studentTransferCredit.subject.name}</c:set>
-            <c:if test="${studentTransferCredit.subject.educationType ne null}">
-              <c:set var="subjectName">${subjectName} (${studentTransferCredit.subject.educationType.name})</c:set>
-            </c:if>
+            <c:set var="subjectName">
+              <c:choose>
+                <c:when test="${studentTransferCredit.subject.educationType ne null and not empty course.subject.code}">
+                  <fmt:message key="generic.subjectFormatterWithEducationType">
+                    <fmt:param value="${studentTransferCredit.subject.code}"/>
+                    <fmt:param value="${studentTransferCredit.subject.name}"/>
+                    <fmt:param value="${studentTransferCredit.subject.educationType.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:when test="${studentTransferCredit.subject.educationType ne null and empty studentTransferCredit.subject.code}">
+                  <fmt:message key="generic.subjectFormatterNoSubjectCode">
+                    <fmt:param value="${studentTransferCredit.subject.name}"/>
+                    <fmt:param value="${studentTransferCredit.subject.educationType.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:when test="${studentTransferCredit.subject.educationType eq null and not empty studentTransferCredit.subject.code}">
+                  <fmt:message key="generic.subjectFormatterNoEducationType">
+                    <fmt:param value="${studentTransferCredit.subject.code}"/>
+                    <fmt:param value="${studentTransferCredit.subject.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:otherwise>
+                  ${studentTransferCredit.subject.name}
+                </c:otherwise>
+              </c:choose>
+            </c:set>
           
             rows.push([
               '${fn:escapeXml(studentTransferCredit.courseName)}',
@@ -556,10 +578,32 @@
 
           rows.clear();
           <c:forEach var="studentCourseAssessment" items="${courseAssessments[student.id]}">
-            <c:set var="subjectName">${studentCourseAssessment.courseStudent.course.subject.name}</c:set>
-            <c:if test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null}">
-              <c:set var="subjectName">${subjectName} (${studentCourseAssessment.courseStudent.course.subject.educationType.name})</c:set>
-            </c:if>
+            <c:set var="subjectName">
+              <c:choose>
+                <c:when test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null and not empty course.subject.code}">
+                  <fmt:message key="generic.subjectFormatterWithEducationType">
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.code}"/>
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.name}"/>
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.educationType.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:when test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null and empty studentCourseAssessment.courseStudent.course.subject.code}">
+                  <fmt:message key="generic.subjectFormatterNoSubjectCode">
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.name}"/>
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.educationType.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:when test="${studentCourseAssessment.courseStudent.course.subject.educationType eq null and not empty studentCourseAssessment.courseStudent.course.subject.code}">
+                  <fmt:message key="generic.subjectFormatterNoEducationType">
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.code}"/>
+                    <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.name}"/>
+                  </fmt:message>
+                </c:when>
+                <c:otherwise>
+                  ${studentCourseAssessment.courseStudent.course.subject.name}
+                </c:otherwise>
+              </c:choose>
+            </c:set>
             
             rows.push([
               '${fn:escapeXml(studentCourseAssessment.courseStudent.course.name)}',

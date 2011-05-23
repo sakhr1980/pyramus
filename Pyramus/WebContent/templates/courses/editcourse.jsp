@@ -1204,7 +1204,7 @@
             selectController.addOption(cellEditor, 
                 ${courseStudentStudent.id},
                 '${fn:escapeXml(studyProgrammeName)}',
-                ${courseStudent.student.id == courseStudentStudent.id}
+                ${courseStudent.student.id eq courseStudentStudent.id}
              );
           </c:forEach>
           
@@ -1445,7 +1445,7 @@
               <select name="state">           
                 <c:forEach var="state" items="${states}">
                   <c:choose>
-                    <c:when test="${state.id == course.state.id}">
+                    <c:when test="${state.id eq course.state.id}">
                       <option value="${state.id}" selected="selected">${state.name}</option>
                     </c:when>
                     <c:otherwise>
@@ -1499,12 +1499,17 @@
                             <c:set var="subjectName">${subject.name}</c:set>
                           </c:when>
                           <c:otherwise>
-                            <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                            <c:set var="subjectName">
+                              <fmt:message key="generic.subjectFormatterNoEducationType">
+                                <fmt:param value="${subject.code}"/>
+                                <fmt:param value="${subject.name}"/>
+                              </fmt:message>
+                            </c:set>
                           </c:otherwise>
                         </c:choose>
 
                         <c:choose>
-                          <c:when test="${subject.id == course.subject.id}">
+                          <c:when test="${subject.id eq course.subject.id}">
                             <option value="${subject.id}" selected="selected">${subjectName}</option>
                           </c:when>
                           <c:otherwise>
@@ -1513,7 +1518,7 @@
                         </c:choose>
                       </c:forEach>
 
-                      <c:if test="${course.subject.archived == true and course.subject.educationType.id == educationType.id}">
+                      <c:if test="${course.subject.archived and course.subject.educationType.id eq educationType.id}">
                         <option value="${course.subject.id}" selected="selected">${subjectName}*</option>
                       </c:if>
                     </optgroup>
@@ -1526,12 +1531,17 @@
                       <c:set var="subjectName">${subject.name}</c:set>
                     </c:when>
                     <c:otherwise>
-                      <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                      <c:set var="subjectName">
+                        <fmt:message key="generic.subjectFormatterNoEducationType">
+                          <fmt:param value="${subject.code}"/>
+                          <fmt:param value="${subject.name}"/>
+                        </fmt:message>
+                      </c:set>
                     </c:otherwise>
                   </c:choose>
 
                   <c:choose>
-                    <c:when test="${subject.id == course.subject.id}">
+                    <c:when test="${subject.id eq course.subject.id}">
                       <option value="${subject.id}" selected="selected">${subjectName}</option>
                     </c:when>
                     <c:otherwise>
@@ -1540,7 +1550,7 @@
                   </c:choose>
                 </c:forEach>
 
-                <c:if test="${course.subject.archived == true and course.subject.educationType.id eq null}">
+                <c:if test="${course.subject.archived and course.subject.educationType.id eq null}">
                   <option value="${course.subject.id}" selected="selected">${course.subject.name} (${course.subject.code})*</option>
                 </c:if>
               </select>
@@ -1586,7 +1596,7 @@
                   <input type="text" name="courseLength" class="float required" value="${course.courseLength.units}" size="15"/>
                   <select name="courseLengthTimeUnit">           
                     <c:forEach var="courseLengthTimeUnit" items="${courseLengthTimeUnits}">
-                      <option value="${courseLengthTimeUnit.id}" <c:if test="${course.courseLength.unit.id == courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
+                      <option value="${courseLengthTimeUnit.id}" <c:if test="${course.courseLength.unit.id eq courseLengthTimeUnit.id}">selected="selected"</c:if>>${courseLengthTimeUnit.name}</option> 
                     </c:forEach>
                   </select>   
                 </td>

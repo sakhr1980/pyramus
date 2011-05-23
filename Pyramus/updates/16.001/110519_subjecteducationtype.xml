@@ -4,7 +4,7 @@
   <alterTables>
     <table name="StudyProgrammeCategory">
       <addFields>
-        <field name="educationType" type="java.lang.Integer" nullable="true" unique="false" />
+        <field name="educationType" type="java.lang.Long" nullable="true" unique="false" />
       </addFields>
       <addForeignKeys>
         <key columns="educationType" referencedColumns="id" referencedTable="EducationType"/>
@@ -13,7 +13,7 @@
 
     <table name="Subject">
       <addFields>
-        <field name="educationType" type="java.lang.Integer" nullable="true" unique="false" />
+        <field name="educationType" type="java.lang.Long" nullable="true" unique="false" />
       </addFields>
       <addForeignKeys>
         <key columns="educationType" referencedColumns="id" referencedTable="EducationType"/>

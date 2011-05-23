@@ -7,6 +7,7 @@ import java.util.Map;
 
 import fi.pyramus.JSONRequestContext;
 import fi.pyramus.UserRole;
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.GradingDAO;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
@@ -25,9 +26,33 @@ public class LoadTransferCreditTemplateJSONRequestController implements JSONRequ
     
     for (TransferCreditTemplateCourse templateCourse : transferCreditTemplate.getCourses()) {
       Map<String, Object> result = new HashMap<String, Object>();
+      
       String subjectName = templateCourse.getSubject().getName();
-      if (templateCourse.getSubject().getEducationType() != null)
-        subjectName += " (" + templateCourse.getSubject().getEducationType().getName() + ")";
+      String subjectCode = templateCourse.getSubject().getCode();
+      String subjectEducationType = templateCourse.getSubject().getEducationType() != null ? templateCourse.getSubject().getEducationType().getName() : null;
+      
+      String localizedSubject = subjectName;
+      
+      if ((subjectCode != null) && (subjectEducationType != null)) {
+        localizedSubject = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), 
+            "generic.subjectFormatterWithEducationType", new Object[] {
+          subjectCode,
+          subjectName,
+          subjectEducationType
+        });
+      } else if (subjectEducationType != null) {
+        localizedSubject = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), 
+            "generic.subjectFormatterNoSubjectCode", new Object[] {
+          subjectName,
+          subjectEducationType
+        });
+      } else if (subjectCode != null) {
+        localizedSubject = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), 
+            "generic.subjectFormatterNoEducationType", new Object[] {
+          subjectCode,
+          subjectName
+        });
+      }
       
       result.put("courseId", templateCourse.getId());
       result.put("courseUnits", templateCourse.getCourseLength().getUnits());
@@ -36,7 +61,7 @@ public class LoadTransferCreditTemplateJSONRequestController implements JSONRequ
       result.put("courseNumber", templateCourse.getCourseNumber());
       result.put("courseOptionality", templateCourse.getOptionality().name());
       result.put("subjectId", templateCourse.getSubject().getId());
-      result.put("subjectName", subjectName);
+      result.put("subjectName", localizedSubject);
 
       results.add(result);
     }

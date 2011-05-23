@@ -211,7 +211,12 @@
                             <c:set var="subjectName">${subject.name}</c:set>
                           </c:when>
                           <c:otherwise>
-                            <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                            <c:set var="subjectName">
+                              <fmt:message key="generic.subjectFormatterNoEducationType">
+                                <fmt:param value="${subject.code}"/>
+                                <fmt:param value="${subject.name}"/>
+                              </fmt:message>
+                            </c:set>
                           </c:otherwise>
                         </c:choose>
 
@@ -227,7 +232,12 @@
                       <c:set var="subjectName">${subject.name}</c:set>
                     </c:when>
                     <c:otherwise>
-                      <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                      <c:set var="subjectName">
+                        <fmt:message key="generic.subjectFormatterNoEducationType">
+                          <fmt:param value="${subject.code}"/>
+                          <fmt:param value="${subject.name}"/>
+                        </fmt:message>
+                      </c:set>
                     </c:otherwise>
                   </c:choose>
 
@@ -254,7 +264,7 @@
               <input type="text" name="moduleLength" class="float required" size="15"/>
               <select name="moduleLengthTimeUnit">           
                 <c:forEach var="moduleLengthTimeUnit" items="${moduleLengthTimeUnits}">
-                  <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
+                  <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id eq moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
                 </c:forEach>
               </select>            
             </div>

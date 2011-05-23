@@ -643,7 +643,7 @@
                   <option></option>           
                   <c:forEach var="studyProgramme" items="${studyProgrammes}">
                     <c:choose>
-                      <c:when test="${studyProgramme.id == student.studyProgramme.id}">
+                      <c:when test="${studyProgramme.id eq student.studyProgramme.id}">
                         <option value="${studyProgramme.id}" selected="selected">${studyProgramme.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -651,7 +651,7 @@
                       </c:otherwise>
                     </c:choose>
                   </c:forEach>
-                  <c:if test="${student.studyProgramme.archived == true}">
+                  <c:if test="${student.studyProgramme.archived}">
                     <option value="${student.studyProgramme.id}" selected="selected">${student.studyProgramme.name}*</option>
                   </c:if>
                 </select>
@@ -731,7 +731,7 @@
                   <option></option>  
                   <c:forEach var="municipality" items="${municipalities}">
                     <c:choose>
-                      <c:when test="${municipality.id == student.municipality.id}">
+                      <c:when test="${municipality.id eq student.municipality.id}">
                         <option value="${municipality.id}" selected="selected">${municipality.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -751,7 +751,7 @@
                   <option></option>  
                   <c:forEach var="language" items="${languages}">
                     <c:choose>
-                      <c:when test="${language.id == student.language.id}">
+                      <c:when test="${language.id eq student.language.id}">
                         <option value="${language.id}" selected="selected">${language.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -771,7 +771,7 @@
                   <option></option>  
                   <c:forEach var="nationality" items="${nationalities}">
                     <c:choose>
-                      <c:when test="${nationality.id == student.nationality.id}">
+                      <c:when test="${nationality.id eq student.nationality.id}">
                         <option value="${nationality.id}" selected="selected">${nationality.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -791,7 +791,7 @@
                   <option></option>  
                   <c:forEach var="activityType" items="${activityTypes}">
                     <c:choose>
-                      <c:when test="${activityType.id == student.activityType.id}">
+                      <c:when test="${activityType.id eq student.activityType.id}">
                         <option value="${activityType.id}" selected="selected">${activityType.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -811,7 +811,7 @@
                   <option></option>  
                   <c:forEach var="examinationType" items="${examinationTypes}">
                     <c:choose>
-                      <c:when test="${examinationType.id == student.examinationType.id}">
+                      <c:when test="${examinationType.id eq student.examinationType.id}">
                         <option value="${examinationType.id}" selected="selected">${examinationType.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -831,7 +831,7 @@
                   <option></option>  
                   <c:forEach var="educationalLevel" items="${educationalLevels}">
                     <c:choose>
-                      <c:when test="${educationalLevel.id == student.educationalLevel.id}">
+                      <c:when test="${educationalLevel.id eq student.educationalLevel.id}">
                         <option value="${educationalLevel.id}" selected="selected">${educationalLevel.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -852,7 +852,7 @@
                   <option value="-1"></option>           
                   <c:forEach var="school" items="${schools}">
                     <c:choose>
-                      <c:when test="${school.id == student.school.id}">
+                      <c:when test="${school.id eq student.school.id}">
                         <option value="${school.id}" selected="selected">${school.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -860,7 +860,7 @@
                       </c:otherwise>
                     </c:choose>
                   </c:forEach>
-                  <c:if test="${student.school.archived == true}">
+                  <c:if test="${student.school.archived}">
                     <option value="${student.school.id}" selected="selected">${student.school.name}*</option>
                   </c:if>
                 </select>
@@ -915,7 +915,7 @@
                   <option></option>  
                   <c:forEach var="reason" items="${studyEndReasons}">
                     <c:choose>
-                      <c:when test="${reason.id == student.studyEndReason.id}">
+                      <c:when test="${reason.id eq student.studyEndReason.id}">
                         <option value="${reason.id}" selected="selected">${reason.name}</option> 
                       </c:when>
                       <c:otherwise>
@@ -927,7 +927,7 @@
 	                    <optgroup>
 			                  <c:forEach var="childReason" items="${reason.childEndReasons}">
 			                    <c:choose>
-			                      <c:when test="${childReason.id == student.studyEndReason.id}">
+			                      <c:when test="${childReason.id eq student.studyEndReason.id}">
 			                        <option value="${childReason.id}" selected="selected">${childReason.name}</option> 
 			                      </c:when>
 			                      <c:otherwise>

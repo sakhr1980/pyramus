@@ -344,12 +344,17 @@
                             <c:set var="subjectName">${subject.name}</c:set>
                           </c:when>
                           <c:otherwise>
-                            <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                            <c:set var="subjectName">
+                              <fmt:message key="generic.subjectFormatterNoEducationType">
+                                <fmt:param value="${subject.code}"/>
+                                <fmt:param value="${subject.name}"/>
+                              </fmt:message>
+                            </c:set>
                           </c:otherwise>
                         </c:choose>
 
                         <c:choose>
-                          <c:when test="${subject.id == module.subject.id}">
+                          <c:when test="${subject.id eq module.subject.id}">
                             <option value="${subject.id}" selected="selected">${subjectName}</option>
                           </c:when>
                           <c:otherwise>
@@ -358,7 +363,7 @@
                         </c:choose>
                       </c:forEach>
 
-                      <c:if test="${module.subject.archived == true and module.subject.educationType.id == educationType.id}">
+                      <c:if test="${module.subject.archived and module.subject.educationType.id eq educationType.id}">
                         <option value="${module.subject.id}" selected="selected">${subjectName}*</option>
                       </c:if>
                     </optgroup>
@@ -371,12 +376,17 @@
                       <c:set var="subjectName">${subject.name}</c:set>
                     </c:when>
                     <c:otherwise>
-                      <c:set var="subjectName">${subject.name} (${subject.code})</c:set>
+                      <c:set var="subjectName">
+                        <fmt:message key="generic.subjectFormatterNoEducationType">
+                          <fmt:param value="${subject.code}"/>
+                          <fmt:param value="${subject.name}"/>
+                        </fmt:message>
+                      </c:set>
                     </c:otherwise>
                   </c:choose>
 
                   <c:choose>
-                    <c:when test="${subject.id == module.subject.id}">
+                    <c:when test="${subject.id eq module.subject.id}">
                       <option value="${subject.id}" selected="selected">${subjectName}</option>
                     </c:when>
                     <c:otherwise>
@@ -385,7 +395,7 @@
                   </c:choose>
                 </c:forEach>
 
-                <c:if test="${module.subject.archived == true and module.subject.educationType.id eq null}">
+                <c:if test="${module.subject.archived and module.subject.educationType.id eq null}">
                   <option value="${module.subject.id}" selected="selected">${module.subject.name} (${module.subject.code})*</option>
                 </c:if>
               </select>
@@ -408,7 +418,7 @@
               <input type="text" name="moduleLength" class="float required" value="${module.courseLength.units}" size="15"/>
               <select name="moduleLengthTimeUnit">           
                 <c:forEach var="moduleLengthTimeUnit" items="${moduleLengthTimeUnits}">
-                  <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id == moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
+                  <option value="${moduleLengthTimeUnit.id}" <c:if test="${module.courseLength.unit.id eq moduleLengthTimeUnit.id}">selected="selected"</c:if>>${moduleLengthTimeUnit.name}</option> 
                 </c:forEach>
               </select>            
             </div>
