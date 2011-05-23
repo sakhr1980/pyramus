@@ -257,6 +257,10 @@ IxValidationDelegator = Class.create({
   },
   _isVisible: function () {
     var e = $(this._field);
+    
+    if (e.getAttribute('type') == 'hidden')
+      return false;
+    
     while (e.parentNode) {
       if (!e.visible())
         return false;
