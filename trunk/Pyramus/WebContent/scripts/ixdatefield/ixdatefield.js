@@ -119,11 +119,11 @@ IxDateField = Class.create({
         $super();
         
         var selectedTs = _this.getTimestamp();
-        if (selectedTs) {
+        if (!_this._isEmptyTimestamp(selectedTs)) {
           var selectedDate = new Date(selectedTs);
           var cell = this._getCell(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate());
           if (cell) {
-            cell.addClassName("selected");
+            cell.addClassName("selectedDate");
           }
         }
       },
@@ -170,43 +170,25 @@ IxDateField = Class.create({
         
         var currentTs = _this.getTimestamp();
         
-        if (currentTs)
+        if (!_this._isEmptyTimestamp(currentTs))
           _this._datePicker.setCurrentDate(new Date(currentTs));
       }
     });
     
-    if (value) {
+    if (!this._isEmptyTimestamp(value)) {
       this.setTimestamp(value);
     }
     
     initializeElementValidation(this._inputText);
   },
   hasValidValue: function () {
-    return this._datePicker.getDatePickerFormatter().match(this._inputText.value);    
+    return this._datePicker.getDatePickerFormatter().match(this._inputText.value) != false; 
   },
   getId : function() {
     return this._id;
   },
-  setDay : function(day) {
-    var date = new Date();
-    date.setTime(this.getTimestamp());
-    date.setDate(day);
-    this.setTimestamp(date.getTime());
-  },
-  setMonth : function(month) {
-    var date = new Date();
-    date.setTime(this.getTimestamp());
-    date.setMonth(month);
-    this.setTimestamp(date.getTime());
-  },
-  setYear : function(year) {
-    var date = new Date();
-    date.setTime(this.getTimestamp());
-    date.setFullYear(year);
-    this.setTimestamp(date.getTime());
-  },
   setTimestamp : function(timestamp) {
-    if (timestamp) {
+    if (!this._isEmptyTimestamp(timestamp)) {
       var date = new Date();
       date.setTime(timestamp);
       this._inputText.value = this._datePicker.getDatePickerFormatter().dateToString(date.getFullYear(), date.getMonth() + 1, date.getDate());
@@ -228,7 +210,7 @@ IxDateField = Class.create({
   },
   getTimestamp : function() {
     var timestamp = this._timestampInput.value;
-    if (timestamp)
+    if (!this._isEmptyTimestamp(timestamp))
       return new Number(this._timestampInput.value);
     else
       return '';
@@ -260,9 +242,9 @@ IxDateField = Class.create({
       } else {
         parent.appendChild(inputElement);
       }
+      this._timestampInput.remove();
     } else {
       this._timestampInput.type = 'text';
-      this._timestampInput.setAttribute();
       this._timestampInput.setAttribute('ix:datefieldid', this.getId());
       this._timestampInput.addClassName("ixDateField");
       
@@ -279,6 +261,16 @@ IxDateField = Class.create({
     Event.stopObserving(this._inputText, "keyup", this._inputTextKeyUpListener);
     
     this._domNode.remove();
+  },
+  _isEmptyTimestamp: function (timestamp) {
+    if (!timestamp) {
+      if ((timestamp === 0)||(timestamp === '0'))  
+        return false;
+      else
+        return true;
+    } else {
+      return false;
+    }
   },
   _checkInputTextChange: function () {
     var selectedDate = this._datePicker.getDatePickerFormatter().match(this._inputText.value);

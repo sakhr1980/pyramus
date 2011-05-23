@@ -91,7 +91,7 @@ div.datepicker table tbody tr td.today {
 	background-repeat: no-repeat;
 }
 
-div.datepicker table tbody tr td.selected, div.datepicker table tbody tr td:hover,div.datepicker table tbody tr td.outbound:hover {
+div.datepicker table tbody tr td.selectedDate, div.datepicker table tbody tr td:hover,div.datepicker table tbody tr td.outbound:hover {
 	background-color: #C8E6E8;
 	border-color: #6482AA;
 	color: #6482AA;
