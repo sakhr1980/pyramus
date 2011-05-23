@@ -19,8 +19,13 @@ IxDateField = Class.create({
     
     __ixDateFields.push(this);
     
+    var classNames = $w(element.className);
     var value = element.value;
+    
     this._inputText = new Element("input", {id: this._paramName + "-text", maxlength: 10, className: "ixDateFieldText"});
+    for (var i = 0, l = classNames.length; i < l; i++) {
+      this._inputText.addClassName(classNames[i]);
+    }
     
     var parent = element.parentNode;
     var nextSibling = element.nextSibling;
@@ -33,6 +38,7 @@ IxDateField = Class.create({
       this._timestampInput.type = 'hidden';
       this._timestampInput.removeAttribute('ix:datefieldid');
       this._timestampInput.removeClassName("ixDateField");
+      this._timestampInput.className = '';
     }
     
     this._openButton = new Element("div", { className: "ixDateFieldOpenButton", title: getLocale().getText("generic.dateField.openButtonTooltip") });
