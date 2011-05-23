@@ -600,7 +600,7 @@
                 <option></option>  
                 <c:forEach var="reason" items="${studyEndReasons}">
                   <c:choose>
-                    <c:when test="${reason.id == student.studyEndReason.id}">
+                    <c:when test="${reason.id eq student.studyEndReason.id}">
                       <option value="${reason.id}" selected="selected">${reason.name}</option> 
                     </c:when>
                     <c:otherwise>
@@ -612,7 +612,7 @@
                     <optgroup>
                       <c:forEach var="childReason" items="${reason.childEndReasons}">
                         <c:choose>
-                          <c:when test="${childReason.id == student.studyEndReason.id}">
+                          <c:when test="${childReason.id eq student.studyEndReason.id}">
                             <option value="${childReason.id}" selected="selected">${childReason.name}</option> 
                           </c:when>
                           <c:otherwise>

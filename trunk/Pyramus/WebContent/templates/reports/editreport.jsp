@@ -44,7 +44,7 @@
                 <option></option>
                 <c:forEach var="category" items="${reportCategories}">
                   <c:choose>
-                    <c:when test="${category.id == report.category.id}">
+                    <c:when test="${category.id eq report.category.id}">
                       <option value="${category.id}" selected="selected">${category.name}</option>
                     </c:when>
                     <c:otherwise>

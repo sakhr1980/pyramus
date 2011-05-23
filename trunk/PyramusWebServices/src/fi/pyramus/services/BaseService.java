@@ -203,7 +203,7 @@ public class BaseService extends PyramusService {
 
   public SubjectEntity createSubject(String code, String name, Long educationTypeId) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
+    EducationType educationType = educationTypeId != null ? baseDAO.getEducationType(educationTypeId) : null;
     Subject subject = baseDAO.createSubject(code, name, educationType);
     validateEntity(subject);
     return EntityFactoryVault.buildFromDomainObject(subject);
@@ -212,7 +212,7 @@ public class BaseService extends PyramusService {
   public void updateSubject(Long subjectId, String code, String name, Long educationTypeId) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     Subject subject = baseDAO.getSubject(subjectId);
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
+    EducationType educationType = educationTypeId != null ? baseDAO.getEducationType(educationTypeId) : null;
     baseDAO.updateSubject(subject, code, name, educationType);
     validateEntity(subject);
   }

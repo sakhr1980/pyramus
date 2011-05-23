@@ -396,8 +396,30 @@
                 <jsp:param name="helpLocale" value="courses.viewCourse.subjectHelp" />
               </jsp:include>
               <div class="genericViewFormDataText">
-                ${course.subject.name}
-                <c:if test="${course.subject.educationType ne null}">(${course.subject.educationType.name})</c:if>
+                <c:choose>
+                  <c:when test="${course.subject.educationType ne null and not empty course.subject.code}">
+                    <fmt:message key="generic.subjectFormatterWithEducationType">
+                      <fmt:param value="${course.subject.code}"/>
+                      <fmt:param value="${course.subject.name}"/>
+                      <fmt:param value="${course.subject.educationType.name}"/>
+                    </fmt:message>
+                  </c:when>
+                  <c:when test="${course.subject.educationType ne null and empty course.subject.code}">
+                    <fmt:message key="generic.subjectFormatterNoSubjectCode">
+                      <fmt:param value="${course.subject.name}"/>
+                      <fmt:param value="${course.subject.educationType.name}"/>
+                    </fmt:message>
+                  </c:when>
+                  <c:when test="${course.subject.educationType eq null and not empty course.subject.code}">
+                    <fmt:message key="generic.subjectFormatterNoEducationType">
+                      <fmt:param value="${course.subject.code}"/>
+                      <fmt:param value="${course.subject.name}"/>
+                    </fmt:message>
+                  </c:when>
+                  <c:otherwise>
+                    ${course.subject.name}
+                  </c:otherwise>
+                </c:choose>
               </div>
             </div>
     

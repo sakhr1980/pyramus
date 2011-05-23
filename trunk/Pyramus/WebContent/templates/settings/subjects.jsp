@@ -50,10 +50,6 @@
             tooltip: '<fmt:message key="settings.subjects.subjectsTableEditTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
-//               for (var i = 0; i < table.getColumnCount(); i++) {
-//                 table.setCellEditable(event.row, i, table.isCellEditable(event.row, i) == false);
-//               }
-              
               table.setCellEditable(event.row, table.getNamedColumnIndex('code'), table.isCellEditable(event.row, table.getNamedColumnIndex('code')) == false);
               table.setCellEditable(event.row, table.getNamedColumnIndex('name'), table.isCellEditable(event.row, table.getNamedColumnIndex('name')) == false);
               table.setCellEditable(event.row, table.getNamedColumnIndex('educationTypeId'), table.isCellEditable(event.row, table.getNamedColumnIndex('educationTypeId')) == false);
