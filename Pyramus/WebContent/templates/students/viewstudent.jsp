@@ -520,7 +520,7 @@
           <c:forEach var="studentTransferCredit" items="${transferCredits[student.id]}">
             <c:set var="subjectName">
               <c:choose>
-                <c:when test="${studentTransferCredit.subject.educationType ne null and not empty course.subject.code}">
+                <c:when test="${studentTransferCredit.subject.educationType ne null and not empty studentTransferCredit.subject.code}">
                   <fmt:message key="generic.subjectFormatterWithEducationType">
                     <fmt:param value="${studentTransferCredit.subject.code}"/>
                     <fmt:param value="${studentTransferCredit.subject.name}"/>
@@ -580,7 +580,7 @@
           <c:forEach var="studentCourseAssessment" items="${courseAssessments[student.id]}">
             <c:set var="subjectName">
               <c:choose>
-                <c:when test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null and not empty course.subject.code}">
+                <c:when test="${studentCourseAssessment.courseStudent.course.subject.educationType ne null and not empty studentCourseAssessment.courseStudent.course.subject.code}">
                   <fmt:message key="generic.subjectFormatterWithEducationType">
                     <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.code}"/>
                     <fmt:param value="${studentCourseAssessment.courseStudent.course.subject.name}"/>

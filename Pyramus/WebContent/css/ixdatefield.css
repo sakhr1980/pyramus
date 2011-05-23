@@ -6,6 +6,8 @@
     background-repeat: no-repeat;
     border: 1px solid #739DE7;
     border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
     cursor: pointer;
     height: 16px;
     padding: 2px;
