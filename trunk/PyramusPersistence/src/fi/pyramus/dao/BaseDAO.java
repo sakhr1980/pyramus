@@ -809,11 +809,19 @@ public class BaseDAO extends PyramusDAO {
    * 
    * @return The subject corresponding to the given code
    */
+  @SuppressWarnings("unchecked")
   public Subject getSubjectByCode(String code) {
     Session s = getHibernateSession();
-    // TODO How to add a case sensitive restriction with Hibernate as current
-    // implementation is for MySQL?
-    return (Subject) s.createCriteria(Subject.class).add(Restrictions.sqlRestriction("binary code = '" + code + "'")).uniqueResult();
+    // TODO How to add a case sensitive restriction with Hibernate and MySQL?
+    List<Subject> subjects = s.createCriteria(Subject.class)
+      .add(Restrictions.eq("code", code)).list();
+    
+    for (Subject subject : subjects) {
+      if (code.equals(subject.getCode()))
+        return subject;
+    }
+    
+    return null;
   }
   
   @SuppressWarnings("unchecked")
