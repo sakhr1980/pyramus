@@ -54,7 +54,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), '', '', results[i].abstractStudentId]);
+              resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), String(results[i].activeStudyProgrammes).escapeHTML(), String(results[i].inactiveStudyProgrammes).escapeHTML(), '', '', results[i].abstractStudentId]);
             }
             resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -140,6 +140,18 @@
           }, {
             header : '<fmt:message key="students.searchStudents.resultsTableNameHeader"/>',
             left: 38,
+            width: 300,
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.searchStudents.resultsTableActiveStudyProgrammeHeader"/>',
+            left: 38 + 300 + 8,
+            width: 300,
+            dataType: 'text',
+            editable: false
+          }, {
+            header : '<fmt:message key="students.searchStudents.resultsTableInactiveStudyProgrammeHeader"/>',
+            left: 38 + 300 + 8 + 300 + 8,
             right: 60,
             dataType: 'text',
             editable: false
