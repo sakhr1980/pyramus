@@ -107,12 +107,35 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
     for (AbstractStudent abstractStudent : abstractStudents) {
     	Student student = abstractStudent.getLatestStudent();
     	if (student != null) {
+    	  String activeStudyProgrammes = "";
+    	  String inactiveStudyProgrammes = "";
+
+    	  List<Student> studentList2 = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    	  
+    	  for (Student student1 : studentList2) {
+    	    if (student1.getStudyProgramme() != null) {
+      	    if (student1.getActive()) {
+      	      if (activeStudyProgrammes.length() == 0)
+      	        activeStudyProgrammes = student1.getStudyProgramme().getName();
+      	      else
+                activeStudyProgrammes += ", " + student1.getStudyProgramme().getName();
+      	    } else {
+              if (inactiveStudyProgrammes.length() == 0)
+                inactiveStudyProgrammes = student1.getStudyProgramme().getName();
+              else
+                inactiveStudyProgrammes += ", " + student1.getStudyProgramme().getName();
+      	    }
+    	    }
+    	  }
+    	  
         Map<String, Object> info = new HashMap<String, Object>();
         info.put("abstractStudentId", abstractStudent.getId());
         info.put("id", abstractStudent.getLatestStudent().getId());
         info.put("firstName", student.getFirstName());
         info.put("lastName", student.getLastName());
         info.put("archived", student.getArchived());
+        info.put("activeStudyProgrammes", activeStudyProgrammes);
+        info.put("inactiveStudyProgrammes", inactiveStudyProgrammes);
         results.add(info);
     	}
     }
