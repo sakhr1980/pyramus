@@ -70,7 +70,17 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            required: true
+            required: true,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
           }, {
             header : '<fmt:message key="settings.subjects.educationTypeHeader"/>',
             left : 8 + 22 + 8 + 100 + 8 + 300 + 8,
@@ -84,7 +94,17 @@
                 {text: "${fn:escapeXml(educationType.name)}", value: ${educationType.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
-            ]
+            ],
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSELECTSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSELECTSORT
+              }
+            }
           }, {
             right: 8,
             width: 22,

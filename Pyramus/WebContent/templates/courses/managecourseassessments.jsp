@@ -36,12 +36,15 @@
           var participationCol = table.getNamedColumnIndex('participationType');
           var assessingUserCol = table.getNamedColumnIndex('assessingUserId');
           var assessmentDateCol = table.getNamedColumnIndex('assessmentDate');
+          var editVerbalAssessmentButtonCol = table.getNamedColumnIndex('editVerbalAssessmentButton');
 
           table.setCellEditable(rowIndex, gradeCol, table.isCellEditable(rowIndex, gradeCol) == false);
           table.setCellEditable(rowIndex, participationCol, table.isCellEditable(rowIndex, participationCol) == false);
           table.setCellEditable(rowIndex, assessingUserCol, table.isCellEditable(rowIndex, assessingUserCol) == false);
           table.setCellEditable(rowIndex, assessmentDateCol, table.isCellEditable(rowIndex, assessmentDateCol) == false);
 
+          table.showCell(rowIndex, editVerbalAssessmentButtonCol);
+          
           var value = table.getCellValue(rowIndex, assessmentDateCol);
           if (!(value && value !== ''))
             table.setCellValue(rowIndex, assessmentDateCol, new Date().getTime());
@@ -69,6 +72,43 @@
         }
       }
 
+      function openEditVerbalAssessmentDialog(row) {
+        var table = getIxTableById("studentsTable"); 
+        var courseStudentId = table.getCellValue(row, table.getNamedColumnIndex('courseStudentId'));
+        
+        var dialog = new IxDialog({
+          id : 'editVerbalAssessmentDialog',
+          contentURL : GLOBAL_contextPath + '/courses/editverbalassessmentdialog.page?courseStudentId=' + courseStudentId,
+          centered : true,
+          showOk : true,
+          showCancel : true,
+          _rowIndex : row,
+          title : '<fmt:message key="courses.editVerbalAssessmentDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.okLabel"/>', 
+          cancelLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.cancelLabel"/>' 
+        });
+        
+        dialog.setSize("600px", "350px");
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'okClick':
+              var verbalAssessment = event.results.verbalAssessment.escapeHTML();
+              var verbalShort = event.results.verbalAssessment.stripTags().trim().truncate(17);
+              
+              var table = getIxTableById("studentsTable"); 
+              var verbalModCol = table.getNamedColumnIndex('verbalModified');
+              var verbalAssessmentCol = table.getNamedColumnIndex('verbalAssessment');
+              var verbalShortCol = table.getNamedColumnIndex('verbalAssessmentShort');
+              table.setCellValue(row, verbalModCol, 1);
+              table.setCellValue(row, verbalAssessmentCol, verbalAssessment);
+              table.setCellValue(row, verbalShortCol, verbalShort);
+            break;
+          }
+        });
+        dialog.open();
+      }
+      
       function setupStudentsTable() {
         var studentsTable = new IxTable($('studentsTable'), {
           id : "studentsTable",
@@ -123,7 +163,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableNameHeader"/>',
             left : 8 + 22 + 8 + 22 + 8,
-            right : 8 + 145 + 8 + 180 + 8 + 160 + 8 + 120 + 8 + 100 + 8,
+            right : 8 + 22 + 8 + 100 + 8 + 145 + 8 + 150 + 8 + 130 + 8 + 80 + 8 + 100 + 8,
             dataType : 'text',
             paramName: 'studentName',
             editable: false,
@@ -140,7 +180,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableStudyProgrammeHeader"/>',
             width: 160,
-            right : 8 + 145 + 8 + 180 + 8 + 160 + 8 + 120 + 8,
+            right : 8 + 22 + 8 + 100 + 8 + 145 + 8 + 150 + 8 + 130 + 8 + 80 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'studyProgrammeName',
@@ -156,8 +196,8 @@
             }
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableGradeHeader"/>',
-            width: 120,
-            right : 8 + 145 + 8 + 180 + 8 + 160 + 8,
+            width: 80,
+            right : 8 + 22 + 8 + 100 + 8 + 145 + 8 + 150 + 8 + 130 + 8,
             dataType : 'select',
             editable: false,
             paramName: 'gradeId',
@@ -199,8 +239,8 @@
             ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableParticipationTypeHeader"/>',
-            width: 160,
-            right : 8 + 145 + 8 + 180 + 8,
+            width: 130,
+            right : 8 + 22 + 8 + 100 + 8 + 145 + 8 + 150 + 8,
             dataType : 'select',
             editable: false,
             paramName: 'participationType',
@@ -243,8 +283,8 @@
             ]            
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessingUserHeader"/>',
-            width : 180,
-            right: 8 + 145 + 8,
+            width : 150,
+            right: 8 + 22 + 8 + 100 + 8 + 145 + 8,
             dataType: 'autoCompleteSelect',
             required: true,
             editable: false,
@@ -285,7 +325,7 @@
           }, {
             header : '<fmt:message key="courses.manageCourseAssessments.studentsTableAssessmentDateHeader"/>',
             width: 145,
-            right : 8,
+            right : 8 + 22 + 8 + 100 + 8,
             dataType: 'date',
             editable: false,
             paramName: 'assessmentDate',
@@ -321,6 +361,24 @@
               }
             ]            
           }, {
+            header : '<fmt:message key="courses.manageCourseAssessments.studentsTableVerbalAssessmentHeader"/>',
+            width : 100,
+            right : 8 + 22 + 8,
+            dataType : 'text',
+            paramName: 'verbalAssessmentShort',
+            editable: false
+          }, {
+            width: 22,
+            right: 8,
+            hidden: true,
+            dataType: 'button',
+            paramName: 'editVerbalAssessmentButton',
+            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditVerbalAssessmentTooltip"/>',
+            onclick: function (event) {
+              openEditVerbalAssessmentDialog(event.row);
+            }
+          }, {
             dataType: 'hidden', 
             paramName: 'courseStudentId'
           }, {
@@ -329,7 +387,13 @@
           }, {
             dataType: 'hidden', 
             paramName: 'modified'
-          }]        
+          }, {
+            dataType: 'hidden', 
+            paramName: 'verbalAssessment'
+          }, {
+            dataType: 'hidden', 
+            paramName: 'verbalModified'
+          }]
         });
 
         studentsTable.addListener("afterRowVisibilityChange", function (event) {
@@ -350,6 +414,16 @@
               <c:set var="studyProgrammeName"><fmt:message key="courses.manageCourseAssessments.studentsTableNoStudyProgrammeLabel"/></c:set>
             </c:otherwise>
           </c:choose>
+          
+          <c:choose>
+            <c:when test="${fn:length(verbalAssessments[assessments[courseStudent.id].id]) gt 14}">
+              <c:set var="verbalAssessment">${fn:substring(verbalAssessments[assessments[courseStudent.id].id], 0, 14)}...</c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="verbalAssessment">${verbalAssessments[assessments[courseStudent.id].id]}</c:set>
+            </c:otherwise>
+          </c:choose>
+          
           rowIndex = studentsTable.addRow([
             '',
             '',
@@ -359,8 +433,12 @@
             '${courseStudent.participationType.id}',
             '${assessments[courseStudent.id].assessingUser.id}',
             '${assessments[courseStudent.id].date.time}',
+            '${verbalAssessment}',
+            '',
             '${courseStudent.id}',
             '${courseStudent.student.abstractStudent.id}',
+            0,
+            '',
             0]);
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(studentsTable.getCellEditor(rowIndex, userColumnIndex), '${fn:escapeXml(assessments[courseStudent.id].assessingUser.fullName)}');
         </c:forEach>
