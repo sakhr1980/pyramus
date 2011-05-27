@@ -55,13 +55,22 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
 
         Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
         CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
+        String verbalAssessment = null;
 
         CourseAssessment assessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
 
-        if (assessment != null) {
-          assessment = gradingDAO.updateCourseAssessment(assessment, assessingUser, grade, assessmentDate, assessment.getVerbalAssessment());
+        Long verbalModified = requestContext.getLong(colPrefix + ".verbalModified");
+        if ((verbalModified != null) && (verbalModified.intValue() == 1)) {
+          verbalAssessment = requestContext.getString(colPrefix + ".verbalAssessment");
         } else {
-          assessment = gradingDAO.createCourseAssessment(courseStudent, assessingUser, grade, assessmentDate, null);
+          if (assessment != null)
+            verbalAssessment = assessment.getVerbalAssessment();
+        }
+
+        if (assessment != null) {
+          assessment = gradingDAO.updateCourseAssessment(assessment, assessingUser, grade, assessmentDate, verbalAssessment);
+        } else {
+          assessment = gradingDAO.createCourseAssessment(courseStudent, assessingUser, grade, assessmentDate, verbalAssessment);
         }
 
         // Update Participation type

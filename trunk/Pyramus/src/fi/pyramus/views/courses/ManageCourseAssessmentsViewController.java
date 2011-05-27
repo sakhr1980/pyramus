@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.PageRequestContext;
@@ -55,20 +56,32 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
     });
     
     Map<Long, CourseAssessment> courseAssessments = new HashMap<Long, CourseAssessment>();
+    Map<Long, String> verbalAssessments = new HashMap<Long, String>();
 
     Iterator<CourseStudent> students = courseStudents.iterator();
     while (students.hasNext()) {
       CourseStudent courseStudent = students.next();
       
       CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
-      if (courseAssessment != null)
+      if (courseAssessment != null) {
         courseAssessments.put(courseStudent.getId(), courseAssessment);
+        
+        // Shortened descriptions
+        String description = courseAssessment.getVerbalAssessment();
+        if (description != null) {
+          description = StringEscapeUtils.unescapeHtml(description.replaceAll("\\<.*?>",""));
+          description = description.replaceAll("\\n", "");
+          
+          verbalAssessments.put(courseAssessment.getId(), description);
+        }
+      }
     }
     
     pageRequestContext.getRequest().setAttribute("course", course);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
     pageRequestContext.getRequest().setAttribute("assessments", courseAssessments);
+    pageRequestContext.getRequest().setAttribute("verbalAssessments", verbalAssessments);
     pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);
     
     pageRequestContext.setIncludeJSP("/templates/courses/managecourseassessments.jsp");
