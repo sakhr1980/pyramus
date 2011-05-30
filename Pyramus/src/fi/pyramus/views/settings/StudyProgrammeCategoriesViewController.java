@@ -1,5 +1,7 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
@@ -7,7 +9,9 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -24,8 +28,12 @@ public class StudyProgrammeCategoriesViewController implements PyramusViewContro
    */
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("studyProgrammeCategories", baseDAO.listStudyProgrammeCategories());
-    pageRequestContext.getRequest().setAttribute("educationTypes", baseDAO.listEducationTypes());
+    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     pageRequestContext.setIncludeJSP("/templates/settings/studyprogrammecategories.jsp");
   }
 

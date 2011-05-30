@@ -1,5 +1,6 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,6 +13,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -28,8 +30,13 @@ public class CreateTransferCreditTemplateViewController implements PyramusViewCo
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     
     List<Subject> subjects = baseDAO.listSubjects();
+    Collections.sort(subjects, new StringAttributeComparator("getName"));
+
     List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(timeUnits, new StringAttributeComparator("getName"));
+
     List<School> schools = baseDAO.listSchools();
+    Collections.sort(schools, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("subjects", subjects);
     pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);

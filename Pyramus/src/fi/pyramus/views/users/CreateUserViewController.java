@@ -1,6 +1,7 @@
 package fi.pyramus.views.users;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -10,9 +11,12 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.ContactType;
+import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -46,9 +50,15 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
       
       authenticationProviders.add(new AuthenticationProviderInfoBean(authenticationProviderName, active, canUpdateCredentials));
     }
+
+    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
     
-    pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
+    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    Collections.sort(contactTypes, new StringAttributeComparator("getName"));
+
+    pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
+    pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
     pageRequestContext.getRequest().setAttribute("authenticationProviders", authenticationProviders);
     
     pageRequestContext.setIncludeJSP("/templates/users/createuser.jsp");

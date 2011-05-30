@@ -1,6 +1,8 @@
 package fi.pyramus.views.projects;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,12 +19,15 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -69,13 +74,23 @@ public class EditStudentProjectViewController implements PyramusViewController, 
 
     List<Student> students = studentDAO.listStudentsByAbstractStudent(studentProject.getStudent().getAbstractStudent());
 
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
+
+    List<AcademicTerm> academicTerms = baseDAO.listAcademicTerms();
+    Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
+      public int compare(AcademicTerm o1, AcademicTerm o2) {
+        return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());
+      }
+    });
+    
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
     pageRequestContext.getRequest().setAttribute("students", students);
-    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
-    pageRequestContext.getRequest().setAttribute("academicTerms", baseDAO.listAcademicTerms());
+    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
+    pageRequestContext.getRequest().setAttribute("academicTerms", academicTerms);
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
 
     pageRequestContext.setIncludeJSP("/templates/projects/editstudentproject.jsp");

@@ -1,6 +1,8 @@
 package fi.pyramus.views.projects;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -12,9 +14,11 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -44,9 +48,12 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
         tagsBuilder.append(' ');
     }
     
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("project", project);
-    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
 
     pageRequestContext.setIncludeJSP("/templates/projects/editproject.jsp");

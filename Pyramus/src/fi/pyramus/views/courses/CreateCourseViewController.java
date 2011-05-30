@@ -1,5 +1,6 @@
 package fi.pyramus.views.courses;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,11 +19,13 @@ import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -51,6 +54,7 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     // course to be created has them selected as well
     
     List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    Collections.sort(educationTypes, new StringAttributeComparator("getName"));
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     Map<String, Boolean> enabledEducationTypes = new HashMap<String, Boolean>();
     for (CourseEducationType courseEducationType : module.getCourseEducationTypes()) {
@@ -78,13 +82,19 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     // Subjects
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
     List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
     for (EducationType educationType : educationTypes) {
       List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
-      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
+        Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+      }
     }
 
-    // Various lists of base entities from module, course, and resource DAOs 
+    // Various lists of base entities from module, course, and resource DAOs
+    
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());
     pageRequestContext.getRequest().setAttribute("roles", courseDAO.listCourseUserRoles());
@@ -92,7 +102,7 @@ public class CreateCourseViewController implements PyramusViewController, Breadc
     pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
     pageRequestContext.getRequest().setAttribute("courseEnrolmentTypes",courseDAO.listCourseEnrolmentTypes());
-    pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("courseLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("moduleComponents", moduleComponents);
     pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(module));
     pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());

@@ -1,5 +1,7 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
@@ -7,7 +9,9 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -24,7 +28,10 @@ public class MunicipalitiesViewController implements PyramusViewController, Brea
    */
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    pageRequestContext.getRequest().setAttribute("municipalities", baseDAO.listMunicipalities());
+    
+    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    Collections.sort(municipalities, new StringAttributeComparator("getName"));
+    pageRequestContext.getRequest().setAttribute("municipalities", municipalities);
     pageRequestContext.setIncludeJSP("/templates/settings/municipalities.jsp");
   }
 

@@ -1,6 +1,7 @@
 package fi.pyramus.views.users;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -11,11 +12,14 @@ import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
 import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.base.ContactType;
+import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -66,12 +70,18 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
       if (tagIterator.hasNext())
         tagsBuilder.append(' ');
     }
-    
+
+    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
+
+    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    Collections.sort(contactTypes, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("user", user);
     pageRequestContext.getRequest().setAttribute("username", username);
-    pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
+    pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
+    pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
     pageRequestContext.getRequest().setAttribute("variableKeys", userDAO.listUserVariableKeys());
     pageRequestContext.getRequest().setAttribute("authenticationProviders", authenticationProviders);
     

@@ -1,5 +1,6 @@
 package fi.pyramus.views.modules;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +19,12 @@ import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -64,6 +67,8 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
 
     
     List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     Map<String, Boolean> enabledEducationTypes = new HashMap<String, Boolean>();
     for (CourseEducationType courseEducationType : module.getCourseEducationTypes()) {
@@ -76,17 +81,24 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     // Subjects
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
     List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
+    
     for (EducationType educationType : educationTypes) {
       List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
-      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
+        Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+      }
     }
+
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("module", module);
     pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
     pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
-    pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("moduleComponents", moduleDAO.listModuleComponents(module));
     pageRequestContext.getRequest().setAttribute("enabledEducationTypes", enabledEducationTypes);
     pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(module));
