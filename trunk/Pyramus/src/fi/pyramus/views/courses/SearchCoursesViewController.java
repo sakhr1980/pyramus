@@ -1,5 +1,6 @@
 package fi.pyramus.views.courses;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 public class SearchCoursesViewController implements PyramusViewController, Breadcrumbable {
@@ -22,14 +24,18 @@ public class SearchCoursesViewController implements PyramusViewController, Bread
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     // Subjects
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
     List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
     for (EducationType educationType : educationTypes) {
       List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
-      if ((subjectsOfType != null) && (subjectsOfType.size() > 0))
+      if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
+        Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
+      }
     }
 
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);

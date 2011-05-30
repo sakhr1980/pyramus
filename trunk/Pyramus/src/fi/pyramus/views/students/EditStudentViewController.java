@@ -15,9 +15,16 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.domainmodel.base.ContactType;
+import fi.pyramus.domainmodel.base.ContactURLType;
+import fi.pyramus.domainmodel.base.Language;
+import fi.pyramus.domainmodel.base.Municipality;
+import fi.pyramus.domainmodel.base.Nationality;
+import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 public class EditStudentViewController implements PyramusViewController, Breadcrumbable {
@@ -78,19 +85,37 @@ public class EditStudentViewController implements PyramusViewController, Breadcr
       
       studentTags.put(student.getId(), tagsBuilder.toString());
     }
+
+    List<Nationality> nationalities = baseDAO.listNationalities();
+    Collections.sort(nationalities, new StringAttributeComparator("getName"));
     
+    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    Collections.sort(municipalities, new StringAttributeComparator("getName"));
+
+    List<Language> languages = baseDAO.listLanguages();
+    Collections.sort(languages, new StringAttributeComparator("getName"));
+
+    List<School> schools = baseDAO.listSchools();
+    Collections.sort(schools, new StringAttributeComparator("getName"));
+
+    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
+
+    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    Collections.sort(contactTypes, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("tags", studentTags);
     pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("activityTypes", studentDAO.listStudentActivityTypes());
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", baseDAO.listContactURLTypes());
-    pageRequestContext.getRequest().setAttribute("contactTypes", baseDAO.listContactTypes());
+    pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
+    pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
     pageRequestContext.getRequest().setAttribute("examinationTypes", studentDAO.listStudentExaminationTypes());
     pageRequestContext.getRequest().setAttribute("educationalLevels", studentDAO.listStudentEducationalLevels());
-    pageRequestContext.getRequest().setAttribute("nationalities", baseDAO.listNationalities());
-    pageRequestContext.getRequest().setAttribute("municipalities", baseDAO.listMunicipalities());
-    pageRequestContext.getRequest().setAttribute("languages", baseDAO.listLanguages());
-    pageRequestContext.getRequest().setAttribute("schools", baseDAO.listSchools());
+    pageRequestContext.getRequest().setAttribute("nationalities", nationalities);
+    pageRequestContext.getRequest().setAttribute("municipalities", municipalities);
+    pageRequestContext.getRequest().setAttribute("languages", languages);
+    pageRequestContext.getRequest().setAttribute("schools", schools);
     pageRequestContext.getRequest().setAttribute("studyProgrammes", baseDAO.listStudyProgrammes());
     pageRequestContext.getRequest().setAttribute("studyEndReasons", studentDAO.listTopLevelStudentStudyEndReasons());
     pageRequestContext.getRequest().setAttribute("variableKeys", studentDAO.listUserEditableStudentVariableKeys());

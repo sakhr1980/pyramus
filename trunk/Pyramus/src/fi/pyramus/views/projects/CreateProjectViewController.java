@@ -1,5 +1,7 @@
 package fi.pyramus.views.projects;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
@@ -8,7 +10,9 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.UserDAO;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -25,8 +29,11 @@ public class CreateProjectViewController implements PyramusViewController, Bread
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
 
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
-    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", baseDAO.listEducationalTimeUnits());
+    pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.setIncludeJSP("/templates/projects/createproject.jsp");
   }
 

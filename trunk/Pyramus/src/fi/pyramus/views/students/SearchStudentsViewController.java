@@ -1,13 +1,20 @@
 package fi.pyramus.views.students;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.base.Language;
+import fi.pyramus.domainmodel.base.Municipality;
+import fi.pyramus.domainmodel.base.Nationality;
+import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -34,10 +41,22 @@ public class SearchStudentsViewController implements PyramusViewController, Brea
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
 
-    pageRequestContext.getRequest().setAttribute("nationalities", baseDAO.listNationalities());
-    pageRequestContext.getRequest().setAttribute("municipalities", baseDAO.listMunicipalities());
-    pageRequestContext.getRequest().setAttribute("languages", baseDAO.listLanguages());
-    pageRequestContext.getRequest().setAttribute("studyProgrammes", baseDAO.listStudyProgrammes());
+    List<StudyProgramme> studyProgrammes = baseDAO.listStudyProgrammes();
+    Collections.sort(studyProgrammes, new StringAttributeComparator("getName"));
+    
+    List<Nationality> nationalities = baseDAO.listNationalities();
+    Collections.sort(nationalities, new StringAttributeComparator("getName"));
+    
+    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    Collections.sort(municipalities, new StringAttributeComparator("getName"));
+
+    List<Language> languages = baseDAO.listLanguages();
+    Collections.sort(languages, new StringAttributeComparator("getName"));
+    
+    pageRequestContext.getRequest().setAttribute("nationalities", nationalities);
+    pageRequestContext.getRequest().setAttribute("municipalities", municipalities);
+    pageRequestContext.getRequest().setAttribute("languages", languages);
+    pageRequestContext.getRequest().setAttribute("studyProgrammes", studyProgrammes);
 
     pageRequestContext.setIncludeJSP("/templates/students/searchstudents.jsp");
   }

@@ -1,16 +1,20 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.School;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.base.SchoolVariableKey;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -31,8 +35,11 @@ public class ViewSchoolViewController implements PyramusViewController, Breadcru
     Long schoolId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("school"));
     School school = baseDAO.getSchool(schoolId);
 
+    List<SchoolVariableKey> schoolUserEditableVariableKeys = baseDAO.listSchoolUserEditableVariableKeys();
+    Collections.sort(schoolUserEditableVariableKeys, new StringAttributeComparator("getVariableName"));
+
     pageRequestContext.getRequest().setAttribute("school", school);
-    pageRequestContext.getRequest().setAttribute("variableKeys", baseDAO.listSchoolUserEditableVariableKeys());
+    pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys);
 
     pageRequestContext.setIncludeJSP("/templates/settings/viewschool.jsp");
   }

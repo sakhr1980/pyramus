@@ -1,5 +1,8 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
@@ -7,6 +10,7 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.UserRole;
 import fi.pyramus.views.PyramusViewController;
 
@@ -24,7 +28,15 @@ public class AcademicTermsViewController implements PyramusViewController, Bread
    */
   public void process(PageRequestContext pageRequestContext) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    pageRequestContext.getRequest().setAttribute("academicTerms", baseDAO.listAcademicTerms());
+    
+    List<AcademicTerm> academicTerms = baseDAO.listAcademicTerms();
+    Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
+      public int compare(AcademicTerm o1, AcademicTerm o2) {
+        return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());
+      }
+    });
+
+    pageRequestContext.getRequest().setAttribute("academicTerms", academicTerms);
     pageRequestContext.setIncludeJSP("/templates/settings/academicterms.jsp");
   }
 

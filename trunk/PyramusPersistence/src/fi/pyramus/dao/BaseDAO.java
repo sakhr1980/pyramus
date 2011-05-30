@@ -1,8 +1,6 @@
 package fi.pyramus.dao;
 
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -120,13 +118,7 @@ public class BaseDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<ContactType> listContactTypes() {
     Session s = getHibernateSession();
-    List<ContactType> contactTypes = s.createCriteria(ContactType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-    Collections.sort(contactTypes, new Comparator<ContactType>() {
-      public int compare(ContactType o1, ContactType o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-    return contactTypes;
+    return s.createCriteria(ContactType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   public ContactType createContactType(String name) {
@@ -157,16 +149,16 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(contactType);
     return contactType;
   }
-  
+
   /* ContactInfo */
-  
+
   public ContactInfo updateContactInfo(ContactInfo contactInfo, String additionalInfo) {
     Session s = getHibernateSession();
     contactInfo.setAdditionalInfo(additionalInfo);
     s.saveOrUpdate(contactInfo);
     return contactInfo;
   }
-  
+
   /* ContactURLType */
 
   public ContactURLType getContactURLTypeById(Long id) {
@@ -177,13 +169,7 @@ public class BaseDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<ContactURLType> listContactURLTypes() {
     Session s = getHibernateSession();
-    List<ContactURLType> contactURLTypes = s.createCriteria(ContactURLType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-    Collections.sort(contactURLTypes, new Comparator<ContactURLType>() {
-      public int compare(ContactURLType o1, ContactURLType o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-    return contactURLTypes;
+    return s.createCriteria(ContactURLType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   public ContactURLType createContactURLType(String name) {
@@ -216,39 +202,39 @@ public class BaseDAO extends PyramusDAO {
   }
 
   /* Email */
-  
+
   public Email getEmailById(Long id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(Email.class, id);
   }
-  
+
   public Email createEmail(ContactInfo contactInfo, ContactType contactType, Boolean defaultAddress, String address) {
     Session s = getHibernateSession();
-    
+
     Email email = new Email();
     email.setContactInfo(contactInfo);
     email.setContactType(contactType);
     email.setDefaultAddress(defaultAddress);
     email.setAddress(address);
     s.saveOrUpdate(email);
-    
+
     contactInfo.addEmail(email);
     s.saveOrUpdate(contactInfo);
-    
+
     return email;
   }
-  
+
   public Email updateEmail(Email email, ContactType contactType, Boolean defaultAddress, String address) {
     Session s = getHibernateSession();
-    
+
     email.setContactType(contactType);
     email.setDefaultAddress(defaultAddress);
     email.setAddress(address);
     s.saveOrUpdate(email);
-    
+
     return email;
   }
-  
+
   public void removeEmail(Email email) {
     Session s = getHibernateSession();
     if (email.getContactInfo() != null) {
@@ -256,41 +242,41 @@ public class BaseDAO extends PyramusDAO {
     }
     s.delete(email);
   }
-  
+
   /* Phone number */
 
   public PhoneNumber getPhoneNumberById(Long id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(PhoneNumber.class, id);
   }
-  
+
   public PhoneNumber createPhoneNumber(ContactInfo contactInfo, ContactType contactType, Boolean defaultNumber, String number) {
     Session s = getHibernateSession();
-    
+
     PhoneNumber phoneNumber = new PhoneNumber();
     phoneNumber.setContactInfo(contactInfo);
     phoneNumber.setContactType(contactType);
     phoneNumber.setDefaultNumber(defaultNumber);
     phoneNumber.setNumber(number);
     s.saveOrUpdate(phoneNumber);
-    
+
     contactInfo.addPhoneNumber(phoneNumber);
     s.saveOrUpdate(contactInfo);
-    
+
     return phoneNumber;
   }
-  
+
   public PhoneNumber updatePhoneNumber(PhoneNumber phoneNumber, ContactType contactType, Boolean defaultNumber, String number) {
     Session s = getHibernateSession();
-    
+
     phoneNumber.setContactType(contactType);
     phoneNumber.setDefaultNumber(defaultNumber);
     phoneNumber.setNumber(number);
     s.saveOrUpdate(phoneNumber);
-    
+
     return phoneNumber;
   }
-  
+
   public void removePhoneNumber(PhoneNumber phoneNumber) {
     Session s = getHibernateSession();
     if (phoneNumber.getContactInfo() != null) {
@@ -305,10 +291,11 @@ public class BaseDAO extends PyramusDAO {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(Address.class, id);
   }
-  
-  public Address createAddress(ContactInfo contactInfo, ContactType contactType, String name, String streetAddress, String postalCode, String city, String country, Boolean defaultAddress) {
+
+  public Address createAddress(ContactInfo contactInfo, ContactType contactType, String name, String streetAddress, String postalCode, String city,
+      String country, Boolean defaultAddress) {
     Session s = getHibernateSession();
-    
+
     Address address = new Address();
     address.setContactInfo(contactInfo);
     address.setContactType(contactType);
@@ -319,13 +306,13 @@ public class BaseDAO extends PyramusDAO {
     address.setCountry(country);
     address.setDefaultAddress(defaultAddress);
     s.saveOrUpdate(address);
-    
+
     contactInfo.addAddress(address);
     s.saveOrUpdate(contactInfo);
-    
+
     return address;
   }
-  
+
   public void removeAddress(Address address) {
     Session s = getHibernateSession();
     if (address.getContactInfo() != null) {
@@ -333,38 +320,38 @@ public class BaseDAO extends PyramusDAO {
     }
     s.delete(address);
   }
-  
+
   /* Contact URL */
 
   public ContactURL getContactURLById(Long id) {
     EntityManager entityManager = getEntityManager();
     return entityManager.find(ContactURL.class, id);
   }
-  
+
   public ContactURL createContactURL(ContactInfo contactInfo, ContactURLType contactURLType, String url) {
     Session s = getHibernateSession();
-    
+
     ContactURL contactURL = new ContactURL();
     contactURL.setContactInfo(contactInfo);
     contactURL.setURL(url);
     s.saveOrUpdate(contactURL);
-    
+
     contactInfo.addContactURL(contactURL);
     s.saveOrUpdate(contactInfo);
-    
+
     return contactURL;
   }
-  
+
   public ContactURL updateContactURL(ContactURL contactURL, ContactURLType contactURLType, String url) {
     Session s = getHibernateSession();
-    
+
     contactURL.setContactURLType(contactURLType);
     contactURL.setURL(url);
     s.saveOrUpdate(contactURL);
-    
+
     return contactURL;
   }
-  
+
   public void removeContactURL(ContactURL contactURL) {
     Session s = getHibernateSession();
     if (contactURL.getContactInfo() != null) {
@@ -390,7 +377,7 @@ public class BaseDAO extends PyramusDAO {
     academicTerm.setArchived(Boolean.FALSE);
     s.saveOrUpdate(academicTerm);
   }
-  
+
   /**
    * Archives the given education subtype.
    * 
@@ -408,7 +395,7 @@ public class BaseDAO extends PyramusDAO {
     educationSubtype.setArchived(Boolean.FALSE);
     s.saveOrUpdate(educationSubtype);
   }
-  
+
   /**
    * Archives the given education type.
    * 
@@ -426,7 +413,7 @@ public class BaseDAO extends PyramusDAO {
     educationType.setArchived(Boolean.FALSE);
     s.saveOrUpdate(educationType);
   }
-  
+
   /**
    * Archives the given school.
    * 
@@ -444,7 +431,7 @@ public class BaseDAO extends PyramusDAO {
     school.setArchived(Boolean.FALSE);
     s.saveOrUpdate(school);
   }
-  
+
   /**
    * Archives the given subject.
    * 
@@ -462,7 +449,7 @@ public class BaseDAO extends PyramusDAO {
     subject.setArchived(Boolean.FALSE);
     s.saveOrUpdate(subject);
   }
-  
+
   /**
    * Creates a new academic term.
    * 
@@ -534,7 +521,7 @@ public class BaseDAO extends PyramusDAO {
    *          The school code
    * @param name
    *          The school name
-   * @param schoolField 
+   * @param schoolField
    * 
    * @return The created school
    */
@@ -547,14 +534,14 @@ public class BaseDAO extends PyramusDAO {
     s.saveOrUpdate(school);
     return school;
   }
-  
+
   public School setSchoolTags(School school, Set<Tag> tags) {
     EntityManager entityManager = getEntityManager();
-    
+
     school.setTags(tags);
-    
+
     entityManager.persist(school);
-    
+
     return school;
   }
 
@@ -580,7 +567,7 @@ public class BaseDAO extends PyramusDAO {
    *          The subject code
    * @param name
    *          The subject name
-   * @param educationType 
+   * @param educationType
    * 
    * @return The created subject
    */
@@ -813,17 +800,16 @@ public class BaseDAO extends PyramusDAO {
   public Subject getSubjectByCode(String code) {
     Session s = getHibernateSession();
     // TODO How to add a case sensitive restriction with Hibernate and MySQL?
-    List<Subject> subjects = s.createCriteria(Subject.class)
-      .add(Restrictions.eq("code", code)).list();
-    
+    List<Subject> subjects = s.createCriteria(Subject.class).add(Restrictions.eq("code", code)).list();
+
     for (Subject subject : subjects) {
       if (code.equals(subject.getCode()))
         return subject;
     }
-    
+
     return null;
   }
-  
+
   @SuppressWarnings("unchecked")
   public SearchResult<Subject> searchSubjectsBasic(int resultsPerPage, int page, String text) {
 
@@ -834,7 +820,7 @@ public class BaseDAO extends PyramusDAO {
     if (!StringUtils.isBlank(text)) {
       queryBuilder.append("+(");
       addTokenizedSearchCriteria(queryBuilder, "name", text, false);
-      addTokenizedSearchCriteria(queryBuilder, "educationType.name", text, false);   
+      addTokenizedSearchCriteria(queryBuilder, "educationType.name", text, false);
       queryBuilder.append(")");
     }
 
@@ -851,9 +837,7 @@ public class BaseDAO extends PyramusDAO {
         luceneQuery = parser.parse(queryString);
       }
 
-      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Subject.class)
-        .setFirstResult(firstResult)
-        .setMaxResults(resultsPerPage);
+      FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, Subject.class).setFirstResult(firstResult).setMaxResults(resultsPerPage);
       query.enableFullTextFilter("ArchivedSubject").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
@@ -871,7 +855,6 @@ public class BaseDAO extends PyramusDAO {
     }
   }
 
-
   /**
    * Returns a list of all non-archived academic terms from the database, sorted by their beginning date.
    * 
@@ -881,15 +864,7 @@ public class BaseDAO extends PyramusDAO {
   public List<AcademicTerm> listAcademicTerms() {
     Session s = getHibernateSession();
 
-    List<AcademicTerm> academicTerms = s.createCriteria(AcademicTerm.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
-      public int compare(AcademicTerm o1, AcademicTerm o2) {
-        return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());
-      }
-    });
-
-    return academicTerms;
+    return s.createCriteria(AcademicTerm.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -901,15 +876,7 @@ public class BaseDAO extends PyramusDAO {
   public List<EducationType> listEducationTypes() {
     Session s = getHibernateSession();
 
-    List<EducationType> educationTypes = s.createCriteria(EducationType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(educationTypes, new Comparator<EducationType>() {
-      public int compare(EducationType o1, EducationType o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return educationTypes;
+    return s.createCriteria(EducationType.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -924,16 +891,8 @@ public class BaseDAO extends PyramusDAO {
   public List<EducationSubtype> listEducationSubtypes(EducationType educationType) {
     Session s = getHibernateSession();
 
-    List<EducationSubtype> educationSubtypes = s.createCriteria(EducationSubtype.class).add(Restrictions.eq("educationType", educationType))
+    return s.createCriteria(EducationSubtype.class).add(Restrictions.eq("educationType", educationType))
         .add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(educationSubtypes, new Comparator<EducationSubtype>() {
-      public int compare(EducationSubtype o1, EducationSubtype o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return educationSubtypes;
   }
 
   /**
@@ -945,15 +904,7 @@ public class BaseDAO extends PyramusDAO {
   public List<Language> listLanguages() {
     Session s = getHibernateSession();
 
-    List<Language> languages = s.createCriteria(Language.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(languages, new Comparator<Language>() {
-      public int compare(Language o1, Language o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return languages;
+    return s.createCriteria(Language.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -965,15 +916,7 @@ public class BaseDAO extends PyramusDAO {
   public List<Municipality> listMunicipalities() {
     Session s = getHibernateSession();
 
-    List<Municipality> municipalities = s.createCriteria(Municipality.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(municipalities, new Comparator<Municipality>() {
-      public int compare(Municipality o1, Municipality o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return municipalities;
+    return s.createCriteria(Municipality.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -985,15 +928,7 @@ public class BaseDAO extends PyramusDAO {
   public List<Nationality> listNationalities() {
     Session s = getHibernateSession();
 
-    List<Nationality> nationalities = s.createCriteria(Nationality.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(nationalities, new Comparator<Nationality>() {
-      public int compare(Nationality o1, Nationality o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return nationalities;
+    return s.createCriteria(Nationality.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -1005,15 +940,7 @@ public class BaseDAO extends PyramusDAO {
   public List<School> listSchools() {
     Session s = getHibernateSession();
 
-    List<School> schools = s.createCriteria(School.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(schools, new Comparator<School>() {
-      public int compare(School o1, School o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return schools;
+    return s.createCriteria(School.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -1044,15 +971,7 @@ public class BaseDAO extends PyramusDAO {
   public List<SchoolVariableKey> listSchoolVariableKeys() {
     Session s = getHibernateSession();
 
-    List<SchoolVariableKey> schoolVariableKeys = s.createCriteria(SchoolVariableKey.class).list();
-
-    Collections.sort(schoolVariableKeys, new Comparator<SchoolVariableKey>() {
-      public int compare(SchoolVariableKey o1, SchoolVariableKey o2) {
-        return o1.getVariableName() == null ? -1 : o2.getVariableName() == null ? 1 : o1.getVariableName().compareTo(o2.getVariableName());
-      }
-    });
-
-    return schoolVariableKeys;
+    return s.createCriteria(SchoolVariableKey.class).list();
   }
 
   /**
@@ -1064,15 +983,7 @@ public class BaseDAO extends PyramusDAO {
   public List<SchoolVariableKey> listSchoolUserEditableVariableKeys() {
     Session s = getHibernateSession();
 
-    List<SchoolVariableKey> schoolVariableKeys = s.createCriteria(SchoolVariableKey.class).add(Restrictions.eq("userEditable", Boolean.TRUE)).list();
-
-    Collections.sort(schoolVariableKeys, new Comparator<SchoolVariableKey>() {
-      public int compare(SchoolVariableKey o1, SchoolVariableKey o2) {
-        return o1.getVariableName() == null ? -1 : o2.getVariableName() == null ? 1 : o1.getVariableName().compareTo(o2.getVariableName());
-      }
-    });
-
-    return schoolVariableKeys;
+    return s.createCriteria(SchoolVariableKey.class).add(Restrictions.eq("userEditable", Boolean.TRUE)).list();
   }
 
   /**
@@ -1084,36 +995,16 @@ public class BaseDAO extends PyramusDAO {
   public List<Subject> listSubjects() {
     Session s = getHibernateSession();
 
-    List<Subject> subjects = s.createCriteria(Subject.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(subjects, new Comparator<Subject>() {
-      public int compare(Subject o1, Subject o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return subjects;
+    return s.createCriteria(Subject.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Subject> listSubjectsByEducationType(EducationType educationType) {
     Session s = getHibernateSession();
 
-    Criterion educationTypeRestriction = 
-      educationType != null ? Restrictions.eq("educationType", educationType) : Restrictions.isNull("educationType"); 
-    
-    List<Subject> subjects = s.createCriteria(Subject.class)
-        .add(Restrictions.eq("archived", Boolean.FALSE))
-        .add(educationTypeRestriction)
-        .list();
+    Criterion educationTypeRestriction = educationType != null ? Restrictions.eq("educationType", educationType) : Restrictions.isNull("educationType");
 
-    Collections.sort(subjects, new Comparator<Subject>() {
-      public int compare(Subject o1, Subject o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return subjects;
+    return s.createCriteria(Subject.class).add(Restrictions.eq("archived", Boolean.FALSE)).add(educationTypeRestriction).list();
   }
 
   @SuppressWarnings("unchecked")
@@ -1145,11 +1036,8 @@ public class BaseDAO extends PyramusDAO {
       }
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class)
-        .setSort(new Sort(new SortField[] { 
-            SortField.FIELD_SCORE, 
-            new SortField("nameSortable", SortField.STRING) }))
-        .setFirstResult(firstResult)
-        .setMaxResults(resultsPerPage);
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING) })).setFirstResult(firstResult)
+          .setMaxResults(resultsPerPage);
       query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);
 
       int hits = query.getResultSize();
@@ -1215,11 +1103,8 @@ public class BaseDAO extends PyramusDAO {
       }
 
       FullTextQuery query = fullTextSession.createFullTextQuery(luceneQuery, School.class)
-        .setSort(new Sort(new SortField[] { 
-            SortField.FIELD_SCORE, 
-            new SortField("nameSortable", SortField.STRING) }))
-        .setFirstResult(firstResult)
-        .setMaxResults(resultsPerPage);
+          .setSort(new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("nameSortable", SortField.STRING) })).setFirstResult(firstResult)
+          .setMaxResults(resultsPerPage);
 
       if (filterArchived) {
         query.enableFullTextFilter("ArchivedSchool").setParameter("archived", Boolean.FALSE);
@@ -1301,7 +1186,7 @@ public class BaseDAO extends PyramusDAO {
     term.setName(name);
     term.setStartDate(startDate);
     term.setEndDate(endDate);
-    
+
     s.saveOrUpdate(term);
   }
 
@@ -1383,7 +1268,7 @@ public class BaseDAO extends PyramusDAO {
    *          The school code
    * @param name
    *          The school name
-   * @param schoolField 
+   * @param schoolField
    */
   public void updateSchool(School school, String code, String name, SchoolField schoolField) {
     Session s = getHibernateSession();
@@ -1409,7 +1294,7 @@ public class BaseDAO extends PyramusDAO {
    *          The subject code
    * @param name
    *          The subject name
-   * @param educationType 
+   * @param educationType
    */
   public void updateSubject(Subject subject, String code, String name, EducationType educationType) {
     Session s = getHibernateSession();
@@ -1466,13 +1351,11 @@ public class BaseDAO extends PyramusDAO {
 
     return (StudyProgramme) s.load(StudyProgramme.class, id);
   }
-  
+
   public StudyProgramme findStudyProgammeByName(String name) {
     Session s = getHibernateSession();
 
-    return (StudyProgramme) s.createCriteria(StudyProgramme.class)
-      .add(Restrictions.eq("name", name))
-      .uniqueResult();
+    return (StudyProgramme) s.createCriteria(StudyProgramme.class).add(Restrictions.eq("name", name)).uniqueResult();
   }
 
   public StudyProgramme getStudyProgrammeByCode(String code) {
@@ -1536,12 +1419,12 @@ public class BaseDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(StudyProgrammeCategory.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
-  
+
   /* Tag */
 
   public Tag findTagById(Long id) {
     EntityManager entityManager = getEntityManager();
-    
+
     return entityManager.find(Tag.class, id);
   }
 
@@ -1551,7 +1434,7 @@ public class BaseDAO extends PyramusDAO {
     Municipality municipality = new Municipality();
     municipality.setName(name);
     municipality.setCode(code);
-    
+
     entityManager.persist(municipality);
   }
 
@@ -1573,45 +1456,43 @@ public class BaseDAO extends PyramusDAO {
     municipality.setArchived(Boolean.FALSE);
     s.saveOrUpdate(municipality);
   }
-  
+
   public Tag findTagByText(String text) {
     Session s = getHibernateSession();
-    
-    return (Tag) s.createCriteria(Tag.class)
-      .add(Restrictions.eq("text", text))
-      .uniqueResult();
+
+    return (Tag) s.createCriteria(Tag.class).add(Restrictions.eq("text", text)).uniqueResult();
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Tag> listTags() {
     Session s = getHibernateSession();
     return s.createCriteria(Tag.class).list();
   }
-  
+
   public Tag createTag(String text) {
     EntityManager entityManager = getEntityManager();
-    
+
     Tag tag = new Tag();
     tag.setText(text);
-    
+
     entityManager.persist(tag);
-    
+
     return tag;
   }
-  
+
   public void updateTagText(Tag tag, String text) {
     EntityManager entityManager = getEntityManager();
-    
+
     tag.setText(text);
-    
+
     entityManager.persist(tag);
   }
-  
+
   public void deleteTag(Tag tag) {
     EntityManager entityManager = getEntityManager();
     entityManager.remove(tag);
   }
-  
+
   public void archiveComponentBase(ComponentBase componentBase) {
     Session s = getHibernateSession();
     componentBase.setArchived(Boolean.TRUE);
@@ -1659,49 +1540,49 @@ public class BaseDAO extends PyramusDAO {
     nationality.setArchived(Boolean.FALSE);
     s.saveOrUpdate(nationality);
   }
-  
+
   /* Defaults */
-  
+
   public Defaults getDefaults() {
     Session s = getHibernateSession();
     return (Defaults) s.load(Defaults.class, new Long(1));
   }
-  
+
   public Defaults updateDefaultBaseTimeUnit(EducationalTimeUnit defaultEducationalTimeUnit) {
     EntityManager entityManager = getEntityManager();
-    
+
     Defaults defaults = getDefaults();
     defaults.setBaseTimeUnit(defaultEducationalTimeUnit);
-    
+
     entityManager.persist(defaults);
-    
+
     return defaults;
   }
-  
+
   public Defaults updateInitialCourseParticipationType(CourseParticipationType initialCourseParticipationType) {
     EntityManager entityManager = getEntityManager();
-    
+
     Defaults defaults = getDefaults();
     defaults.setInitialCourseParticipationType(initialCourseParticipationType);
-    
+
     entityManager.persist(defaults);
-    
+
     return defaults;
   }
-  
+
   public Defaults updateDefaultInitialCourseState(CourseState initialCourseState) {
     EntityManager entityManager = getEntityManager();
-    
+
     Defaults defaults = getDefaults();
     defaults.setInitialCourseState(initialCourseState);
-    
+
     entityManager.persist(defaults);
-    
+
     return defaults;
   }
 
   /* EducationalTimeUnit */
-  
+
   /**
    * Returns the educational time unit corresponding to the given identifier.
    * 
@@ -1724,15 +1605,7 @@ public class BaseDAO extends PyramusDAO {
   public List<EducationalTimeUnit> listEducationalTimeUnits() {
     Session s = getHibernateSession();
 
-    List<EducationalTimeUnit> educationalTimeUnits = s.createCriteria(EducationalTimeUnit.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
-
-    Collections.sort(educationalTimeUnits, new Comparator<EducationalTimeUnit>() {
-      public int compare(EducationalTimeUnit o1, EducationalTimeUnit o2) {
-        return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
-      }
-    });
-
-    return educationalTimeUnits;
+    return s.createCriteria(EducationalTimeUnit.class).add(Restrictions.eq("archived", Boolean.FALSE)).list();
   }
 
   /**
@@ -1747,7 +1620,7 @@ public class BaseDAO extends PyramusDAO {
    */
   public EducationalTimeUnit createEducationalTimeUnit(Double baseUnits, String name) {
     EntityManager entityManager = getEntityManager();
-    
+
     EducationalTimeUnit educationalTimeUnit = new EducationalTimeUnit();
     educationalTimeUnit.setArchived(Boolean.FALSE);
     educationalTimeUnit.setBaseUnits(baseUnits);
@@ -1757,10 +1630,10 @@ public class BaseDAO extends PyramusDAO {
 
     return educationalTimeUnit;
   }
-  
+
   public EducationalTimeUnit updateEducationalTimeUnit(EducationalTimeUnit educationalTimeUnit, Double baseUnits, String name) {
     EntityManager entityManager = getEntityManager();
-    
+
     educationalTimeUnit.setBaseUnits(baseUnits);
     educationalTimeUnit.setName(name);
 
@@ -1793,7 +1666,7 @@ public class BaseDAO extends PyramusDAO {
   }
 
   /* SchoolField */
-  
+
   @SuppressWarnings("unchecked")
   public List<SchoolField> listSchoolFields() {
     Session s = getHibernateSession();
@@ -1802,7 +1675,7 @@ public class BaseDAO extends PyramusDAO {
 
   public SchoolField findSchoolFieldById(Long schoolFieldId) {
     EntityManager entityManager = getEntityManager();
-    
+
     return entityManager.find(SchoolField.class, schoolFieldId);
   }
 

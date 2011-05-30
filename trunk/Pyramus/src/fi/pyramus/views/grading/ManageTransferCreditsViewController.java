@@ -1,11 +1,11 @@
 package fi.pyramus.views.grading;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 import fi.pyramus.PageRequestContext;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
@@ -17,7 +17,7 @@ import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.views.PyramusViewController;
 
 /**
@@ -40,16 +40,13 @@ public class ManageTransferCreditsViewController implements PyramusViewControlle
     Student student = studentDAO.getStudent(studentId);
     List<TransferCredit> transferCredits = gradingDAO.listTransferCreditsByStudent(student);
     List<GradingScale> gradingScales = gradingDAO.listGradingScales();
+
     List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(timeUnits, new StringAttributeComparator("getName"));
+
     List<TransferCreditTemplate> transferCreditTemplates = gradingDAO.listTransferCreditTemplates();
 
-    Collections.sort(transferCredits, new Comparator<TransferCredit>() {
-
-      @Override
-      public int compare(TransferCredit o1, TransferCredit o2) {
-        return o1.getCourseName().compareToIgnoreCase(o2.getCourseName());
-      }
-    });
+    Collections.sort(transferCredits, new StringAttributeComparator("getCourseName", true));
     
     pageRequestContext.getRequest().setAttribute("student", student);
     pageRequestContext.getRequest().setAttribute("transferCredits", transferCredits);
