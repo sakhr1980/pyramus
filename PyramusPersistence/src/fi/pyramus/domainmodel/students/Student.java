@@ -310,8 +310,20 @@ public class Student implements ArchivableEntity {
 	
 	@Transient
 	public boolean getActive() {
-	  return studyEndDate == null || studyEndDate.after(new Date());
+	  return (studyStartDate != null && studyStartDate.before(new Date())) && 
+	      (studyEndDate == null || studyEndDate.after(new Date()));
+//    return studyEndDate == null || studyEndDate.after(new Date());
 	}
+
+  @Transient
+  public boolean getHasStartedStudies() {
+    return studyStartDate != null && studyStartDate.before(new Date());
+  }
+
+  @Transient
+  public boolean getHasFinishedStudies() {
+    return studyEndDate != null && studyEndDate.before(new Date());
+  }
 	
   @Transient
   public Map<String, String> getVariablesAsStringMap() {

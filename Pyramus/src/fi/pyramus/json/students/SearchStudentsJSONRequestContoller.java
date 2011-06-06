@@ -96,10 +96,13 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
           tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
           phone, lodging, studyProgramme, language, nationality, municipality, studentFilter);
+    } if ("active".equals(jsonRequestContext.getRequest().getParameter("activeTab"))) {
+      String query = jsonRequestContext.getRequest().getParameter("activesQuery");
+      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.SKIP_INACTIVE);
     }
     else {
       String query = jsonRequestContext.getRequest().getParameter("query");
-      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query);
+      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.INCLUDE_INACTIVE);
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
@@ -114,7 +117,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
     	  
     	  for (Student student1 : studentList2) {
     	    if (student1.getStudyProgramme() != null) {
-      	    if (student1.getActive()) {
+      	    if (!student1.getHasFinishedStudies()) {
       	      if (activeStudyProgrammes.length() == 0)
       	        activeStudyProgrammes = student1.getStudyProgramme().getName();
       	      else

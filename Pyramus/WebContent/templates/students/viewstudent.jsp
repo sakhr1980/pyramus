@@ -717,7 +717,7 @@
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:if test="${!student.active}">*</c:if>
+              <c:if test="${student.hasFinishedStudies}">*</c:if>
             </a>
           </c:forEach>
         </div>
@@ -1020,7 +1020,7 @@
                       </c:choose>
                       
                       <c:choose>
-                        <c:when test="${!student.active}">
+                        <c:when test="${student.hasFinishedStudies}">
                           <div class="genericFormSection">                        
                             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                               <jsp:param name="titleLocale" value="students.viewStudent.studyEndDateTitle"/>

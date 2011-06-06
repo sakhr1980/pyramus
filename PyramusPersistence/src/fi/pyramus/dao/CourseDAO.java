@@ -932,10 +932,17 @@ public class CourseDAO extends PyramusDAO {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public SearchResult<Course> searchCourses(int resultsPerPage, int page, String name, String tags, String nameExtension,
       String description, CourseState courseState, Subject subject, SearchTimeFilterMode timeFilterMode,
       Date timeframeStart, Date timeframeEnd, boolean filterArchived) {
+    return searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState, subject, timeFilterMode,
+        timeframeStart, timeframeEnd, null, null, filterArchived);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<Course> searchCourses(int resultsPerPage, int page, String name, String tags, String nameExtension,
+      String description, CourseState courseState, Subject subject, SearchTimeFilterMode timeFilterMode,
+      Date timeframeStart, Date timeframeEnd, EducationType educationType, EducationSubtype educationSubtype, boolean filterArchived) {
     int firstResult = page * resultsPerPage;
 
     String timeframeS = null;
@@ -972,6 +979,12 @@ public class CourseDAO extends PyramusDAO {
       addTokenizedSearchCriteria(queryBuilder, "subject.id", subject.getId().toString(), true);
     }
 
+    if (educationType != null)
+      addTokenizedSearchCriteria(queryBuilder, "courseEducationTypes.educationType.id", educationType.getId().toString(), true);
+
+    if (educationSubtype != null)
+      addTokenizedSearchCriteria(queryBuilder, "courseEducationTypes.courseEducationSubtypes.educationSubtype.id", educationSubtype.getId().toString(), true);
+    
     if ((timeframeS != null) && (timeframeE != null)) {
       switch (timeFilterMode) {
       case EXCLUSIVE:

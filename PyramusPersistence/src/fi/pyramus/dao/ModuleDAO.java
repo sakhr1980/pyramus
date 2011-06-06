@@ -26,6 +26,7 @@ import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
@@ -200,9 +201,14 @@ public class ModuleDAO extends PyramusDAO {
       throw new PersistenceException(e);
     }
   }
- 
-  @SuppressWarnings("unchecked")
+
   public SearchResult<Module> searchModules(int resultsPerPage, int page, String projectName, String name, String tags, String description, String componentName, String componentDescription, Long ownerId, boolean filterArchived) {
+    // Search with null Subject and null EducationSubtype
+    return searchModules(resultsPerPage, page, projectName, name, tags, description, componentName, componentDescription, ownerId, null, null, null, filterArchived);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public SearchResult<Module> searchModules(int resultsPerPage, int page, String projectName, String name, String tags, String description, String componentName, String componentDescription, Long ownerId, Subject subject, EducationType educationType, EducationSubtype educationSubtype, boolean filterArchived) {
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
@@ -212,8 +218,11 @@ public class ModuleDAO extends PyramusDAO {
     boolean hasDescription = !StringUtils.isBlank(description);
     boolean hasComponentName = !StringUtils.isBlank(componentName);
     boolean hasComponentDescription = !StringUtils.isBlank(componentDescription);
+    boolean hasSubject = subject != null;
+    boolean hasEduType = educationType != null;
+    boolean hasEduSubtype = educationSubtype != null;
     
-    if (hasName||hasTags||hasDescription||hasComponentName||hasComponentDescription) {
+    if (hasName || hasTags || hasDescription || hasComponentName || hasComponentDescription || hasSubject || hasEduType || hasEduSubtype) {
       queryBuilder.append("+(");
       
       if (hasName)
@@ -231,6 +240,14 @@ public class ModuleDAO extends PyramusDAO {
       if (hasComponentDescription)
         addTokenizedSearchCriteria(queryBuilder, "moduleComponents.description", componentDescription, false);
       
+      if (hasSubject)
+        addTokenizedSearchCriteria(queryBuilder, "subject.id", subject.getId().toString(), true);
+
+      if (hasEduType)
+        addTokenizedSearchCriteria(queryBuilder, "courseEducationTypes.educationType.id", educationType.getId().toString(), true);
+
+      if (hasEduSubtype)
+        addTokenizedSearchCriteria(queryBuilder, "courseEducationTypes.courseEducationSubtypes.educationSubtype.id", educationSubtype.getId().toString(), true);
       
       queryBuilder.append(")");
     }

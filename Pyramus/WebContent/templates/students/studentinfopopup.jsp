@@ -61,7 +61,7 @@
     <c:forEach var="student" items="${students}" varStatus="sl">
       <c:if test="${student.studyProgramme != null}">
         <c:choose>
-          <c:when test="${student.active}">
+          <c:when test="${!student.hasFinishedStudies}">
             <c:if test="${fn:length(activeStudyProgrammes) gt 0}">
               <c:set var="activeStudyProgrammes">${activeStudyProgrammes},&nbsp;</c:set>
             </c:if>

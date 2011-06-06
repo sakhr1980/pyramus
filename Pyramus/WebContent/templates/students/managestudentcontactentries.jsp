@@ -474,7 +474,7 @@
                   ${student.studyProgramme.name}
                 </c:otherwise>
               </c:choose>
-              <c:if test="${!student.active}">*</c:if>
+              <c:if test="${student.hasFinishedStudies}">*</c:if>
             </a>
           </c:forEach>
         </div>

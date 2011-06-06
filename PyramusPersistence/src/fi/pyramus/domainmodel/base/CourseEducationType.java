@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 /**
  * Representation of an education type associated with a course.
  * 
@@ -157,10 +159,12 @@ public class CourseEducationType {
 
   @ManyToOne
   @JoinColumn(name = "educationType", updatable = false)
+  @IndexedEmbedded
   private EducationType educationType;
 
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn(name = "courseEducationType")
+  @IndexedEmbedded
   private List<CourseEducationSubtype> courseEducationSubtypes = new Vector<CourseEducationSubtype>();
 
   @Version
