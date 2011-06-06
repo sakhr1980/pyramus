@@ -15,6 +15,8 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationSubtype;
+import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseState;
@@ -87,10 +89,22 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
         timeframeEnd = new Date(NumberUtils.createLong(value));
       }
       
+      EducationType educationType = null;
+      Long educationTypeId = requestContext.getLong("educationType");
+      if (educationTypeId != null) {
+        educationType = baseDAO.getEducationType(educationTypeId);
+      }
+
+      EducationSubtype educationSubtype = null;
+      Long educationSubtypeId = requestContext.getLong("educationSubtype");
+      if (educationSubtypeId != null) {
+        educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
+      }
+      
       SearchTimeFilterMode timeFilterMode = (SearchTimeFilterMode) requestContext.getEnum("timeframeMode", SearchTimeFilterMode.class);
       
       searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState,
-          subject, timeFilterMode, timeframeStart, timeframeEnd, true);
+          subject, timeFilterMode, timeframeStart, timeframeEnd, educationType, educationSubtype, true);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");

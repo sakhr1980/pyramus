@@ -8,12 +8,12 @@
 <html>
   <head>
     <title><fmt:message key="courses.searchCourses.pageTitle"/></title>
+
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
     
@@ -21,6 +21,17 @@
  
       function doSearch(page) {
         var searchForm = $("searchForm");
+        
+        var educationTypeParam = searchForm.educationType.value;
+        var educationType = ""; 
+        var educationSubtype = "";
+        
+        if (educationTypeParam.startsWith("et:")) {
+          educationType = educationTypeParam.substring(3); 
+        } else if (educationTypeParam.startsWith("st:")) {
+          educationSubtype = educationTypeParam.substring(3);
+        }
+        
         JSONRequest.request("courses/searchcourses.json", {
           parameters: {
             text: searchForm.text.value,
@@ -33,6 +44,8 @@
             timeframeMode: searchForm.timeframeMode.value,
             timeframeStart: searchForm.timeframeStart.value,
             timeframeEnd: searchForm.timeframeEnd.value,
+            educationType: educationType, 
+            educationSubtype: educationSubtype, 
             activeTab: searchForm.activeTab.value,
             page: page
           },
@@ -368,6 +381,27 @@
                     <div class="searchCoursesTimeFrameHyphenContainer">-</div> 
                     <div class="searchCoursesTimeFrameEndContainer"> <input type="text" name="timeframeEnd" class="ixDateField"/> </div>
                   </div>
+                </div>
+
+                <div class="genericFormSection">  
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="courses.searchCourses.educationTypeTitle"/>
+                    <jsp:param name="helpLocale" value="courses.searchCourses.educationTypeHelp"/>
+                  </jsp:include>
+                  <select name="educationType">
+                    <option></option>           
+                    <c:forEach var="educationType" items="${educationTypes}">
+                      <option value="et:${educationType.id}">${educationType.name}</option>
+                       
+                      <c:if test="${educationSubtypes[educationType.id] ne null}">
+                        <optgroup>
+                          <c:forEach var="subtype" items="${educationSubtypes[educationType.id]}">
+                            <option value="st:${subtype.id}">${subtype.name}</option> 
+                          </c:forEach>
+                        </optgroup>
+                      </c:if>
+                    </c:forEach>
+                  </select>
                 </div>
 
               </div>

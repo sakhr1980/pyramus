@@ -1197,7 +1197,7 @@
             </c:otherwise>
           </c:choose>
   
-          <c:if test="${!courseStudentStudent.active}">
+          <c:if test="${courseStudentStudent.hasFinishedStudies}">
             <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
           </c:if>
             

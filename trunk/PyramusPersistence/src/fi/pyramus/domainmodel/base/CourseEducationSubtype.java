@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
 
+import org.hibernate.search.annotations.IndexedEmbedded;
+
 
 /**
  * Representation of an education subtype associated with a course base.
@@ -97,6 +99,7 @@ public class CourseEducationSubtype {
 
   @ManyToOne
   @JoinColumn(name = "educationSubtype", updatable = false)
+  @IndexedEmbedded
   private EducationSubtype educationSubtype;
 
   @Version

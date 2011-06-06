@@ -12,6 +12,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.UserRole;
@@ -30,15 +31,22 @@ public class SearchCoursesViewController implements PyramusViewController, Bread
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
     List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
     Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
+    
+    Map<Long, List<EducationSubtype>> educationSubtypesByEduType = new HashMap<Long, List<EducationSubtype>>();
+    
     for (EducationType educationType : educationTypes) {
       List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
       if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
         Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
       }
+
+      List<EducationSubtype> educationSubtypes = baseDAO.listEducationSubtypes(educationType);
+      educationSubtypesByEduType.put(educationType.getId(), educationSubtypes);
     }
 
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    pageRequestContext.getRequest().setAttribute("educationSubtypes", educationSubtypesByEduType);
     pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
     pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("states", courseDAO.listCourseStates());

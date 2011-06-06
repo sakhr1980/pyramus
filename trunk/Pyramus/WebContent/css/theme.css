@@ -1019,6 +1019,12 @@ h1.genericPageHeader{
   border-radius:3px;
 }
  
+/* Search students */
+
+.searchStudentsFinishedStudentRow {
+  color:gray;
+}
+ 
 /* Search students advanced */
 
 .searchStudentsAdvancedSearchPairFieldContainer {

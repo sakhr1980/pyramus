@@ -369,6 +369,7 @@ public abstract class CourseBase implements ArchivableEntity {
   
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn (name="courseBase")
+  @IndexedEmbedded
   private List<CourseEducationType> courseEducationTypes = new Vector<CourseEducationType>();
 
   @NotNull

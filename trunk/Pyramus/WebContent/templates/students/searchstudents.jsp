@@ -46,6 +46,7 @@
             studentFilter: searchForm.studentFilter.value,
             activeTab: searchForm.activeTab.value,
             query: searchForm.simpleQuery.value,
+            activesQuery: searchForm.simpleActiveQuery.value,
             page: page
           },
           onSuccess: function (jsonResponse) {
@@ -54,7 +55,10 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), String(results[i].activeStudyProgrammes).escapeHTML(), String(results[i].inactiveStudyProgrammes).escapeHTML(), '', '', results[i].abstractStudentId]);
+              var rowIndex = resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), String(results[i].activeStudyProgrammes).escapeHTML(), String(results[i].inactiveStudyProgrammes).escapeHTML(), '', '', results[i].abstractStudentId]);
+              var rowElement = resultsTable.getRowElement(rowIndex);
+              if (results[i].activeStudyProgrammes == "")
+                rowElement.addClassName("searchStudentsFinishedStudentRow");
             }
             resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -199,11 +203,15 @@
   
           <div class="tabLabelsContainer" id="tabs">
 	          <a class="tabLabel" href="#basic">
-             <fmt:message key="students.searchStudents.tabLabelBasicSearch"/>
+              <fmt:message key="students.searchStudents.tabLabelBasicSearch"/>
 	          </a>
 	
+            <a class="tabLabel" href="#active">
+              <fmt:message key="students.searchStudents.tabLabelActiveSearch"/>
+            </a>
+
 	          <a class="tabLabel" href="#advanced">
-             <fmt:message key="students.searchStudents.tabLabelAdvancedSearch"/>
+              <fmt:message key="students.searchStudents.tabLabelAdvancedSearch"/>
 	          </a>
 	        </div>
           
@@ -214,6 +222,20 @@
                 <jsp:param name="helpLocale" value="students.searchStudents.basicQueryHelp"/>
               </jsp:include>                
               <input type="text" name="simpleQuery" class="basicSearchQueryField" size="40">
+            </div>
+      
+            <div class="genericFormSubmitSection">
+              <input type="submit" name="query" value="<fmt:message key="students.searchStudents.basicSearchButton"/>">
+            </div>
+          </div>
+
+          <div id="active" class="tabContent">
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="students.searchStudents.basicQueryTitle"/>
+                <jsp:param name="helpLocale" value="students.searchStudents.basicQueryHelp"/>
+              </jsp:include>                
+              <input type="text" name="simpleActiveQuery" class="basicSearchQueryField" size="40">
             </div>
       
             <div class="genericFormSubmitSection">

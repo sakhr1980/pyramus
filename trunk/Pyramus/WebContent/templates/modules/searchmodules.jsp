@@ -26,9 +26,27 @@
        */
       function doSearch(page) {
         var searchForm = $("searchForm");
+        
+        var educationTypeParam = searchForm.educationType.value;
+        var educationType = ""; 
+        var educationSubtype = "";
+        
+        if (educationTypeParam.startsWith("et:")) {
+          educationType = educationTypeParam.substring(3); 
+        } else if (educationTypeParam.startsWith("st:")) {
+          educationSubtype = educationTypeParam.substring(3);
+        }
+
         JSONRequest.request("modules/searchmodules.json", {
           parameters: {
             text: searchForm.text.value,
+            name: searchForm.name.value,
+            tags: searchForm.tags.value,
+            subject: searchForm.subject.value,
+            description: searchForm.description.value,
+            educationType: educationType, 
+            educationSubtype: educationSubtype, 
+            activeTab: searchForm.activeTab.value,
             page: page
           },
           onSuccess: function (jsonResponse) {
@@ -61,8 +79,35 @@
         doSearch(0);
       }
 
+      function setupTags() {
+        JSONRequest.request("tags/getalltags.json", {
+          onSuccess: function (jsonResponse) {
+            new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+              tokens: [',', '\n', ' ']
+            });
+          }
+        });   
+      }
+      
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+
+        setupTags();
+        
+        $('searchForm').activeTab.value = tabControl.getActiveTab();
+        tabControl.addListener(function (event) {
+          if ((event.action == 'tabActivated')||(event.action == 'tabInitialized')) {
+            $('searchForm').activeTab.value = event.name;
+            $('activeTab').value = event.name;
+          } 
+        });
+        
+        <c:choose>
+          <c:when test="${!empty param.activeTab}">
+            tabControl.setActiveTab("${param.activeTab}");  
+          </c:when>
+        </c:choose>
+         
         new IxSearchNavigation($('searchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
           maxNavigationPages: 19,
@@ -158,29 +203,152 @@
     <h1 class="genericPageHeader"><fmt:message key="modules.searchModules.pageTitle" /></h1>
     
     <div id="searchModulesSearchFormContainer"> 
-      <div class="genericFormContainer"> 
-        <div class="tabLabelsContainer" id="tabs">
-          <a class="tabLabel" href="#searchModules">
-            <fmt:message key="modules.searchModules.tabLabelSearchModules"/>
-          </a>
-        </div>
-        
-        <div id="searchModules" class="tabContent">
-	        <form id="searchForm" method="post" onsubmit="onSearchModules(event);">
-	    
-	          <div class="genericFormSection">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="modules.searchModules.textTitle"/>
-                  <jsp:param name="helpLocale" value="modules.searchModules.textHelp"/>
-                </jsp:include>
-                <input type="text" name="text" size="40">
-	          </div>
-	          
-	          <div class="genericFormSubmitSection">
-	            <input type="submit" value="<fmt:message key="modules.searchModules.searchButton"/>">
-	          </div>
-	        </form>
-        </div>
+      <div class="genericFormContainer">
+       
+        <form id="searchForm" method="post" onsubmit="onSearchModules(event);">
+          <input type="hidden" name="activeTab" id="activeTab" value="basic"/>
+
+          <div class="tabLabelsContainer" id="tabs">
+            <a class="tabLabel" href="#basic">
+              <fmt:message key="modules.searchModules.tabLabelSearchModules"/>
+            </a>
+    
+            <a class="tabLabel" href="#advanced">
+              <fmt:message key="modules.searchModules.tabLabelSearchModulesAdvanced"/>
+            </a>
+          </div>
+          
+          <div id="basic" class="tabContent">
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="modules.searchModules.textTitle"/>
+                <jsp:param name="helpLocale" value="modules.searchModules.textHelp"/>
+              </jsp:include>
+              <input type="text" name="text" size="40">
+            </div>
+            
+            <div class="genericFormSubmitSection">
+              <input type="submit" value="<fmt:message key="modules.searchModules.searchButton"/>">
+            </div>
+          </div>
+    
+    
+          <div id="advanced" class="tabContent">
+            <div id="searchModulesAdvancedSearchCriterias">
+    
+              <div id="searchModulesAdvancedSearchLeft">
+    
+                <div class="genericFormSection">
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="modules.searchModules.nameTitle"/>
+                    <jsp:param name="helpLocale" value="modules.searchModules.nameHelp"/>
+                  </jsp:include>
+                  <input type="text" name="name" size="40">
+                </div>
+    
+                <div class="genericFormSection">
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="modules.searchModules.tagsTitle"/>
+                    <jsp:param name="helpLocale" value="modules.searchModules.tagsHelp"/>
+                  </jsp:include>
+                  <input type="text" id="tags" name="tags" size="40"/>
+                  <div id="tags_choices" class="autocomplete_choices"></div>
+                </div>
+    
+                <div class="genericFormSection">  
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="modules.searchModules.subjectTitle"/>
+                    <jsp:param name="helpLocale" value="modules.searchModules.subjectHelp"/>
+                  </jsp:include>
+                  <select name="subject">
+                    <option></option>           
+                    <c:forEach var="educationType" items="${educationTypes}">
+                      <c:if test="${subjectsByEducationType[educationType.id] ne null}">
+                        <optgroup label="${educationType.name}">
+                          <c:forEach var="subject" items="${subjectsByEducationType[educationType.id]}">
+                            <c:choose>
+                              <c:when test="${empty subject.code}">
+                                <c:set var="subjectName">${subject.name}</c:set>
+                              </c:when>
+                              <c:otherwise>
+                                <c:set var="subjectName">
+                                  <fmt:message key="generic.subjectFormatterNoEducationType">
+                                    <fmt:param value="${subject.code}"/>
+                                    <fmt:param value="${subject.name}"/>
+                                  </fmt:message>
+                                </c:set>
+                              </c:otherwise>
+                            </c:choose>
+    
+                            <option value="${subject.id}">${subjectName}</option> 
+                          </c:forEach>
+                        </optgroup>
+                      </c:if>
+                    </c:forEach>
+    
+                    <c:forEach var="subject" items="${subjectsByNoEducationType}">
+                      <c:choose>
+                        <c:when test="${empty subject.code}">
+                          <c:set var="subjectName">${subject.name}</c:set>
+                        </c:when>
+                        <c:otherwise>
+                          <c:set var="subjectName">
+                            <fmt:message key="generic.subjectFormatterNoEducationType">
+                              <fmt:param value="${subject.code}"/>
+                              <fmt:param value="${subject.name}"/>
+                            </fmt:message>
+                          </c:set>
+                        </c:otherwise>
+                      </c:choose>
+    
+                      <option value="${subject.id}">${subjectName}</option> 
+                    </c:forEach>
+                  </select>
+                </div>
+    
+              </div>
+              
+              <div id="searchModulesAdvancedSearchRight">
+    
+                <div class="genericFormSection">
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="modules.searchModules.descriptionTitle"/>
+                    <jsp:param name="helpLocale" value="modules.searchModules.descriptionHelp"/>
+                  </jsp:include>
+                  <input type="text" name="description" size="40">
+                </div>
+    
+                <div class="genericFormSection">  
+                  <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale" value="modules.searchModules.educationTypeTitle"/>
+                    <jsp:param name="helpLocale" value="modules.searchModules.educationTypeHelp"/>
+                  </jsp:include>
+                  <select name="educationType">
+                    <option></option>           
+                    <c:forEach var="educationType" items="${educationTypes}">
+                      <option value="et:${educationType.id}">${educationType.name}</option>
+                       
+                      <c:if test="${educationSubtypes[educationType.id] ne null}">
+                        <optgroup>
+                          <c:forEach var="subtype" items="${educationSubtypes[educationType.id]}">
+                            <option value="st:${subtype.id}">${subtype.name}</option> 
+                          </c:forEach>
+                        </optgroup>
+                      </c:if>
+                    </c:forEach>
+                  </select>
+                </div>
+    
+              </div>
+    
+            </div>
+    
+            <div class="genericFormSubmitSection">
+              <input type="submit" value="<fmt:message key="modules.searchModules.advancedSearchButton"/>">
+            </div>
+    
+          </div>
+        </form>
       </div>
     </div>
     

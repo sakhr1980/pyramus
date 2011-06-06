@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -130,6 +131,7 @@ public class EducationSubtype implements ArchivableEntity {
   }
 
   @Id
+  @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationSubtype")  
   @TableGenerator(name="EducationSubtype", allocationSize=1)
   private Long id;
