@@ -310,9 +310,7 @@ public class Student implements ArchivableEntity {
 	
 	@Transient
 	public boolean getActive() {
-	  return (studyStartDate != null && studyStartDate.before(new Date())) && 
-	      (studyEndDate == null || studyEndDate.after(new Date()));
-//    return studyEndDate == null || studyEndDate.after(new Date());
+	  return getHasStartedStudies() && (!getHasFinishedStudies());
 	}
 
   @Transient
