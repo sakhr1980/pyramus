@@ -139,6 +139,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
         info.put("archived", student.getArchived());
         info.put("activeStudyProgrammes", activeStudyProgrammes);
         info.put("inactiveStudyProgrammes", inactiveStudyProgrammes);
+        info.put("active", abstractStudent.getActive());
         results.add(info);
     	}
     }

@@ -59,7 +59,7 @@
               var nameExt = results[i].nameExtension;
               if (nameExt && (nameExt.length > 0))
                 name += ' (' + nameExt + ')';
-              resultsTable.addRow([name.escapeHTML(), results[i].beginDate, results[i].endDate, '', '', '', results[i].id]);
+              resultsTable.addRow([name.escapeHTML(), results[i].beginDate, results[i].endDate, '', '', results[i].id]);
             }
             resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -123,25 +123,25 @@
           columns : [ {
             header : '<fmt:message key="courses.searchCourses.courseTableNameHeader"/>',
             left: 8,
-            right: 506,
+            right: 476,
             dataType : 'text',
             editable: false,
             paramName: 'name'
           }, {
             header : '<fmt:message key="courses.searchCourses.courseTableBeginDateHeader"/>',
             right: 218,
-            width : 180,
+            width : 150,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="courses.searchCourses.courseTableEndDateHeader"/>',
             width: 150,
-            right : 90,
+            right : 60,
             dataType : 'date',
             editable: false
           }, {
             width: 30,
-            right : 60,
+            right : 30,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
             tooltip: '<fmt:message key="courses.searchCourses.courseTableViewRowTooltip"/>',
@@ -152,7 +152,7 @@
             } 
           }, {
             width: 30,
-            right : 30,
+            right : 0,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="courses.searchCourses.courseTableEditRowTooltip"/>',
@@ -161,50 +161,6 @@
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
             } 
-          }, {
-            width: 30,
-            right : 0,
-            dataType: 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
-            tooltip: '<fmt:message key="courses.searchCourses.courseTableArchiveRowTooltip"/>',
-            onclick: function (event) {
-              var table = event.tableComponent;
-              var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
-              var courseName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=courses.searchCourses.courseArchiveConfirmDialogContent&localeParams=" + encodeURIComponent(courseName);
-                 
-              var dialog = new IxDialog({
-                id : 'confirmRemoval',
-                contentURL : url,
-                centered : true,
-                showOk : true,  
-                showCancel : true,
-                autoEvaluateSize: true,
-                title : '<fmt:message key="courses.searchCourses.courseArchiveConfirmDialogTitle"/>',
-                okLabel : '<fmt:message key="courses.searchCourses.courseArchiveConfirmDialogOkLabel"/>',
-                cancelLabel : '<fmt:message key="courses.searchCourses.courseArchiveConfirmDialogCancelLabel"/>'
-              });
-            
-              dialog.addDialogListener( function(event) {
-                var dlg = event.dialog;
-            
-                switch (event.name) {
-                  case 'okClick':
-                    JSONRequest.request("courses/archivecourse.json", {
-                      parameters: {
-                        courseId: courseId
-                      },
-                      onSuccess: function (jsonResponse) {
-                        var currentPage = getSearchNavigationById('searchResultsNavigation').getCurrentPage();
-                        doSearch(currentPage);
-                      }
-                    });   
-                  break;
-                }
-              });
-            
-              dialog.open();
-            }
           }, {
             dataType: 'hidden',
             paramName: 'courseId'

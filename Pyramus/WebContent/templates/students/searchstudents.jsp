@@ -57,7 +57,8 @@
             for (var i = 0; i < results.length; i++) {
               var rowIndex = resultsTable.addRow(['', String(results[i].lastName + ", " + results[i].firstName).escapeHTML(), String(results[i].activeStudyProgrammes).escapeHTML(), String(results[i].inactiveStudyProgrammes).escapeHTML(), '', '', results[i].abstractStudentId]);
               var rowElement = resultsTable.getRowElement(rowIndex);
-              if (results[i].activeStudyProgrammes == "")
+
+              if (results[i].active == "false")
                 rowElement.addClassName("searchStudentsFinishedStudentRow");
             }
             resultsTable.reattachToDom();
