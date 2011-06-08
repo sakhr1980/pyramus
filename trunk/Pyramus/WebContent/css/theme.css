@@ -360,6 +360,90 @@ h1.genericPageHeader{
   margin-top:0px;
 }
 
+/* View Module - Basic Information */
+
+#moduleViewBasicInfoWrapper .genericFormTitle, #moduleViewDetailedInfoWrapper .genericFormTitle{
+  float:left;
+  margin-right:10px;
+  background:#f2f2f2;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  color:#000;
+  padding:2px 4px;
+  width:160px;
+}
+
+#moduleViewBasicInfoWrapper .genericFormSection, #moduleViewDetailedInfoWrapper .genericFormSection{
+  clear:both;
+  display:table;
+  width:100%;
+  padding:6px 0px 6px 0px;
+}
+
+/* View Module - Components */
+
+.viewModuleComponentsTitlesContainer{
+  font-weight:bold;
+  position:relative;
+  height:1.5em;
+  margin-bottom:5px;
+}
+
+.viewModuleComponentsNameTitle{
+  position:absolute;
+  left:10px;
+  width:200px;
+}
+
+.viewModuleComponentsLengthTitle{
+  position:absolute;
+  left:268px;
+  width:60px;
+  text-align:center;
+}
+
+.viewModuleComponentsDescriptionTitle{
+  position:absolute;
+  left:344px;
+  right:5px;
+}
+
+.viewModuleComponentContainer{
+  background-color:#fff;
+  border:1px solid #CAD8F8;
+  border-radius:5px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  padding:10px;
+  margin-bottom:10px;
+  position:relative;
+}
+
+.viewModuleComponentHeaderRow{
+  font-weight:bold;
+  height:2em;
+  margin-bottom:10px;
+  clear:both;
+}
+
+.viewModuleComponentName{
+  font-weight:bold;
+  width:240px;
+  font-size:14px;
+  float:left;
+}
+
+.viewModuleComponentLengthTitle{
+  float:left;
+  width:94px;
+  text-align:center;
+}
+
+.viewModuleComponentDescriptionTitle{
+  float:left;
+}
+
 /* View Course - Students */
 
 #viewCourseStudentsTotalContainer {

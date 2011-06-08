@@ -296,6 +296,22 @@
           
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.viewCourse.createdTitle" />
+                <jsp:param name="helpLocale" value="courses.viewCourse.createdHelp" />
+              </jsp:include>
+              <div class="genericViewFormDataText"><i>${course.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.created}"/></i></div>
+            </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.viewCourse.modifiedTitle" />
+                <jsp:param name="helpLocale" value="courses.viewCourse.modifiedHelp" />
+              </jsp:include>
+              <div class="genericViewFormDataText"><i>${course.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.lastModified}"/></i></div>
+            </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.viewCourse.moduleTitle" />
                 <jsp:param name="helpLocale" value="courses.viewCourse.moduleHelp" />
               </jsp:include>
@@ -520,7 +536,7 @@
           </c:choose> 
           
           <c:choose>
-            <c:when test="${course.distanceTeachingDays gt 0}">
+            <c:when test="${course.teachingHours gt 0}">
               <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="courses.viewCourse.teachingHoursTitle" />
