@@ -20,6 +20,7 @@ import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
@@ -357,7 +358,9 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
         // Add ModuleBeans to response
         studentProjectModules.put(studentProject.getId(), studentProjectModuleBeans);
         
-        StudentProjectBean bean = new StudentProjectBean(studentProject, mandatoryModuleCount, optionalModuleCount, passedMandatoryModuleCount, passedOptionalModuleCount);
+        List<ProjectAssessment> projectAssessments = gradingDAO.listProjectAssessmentByProject(studentProject);
+        
+        StudentProjectBean bean = new StudentProjectBean(studentProject, mandatoryModuleCount, optionalModuleCount, passedMandatoryModuleCount, passedOptionalModuleCount, projectAssessments);
         studentProjectBeans.add(bean);
       }
       
@@ -401,14 +404,16 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     private final int mandatoryModuleCount;
     private final int optionalModuleCount;
     private final int passedMandatoryModuleCount;
+    private final List<ProjectAssessment> assessments;
 
     public StudentProjectBean(StudentProject studentProject, int mandatoryModuleCount, int optionalModuleCount,
-        int passedMandatoryModuleCount, int passedOptionalModuleCount) {
+        int passedMandatoryModuleCount, int passedOptionalModuleCount, List<ProjectAssessment> assessments) {
       this.studentProject = studentProject;
       this.mandatoryModuleCount = mandatoryModuleCount;
       this.optionalModuleCount = optionalModuleCount;
       this.passedOptionalModuleCount = passedOptionalModuleCount;
       this.passedMandatoryModuleCount = passedMandatoryModuleCount;
+      this.assessments = assessments;
     }
 
     public StudentProject getStudentProject() {
@@ -429,6 +434,10 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
 
     public int getPassedMandatoryModuleCount() {
       return passedMandatoryModuleCount;
+    }
+
+    public List<ProjectAssessment> getAssessments() {
+      return assessments;
     }
   }
   

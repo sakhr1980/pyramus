@@ -28,9 +28,11 @@ import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
+import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
+import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
@@ -521,4 +523,54 @@ public class GradingDAO extends PyramusDAO {
     
     return assessment;
   }
+  
+  /* ProjectAssessment */
+  
+  public ProjectAssessment findProjectAssessmentById(Long projectAssessmentId) {
+    Session s = getHibernateSession();
+    return (ProjectAssessment) s.load(ProjectAssessment.class, projectAssessmentId);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<ProjectAssessment> listProjectAssessmentByProject(StudentProject studentProject) {
+    Session s = getHibernateSession();
+    return 
+      s.createCriteria(ProjectAssessment.class)
+      .add(Restrictions.eq("studentProject", studentProject))
+      .list();
+  }
+
+  public ProjectAssessment createProjectAssessment(StudentProject studentProject, User assessingUser, Grade grade, Date date, String verbalAssessment) {
+    Session s = getHibernateSession();
+
+    ProjectAssessment projectAssessment = new ProjectAssessment();
+    projectAssessment.setAssessingUser(assessingUser);
+    projectAssessment.setStudentProject(studentProject);
+    projectAssessment.setDate(date);
+    projectAssessment.setGrade(grade);
+    projectAssessment.setVerbalAssessment(verbalAssessment);
+    
+    s.saveOrUpdate(projectAssessment);
+    
+    return projectAssessment;
+  }
+
+  public ProjectAssessment updateProjectAssessment(ProjectAssessment assessment, User assessingUser, Grade grade, Date assessmentDate, String verbalAssessment) {
+    EntityManager entityManager = getEntityManager();
+
+    assessment.setAssessingUser(assessingUser);
+    assessment.setGrade(grade);
+    assessment.setDate(assessmentDate);
+    assessment.setVerbalAssessment(verbalAssessment);
+    
+    entityManager.persist(assessment);
+    
+    return assessment;
+  }
+
+  public void deleteProjectAssessment(ProjectAssessment projectAssessment) {
+    EntityManager entityManager = getEntityManager();
+    entityManager.remove(projectAssessment);
+  }
+
 }
