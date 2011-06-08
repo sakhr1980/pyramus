@@ -55,7 +55,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name.escapeHTML(), '', '', '', results[i].id]);
+              resultsTable.addRow([results[i].name.escapeHTML(), '', '', '', '', results[i].id]);
             }
             resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -122,6 +122,17 @@
             left: 8,
             dataType: 'text',
             editable: false
+          }, {
+            width: 30,
+            right: 90,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
+            tooltip: '<fmt:message key="modules.searchModules.modulesTableViewModuleTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
+              redirectTo(GLOBAL_contextPath + '/modules/viewmodule.page?module=' + moduleId);
+            }
           }, {
             width: 30,
             right: 60,

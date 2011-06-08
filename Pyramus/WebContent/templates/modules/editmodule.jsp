@@ -231,7 +231,7 @@
         });
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
-          text: '<fmt:message key="modules.editMdoule.basicTabRelatedActionsCreateProjectLabel"/>',
+          text: '<fmt:message key="modules.editModule.basicTabRelatedActionsCreateCourseLabel"/>',
           link: '../courses/createcourse.page?module=${module.id}'  
         }));
       }
