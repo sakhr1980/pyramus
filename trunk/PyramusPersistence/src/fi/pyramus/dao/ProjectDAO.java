@@ -104,7 +104,7 @@ public class ProjectDAO extends PyramusDAO {
   }
 
   public StudentProject createStudentProject(Student student, String name, String description,
-      Double optionalStudiesLength, EducationalTimeUnit optionalStudiesLengthTimeUnit, User user) {
+      Double optionalStudiesLength, EducationalTimeUnit optionalStudiesLengthTimeUnit, CourseOptionality optionality, User user, Project project) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -115,10 +115,12 @@ public class ProjectDAO extends PyramusDAO {
     studentProject.setDescription(description);
     studentProject.getOptionalStudiesLength().setUnit(optionalStudiesLengthTimeUnit);
     studentProject.getOptionalStudiesLength().setUnits(optionalStudiesLength);
+    studentProject.setOptionality(optionality);
     studentProject.setCreator(user);
     studentProject.setCreated(now);
     studentProject.setLastModifier(user);
     studentProject.setLastModified(now);
+    studentProject.setProject(project);
 
     s.save(studentProject);
 
@@ -152,7 +154,7 @@ public class ProjectDAO extends PyramusDAO {
   }
 
   public void updateStudentProject(StudentProject studentProject, String name, String description,
-      Double optionalStudiesLength, EducationalTimeUnit optionalStudiesLengthTimeUnit, User user) {
+      Double optionalStudiesLength, EducationalTimeUnit optionalStudiesLengthTimeUnit, CourseOptionality optionality, User user) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -161,6 +163,7 @@ public class ProjectDAO extends PyramusDAO {
     studentProject.setDescription(description);
     studentProject.getOptionalStudiesLength().setUnit(optionalStudiesLengthTimeUnit);
     studentProject.getOptionalStudiesLength().setUnits(optionalStudiesLength);
+    studentProject.setOptionality(optionality);
     studentProject.setLastModifier(user);
     studentProject.setLastModified(now);
 
@@ -467,6 +470,14 @@ public class ProjectDAO extends PyramusDAO {
     Session s = getHibernateSession();
     return s.createCriteria(StudentProject.class)
       .add(Restrictions.eq("student", student))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<Project> listProjects() {
+    Session s = getHibernateSession();
+    return s.createCriteria(Project.class)
       .add(Restrictions.eq("archived", Boolean.FALSE))
       .list();
   }

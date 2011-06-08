@@ -817,10 +817,104 @@
         
         checkModulesMessage();
         checkCoursesMessage();
+
+        var assessmentsTable = new IxTable($('projectAssessmentsTableContainer'), {
+          id: 'assessmentsTable',
+            columns : [{
+              left: 8,
+              width: 22,
+              paramName: 'editRowButton',
+              dataType: 'button',
+              imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+              tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
+              onclick: function (event) {
+                var table = event.tableComponent;
+
+                table.setCellEditable(event.row, table.getNamedColumnIndex('date'), true);
+                table.setCellEditable(event.row, table.getNamedColumnIndex('grade'), true);
+                table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+              }
+            }, {
+              header : '<fmt:message key="projects.editStudentProject.assessmentsTableDateHeader"/>',
+              left: 8 + 22 + 8,
+              width : 150,
+              dataType : 'date',
+              paramName: 'date',
+              editable: false
+            }, {
+              header : '<fmt:message key="projects.editStudentProject.assessmentsTableGradeHeader"/>',
+              left: 8 + 22 + 8 + 150 + 8,
+              width: 150,
+              dataType : 'select',
+              paramName: 'grade',
+              editable: false,
+              options: [
+                {text: "-"}
+                <c:if test="${fn:length(gradingScales) gt 0}">,</c:if>
+                <c:forEach var="gradingScale" items="${gradingScales}" varStatus="vs">
+                  {text: "${fn:escapeXml(gradingScale.name)}", optionGroup: true, 
+                    options: [
+                      <c:forEach var="grade" items="${gradingScale.grades}" varStatus="vs2">
+                        {text: "${fn:escapeXml(grade.name)}", value: ${grade.id}}
+                        <c:if test="${not vs2.last}">,</c:if>
+                      </c:forEach>
+                    ]
+                  } 
+                  <c:if test="${not vs.last}">,</c:if>
+                </c:forEach>
+              ]
+            }, {
+              left: 8 + 22 + 8 + 150 + 8 + 150 + 8,
+              dataType: 'button',
+              paramName: 'removeButton',
+              imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
+              tooltip: '<fmt:message key="projects.editStudentProject.assessmentsTableDeleteRowTooltip"/>',
+              onclick: function (event) {
+                var table = event.tableComponent;
+                var assessmentId = table.getCellValue(event.row, table.getNamedColumnIndex('assessmentId'));
+                if (assessmentId == -1)
+                  table.deleteRow(event.row);
+                else {
+                  table.setCellValue(event.row, table.getNamedColumnIndex('deleted'), 1);
+                  table.hideRow(event.row);
+                }
+              } 
+            }, {
+              dataType: 'hidden',
+              paramName: 'assessmentId'
+            }, {
+              dataType: 'hidden',
+              paramName: 'modified'
+            }, {
+              dataType: 'hidden',
+              paramName: 'deleted'
+            }]
+        });
+        
+        <c:forEach var="assessment" items="${projectAssessments}">
+        assessmentsTable.addRow([
+            '', 
+            '${assessment.date.time}',
+            '${assessment.grade.id}',
+            '',
+            ${assessment.id},
+            0,
+            0
+        ]);
+        </c:forEach>
         
         var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer'), {
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsLabel"/>'
         });
+
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsViewStudentLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}');
+          }
+        }));
+
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsEditStudentLabel"/>',
@@ -828,6 +922,12 @@
         }));
       }
 
+      function addAssessmentRow() {
+        var table = getIxTableById('assessmentsTable');
+        var rowIndex = table.addRow(['', new Date().getTime(), '', '', -1, 1, 0]);
+        table.setCellEditable(rowIndex, table.getNamedColumnIndex('date'), true);
+        table.setCellEditable(rowIndex, table.getNamedColumnIndex('grade'), true);
+      }
     </script>
   </head>
   <body onLoad="onLoad(event);" ix:enabledrafting="true">
@@ -925,6 +1025,41 @@
               </jsp:include>
               <input type="text" id="tags" name="tags" size="40" value="${fn:escapeXml(tags)}"/>
               <div id="tags_choices" class="autocomplete_choices"></div>
+            </div>
+    
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.optionalityTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.optionalityHelp"/>
+              </jsp:include>
+              <select name="projectOptionality">
+                <option></option>
+                <c:choose>
+                  <c:when test="${studentProject.optionality eq 'MANDATORY'}">
+                    <option value="MANDATORY" selected="selected"><fmt:message key="projects.editStudentProject.optionalityMandatory"/></option>
+                    <option value="OPTIONAL"><fmt:message key="projects.editStudentProject.optionalityOptional"/></option>
+                  </c:when>
+                  <c:when test="${studentProject.optionality eq 'OPTIONAL'}">
+                    <option value="MANDATORY"><fmt:message key="projects.editStudentProject.optionalityMandatory"/></option>
+                    <option value="OPTIONAL" selected="selected"><fmt:message key="projects.editStudentProject.optionalityOptional"/></option>
+                  </c:when>
+                  <c:otherwise>
+                    <option value="MANDATORY"><fmt:message key="projects.editStudentProject.optionalityMandatory"/></option>
+                    <option value="OPTIONAL"><fmt:message key="projects.editStudentProject.optionalityOptional"/></option>
+                  </c:otherwise>
+                </c:choose>
+              </select>
+            </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.projectAssessmentsTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.projectAssessmentsHelp"/>
+              </jsp:include>
+              <div id="addProjectAssessmentLinkContainer">
+                <span class="genericTableAddRowLinkContainer" onclick="addAssessmentRow();"><fmt:message key="projects.editStudentProject.addAssessmentLink"/></span>
+              </div>
+              <div id="projectAssessmentsTableContainer"></div>
             </div>
     
             <div class="genericFormSection">

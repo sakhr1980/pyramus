@@ -16,6 +16,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.GradingDAO;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.UserDAO;
@@ -23,6 +24,8 @@ import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.grading.GradingScale;
+import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.Student;
@@ -46,8 +49,10 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     
     Long studentProjectId = pageRequestContext.getLong("studentproject");
+    List<GradingScale> gradingScales = gradingDAO.listGradingScales();
 
     StudentProject studentProject = projectDAO.findStudentProjectById(studentProjectId);
     List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByStudent(studentProject.getStudent());
@@ -84,6 +89,9 @@ public class EditStudentProjectViewController implements PyramusViewController, 
       }
     });
     
+    List<ProjectAssessment> assessments = gradingDAO.listProjectAssessmentByProject(studentProject);
+    
+    pageRequestContext.getRequest().setAttribute("projectAssessments", assessments);
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
@@ -92,6 +100,7 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("academicTerms", academicTerms);
     pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
+    pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);
 
     pageRequestContext.setIncludeJSP("/templates/projects/editstudentproject.jsp");
   }

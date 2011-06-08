@@ -29,6 +29,9 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
@@ -45,6 +48,8 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
+import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 
 @Entity
 @Indexed
@@ -54,6 +59,9 @@ import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
      impl=ArchivedEntityFilterFactory.class
   )
 )
+@TypeDefs ({
+  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
+})
 public class StudentProject implements ArchivableEntity {
 
   /**
@@ -279,6 +287,22 @@ public class StudentProject implements ArchivableEntity {
     return version;
   }
 
+  public void setProject(Project project) {
+    this.project = project;
+  }
+
+  public Project getProject() {
+    return project;
+  }
+
+  public void setOptionality(CourseOptionality optionality) {
+    this.optionality = optionality;
+  }
+
+  public CourseOptionality getOptionality() {
+    return optionality;
+  }
+
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentProject")  
   @TableGenerator(name="StudentProject", allocationSize=1)
@@ -337,6 +361,14 @@ public class StudentProject implements ArchivableEntity {
   @JoinTable (name="__StudentProjectTags", joinColumns=@JoinColumn(name="studentProject"), inverseJoinColumns=@JoinColumn(name="tag"))
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
+  
+  @ManyToOne 
+  @JoinColumn(name="project")
+  private Project project;
+
+  @Column
+  @Type (type="CourseOptionality")
+  private CourseOptionality optionality;
   
   @Version
   @Column(nullable = false)

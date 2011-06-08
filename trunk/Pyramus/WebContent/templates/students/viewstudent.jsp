@@ -67,9 +67,57 @@
           text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsManageContactEntriesLabel"/>',
           link: GLOBAL_contextPath + '/students/managestudentcontactentries.page?abstractStudent=' + abstractStudentId  
         }));
-        
+
+        var projectsTabRelatedActionsHoverMenu = new IxHoverMenu($('projectsTabRelatedActionsHoverMenuContainer.' + studentId), {
+          text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsLabel"/>'
+        });
+
+        projectsTabRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.projectsTabRelatedActionsAddProjectLabel"/>',
+          onclick: function (event) {
+            openAddNewProjectDialog(studentId);         
+          }
+        }));
       }
 
+      function openAddNewProjectDialog(studentId) {
+        var dialog = new IxDialog({
+          id : 'selectProjectDialog',
+          contentURL : GLOBAL_contextPath + '/projects/selectprojectdialog.page',
+          centered : true,
+          showOk : true,
+          showCancel : true,
+          title : '<fmt:message key="projects.selectProjectDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="projects.selectProjectDialog.okLabel"/>', 
+          cancelLabel : '<fmt:message key="projects.selectProjectDialog.cancelLabel"/>' 
+        });
+        
+        dialog.setSize("400px", "250px");
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'okClick':
+              var selectedProjectId = event.results.selectedProjectId;
+              var optionality = event.results.optionality;
+
+              JSONRequest.request("students/createstudentproject.json", {
+                parameters: {
+                  projectId: selectedProjectId,
+                  studentId: studentId,
+                  optionality: optionality
+                },
+                onSuccess: function (jsonResponse) {
+                  redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=${abstractStudent.id}'); //'#at-studentProject.' + studentId);
+                }
+              });
+            break;
+          }
+        });
+        
+        dialog.open();
+      }
+      
       function setupCoursesTab(studentId) {
         var relatedContainer = $('tabRelatedActionsContainer.' + studentId);
     
@@ -471,7 +519,7 @@
   
         return studentProjectModulesTable;
       }
-      
+
       function onLoad(event) {
         var coursesTable;
         var transferCreditsTable;
@@ -635,6 +683,9 @@
             else
               $('viewStudentCourseAssessmentsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
           });
+
+          
+
           
           var projectTable;
           <c:forEach var="sp" items="${studentProjects[student.id]}">
@@ -691,6 +742,10 @@
         <c:if test="${!empty param.activeTab}">
           tabControl.setActiveTab("${param.activeTab}");  
         </c:if>
+      }
+      
+      function openEditStudentProject(studentProjectId) {
+        redirectTo(GLOBAL_contextPath + "/projects/editstudentproject.page?studentproject=" + studentProjectId);        
       }
     </script>
   </head>
@@ -1260,15 +1315,39 @@
                 </div>
 
                 <div id="studentProject.${student.id}" class="tabContent">
-<!--
-                  <div id="coursesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
--->
+                  <div id="projectsTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
+
                   <c:forEach var="sp" items="${studentProjects[student.id]}">
                     <div class="viewStudentProjectHeader">
                       <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
+                      <span class="viewStudentProjectHeaderOptionality">
+                        <c:choose>
+                          <c:when test="${sp.studentProject.optionality eq 'MANDATORY'}">
+                            <fmt:message key="students.viewStudent.projectOptionalityMandatory"/>
+                          </c:when>
+                          <c:when test="${sp.studentProject.optionality eq 'OPTIONAL'}">
+                            <fmt:message key="students.viewStudent.projectOptionalityOptional"/>
+                          </c:when>
+                        </c:choose>
+                      </span>
+
+                      <c:forEach var="assessment" items="${sp.assessments}">
+                        <span class="viewStudentProjectHeaderAssessment">
+                          <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${assessment.date}"/></span>
+                          <span class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
+                        </span>
+                      </c:forEach>
+                      
+                      <span class="viewStudentProjectHeaderEditButton">
+                        <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/>
+                      </span>
+                    </div>
+                    
+                    <div class="viewStudentProjectHeader">
                       <span class="viewStudentProjectHeaderMandatory"><fmt:message key="students.viewStudent.projectHeaderMandatoryCourseCount"/> ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span> 
                       <span class="viewStudentProjectHeaderOptional"><fmt:message key="students.viewStudent.projectHeaderOptionalCourseCount"/> ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
                     </div>
+
 
                     <div class="viewStudentStudentProjectTableContainer">                    
                       <div id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>

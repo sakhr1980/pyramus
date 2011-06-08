@@ -9,11 +9,15 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleObjectStateException;
 
+import fi.pyramus.ErrorLevel;
 import fi.pyramus.JSONRequestContext;
+import fi.pyramus.PyramusRuntimeException;
+import fi.pyramus.StatusCode;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.GradingDAO;
 import fi.pyramus.dao.ModuleDAO;
 import fi.pyramus.dao.ProjectDAO;
 import fi.pyramus.dao.StudentDAO;
@@ -26,6 +30,8 @@ import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.grading.Grade;
+import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
@@ -43,6 +49,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     
     Defaults defaults = baseDAO.getDefaults();
 
@@ -64,6 +71,7 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     Double optionalStudiesLength = jsonRequestContext.getDouble("optionalStudiesLength");
     String tagsText = jsonRequestContext.getString("tags");
     Long studentId = jsonRequestContext.getLong("student");
+    CourseOptionality projectOptionality = (CourseOptionality) jsonRequestContext.getEnum("projectOptionality", CourseOptionality.class);
     
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {
@@ -87,16 +95,48 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
     }
     
     projectDAO.updateStudentProject(studentProject, name, description, optionalStudiesLength,
-        optionalStudiesLengthTimeUnit, user);
+        optionalStudiesLengthTimeUnit, projectOptionality, user);
 
     // Tags
 
     projectDAO.setStudentProjectTags(studentProject, tagEntities);
 
+    // ProjectAssessments
+    
+    int rowCount = jsonRequestContext.getInteger("assessmentsTable.rowCount").intValue();
+    for (int i = 0; i < rowCount; i++) {
+      String colPrefix = "assessmentsTable." + i;
+      
+      Long assessmentModified = jsonRequestContext.getLong(colPrefix + ".modified");
+
+      if ((assessmentModified != null) && (assessmentModified.intValue() == 1)) {
+        Long assessmentId = jsonRequestContext.getLong(colPrefix + ".assessmentId");
+        ProjectAssessment projectAssessment = ((assessmentId != null) && (assessmentId.intValue() != -1)) ? gradingDAO.findProjectAssessmentById(assessmentId) : null;
+        Long assessmentDeleted = jsonRequestContext.getLong(colPrefix + ".deleted");
+
+        if ((assessmentDeleted != null) && (assessmentDeleted.intValue() == 1)) {
+          if (projectAssessment != null)
+            gradingDAO.deleteProjectAssessment(projectAssessment);
+          else
+            throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.OK, "Assessment marked for delete does not exist.");
+        } else {
+          Date assessmentDate = jsonRequestContext.getDate(colPrefix + ".date");
+          Long assessmentGradeId = jsonRequestContext.getLong(colPrefix + ".grade");
+          Grade grade = assessmentGradeId != null ? gradingDAO.findGradeById(assessmentGradeId) : null; 
+          
+          if (projectAssessment == null) {
+            gradingDAO.createProjectAssessment(studentProject, user, grade, assessmentDate, null);
+          } else {
+            gradingDAO.updateProjectAssessment(projectAssessment, user, grade, assessmentDate, projectAssessment.getVerbalAssessment());
+          }
+        }
+      }
+    }
+    
     // Student project modules
 
     Set<Long> existingModuleIds = new HashSet<Long>();
-    int rowCount = jsonRequestContext.getInteger("modulesTable.rowCount").intValue();
+    rowCount = jsonRequestContext.getInteger("modulesTable.rowCount").intValue();
     for (int i = 0; i < rowCount; i++) {
       String colPrefix = "modulesTable." + i;
       

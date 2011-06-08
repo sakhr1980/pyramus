@@ -45,6 +45,9 @@ public class CreditTypeUserType implements UserType {
       case 2:
         creditType = CreditType.TransferCredit;
       break;
+      case 3:
+        creditType = CreditType.ProjectAssessment;
+      break;
     }
     
     if (rs.wasNull())
@@ -63,6 +66,9 @@ public class CreditTypeUserType implements UserType {
         break;
         case TransferCredit:
           st.setInt(index, 2);
+        break;
+        case ProjectAssessment:
+          st.setInt(index, 3);
         break;
       }
     }

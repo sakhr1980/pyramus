@@ -74,7 +74,7 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       units = project.getOptionalStudiesLength().getUnits();
     }
 
-    StudentProject studentProject = projectDAO.createStudentProject(student, name, description, units, unit, loggedUser);
+    StudentProject studentProject = projectDAO.createStudentProject(student, name, description, units, unit, null, loggedUser, project);
     projectDAO.setStudentProjectTags(studentProject, tagEntities);
 
     if (project != null) {
