@@ -1,6 +1,9 @@
 package fi.pyramus.services;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
@@ -8,6 +11,9 @@ import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
+import fi.pyramus.domainmodel.base.Language;
+import fi.pyramus.domainmodel.base.Municipality;
+import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.services.entities.EntityFactoryVault;
@@ -21,6 +27,7 @@ import fi.pyramus.services.entities.base.NationalityEntity;
 import fi.pyramus.services.entities.base.SchoolEntity;
 import fi.pyramus.services.entities.base.StudyProgrammeEntity;
 import fi.pyramus.services.entities.base.SubjectEntity;
+import fi.pyramus.services.utils.StringAttributeComparator;
 
 public class BaseService extends PyramusService {
 
@@ -36,7 +43,9 @@ public class BaseService extends PyramusService {
 
   public NationalityEntity[] listNationalities() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (NationalityEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listNationalities());
+    List<Nationality> nationalities = baseDAO.listNationalities();
+    Collections.sort(nationalities, new StringAttributeComparator("getName"));
+    return (NationalityEntity[]) EntityFactoryVault.buildFromDomainObjects(nationalities);
   }
 
   public LanguageEntity getLanguageByCode(String code) {
@@ -51,7 +60,9 @@ public class BaseService extends PyramusService {
 
   public LanguageEntity[] listLanguages() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (LanguageEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listLanguages());
+    List<Language> languages = baseDAO.listLanguages();
+    Collections.sort(languages, new StringAttributeComparator("getName"));
+    return (LanguageEntity[]) EntityFactoryVault.buildFromDomainObjects(languages);
   }
 
   public MunicipalityEntity getMunicipalityByCode(String code) {
@@ -66,7 +77,9 @@ public class BaseService extends PyramusService {
 
   public MunicipalityEntity[] listMunicipalities() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (MunicipalityEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listMunicipalities());
+    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    Collections.sort(municipalities, new StringAttributeComparator("getName"));
+    return (MunicipalityEntity[]) EntityFactoryVault.buildFromDomainObjects(municipalities);
   }
 
   public EducationalTimeUnitEntity getEducationalTimeUnitById(Long educationalTimeUnitId) {
@@ -76,7 +89,9 @@ public class BaseService extends PyramusService {
 
   public EducationalTimeUnitEntity[] listEducationalTimeUnits() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (EducationalTimeUnitEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listEducationalTimeUnits());
+    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
+    return (EducationalTimeUnitEntity[]) EntityFactoryVault.buildFromDomainObjects(educationalTimeUnits);
   }
 
   public EducationalTimeUnitEntity createEducationalTimeUnit(Double baseUnits, String name) {
@@ -93,7 +108,15 @@ public class BaseService extends PyramusService {
 
   public AcademicTermEntity[] listAcademicTerms() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (AcademicTermEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listAcademicTerms());
+    List<AcademicTerm> academicTerms = baseDAO.listAcademicTerms();
+
+    Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
+      public int compare(AcademicTerm o1, AcademicTerm o2) {
+        return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());
+      }
+    });
+    
+    return (AcademicTermEntity[]) EntityFactoryVault.buildFromDomainObjects(academicTerms);
   }
 
   /*Dateformat: [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm] */
@@ -162,13 +185,17 @@ public class BaseService extends PyramusService {
 
   public EducationTypeEntity[] listEducationTypes() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (EducationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listEducationTypes());
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+    return (EducationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(educationTypes);
   }
 
   public EducationSubtypeEntity[] listEducationSubtypesByEducationType(Long educationTypeId) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     EducationType educationType = baseDAO.getEducationType(educationTypeId);
-    return (EducationSubtypeEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listEducationSubtypes(educationType));
+    List<EducationSubtype> educationSubtypes = baseDAO.listEducationSubtypes(educationType);
+    Collections.sort(educationSubtypes, new StringAttributeComparator("getName"));
+    return (EducationSubtypeEntity[]) EntityFactoryVault.buildFromDomainObjects(educationSubtypes);
   }
 
   public SubjectEntity getSubjectById(Long subjectId) {
@@ -183,12 +210,16 @@ public class BaseService extends PyramusService {
 
   public SchoolEntity[] listSchools() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listSchools());
+    List<School> schools = baseDAO.listSchools();
+    Collections.sort(schools, new StringAttributeComparator("getName"));
+    return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(schools);
   }
 
   public SchoolEntity[] listSchoolsByVariable(String key, String value) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listSchoolsByVariable(key, value));
+    List<School> schools = baseDAO.listSchoolsByVariable(key, value);
+    Collections.sort(schools, new StringAttributeComparator("getName"));
+    return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(schools);
   }
 
   public StudyProgrammeEntity[] listStudyProgrammes() {
@@ -198,7 +229,9 @@ public class BaseService extends PyramusService {
 
   public SubjectEntity[] listSubjects() {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (SubjectEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listSubjects());
+    List<Subject> subjects = baseDAO.listSubjects();
+    Collections.sort(subjects, new StringAttributeComparator("getName"));
+    return (SubjectEntity[]) EntityFactoryVault.buildFromDomainObjects(subjects);
   }
 
   public SubjectEntity createSubject(String code, String name, Long educationTypeId) {
