@@ -4,6 +4,7 @@ CoursePlanner = Class.create({
       showMonthLines: true,
       showWeekLines: true,
       showDayLines: true,
+      showYearLabels: true,
       showMonthLabels: true,
       showWeekLabels: false,
       showDayLabels: false,
@@ -62,6 +63,7 @@ CoursePlanner = Class.create({
     this._viewMouseDownListener = this._onViewMouseDown.bindAsEventListener(this);
     this._viewMouseUpListener = this._onViewMouseUp.bindAsEventListener(this);
     this._viewMouseMoveListener = this._onViewMouseMove.bindAsEventListener(this);
+    this._monthLabelClickListener = this._onMonthLabelClick.bindAsEventListener(this);
     
     Event.observe(this._view, "mousedown", this._viewMouseDownListener);
     Event.observe(this._view, "mouseup", this._viewMouseUpListener);
@@ -143,6 +145,14 @@ CoursePlanner = Class.create({
     
     this._renderCourses();
   },
+  setDateRange: function (from, to) {
+    this._timeFrame = to.getTime() - from.getTime();
+    this._updateMsPixelRatio();
+    this._viewOffsetX = this._getDateInPixels(from);
+    this._renderBackground();
+    this._refreshVisibleCourses();
+    this._renderCourses();
+  },
   _getWeekNumber: function (date) {
     // Thanks from this method goes to Stephen Chapman (http://javascript.about.com/library/blweekyear.htm)
     var onejan = new Date(date.getFullYear(),0,1);
@@ -220,12 +230,16 @@ CoursePlanner = Class.create({
     return this._getPixelsInDate(this._viewOffsetX + this._domNode.getWidth());
   },
   _renderBackground : function() {
+    // TODO: Also stop observing...
+    
     if (this._options.showMonthLines)
       this._view.select('.coursePlannerMonthLine').invoke('remove');
     if (this._options.showWeekLines)
       this._view.select('.coursePlannerWeekLine').invoke('remove');
     if (this._options.showDayLines)
       this._view.select('.coursePlannerDayLine').invoke('remove');
+    if (this._options.showYearLabels) 
+      this._labels.select('.coursePlannerYearLabel').invoke('remove');
     if (this._options.showMonthLabels) 
       this._labels.select('.coursePlannerMonthLabel').invoke('remove');
     if (this._options.showWeekLabels) 
@@ -316,9 +330,10 @@ CoursePlanner = Class.create({
           style : "left: " + left + 'px'
         }).update(this._formatMonth(date));
         
-        Event.observe(monthLabelElement, "click", function (event) {
-          
-        });
+        monthLabelElement._year = date.getFullYear();
+        monthLabelElement._month = date.getMonth();
+        
+        Event.observe(monthLabelElement, "click", this._monthLabelClickListener);
         
         this._labels.appendChild(monthLabelElement);
       }
@@ -470,6 +485,15 @@ CoursePlanner = Class.create({
     this._renderBackground();
     this._refreshVisibleCourses();
     this._renderCourses();
+  },
+  _onMonthLabelClick: function (event) {
+    if (Object.isFunction(this._options.onMonthLabelClick)) {
+      var element = Event.element(event);
+      this._options.onMonthLabelClick.call(this, {
+        year: element._year,
+        month: element._month
+      });
+    }
   },
   _wheelDelta: function (event) {
     // http://code.google.com/p/fni/source/browse/trunk/fni/WebContent/scripts/fniprototypeext/fniprototypeext.js

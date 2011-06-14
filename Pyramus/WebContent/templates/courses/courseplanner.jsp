@@ -28,6 +28,7 @@
           showMonthLines: true,
           showWeekLines: true,
           showDayLines: true,
+          showYearLabels: true,
           showMonthLabels: true,
           showWeekLabels: false,
           showDayLabels: false,
@@ -36,7 +37,13 @@
           trackSpacing: 4,
           initialTimeFrame: 1000 * 60 * 60 * 24 * 30 * 6,
           onMonthLabelClick: function(event) {
-            alert('click');
+            var from = new Date();
+            from.setFullYear(event.year, event.month, 1);
+            from.setHours(0, 0, 0, 0);
+            var to = new Date();
+            to.setFullYear(event.year, event.month + 1, 0);
+            to.setHours(0, 0, 0, 0);
+            this.setDateRange(from, to);
           }
         });
         
