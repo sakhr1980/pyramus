@@ -4,11 +4,11 @@ CoursePlanner = Class.create({
       showMonthLines: true,
       showWeekLines: true,
       showDayLines: true,
-      showYearLabels: true,
       showMonthLabels: true,
       showWeekLabels: false,
       showDayLabels: false,
       zoomingEnabled: true,
+      showYearLabel: true,
       courseHeight: 60,
       trackHeight: 70,
       trackSpacing: 8,
@@ -41,11 +41,23 @@ CoursePlanner = Class.create({
     });
     this._dragHightlight = new Element("div", {className: "coursePlannerTrackHighlight"});
     
+    if (this._options.showYearLabel) {
+      this._yearLabelContainer = new Element("div", {
+        className : "coursePlannerYearLabelContainer"
+      });
+      this._yearLabel = new Element("div", {
+        className : "coursePlannerYearLabel"
+      });
+      this._yearLabelContainer.appendChild(this._yearLabel);
+      this._domNode.appendChild(this._yearLabelContainer);
+      this._yearLabelClickListener = this._onYearLabelClick.bindAsEventListener(this);
+      Event.observe(this._yearLabel, "click", this._yearLabelClickListener);
+    }
+    
     this._view.appendChild(this._verticalPointer);
     this._view.appendChild(this._dragHightlight);
     this._domNode.appendChild(this._view);
     this._domNode.appendChild(this._labels);
-    
     
     this._domNode.ondragstart = function(event) { 
       Event.stop(event);
@@ -81,6 +93,7 @@ CoursePlanner = Class.create({
     this._renderBackground();
     this._refreshVisibleCourses();
     this._renderCourses();
+    this._refreshYear();
   },
   addCourse : function(name, startDate, endDate, track, movable, resizable) {
     var id = 'cpc-' + new Date().getTime();
@@ -152,6 +165,7 @@ CoursePlanner = Class.create({
     this._renderBackground();
     this._refreshVisibleCourses();
     this._renderCourses();
+    this._refreshYear();
   },
   _getWeekNumber: function (date) {
     // Thanks from this method goes to Stephen Chapman (http://javascript.about.com/library/blweekyear.htm)
@@ -238,8 +252,6 @@ CoursePlanner = Class.create({
       this._view.select('.coursePlannerWeekLine').invoke('remove');
     if (this._options.showDayLines)
       this._view.select('.coursePlannerDayLine').invoke('remove');
-    if (this._options.showYearLabels) 
-      this._labels.select('.coursePlannerYearLabel').invoke('remove');
     if (this._options.showMonthLabels) 
       this._labels.select('.coursePlannerMonthLabel').invoke('remove');
     if (this._options.showWeekLabels) 
@@ -251,8 +263,12 @@ CoursePlanner = Class.create({
     var weeks = new Array();
     var months = new Array();
 
+    var timeOffset = 100 / this._msPixelRatio; 
+    
     var viewStartDateTime = this._getViewStartDate();
+    viewStartDateTime.setTime(viewStartDateTime.getTime() - timeOffset);
     var viewEndDateTime = this._getViewEndDate();
+    viewEndDateTime.setTime(viewEndDateTime.getTime() + timeOffset);
     var date = new Date(viewStartDateTime);
 
     while (date.getTime() < viewEndDateTime) {
@@ -275,7 +291,7 @@ CoursePlanner = Class.create({
       date.setDate(date.getDate() + 1);
     }
 
-    for ( var i = 0, l = days.length; i < l; i++) {
+    for (var i = 0, l = days.length; i < l; i++) {
       var date = days[i];
       var left = (date.getTime() - viewStartDateTime) * this._msPixelRatio;
       
@@ -338,6 +354,9 @@ CoursePlanner = Class.create({
         this._labels.appendChild(monthLabelElement);
       }
     }
+  },
+  _refreshYear: function () {
+    this._yearLabel.update(this._getViewEndDate().getFullYear());
   },
   _refreshVisibleCourses: function () {
     var viewStartDateTime = this._getViewStartDate();
@@ -436,10 +455,13 @@ CoursePlanner = Class.create({
   _onViewMouseMove : function(event) {
     var mouseX = event.pointerX();
     var mouseY = event.pointerY();
+    
+    var viewOffset = this._domNode.cumulativeOffset();
+    
     this._oldCursorPosX = this._cursorPosX;
     this._oldCursorPosY = this._cursorPosY;
-    this._cursorPosX = mouseX - 9;
-    this._cursorPosY = mouseY - this._domNode.cumulativeOffset().top;
+    this._cursorPosX = mouseX - (9 + viewOffset.left);
+    this._cursorPosY = mouseY - viewOffset.top;
     
     if (this._draggingView) {
       this._viewOffsetX += this._oldCursorPosX - this._cursorPosX;
@@ -449,6 +471,7 @@ CoursePlanner = Class.create({
       this._renderBackground();
       this._refreshVisibleCourses();
       this._renderCourses();
+      this._refreshYear();
     }
         
     var trackOffset = this._viewOffsetY % this._options.trackHeight;
@@ -486,6 +509,14 @@ CoursePlanner = Class.create({
     this._refreshVisibleCourses();
     this._renderCourses();
   },
+  _onYearLabelClick: function (event) {
+    if (Object.isFunction(this._options.onYearLabelClick)) {
+      var element = Event.element(event);
+      this._options.onYearLabelClick.call(this, {
+        year: this._getViewEndDate().getFullYear()
+      });
+    }
+  },
   _onMonthLabelClick: function (event) {
     if (Object.isFunction(this._options.onMonthLabelClick)) {
       var element = Event.element(event);
@@ -503,7 +534,7 @@ CoursePlanner = Class.create({
       return ((Prototype.Browser.Gecko == true)||(Prototype.Browser.Opera == true))?(event.detail / 3) * -1: event.wheelDelta ? event.wheelDelta / 120 : (event.detail / 3) * -1;  
   },
   _formatMonth: function (date) {
-    var dateFormatter = new fni.locale.dateformat.FNIDateFormat("MMMM");
+    var dateFormatter = new fni.locale.dateformat.FNIDateFormat("MMMM yyyy");
     return dateFormatter.format(getLocale(), date);
   },
   _formatDay: function (date) {

@@ -20,10 +20,27 @@
 	bottom: 60px;
 	cursor: move;
 	left: 0px;
+	overflow: hidden;
 	position: absolute;
 	right: 0px;
-	top: 0px;
-	overflow: hidden;
+	top: 20px;
+	border-top: 1px solid #AAAAAA;
+}
+
+.coursePlannerYearLabelContainer {
+  text-align: center;
+}
+
+.coursePlannerYearLabel {
+  background: #AB6C00;
+  width: 200px;
+  height: 18px;
+  margin-top: 1px;
+  display: inline-block;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 3px 3px 3px 3px;
 }
 
 .coursePlannerLabels {
@@ -80,7 +97,7 @@
 	overflow: hidden;
 	position: absolute;
 	white-space: nowrap;
-	width: 80px;
+	width: 85px;
 	text-align: center;
 	margin-top: 42px;
 	cursor: pointer;
