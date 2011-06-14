@@ -28,14 +28,23 @@
           showMonthLines: true,
           showWeekLines: true,
           showDayLines: true,
-          showYearLabels: true,
           showMonthLabels: true,
-          showWeekLabels: false,
+          showWeekLabels: true,
           showDayLabels: false,
+          showYearLabel: true,
           courseHeight: 50,
           trackHeight: 60,
           trackSpacing: 4,
           initialTimeFrame: 1000 * 60 * 60 * 24 * 30 * 6,
+          onYearLabelClick: function(event) {
+            var from = new Date();
+            from.setFullYear(event.year, 0, 1);
+            from.setHours(0, 0, 0, 0);
+            var to = new Date();
+            to.setFullYear(event.year, 11, 0);
+            to.setHours(0, 0, 0, 0);
+            this.setDateRange(from, to);
+          }, 
           onMonthLabelClick: function(event) {
             var from = new Date();
             from.setFullYear(event.year, event.month, 1);
