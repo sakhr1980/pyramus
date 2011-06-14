@@ -272,10 +272,10 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       Boolean lodging = requestContext.getBoolean(colPrefix + ".lodging");
 
       Student student = studentDAO.getStudent(studentId);
-      CourseEnrolmentType enrolmentType = courseDAO.getCourseEnrolmentType(enrolmentTypeId);
-      CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
+      CourseEnrolmentType enrolmentType = enrolmentTypeId != null ? courseDAO.getCourseEnrolmentType(enrolmentTypeId) : null;
+      CourseParticipationType participationType = participationTypeId != null ? courseDAO.getCourseParticipationType(participationTypeId) : null;
       CourseOptionality optionality = (CourseOptionality) requestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
-      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality );
+      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/courses/editcourse.page?course=" + course.getId();
