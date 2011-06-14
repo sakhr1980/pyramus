@@ -67,7 +67,7 @@
         initializeValidation();
 
         // If ixtable.js is loaded initialize validation for existing tables
-        if (Object.isFunction(getIxTables)) {
+        if ((typeof getIxTables) == 'function') {
 	        var tables = getIxTables();
 	        for (var i = 0, l = tables.length; i < l; i++) {
 	          initializeTable(tables[i]);
