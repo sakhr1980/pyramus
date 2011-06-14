@@ -9,6 +9,7 @@ CoursePlanner = Class.create({
       showDayLabels: false,
       zoomingEnabled: true,
       showYearLabel: true,
+      showPointerLabel: true,
       courseHeight: 60,
       trackHeight: 70,
       trackSpacing: 8,
@@ -39,6 +40,14 @@ CoursePlanner = Class.create({
     this._verticalPointer = new Element("div", {
       className : "coursePlannerVerticalPointer"
     });
+    
+    if (this._options.showPointerLabel) {
+      this._pointerLabel = new Element("div", {
+        className : "coursePlannerPointerLabel"
+      });
+      this._domNode.appendChild(this._pointerLabel);
+    }
+    
     this._dragHightlight = new Element("div", {className: "coursePlannerTrackHighlight"});
     
     if (this._options.showYearLabel) {
@@ -263,15 +272,12 @@ CoursePlanner = Class.create({
     var weeks = new Array();
     var months = new Array();
 
-    var timeOffset = 100 / this._msPixelRatio; 
-    
     var viewStartDateTime = this._getViewStartDate();
-    viewStartDateTime.setTime(viewStartDateTime.getTime() - timeOffset);
     var viewEndDateTime = this._getViewEndDate();
-    viewEndDateTime.setTime(viewEndDateTime.getTime() + timeOffset);
     var date = new Date(viewStartDateTime);
+    var timeOffset = 100 / this._msPixelRatio; 
 
-    while (date.getTime() < viewEndDateTime) {
+    while ((date.getTime() - timeOffset) < (viewEndDateTime.getTime() + timeOffset)) {
       var day = new Date();
       day.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -403,7 +409,7 @@ CoursePlanner = Class.create({
         var top = ((this._options.trackHeight * course.getTrack()) + this._options.trackSpacing) - this._viewOffsetY;
         
         if (trackCourses[course.getTrack()]) {
-          var intersectingCourses = this._getIntersectingCourses(trackCourses[course.getTrack()], course, false); // TODO: Why true ? 
+          var intersectingCourses = this._getIntersectingCourses(trackCourses[course.getTrack()], course); 
           if (intersectingCourses.length > 0) {
             var courseIndex = trackCourses[course.getTrack()].indexOf(course);
             if (courseIndex > 0) {
@@ -500,14 +506,18 @@ CoursePlanner = Class.create({
     this._verticalPointer.setStyle({
       left : this._cursorPosX + 'px'
     });
+    
+    if (this._options.showPointerLabel) {
+      this._pointerLabel.setStyle({
+        left : this._cursorPosX + 'px'
+      });
+      this._pointerLabel.update(getLocale().getDate(this._getPixelsInDate(this._viewOffsetX + this._cursorPosX).getTime(), false));
+    }
   },
   _onViewScoll: function (event) {
     Event.stop(event);
-    this._timeFrame += (1000 * 60 * 60 * 24) * -this._wheelDelta(event);
-    this._updateMsPixelRatio();
-    this._renderBackground();
-    this._refreshVisibleCourses();
-    this._renderCourses();
+    var endDate = new Date(this._getViewEndDate().getTime() + ((1000 * 60 * 60 * 24 * 10) * -this._wheelDelta(event)));
+    this.setDateRange(this._getViewStartDate(), endDate);
   },
   _onYearLabelClick: function (event) {
     if (Object.isFunction(this._options.onYearLabelClick)) {
@@ -554,7 +564,7 @@ CoursePlannerCourse = Class.create({
 
     this._domNode = new Element("div", {
       className : "coursePlannerCourse",
-      id : options.id
+      id : options.id,
     });
     this._domNode.setStyle({
       backgroundColor : options.backgroundColor,
@@ -566,7 +576,7 @@ CoursePlannerCourse = Class.create({
     });
     this._nameElement = new Element("div", {
       className : "coursePlannerCourseName"
-    }).update(options.name);
+    });
 
     this._domNode.appendChild(this._nameElement);
     this._domNode.appendChild(this._datesElement);
@@ -583,6 +593,7 @@ CoursePlannerCourse = Class.create({
       **/
     }
     
+    this.setName(options.name);
     this._drawDates();
   },
   getId : function() {
@@ -629,6 +640,7 @@ CoursePlannerCourse = Class.create({
   },
   setName: function (name) {
     this._nameElement.update(name);
+    this._domNode.setAttribute("title", name);
   },
   getOffset: function () {
     return this._offset;

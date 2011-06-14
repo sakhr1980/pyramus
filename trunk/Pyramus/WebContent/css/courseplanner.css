@@ -27,6 +27,18 @@
 	border-top: 1px solid #AAAAAA;
 }
 
+.coursePlannerPointerLabel {
+  background: none repeat scroll 0pt 0pt #FFAA00;
+  border-radius: 3px 3px 3px 3px;
+  border: 1px solid #EE9900;
+  color: #FFFFFF;
+  font-size: 12px;
+  margin-left: -40px;
+  position: absolute;
+  text-align: center;
+  width: 80px;  
+}
+
 .coursePlannerYearLabelContainer {
   text-align: center;
 }
@@ -41,6 +53,9 @@
   cursor: pointer;
   font-size: 15px;
   border-radius: 3px 3px 3px 3px;
+  z-index: 1; 
+  position: relative;  
+  opacity: 0.8;
 }
 
 .coursePlannerLabels {

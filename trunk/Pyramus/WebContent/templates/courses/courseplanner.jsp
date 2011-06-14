@@ -32,6 +32,7 @@
           showWeekLabels: true,
           showDayLabels: false,
           showYearLabel: true,
+          showPointerLabel: true,
           courseHeight: 50,
           trackHeight: 60,
           trackSpacing: 4,
@@ -57,14 +58,16 @@
         });
         
         <c:forEach var="courseBean" items="${courseBeans}">
-          coursePlanner.addCourse(
-	          '${fn:escapeXml(courseBean.courseName)}', 
-	          new Date(${courseBean.course.beginDate.time}),
-            new Date(${courseBean.course.endDate.time}), 
-            -1,
-	          false,
-	          false
-	        );
+          <c:if test="${courseBean.course.beginDate.time ne courseBean.course.endDate.time}">
+	          coursePlanner.addCourse(
+		          '${fn:escapeXml(courseBean.courseName)}', 
+		          new Date(${courseBean.course.beginDate.time}),
+	            new Date(${courseBean.course.endDate.time}), 
+	            -1,
+		          false,
+		          false
+		        );
+	        </c:if>
 	      </c:forEach>
 	      
 	      coursePlanner.arrageCoursesToTracks();
