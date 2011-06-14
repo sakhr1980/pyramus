@@ -74,11 +74,11 @@
 
       function openEditVerbalAssessmentDialog(row) {
         var table = getIxTableById("studentsTable"); 
-        var courseStudentId = table.getCellValue(row, table.getNamedColumnIndex('courseStudentId'));
+        var assessmentId = table.getCellValue(row, table.getNamedColumnIndex('assessmentId'));
         
         var dialog = new IxDialog({
           id : 'editVerbalAssessmentDialog',
-          contentURL : GLOBAL_contextPath + '/courses/editverbalassessmentdialog.page?courseStudentId=' + courseStudentId,
+          contentURL : GLOBAL_contextPath + '/courses/editverbalassessmentdialog.page?creditId=' + assessmentId,
           centered : true,
           showOk : true,
           showCancel : true,
@@ -383,6 +383,9 @@
             paramName: 'courseStudentId'
           }, {
             dataType: 'hidden', 
+            paramName: 'assessmentId'
+          }, {
+            dataType: 'hidden', 
             paramName: 'abstractStudentId'
           }, {
             dataType: 'hidden', 
@@ -436,6 +439,7 @@
             '${verbalAssessment}',
             '',
             '${courseStudent.id}',
+            '${assessments[courseStudent.id].id}',
             '${courseStudent.student.abstractStudent.id}',
             0,
             '',

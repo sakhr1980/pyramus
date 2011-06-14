@@ -573,4 +573,9 @@ public class GradingDAO extends PyramusDAO {
     entityManager.remove(projectAssessment);
   }
 
+  public Credit findCreditById(Long creditId) {
+    EntityManager entityManager = getEntityManager();
+    return entityManager.find(Credit.class, creditId);
+  }
+
 }

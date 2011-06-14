@@ -21,8 +21,23 @@
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
     <script type="text/javascript">
+
+      function setupRelatedCommandsBasic() {
+        var relatedActionsHoverMenu = new IxHoverMenu($('basicRelatedActionsHoverMenuContainer'), {
+          text: '<fmt:message key="projects.editProject.basicTabRelatedActionsLabel"/>'
+        });
+    
+        relatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="projects.editProject.basicTabRelatedActionViewProjectLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/projects/viewproject.page?project=${project.id}');
+          }
+        }));
+      }
 
       function openSearchModulesDialog() {
 
@@ -113,6 +128,7 @@
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         setupTags();
+        setupRelatedCommandsBasic();
         var modulesTable = new IxTable($('modulesTableContainer'), {
           id : "modulesTable",
           columns : [ {
@@ -269,6 +285,8 @@
           <!--  Basic tab -->
 
           <div id="basic" class="tabContent">
+            <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
+
             <input type="hidden" name="project" value="${project.id}"/>
             
             <!--  TODO italic tags to css -->

@@ -86,7 +86,8 @@ IxTable = Class.create({
       }
       
       var headerCell = Builder.node("div", {
-        className : "ixTableHeaderCell"
+        className : "ixTableHeaderCell",
+        title: column.headerTooltip ? column.headerTooltip : ''
       }, [ headerContent ]);
       
 

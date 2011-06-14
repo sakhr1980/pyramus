@@ -3,11 +3,15 @@ package fi.pyramus.views.projects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 import fi.pyramus.PageRequestContext;
 import fi.pyramus.UserRole;
@@ -90,8 +94,28 @@ public class EditStudentProjectViewController implements PyramusViewController, 
     });
     
     List<ProjectAssessment> assessments = gradingDAO.listProjectAssessmentByProject(studentProject);
+    Collections.sort(assessments, new Comparator<ProjectAssessment>() {
+      @Override
+      public int compare(ProjectAssessment o1, ProjectAssessment o2) {
+        return o2.getDate().compareTo(o1.getDate());
+      }
+    });
+
+    Map<Long, String> verbalAssessments = new HashMap<Long, String>();
+
+    for (ProjectAssessment pAss : assessments) {
+      // Shortened descriptions
+      String description = pAss.getVerbalAssessment();
+      if (description != null) {
+        description = StringEscapeUtils.unescapeHtml(description.replaceAll("\\<.*?>",""));
+        description = description.replaceAll("\\n", "");
+        
+        verbalAssessments.put(pAss.getId(), description);
+      }
+    }
     
     pageRequestContext.getRequest().setAttribute("projectAssessments", assessments);
+    pageRequestContext.getRequest().setAttribute("verbalAssessments", verbalAssessments);
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());

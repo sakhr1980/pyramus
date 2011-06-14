@@ -444,8 +444,8 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
 
         queryBuilder.append("+(");
-        addTokenizedSearchCriteria(queryBuilder, "active", "true", false);
-        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", false);
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", false, 0f);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", false, 0f);
         queryBuilder.append(")");
         
         // Other search terms
@@ -472,7 +472,7 @@ public class StudentDAO extends PyramusDAO {
           addTokenizedSearchCriteria(queryBuilder, "inactiveStudyProgrammeIds", studyProgramme.getId().toString(), true);
 
 //        addTokenizedSearchCriteria(queryBuilder, "active", "false", true);
-        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true);
+        addTokenizedSearchCriteria(queryBuilder, "inactive", "true", true, 0f);
       break;
       case SKIP_INACTIVE:
         
@@ -493,7 +493,7 @@ public class StudentDAO extends PyramusDAO {
         if (studyProgramme != null)
           addTokenizedSearchCriteria(queryBuilder, "activeStudyProgrammeIds", studyProgramme.getId().toString(), true);
 
-        addTokenizedSearchCriteria(queryBuilder, "active", "true", true);
+        addTokenizedSearchCriteria(queryBuilder, "active", "true", true, 0f);
       break;
     }
 
@@ -536,7 +536,9 @@ public class StudentDAO extends PyramusDAO {
       FullTextQuery query = fullTextSession
           .createFullTextQuery(luceneQuery, AbstractStudent.class)
           .setSort(
-              new Sort(new SortField[] { SortField.FIELD_SCORE, new SortField("lastNameSortable", SortField.STRING),
+              new Sort(new SortField[] { 
+                  SortField.FIELD_SCORE, 
+                  new SortField("lastNameSortable", SortField.STRING),
                   new SortField("firstNameSortable", SortField.STRING) })).setFirstResult(firstResult).setMaxResults(resultsPerPage);
 
       if (studentGroup != null)

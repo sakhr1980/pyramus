@@ -359,7 +359,13 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
         studentProjectModules.put(studentProject.getId(), studentProjectModuleBeans);
         
         List<ProjectAssessment> projectAssessments = gradingDAO.listProjectAssessmentByProject(studentProject);
-        
+        Collections.sort(projectAssessments, new Comparator<ProjectAssessment>() {
+          @Override
+          public int compare(ProjectAssessment o1, ProjectAssessment o2) {
+            return o2.getDate().compareTo(o1.getDate());
+          }
+        });
+
         StudentProjectBean bean = new StudentProjectBean(studentProject, mandatoryModuleCount, optionalModuleCount, passedMandatoryModuleCount, passedOptionalModuleCount, projectAssessments);
         studentProjectBeans.add(bean);
       }

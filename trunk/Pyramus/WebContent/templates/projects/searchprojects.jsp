@@ -32,10 +32,21 @@
           columns : [ {
             header : '<fmt:message key="projects.searchProjects.projectTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 22 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 22 + 8,
             dataType: 'text',
             paramName: 'projectName',
             editable: false
+          }, {
+            width: 22,
+            right: 8 + 22 + 8 + 22 + 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
+            tooltip: '<fmt:message key="projects.searchProjects.projectTableViewProjectTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var projectId = table.getCellValue(event.row, table.getNamedColumnIndex('projectId'));
+              redirectTo(GLOBAL_contextPath + '/projects/viewproject.page?project=' + projectId);
+            }
           }, {
             width: 22,
             right: 8 + 22 + 8,
@@ -114,7 +125,7 @@
             resultsTable.deleteAllRows();
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
-              resultsTable.addRow([results[i].name.escapeHTML(), '', '', results[i].id]);
+              resultsTable.addRow([results[i].name.escapeHTML(), '', '', '', results[i].id]);
             }
             resultsTable.reattachToDom();
             getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);

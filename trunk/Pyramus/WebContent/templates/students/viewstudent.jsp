@@ -93,7 +93,7 @@
           cancelLabel : '<fmt:message key="projects.selectProjectDialog.cancelLabel"/>' 
         });
         
-        dialog.setSize("400px", "250px");
+        dialog.setSize("350px", "200px");
         dialog.addDialogListener(function(event) {
           var dlg = event.dialog;
           switch (event.name) {

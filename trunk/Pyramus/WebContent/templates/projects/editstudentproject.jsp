@@ -826,13 +826,14 @@
               paramName: 'editRowButton',
               dataType: 'button',
               imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-              tooltip: '<fmt:message key="courses.manageCourseAssessments.studentsTableEditTooltip"/>',
+              tooltip: '<fmt:message key="projects.editStudentProject.assessmentsTableEditTooltip"/>',
               onclick: function (event) {
                 var table = event.tableComponent;
 
                 table.setCellEditable(event.row, table.getNamedColumnIndex('date'), true);
                 table.setCellEditable(event.row, table.getNamedColumnIndex('grade'), true);
                 table.setCellValue(event.row, table.getNamedColumnIndex('modified'), 1);
+                table.showCell(event.row, table.getNamedColumnIndex('editVerbalAssessmentButton'));
               }
             }, {
               header : '<fmt:message key="projects.editStudentProject.assessmentsTableDateHeader"/>',
@@ -864,19 +865,63 @@
                 </c:forEach>
               ]
             }, {
+              header : '<fmt:message key="projects.editStudentProject.studentsTableVerbalAssessmentHeader"/>',
               left: 8 + 22 + 8 + 150 + 8 + 150 + 8,
+              width : 150,
+              dataType : 'text',
+              paramName: 'verbalAssessmentShort',
+              editable: false
+            }, {
+              left: 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8,
+              width: 22,
+              hidden: true,
+              dataType: 'button',
+              paramName: 'editVerbalAssessmentButton',
+              imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+              tooltip: '<fmt:message key="projects.editStudentProject.studentsTableEditVerbalAssessmentTooltip"/>',
+              onclick: function (event) {
+                openEditVerbalAssessmentDialog(event.row);
+              }
+            }, {
+              left: 8 + 22 + 8 + 150 + 8 + 150 + 8 + 150 + 8 + 22 + 8,
               dataType: 'button',
               paramName: 'removeButton',
               imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
               tooltip: '<fmt:message key="projects.editStudentProject.assessmentsTableDeleteRowTooltip"/>',
               onclick: function (event) {
                 var table = event.tableComponent;
+                var rowIndex = event.row;
                 var assessmentId = table.getCellValue(event.row, table.getNamedColumnIndex('assessmentId'));
                 if (assessmentId == -1)
-                  table.deleteRow(event.row);
+                  table.deleteRow(rowIndex);
                 else {
-                  table.setCellValue(event.row, table.getNamedColumnIndex('deleted'), 1);
-                  table.hideRow(event.row);
+                  var url = GLOBAL_contextPath + "/simpledialog.page?localeId=projects.editStudentProject.deleteAssessmentConfirmDialogContent";
+                  
+                  var dialog = new IxDialog({
+                    id : 'confirmRemoval',
+                    contentURL : url,
+                    centered : true,
+                    showOk : true,  
+                    showCancel : true,
+                    autoEvaluateSize: true,
+                    title : '<fmt:message key="projects.editStudentProject.deleteAssessmentConfirmDialogTitle"/>',
+                    okLabel : '<fmt:message key="projects.editStudentProject.deleteAssessmentConfirmDialogOkLabel"/>',
+                    cancelLabel : '<fmt:message key="projects.editStudentProject.deleteAssessmentConfirmDialogCancelLabel"/>'
+                  });
+                
+                  dialog.addDialogListener( function(event) {
+                    var dlg = event.dialog;
+                
+                    switch (event.name) {
+                      case 'okClick':
+                        table.setCellValue(rowIndex, table.getNamedColumnIndex('modified'), 1);
+                        table.setCellValue(rowIndex, table.getNamedColumnIndex('deleted'), 1);
+                        table.hideRow(rowIndex);
+                      break;
+                    }
+                  });
+                
+                  dialog.open(); 
                 }
               } 
             }, {
@@ -888,17 +933,36 @@
             }, {
               dataType: 'hidden',
               paramName: 'deleted'
+            }, {
+              dataType: 'hidden', 
+              paramName: 'verbalAssessment'
+            }, {
+              dataType: 'hidden', 
+              paramName: 'verbalModified'
             }]
         });
         
         <c:forEach var="assessment" items="${projectAssessments}">
+        <c:choose>
+          <c:when test="${fn:length(verbalAssessments[assessment.id]) gt 20}">
+            <c:set var="verbalAssessment">${fn:substring(verbalAssessments[assessment.id], 0, 20)}...</c:set>
+          </c:when>
+          <c:otherwise>
+            <c:set var="verbalAssessment">${verbalAssessments[assessment.id]}</c:set>
+          </c:otherwise>
+        </c:choose>
+        
         assessmentsTable.addRow([
             '', 
             '${assessment.date.time}',
             '${assessment.grade.id}',
+            '${verbalAssessment}',
+            '',
             '',
             ${assessment.id},
             0,
+            0,
+            '',
             0
         ]);
         </c:forEach>
@@ -924,10 +988,49 @@
 
       function addAssessmentRow() {
         var table = getIxTableById('assessmentsTable');
-        var rowIndex = table.addRow(['', new Date().getTime(), '', '', -1, 1, 0]);
+        var rowIndex = table.addRow(['', new Date().getTime(), '', '', '', '', -1, 1, 0, '', 0]);
         table.setCellEditable(rowIndex, table.getNamedColumnIndex('date'), true);
         table.setCellEditable(rowIndex, table.getNamedColumnIndex('grade'), true);
+        table.showCell(rowIndex, table.getNamedColumnIndex('editVerbalAssessmentButton'));
       }
+      
+      function openEditVerbalAssessmentDialog(row) {
+        var table = getIxTableById("assessmentsTable"); 
+        var assessmentId = table.getCellValue(row, table.getNamedColumnIndex('assessmentId'));
+        
+        var dialog = new IxDialog({
+          id : 'editVerbalAssessmentDialog',
+          contentURL : GLOBAL_contextPath + '/courses/editverbalassessmentdialog.page?creditId=' + assessmentId,
+          centered : true,
+          showOk : true,
+          showCancel : true,
+          _rowIndex : row,
+          title : '<fmt:message key="courses.editVerbalAssessmentDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.okLabel"/>', 
+          cancelLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.cancelLabel"/>' 
+        });
+        
+        dialog.setSize("600px", "350px");
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'okClick':
+              var verbalAssessment = event.results.verbalAssessment.escapeHTML();
+              var verbalShort = event.results.verbalAssessment.stripTags().trim().truncate(20);
+              
+              var table = getIxTableById("assessmentsTable"); 
+              var verbalModCol = table.getNamedColumnIndex('verbalModified');
+              var verbalAssessmentCol = table.getNamedColumnIndex('verbalAssessment');
+              var verbalShortCol = table.getNamedColumnIndex('verbalAssessmentShort');
+              table.setCellValue(row, verbalModCol, 1);
+              table.setCellValue(row, verbalAssessmentCol, verbalAssessment);
+              table.setCellValue(row, verbalShortCol, verbalShort);
+            break;
+          }
+        });
+        dialog.open();
+      }
+      
     </script>
   </head>
   <body onLoad="onLoad(event);" ix:enabledrafting="true">
