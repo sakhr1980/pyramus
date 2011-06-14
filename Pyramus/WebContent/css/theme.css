@@ -2232,7 +2232,7 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 
 /* Edit Project - Modules */
 
-#editProjectModulesTotalContainer {
+#editProjectModulesTotalContainer,#viewProjectModulesTotalContainer,#viewProjectStudentProjectsTotalContainer {
   display: inline-block;   
   font-weight: bold;
   margin-top: 8px;
