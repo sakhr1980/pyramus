@@ -36,9 +36,10 @@ public class PyramusDAO {
     fullTextSession.index(o);
   }
   
-  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required) {
+  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required, Float boost) {
     String inputText = value.replaceAll(" +", " ");
     String[] tokens = escapeSearchCriteria(inputText).split("[ ,]");
+    
     for (String token : tokens) {
       if (!StringUtils.isBlank(token)) {
         queryBuilder.append(' ');
@@ -46,8 +47,15 @@ public class PyramusDAO {
           queryBuilder.append("+");
         }
         queryBuilder.append(fieldName).append(':').append(token);
+        
+        if (boost != null)
+          queryBuilder.append("^").append(boost);
       }
     }
+  }
+  
+  protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName, String value, boolean required) {
+    addTokenizedSearchCriteria(queryBuilder, fieldName, value, required, null);
   }
   
   protected void addTokenizedSearchCriteria(StringBuilder queryBuilder, String fieldName1, String fieldName2, String value, boolean required) {

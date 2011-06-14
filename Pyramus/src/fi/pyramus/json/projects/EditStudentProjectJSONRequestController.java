@@ -123,11 +123,16 @@ public class EditStudentProjectJSONRequestController implements JSONRequestContr
           Date assessmentDate = jsonRequestContext.getDate(colPrefix + ".date");
           Long assessmentGradeId = jsonRequestContext.getLong(colPrefix + ".grade");
           Grade grade = assessmentGradeId != null ? gradingDAO.findGradeById(assessmentGradeId) : null; 
+
+          String verbalAssessment = projectAssessment != null ? projectAssessment.getVerbalAssessment() : null;
+          Long verbalAssessmentModified = jsonRequestContext.getLong(colPrefix + ".verbalModified");
+          if ((verbalAssessmentModified != null) && (verbalAssessmentModified.intValue() == 1))
+            verbalAssessment = jsonRequestContext.getString(colPrefix + ".verbalAssessment");
           
           if (projectAssessment == null) {
-            gradingDAO.createProjectAssessment(studentProject, user, grade, assessmentDate, null);
+            gradingDAO.createProjectAssessment(studentProject, user, grade, assessmentDate, verbalAssessment);
           } else {
-            gradingDAO.updateProjectAssessment(projectAssessment, user, grade, assessmentDate, projectAssessment.getVerbalAssessment());
+            gradingDAO.updateProjectAssessment(projectAssessment, user, grade, assessmentDate, verbalAssessment);
           }
         }
       }

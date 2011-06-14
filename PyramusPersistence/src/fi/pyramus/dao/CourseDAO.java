@@ -1338,6 +1338,21 @@ public class CourseDAO extends PyramusDAO {
   }
 
   @SuppressWarnings("unchecked")
+  public List<CourseStudent> listCourseStudentsByModuleAndStudent(Module module, Student student) {
+    Session s = getHibernateSession();
+
+    return s.createQuery(
+        "from CourseStudent cs " +
+        "where cs.course.module=:module and cs.student=:student and cs.archived=:archived and cs.student.archived=:archived2 and cs.course.archived=:archived3")
+        .setParameter("module", module)
+        .setParameter("student", student)
+        .setBoolean("archived", Boolean.FALSE)
+        .setBoolean("archived2", Boolean.FALSE)
+        .setBoolean("archived3", Boolean.FALSE)
+        .list();
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<CourseStudent> listCourseStudentsByStudent(Student student) {
     Session s = getHibernateSession();
 

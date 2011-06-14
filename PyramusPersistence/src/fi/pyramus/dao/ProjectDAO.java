@@ -33,8 +33,8 @@ import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
+import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 
 /**
  * The Data Access Object for project related operations.  
@@ -474,6 +474,15 @@ public class ProjectDAO extends PyramusDAO {
       .list();
   }
 
+  @SuppressWarnings("unchecked")
+  public List<StudentProject> listStudentProjectsByProject(Project project) {
+    Session s = getHibernateSession();
+    return s.createCriteria(StudentProject.class)
+      .add(Restrictions.eq("project", project))
+      .add(Restrictions.eq("archived", Boolean.FALSE))
+      .list();
+  }
+  
   @SuppressWarnings("unchecked")
   public List<Project> listProjects() {
     Session s = getHibernateSession();

@@ -6,11 +6,9 @@ import fi.pyramus.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.domainmodel.courses.CourseStudent;
-import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
 
@@ -28,14 +26,12 @@ public class EditVerbalAssessmentViewController implements PyramusViewController
    */
   public void process(PageRequestContext pageRequestContext) {
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-
-    Long courseStudentId = pageRequestContext.getLong("courseStudentId"); 
-    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-    CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
     
-    if (courseAssessment != null)
-      pageRequestContext.getRequest().setAttribute("verbalAssessment", courseAssessment.getVerbalAssessment());
+    Long creditId = pageRequestContext.getLong("creditId"); 
+    Credit credit = gradingDAO.findCreditById(creditId);
+
+    if (credit != null)
+      pageRequestContext.getRequest().setAttribute("verbalAssessment", credit.getVerbalAssessment());
       
     pageRequestContext.setIncludeJSP("/templates/courses/editverbalassessment.jsp");
   }
