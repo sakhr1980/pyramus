@@ -1,8 +1,10 @@
 package fi.pyramus.views.courses;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -10,8 +12,12 @@ import fi.pyramus.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
+import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.domainmodel.base.CourseEducationSubtype;
+import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.views.PyramusViewController;
@@ -29,13 +35,16 @@ public class CoursePlannerViewController implements PyramusViewController, Bread
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     
     List<CourseBean> courseBeans = new ArrayList<CoursePlannerViewController.CourseBean>();
     for (Course course : courseDAO.listCourses()) {
       courseBeans.add(new CourseBean(course));
     }
-
+    
+    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     pageRequestContext.getRequest().setAttribute("courseBeans", courseBeans);
     
     pageRequestContext.setIncludeJSP("/templates/courses/courseplanner.jsp");
@@ -73,6 +82,30 @@ public class CoursePlannerViewController implements PyramusViewController, Bread
         return course.getName();
       else 
         return course.getName() + " (" + course.getNameExtension() + ")";
+    }
+    
+    public Set<Long> getEducationTypes() {
+      Set<Long> result = new HashSet<Long>();
+      
+      List<CourseEducationType> courseEducationTypes = course.getCourseEducationTypes();
+      for (CourseEducationType courseEducationType : courseEducationTypes) {
+        result.add(courseEducationType.getEducationType().getId());
+      }
+      
+      return result;
+    }
+    
+    public Set<Long> getEducationSubtypes() {
+      Set<Long> result = new HashSet<Long>();
+      
+      List<CourseEducationType> courseEducationTypes = course.getCourseEducationTypes();
+      for (CourseEducationType courseEducationType : courseEducationTypes) {
+        for (CourseEducationSubtype courseEducationSubtype : courseEducationType.getCourseEducationSubtypes()) {
+          result.add(courseEducationSubtype.getEducationSubtype().getId());
+        }
+      }
+      
+      return result;
     }
     
     public Course getCourse() {

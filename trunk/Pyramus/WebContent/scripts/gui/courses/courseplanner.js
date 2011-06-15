@@ -21,7 +21,9 @@ CoursePlanner = Class.create({
 
     this._courseColorIndex = 0;
     this._msPixelRatio = 0;
+    this._filters = new Array();
     this._courses = new Array();
+    this._filteredCourses = null;
     this._zeroTime = new Date();
     this._zeroTime.setFullYear(2010, 1 - 1, 1);
     this._timeFrame = this._options.initialTimeFrame;
@@ -104,45 +106,41 @@ CoursePlanner = Class.create({
     this._renderCourses();
     this._refreshYear();
   },
-  addCourse : function(name, startDate, endDate, track, movable, resizable) {
-    var id = 'cpc-' + new Date().getTime();
-    var backgroundColor = this._nextNextBackgroundColor();
-    
-    var course = new CoursePlannerCourse({
-      id : id,
-      name : name,
-      backgroundColor : backgroundColor,
-      height: this._options.courseHeight,
-      courseStartDate : startDate,
-      courseEndDate : endDate,
-      track: track,
-      resizable: resizable
-    });
-
-    var courseDomNode = course.getDomNode();
-    
-    if (movable) {
-      new Draggable(courseDomNode, {
-        onDrag : this._onCourseDrag.bind(this),
-        onEnd : this._onCourseDrop.bind(this),
-        onStart : this._onCourseDragStart.bind(this),
-        ghosting : true
-      });
-      courseDomNode.addClassName('coursePlannerCourseMovable');
+  addCourse : function(course, movable) {
+    this.addCourses([course], movable);
+  },
+  addCourses : function(courses, movable) {
+    for (var i = 0, l = courses.length; i < l; i++) {
+      var course = courses[i];
+      
+      course.setBackgroundColor(this._nextNextBackgroundColor());
+      course.setHeight(this._options.courseHeight);
+  
+      var courseDomNode = course.getDomNode();
+      if (movable) {
+        new Draggable(courseDomNode, {
+          onDrag : this._onCourseDrag.bind(this),
+          onEnd : this._onCourseDrop.bind(this),
+          onStart : this._onCourseDragStart.bind(this),
+          ghosting : true
+        });
+        courseDomNode.addClassName('coursePlannerCourseMovable');
+      }
+      this._courses.push(course);
+  
+      this._view.appendChild(courseDomNode);
+      
+      course.setOffset(0);
+      course.setZIndex(this._options.courseBaseZIndex);
     }
     
-    this._courses.push(course);
-
-    this._view.appendChild(courseDomNode);
-    
-    course.setOffset(0);
-    course.setZIndex(this._options.courseBaseZIndex);
+    this._filteredCourses = null;
     // TODO: no need to refresh all
     this._refreshVisibleCourses();
     this._renderCourses();
   },
   _arrageCourseToTracks: function (courses, course) {
-    var intersectingCourses = this._getIntersectingCourses(courses, course, false);
+    var intersectingCourses = this._getIntersectingCourses(courses, course);
     for (var i = 0, l = intersectingCourses.length; i < l; i++) {
       var intersectingCourse = intersectingCourses[i];
       if (intersectingCourse.getTrack() == course.getTrack()) {
@@ -152,7 +150,7 @@ CoursePlanner = Class.create({
     }
   },
   arrageCoursesToTracks: function () {
-    var courses = this._courses.clone();
+    var courses = this._getFilteredCourses().clone();
     courses.sort(function (course1, course2) {
       return course2.getStartDate().getTime() - course1.getStartDate().getTime();
     });  
@@ -176,6 +174,44 @@ CoursePlanner = Class.create({
     this._renderCourses();
     this._refreshYear();
   },
+  addFilter: function (filter) {
+    this._filters.push(filter);
+    this._filteredCourses = null;
+    this._refreshVisibleCourses();
+    this._renderCourses();
+  },
+  clearFilters: function () {
+    this._filters.clear();
+    this._filteredCourses = null;
+    this._refreshVisibleCourses();
+    this._renderCourses();
+  },
+  _getFilteredCourses: function () {
+    if (this._filteredCourses === null) {
+      this._filteredCourses = this._courses.clone();
+      
+      for (var i = this._filteredCourses.length - 1; i >= 0; i--) {
+        if (!this._filteredCourses[i].isDetachedFromDom()) {
+          this._filteredCourses[i].detachFromDom();
+        }
+      }
+      
+      for (var filterIndex = 0, filtersLength = this._filters.length; filterIndex < filtersLength; filterIndex++) {
+        var filter = this._filters[filterIndex];
+        for (var i = this._filteredCourses.length - 1; i >= 0; i--) {
+          if (filter.filter(this._filteredCourses[i])) {
+            var course = this._filteredCourses.splice(i, 1)[0];
+          }
+        }
+      }
+      
+      for (var i = this._filteredCourses.length - 1; i >= 0; i--) {
+        this._filteredCourses[i].reattachToDom();
+      }
+    }
+    
+    return this._filteredCourses;
+  },
   _getWeekNumber: function (date) {
     // Thanks from this method goes to Stephen Chapman (http://javascript.about.com/library/blweekyear.htm)
     var onejan = new Date(date.getFullYear(),0,1);
@@ -187,11 +223,11 @@ CoursePlanner = Class.create({
   _coursesIntersect: function (course1, course2) {
     return this._dateRangesIntersect(course1.getStartDate(), course1.getEndDate(), course2.getStartDate(), course2.getEndDate());
   },
-  _getIntersectingCourses: function (courses, course, returnSelf) {
+  _getIntersectingCourses: function (courses, course) {
     var result = new Array();
     for (var i = 0, l = courses.length; i < l; i++) {
       if (this._coursesIntersect(courses[i], course)) {
-        if (returnSelf||(courses[i] != course))
+        if (courses[i] != course)
           result.push(courses[i]);
       }
     }
@@ -220,8 +256,8 @@ CoursePlanner = Class.create({
   },
   _getTrackCount: function () {
     var result = 0;
-    for (var i = 0, l = this._courses.length; i < l; i++) {
-      result = Math.max(result, this._courses[i].getTrack() + 1);
+    for (var i = 0, l = this._getFilteredCourses().length; i < l; i++) {
+      result = Math.max(result, this._getFilteredCourses()[i].getTrack() + 1);
     }
     return result;
   },
@@ -370,8 +406,8 @@ CoursePlanner = Class.create({
     
     this._visibleCourses = new Array();
     
-    for ( var i = 0, l = this._courses.length; i < l; i++) {
-      var course = this._courses[i];
+    for ( var i = 0, l = this._getFilteredCourses().length; i < l; i++) {
+      var course = this._getFilteredCourses()[i];
       var courseStartDateTime = course.getStartDate();
       var courseEndDateTime = course.getEndDate();
       
@@ -443,8 +479,8 @@ CoursePlanner = Class.create({
     var course = this._getCourseByElement(draggable.element);
     course.moveStartDate(newDate);
     course.setTrack(this._selectedTrack);
-    this._refreshVisibleCourses();
     // TODO: no need to refresh all
+    this._refreshVisibleCourses();
     this._renderCourses();
   },
   _onCourseDragStart : function(draggable, event) {
@@ -493,15 +529,6 @@ CoursePlanner = Class.create({
     this._selectedTrack = drawTrack + Math.round(this._viewOffsetY / (this._options.trackHeight + (this._options.trackSpacing / 2)));
     if (this._selectedTrack < 0)
       this._selectedTrack = 0;
-    
-//    $('mouse').update(this._cursorPosX + ',' + this._cursorPosY + ' - ' + (this._cursorPosX + this._viewOffsetX) + ',' + (this._cursorPosY + this._viewOffsetY));
-//    $('offset').update(this._viewOffsetX + ',' + this._viewOffsetY);
-//    $('time').update(formatDate(this._getPixelsInDate(this._viewOffsetX + this._cursorPosX)));
-//    $('zerotime').update(formatDate(this._zeroTime));
-//    $('viewStart').update(this._getViewStartDate());
-//    $('viewEnd').update(this._getViewEndDate());
-//    $('offsetSlide').update(trackOffset);
-//    $('track').update(drawTrack + ' / ' + this._selectedTrack);
 
     this._verticalPointer.setStyle({
       left : this._cursorPosX + 'px'
@@ -556,6 +583,8 @@ CoursePlannerCourse = Class.create({
   initialize : function(options) {
     this._options = options;
 
+    this._id = 'cpc-' + new Date().getTime();
+    
     this._startDate = options.courseStartDate;
     this._endDate = options.courseEndDate;
     this._track = options.track;
@@ -564,11 +593,7 @@ CoursePlannerCourse = Class.create({
 
     this._domNode = new Element("div", {
       className : "coursePlannerCourse",
-      id : options.id,
-    });
-    this._domNode.setStyle({
-      backgroundColor : options.backgroundColor,
-      height: options.height + 'px'
+      id : this._id
     });
     
     this._datesElement = new Element("div", {
@@ -597,7 +622,7 @@ CoursePlannerCourse = Class.create({
     this._drawDates();
   },
   getId : function() {
-    return this._options.id;
+    return this._id;
   },
   getDomNode : function() {
     return this._domNode;
@@ -685,8 +710,55 @@ CoursePlannerCourse = Class.create({
         this._detached = false;
       }
     }
+  },   
+  setBackgroundColor: function (backgroundColor) {
+    this._domNode.setStyle({
+      backgroundColor : backgroundColor
+    });
   },  
+  setHeight: function(height) {
+    this._domNode.setStyle({
+      height: height + 'px'
+    });
+  },
+  getEducationTypes: function (educationTypes) {
+    return this._educationTypes;
+  },
+  setEducationTypes: function (educationTypes) {
+    this._educationTypes = educationTypes;
+  },
+  getEducationSubtypes: function () {
+    return this._educationSubtypes;
+  },
+  setEducationSubtypes: function (educationSubtypes) {
+    this._educationSubtypes = educationSubtypes;
+  },
   _drawDates : function() {
     this._datesElement.update(getLocale().getDate(this.getStartDate().getTime(), false) + ' - ' + getLocale().getDate(this.getEndDate().getTime(), false));
+  }
+});
+
+CoursePlannerFilter = Class.create({
+  initialize: function() {
+  },
+  filter: function (course) {
+    return false;
+  }
+});
+
+CoursePlannerEducationSubtypeFilter = Class.create(CoursePlannerFilter, {
+  initialize: function($super, educationSubtypes) {
+    this._educationSubtypes = educationSubtypes;
+  },
+  filter: function ($super, course) {
+    for (var i = 0, l = this._educationSubtypes.length; i < l; i++) {
+      for (var j = 0, jl = course.getEducationSubtypes().length; j < jl; j++) {
+        if (course.getEducationSubtypes()[j] == this._educationSubtypes[i]) {
+          return false;
+        }
+      }
+    }
+    
+    return true;
   }
 });
