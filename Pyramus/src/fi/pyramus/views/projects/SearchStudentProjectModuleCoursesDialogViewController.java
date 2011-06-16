@@ -96,7 +96,10 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
       if (courseStudent != null)
         courseParticipationType = courseStudent.getParticipationType();
       
-      StudentProjectModuleCourseBean studentProjectModuleCourseBean = new StudentProjectModuleCourseBean(course, courseParticipationType, withinTimeFrame);
+      Long courseStudentCount = new Long(courseDAO.listCourseStudentsByCourse(course).size());
+      Long maxCourseStudentCount = course.getMaxParticipantCount();
+      
+      StudentProjectModuleCourseBean studentProjectModuleCourseBean = new StudentProjectModuleCourseBean(course, courseParticipationType, withinTimeFrame, courseStudentCount, maxCourseStudentCount);
       studentProjectModuleCourses.add(studentProjectModuleCourseBean);
     }
     
@@ -137,10 +140,13 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
 
   public class StudentProjectModuleCourseBean {
     
-    public StudentProjectModuleCourseBean(Course course, CourseParticipationType participationType, boolean withinTimeFrame) {
+    public StudentProjectModuleCourseBean(Course course, CourseParticipationType participationType, boolean withinTimeFrame, 
+        Long courseStudentCount, Long maxCourseStudentCount) {
       this.course = course;
       this.withinTimeFrame = withinTimeFrame;
       this.participationType = participationType;
+      this.courseStudentCount = courseStudentCount;
+      this.maxCourseStudentCount = maxCourseStudentCount;
     }
     
     public Long getCourseId() {
@@ -176,8 +182,18 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
       return participationType;
     }
     
+    public Long getMaxCourseStudentCount() {
+      return maxCourseStudentCount;
+    }
+
+    public Long getCourseStudentCount() {
+      return courseStudentCount;
+    }
+
     private Course course;
     private CourseParticipationType participationType;
     private boolean withinTimeFrame;
+    private final Long courseStudentCount;
+    private final Long maxCourseStudentCount;
   }
 }

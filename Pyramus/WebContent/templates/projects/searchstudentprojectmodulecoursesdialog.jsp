@@ -52,22 +52,30 @@
           columns : [ {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableNameHeader"/>',
             left: 8,
-            right: 8 + 150 + 8 + 150 + 8,
+            right: 8 + 130 + 8 + 130 + 8 + 70 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'name',
             onclick: onCellClick
           }, {
+            header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableStudentCountHeader"/>',
+            right: 8 + 130 + 8 + 130 + 8,
+            width : 90,
+            dataType : 'text',
+            editable: false,
+            paramName: 'studentCount',
+            onclick: onCellClick
+          }, {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableBeginDateHeader"/>',
-            right: 8 + 150 + 8,
-            width : 150,
+            right: 8 + 130 + 8,
+            width : 130,
             dataType : 'date',
             editable: false,
             paramName: 'beginDate',
             onclick: onCellClick
           }, {
             header : '<fmt:message key="projects.searchStudentProjectModuleCoursesDialog.courseTableEndDateHeader"/>',
-            width: 150,
+            width: 130,
             right : 8,
             dataType : 'date',
             editable: false,
@@ -83,8 +91,18 @@
         var rowId;
         searchResultsTable.detachFromDom();
         <c:forEach var="studentProjectModuleCourse" items="${studentProjectModuleCourses}">
+          <c:choose>
+            <c:when test="${studentProjectModuleCourse.maxCourseStudentCount ne null}">
+              <c:set var="studentCount">${studentProjectModuleCourse.courseStudentCount}/${studentProjectModuleCourse.maxCourseStudentCount}</c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="studentCount">${studentProjectModuleCourse.courseStudentCount}</c:set>
+            </c:otherwise>
+          </c:choose>
+        
           rowId = searchResultsTable.addRow([
             '${fn:escapeXml(studentProjectModuleCourse.courseName)}', 
+            '${studentCount}',
             ${studentProjectModuleCourse.courseBeginDate.time}, 
             ${studentProjectModuleCourse.courseEndDate.time},  
             ${studentProjectModuleCourse.courseId}]);

@@ -25,7 +25,7 @@
 
       function addRow() {
         var table = getIxTableById('courseDescriptionCategoriesTable');
-        var rowIndex = table.addRow(['', '', '']);
+        var rowIndex = table.addRow(['', '', '', '', '']);
         for (var i = 0; i < table.getColumnCount(); i++) {
           table.setCellEditable(rowIndex, i, true);
         }
@@ -33,6 +33,9 @@
         $('noneAddedMessageContainer').setStyle({
           display: 'none'
         });
+
+        table.showCell(rowIndex, table.getNamedColumnIndex('removeButton'));
+        table.hideCell(rowIndex, table.getNamedColumnIndex('archiveButton'));
       }
       
       function onLoad(event) {
@@ -61,6 +64,66 @@
             paramName: 'name',
             required: true
           }, {
+            right: 8,
+            width: 30,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
+            tooltip: '<fmt:message key="settings.courseDescriptionCategories.archiveTableTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var categoryId = table.getCellValue(event.row, table.getNamedColumnIndex('categoryId'));
+              var categoryName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
+              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.courseDescriptionCategories.archiveConfirmDialogContent&localeParams=" + encodeURIComponent(categoryName);
+
+              archivedRowIndex = event.row; 
+                 
+              var dialog = new IxDialog({
+                id : 'confirmRemoval',
+                contentURL : url,
+                centered : true,
+                showOk : true,  
+                showCancel : true,
+                autoEvaluateSize: true,
+                title : '<fmt:message key="settings.courseDescriptionCategories.archiveConfirmDialogTitle"/>',
+                okLabel : '<fmt:message key="settings.courseDescriptionCategories.archiveConfirmDialogOkLabel"/>',
+                cancelLabel : '<fmt:message key="settings.courseDescriptionCategories.archiveConfirmDialogCancelLabel"/>'
+              });
+            
+              dialog.addDialogListener(function(event) {
+                switch (event.name) {
+                  case 'okClick':
+                    JSONRequest.request("settings/archivecoursedescriptioncategory.json", {
+                      parameters: {
+                        categoryId: categoryId
+                      },
+                      onSuccess: function (jsonResponse) {
+                        getIxTableById('courseDescriptionCategoriesTable').deleteRow(archivedRowIndex);
+                      }
+                    });   
+                  break;
+                }
+              });
+            
+              dialog.open();
+            },
+            paramName: 'archiveButton'
+          }, {
+            right: 8,
+            width: 30,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
+            tooltip: '<fmt:message key="settings.courseDescriptionCategories.removeTableTooltip"/>',
+            onclick: function (event) {
+              event.tableComponent.deleteRow(event.row);
+              if (event.tableComponent.getRowCount() == 0) {
+                $('noneAddedMessageContainer').setStyle({
+                  display: ''
+                });
+              }
+            },
+            paramName: 'removeButton',
+            hidden: true
+          }, {
             dataType: 'hidden',
             paramName: 'categoryId'
           }]
@@ -72,6 +135,8 @@
           rowIndex = courseDescriptionCategoriesTable.addRow([
             '',
             '${fn:escapeXml(category.name)}',
+            '',
+            '',
             ${category.id}
           ]);
         </c:forEach>

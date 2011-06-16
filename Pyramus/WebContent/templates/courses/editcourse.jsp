@@ -1685,6 +1685,24 @@
               <input type="text" class="float" name="assessingHours" value="${fn:escapeXml(course.assessingHours)}" size="5">
             </div>
 
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.maxParticipantsTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.maxParticipantsHelp"/>
+              </jsp:include>    
+            
+              <input type="text" name="maxParticipantCount" size="3" value="${course.maxParticipantCount}">
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.editCourse.enrolmentTimeEndTitle"/>
+                <jsp:param name="helpLocale" value="courses.editCourse.enrolmentTimeEndHelp"/>
+              </jsp:include>    
+            
+              <input type="text" name="enrolmentTimeEnd" class="ixDateField" value="${course.enrolmentTimeEnd.time}">
+            </div>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.editCourse.descriptionTitle"/>

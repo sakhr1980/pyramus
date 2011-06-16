@@ -32,7 +32,7 @@ public class ModulesService extends PyramusService {
         .findEducationalTimeUnitById(moduleLengthTimeUnitId);
 
     Module module = moduleDAO.createModule(name, subject, courseNumber, moduleLength, moduleLengthTimeUnit,
-        description, creatingUser);
+        description, null, creatingUser);
 
     validateEntity(module);
 
@@ -51,7 +51,7 @@ public class ModulesService extends PyramusService {
     EducationalTimeUnit moduleLengthTimeUnit = lengthTimeUnitId == null ? null : baseDAO
         .findEducationalTimeUnitById(lengthTimeUnitId);
 
-    moduleDAO.updateModule(module, name, subject, courseNumber, length, moduleLengthTimeUnit, description,
+    moduleDAO.updateModule(module, name, subject, courseNumber, length, moduleLengthTimeUnit, description, null,
         modifyingUser);
     
     validateEntity(module);

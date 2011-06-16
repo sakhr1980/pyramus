@@ -335,6 +335,28 @@
               </div>
             </div>
             
+            <c:if test="${course.maxParticipantCount ne null}">
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="courses.viewCourse.maxParticipantsTitle"/>
+                  <jsp:param name="helpLocale" value="courses.viewCourse.maxParticipantsHelp"/>
+                </jsp:include>    
+              
+                <div class="genericViewFormDataText">${course.maxParticipantCount}</div>
+              </div>
+            </c:if>
+            
+            <c:if test="${course.enrolmentTimeEnd ne null}">
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="courses.viewCourse.enrolmentTimeEndTitle"/>
+                  <jsp:param name="helpLocale" value="courses.viewCourse.enrolmentTimeEndHelp"/>
+                </jsp:include>    
+              
+                <div class="genericViewFormDataText"><fmt:formatDate pattern="dd.MM.yyyy" value="${course.enrolmentTimeEnd}"/></div>
+              </div>
+            </c:if>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.viewCourse.descriptionTitle" />

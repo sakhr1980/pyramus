@@ -158,6 +158,17 @@
               <div class="genericViewFormDataText">${module.name}</div>
             </div>
             
+            <c:if test="${module.maxParticipantCount ne null}">
+              <div class="genericFormSection">  
+                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                  <jsp:param name="titleLocale" value="modules.viewModule.maxParticipantsTitle"/>
+                  <jsp:param name="helpLocale" value="modules.viewModule.maxParticipantsHelp"/>
+                </jsp:include>    
+              
+                <div class="genericViewFormDataText">${module.maxParticipantCount}</div>
+              </div>
+            </c:if>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.viewModule.descriptionTitle" />

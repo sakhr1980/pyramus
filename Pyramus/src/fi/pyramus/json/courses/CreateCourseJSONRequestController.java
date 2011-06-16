@@ -66,8 +66,10 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     Integer courseNumber = requestContext.getInteger("courseNumber");
     Date beginDate = requestContext.getDate("beginDate");
     Date endDate = requestContext.getDate("endDate");
+    Date enrolmentTimeEnd = requestContext.getDate("enrolmentTimeEnd");
     Double courseLength = requestContext.getDouble("courseLength");
     Long courseLengthTimeUnitId = requestContext.getLong("courseLengthTimeUnit");
+    Long maxParticipantCount = requestContext.getLong("maxParticipantCount");
     EducationalTimeUnit courseLengthTimeUnit = baseDAO.findEducationalTimeUnitById(courseLengthTimeUnitId);
     Double distanceTeachingDays = requestContext.getDouble("distanceTeachingDays");
     Double localTeachingDays = requestContext.getDouble("localTeachingDays");
@@ -92,7 +94,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     
     Course course = courseDAO.createCourse(module, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
-        description, loggedUser);
+        description, maxParticipantCount, enrolmentTimeEnd, loggedUser);
 
     // Tags
     

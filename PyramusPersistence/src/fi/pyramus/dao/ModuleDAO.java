@@ -44,8 +44,8 @@ import fi.pyramus.persistence.search.SearchResult;
  */
 public class ModuleDAO extends PyramusDAO {
 
-  public Module createModule(String name, Subject subject, Integer courseNumber, Double moduleLength, EducationalTimeUnit moduleLengthTimeUnit, String description,
-      User creatingUser) {
+  public Module createModule(String name, Subject subject, Integer courseNumber, Double moduleLength, EducationalTimeUnit moduleLengthTimeUnit, 
+      String description, Long maxParticipantCount, User creatingUser) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -60,6 +60,7 @@ public class ModuleDAO extends PyramusDAO {
     module.setSubject(subject);
     module.setCourseNumber(courseNumber);
     module.setCourseLength(educationalLength);
+    module.setMaxParticipantCount(maxParticipantCount);
 
     module.setCreator(creatingUser);
     module.setCreated(now);
@@ -81,7 +82,8 @@ public class ModuleDAO extends PyramusDAO {
     return module;
   }
 
-  public void updateModule(Module module, String name, Subject subject, Integer courseNumber, Double length, EducationalTimeUnit lengthTimeUnit, String description, User user) {
+  public void updateModule(Module module, String name, Subject subject, Integer courseNumber, Double length, 
+      EducationalTimeUnit lengthTimeUnit, String description, Long maxParticipantCount, User user) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -100,6 +102,7 @@ public class ModuleDAO extends PyramusDAO {
     module.setCourseLength(educationalLength);
     module.setLastModifier(user);
     module.setLastModified(now);
+    module.setMaxParticipantCount(maxParticipantCount);
     s.saveOrUpdate(module);
   }
 

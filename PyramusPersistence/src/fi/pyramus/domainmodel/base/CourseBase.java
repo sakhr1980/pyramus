@@ -319,6 +319,14 @@ public abstract class CourseBase implements ArchivableEntity {
     return version;
   }
 
+  public void setMaxParticipantCount(Long maxParticipantCount) {
+    this.maxParticipantCount = maxParticipantCount;
+  }
+
+  public Long getMaxParticipantCount() {
+    return maxParticipantCount;
+  }
+
   @Id
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseBase")  
@@ -380,6 +388,9 @@ public abstract class CourseBase implements ArchivableEntity {
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn (name="courseBase")
   private List<CourseBaseVariable> variables = new ArrayList<CourseBaseVariable>();
+
+  @Column
+  private Long maxParticipantCount;
 
   @Version
   @Column(nullable = false)

@@ -77,6 +77,8 @@ public class EditCourseJSONRequestController implements JSONRequestController {
     String name = requestContext.getString("name");
     String nameExtension = requestContext.getString("nameExtension");
     Long courseStateId = requestContext.getLong("state");
+    Long maxParticipantCount = requestContext.getLong("maxParticipantCount");
+    Date enrolmentTimeEnd = requestContext.getDate("enrolmentTimeEnd");
     CourseState courseState = courseStateId == null ? course.getState() : courseDAO.getCourseState(courseStateId);
     String description = requestContext.getString("description");
     Subject subject = baseDAO.getSubject(requestContext.getLong("subject"));
@@ -114,7 +116,7 @@ public class EditCourseJSONRequestController implements JSONRequestController {
 
     courseDAO.updateCourse(course, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
-        description, user);
+        description, maxParticipantCount, enrolmentTimeEnd, user);
     
     // Tags
 
