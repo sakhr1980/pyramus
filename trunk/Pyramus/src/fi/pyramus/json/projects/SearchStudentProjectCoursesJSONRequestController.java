@@ -40,6 +40,9 @@ public class SearchStudentProjectCoursesJSONRequestController implements JSONReq
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Course> courses = searchResult.getResults();
     for (Course course : courses) {
+      Long studentCount = new Long(courseDAO.listCourseStudentsByCourse(course).size());
+      Long maxStudentCount = course.getMaxParticipantCount();
+      
       Map<String, Object> courseInfo = new HashMap<String, Object>();
       courseInfo.put("id", course.getId());
       courseInfo.put("name", course.getName());
@@ -49,7 +52,10 @@ public class SearchStudentProjectCoursesJSONRequestController implements JSONReq
         courseInfo.put("beginDate", course.getBeginDate().getTime());
       if (course.getEndDate() != null)
         courseInfo.put("endDate", course.getEndDate().getTime());
-        
+
+      courseInfo.put("studentCount", studentCount);
+      courseInfo.put("maxStudentCount", maxStudentCount);
+      
       results.add(courseInfo);
     }
 

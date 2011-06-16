@@ -174,6 +174,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
     Double moduleLength = requestContext.getDouble("moduleLength");
     Long moduleLengthTimeUnitId = requestContext.getLong("moduleLengthTimeUnit");
+    Long maxParticipantCount = requestContext.getLong("maxParticipantCount");
     String tagsText = requestContext.getString("tags");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
@@ -192,7 +193,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     EducationalTimeUnit moduleLengthTimeUnit = baseDAO.findEducationalTimeUnitById(moduleLengthTimeUnitId);
 
     
-    moduleDAO.updateModule(module, name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, loggedUser);
+    moduleDAO.updateModule(module, name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, maxParticipantCount, loggedUser);
 
     // Tags
 

@@ -1163,6 +1163,24 @@
               <input type="text" class="float" name="assessingHours" size="5">
             </div>
 
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.createCourse.maxParticipantsTitle"/>
+                <jsp:param name="helpLocale" value="courses.createCourse.maxParticipantsHelp"/>
+              </jsp:include>    
+            
+              <input type="text" name="maxParticipantCount" size="3" value="${module.maxParticipantCount}">
+            </div>
+
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="courses.createCourse.enrolmentTimeEndTitle"/>
+                <jsp:param name="helpLocale" value="courses.createCourse.enrolmentTimeEndHelp"/>
+              </jsp:include>    
+            
+              <input type="text" name="enrolmentTimeEnd" class="ixDateField">
+            </div>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="courses.createCourse.descriptionTitle"/>

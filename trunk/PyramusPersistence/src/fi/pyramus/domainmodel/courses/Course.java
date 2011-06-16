@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -301,6 +302,14 @@ public class Course extends CourseBase implements ArchivableEntity {
     }
   }
   
+  public void setEnrolmentTimeEnd(Date enrolmentTimeEnd) {
+    this.enrolmentTimeEnd = enrolmentTimeEnd;
+  }
+
+  public Date getEnrolmentTimeEnd() {
+    return enrolmentTimeEnd;
+  }
+
   @ManyToOne
   @JoinColumn(name="module")
   private Module module;
@@ -368,4 +377,8 @@ public class Course extends CourseBase implements ArchivableEntity {
   @JoinTable (name="__CourseTags", joinColumns=@JoinColumn(name="course"), inverseJoinColumns=@JoinColumn(name="tag"))
   @IndexedEmbedded 
   private Set<Tag> tags = new HashSet<Tag>();
+  
+  @Column
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date enrolmentTimeEnd;
 }

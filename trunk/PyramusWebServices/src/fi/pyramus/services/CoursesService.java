@@ -83,7 +83,7 @@ public class CoursesService extends PyramusService {
     // Course creation
 
     Course course = courseDAO.createCourse(module, name, nameExtension, state, subject, courseNumber, beginDate, endDate,
-        courseLength, courseLengthTimeUnit, null, null, null, null, null, description, creatingUser);
+        courseLength, courseLengthTimeUnit, null, null, null, null, null, description, null, null, creatingUser);
     
     validateEntity(course);
 
@@ -150,7 +150,7 @@ public class CoursesService extends PyramusService {
 
     courseDAO.updateCourse(course, name, nameExtension, course.getState(), subject, courseNumber, beginDate, endDate, courseLength,
         courseLengthTimeUnit, course.getDistanceTeachingDays(), course.getLocalTeachingDays(), course.getTeachingHours(), 
-        course.getPlanningHours(), course.getAssessingHours(), description, modifyingUser);
+        course.getPlanningHours(), course.getAssessingHours(), description, null, null, modifyingUser);
     validateEntity(course);
   }
 

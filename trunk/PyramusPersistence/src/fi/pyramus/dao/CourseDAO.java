@@ -81,9 +81,9 @@ public class CourseDAO extends PyramusDAO {
    * @return The created course
    */
   public Course createCourse(Module module, String name, String nameExtension, CourseState state, Subject subject,
-      Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
-      EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, 
-      Double planningHours, Double assessingHours, String description, User creatingUser) {
+      Integer courseNumber, Date beginDate, Date endDate, Double courseLength, EducationalTimeUnit courseLengthTimeUnit, 
+      Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, Double planningHours, 
+      Double assessingHours, String description, Long maxParticipantCount, Date enrolmentTimeEnd, User creatingUser) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -107,6 +107,9 @@ public class CourseDAO extends PyramusDAO {
     course.setTeachingHours(teachingHours);    
     course.setPlanningHours(planningHours);
     course.setAssessingHours(assessingHours);
+    course.setMaxParticipantCount(maxParticipantCount);
+    course.setEnrolmentTimeEnd(enrolmentTimeEnd);
+    
     course.setCreator(creatingUser);
     course.setCreated(now);
     course.setLastModifier(creatingUser);
@@ -134,7 +137,7 @@ public class CourseDAO extends PyramusDAO {
   public void updateCourse(Course course, String name, String nameExtension, CourseState courseState, Subject subject,
       Integer courseNumber, Date beginDate, Date endDate, Double courseLength,
       EducationalTimeUnit courseLengthTimeUnit, Double distanceTeachingDays, Double localTeachingDays, Double teachingHours, 
-      Double planningHours, Double assessingHours, String description, User user) {
+      Double planningHours, Double assessingHours, String description, Long maxParticipantCount, Date enrolmentTimeEnd, User user) {
     Session s = getHibernateSession();
 
     Date now = new Date(System.currentTimeMillis());
@@ -160,6 +163,8 @@ public class CourseDAO extends PyramusDAO {
     course.setTeachingHours(teachingHours);
     course.setPlanningHours(planningHours);
     course.setAssessingHours(assessingHours);
+    course.setMaxParticipantCount(maxParticipantCount);
+    course.setEnrolmentTimeEnd(enrolmentTimeEnd);
     course.setLastModifier(user);
     course.setLastModified(now);
     
@@ -1414,7 +1419,13 @@ public class CourseDAO extends PyramusDAO {
   @SuppressWarnings("unchecked")
   public List<CourseDescription> listCourseDescriptionsByCourseBase(CourseBase courseBase) {
     Session s = getHibernateSession();
-    return s.createCriteria(CourseDescription.class).add(Restrictions.eq("courseBase", courseBase)).list();
+
+    return s.createQuery(
+        "from CourseDescription cd " +
+        "where cd.courseBase=:courseBase and cd.category.archived=:archived")
+        .setParameter("courseBase", courseBase)
+        .setBoolean("archived", Boolean.FALSE)
+        .list();
   }
 
   public void deleteCourseDescription(CourseDescription desc) {
@@ -1479,5 +1490,11 @@ public class CourseDAO extends PyramusDAO {
       else
         updateCourseDescription(existingDescription, toCourseBase, desc.getCategory(), desc.getDescription());
     }
+  }
+  
+  public void archiveCourseDescriptionCategory(CourseDescriptionCategory category) {
+    Session s = getHibernateSession();
+    category.setArchived(Boolean.TRUE);
+    s.saveOrUpdate(category);
   }
 }

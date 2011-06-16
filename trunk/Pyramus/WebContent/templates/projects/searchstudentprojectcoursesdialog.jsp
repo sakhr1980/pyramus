@@ -53,9 +53,17 @@
             var results = jsonResponse.results;
             for (var i = 0; i < results.length; i++) {
               var courseName = results[i].name;
+              
               if (results[i].nameExtension) {
                 courseName += " (" + results[i].nameExtension + ")";
               }
+              if (results[i].studentCount > 0) {
+                if (results[i].maxStudentCount > 0)
+                  courseName += " (" + results[i].studentCount + "/" + results[i].maxStudentCount + ")";
+                else
+                  courseName += " (" + results[i].studentCount + ")";
+              }
+              
               resultsTable.addRow([courseName.escapeHTML(), results[i].beginDate, results[i].endDate, results[i].moduleId, results[i].id]);
               var rowIndex = getCourseRowIndex('coursesTable', results[i].id);
               if (rowIndex != -1) {

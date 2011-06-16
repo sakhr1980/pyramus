@@ -269,6 +269,15 @@
               </select>            
             </div>
 
+            <div class="genericFormSection">  
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="modules.createModule.maxParticipantsTitle"/>
+                <jsp:param name="helpLocale" value="modules.createModule.maxParticipantsHelp"/>
+              </jsp:include>    
+            
+              <input type="text" name="maxParticipantCount" size="3" value="${module.maxParticipantCount}">
+            </div>
+
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="modules.createModule.descriptionTitle"/>
