@@ -85,7 +85,8 @@ public class Email {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field (index = Index.TOKENIZED, store = Store.NO) 
+  @Field (index = Index.TOKENIZED, store = Store.NO)
+  // TODO Email annotation?
   private String address;
 
   @ManyToOne

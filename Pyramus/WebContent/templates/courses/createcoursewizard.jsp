@@ -53,7 +53,7 @@
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
           text: '<fmt:message key="courses.createCourseWizard.basicTabRelatedActionsCreateModuleLabel"/>',
-          link: '../modules/createmodule.page'  
+          link: GLOBAL_contextPath + '/modules/createmodule.page'  
         }));
       };
   
