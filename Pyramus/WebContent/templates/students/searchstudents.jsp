@@ -233,8 +233,8 @@
           <div id="active" class="tabContent">
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="students.searchStudents.basicQueryTitle"/>
-                <jsp:param name="helpLocale" value="students.searchStudents.basicQueryHelp"/>
+                <jsp:param name="titleLocale" value="students.searchStudents.basicActiveQueryTitle"/>
+                <jsp:param name="helpLocale" value="students.searchStudents.basicActiveQueryHelp"/>
               </jsp:include>                
               <input type="text" name="simpleActiveQuery" class="basicSearchQueryField" size="40">
             </div>
