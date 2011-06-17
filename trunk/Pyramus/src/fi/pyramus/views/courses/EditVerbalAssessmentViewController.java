@@ -27,8 +27,8 @@ public class EditVerbalAssessmentViewController implements PyramusViewController
   public void process(PageRequestContext pageRequestContext) {
     GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     
-    Long creditId = pageRequestContext.getLong("creditId"); 
-    Credit credit = gradingDAO.findCreditById(creditId);
+    Long creditId = pageRequestContext.getLong("creditId");
+    Credit credit = creditId != null ? gradingDAO.findCreditById(creditId) : null;
 
     if (credit != null)
       pageRequestContext.getRequest().setAttribute("verbalAssessment", credit.getVerbalAssessment());

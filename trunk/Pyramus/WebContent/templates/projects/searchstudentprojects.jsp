@@ -16,14 +16,13 @@
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
     
     <script type="text/javascript">
-
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
         new IxSearchNavigation($('searchResultsPagesContainer'), {
           id: 'searchResultsNavigation',
           maxNavigationPages: 19,
           onclick: function(event) {
-            doSearch(event.page);
+            doStudentProjectSearch(event.page);
           }
         });
         new IxTable($('searchResultsTableContainer'), {
