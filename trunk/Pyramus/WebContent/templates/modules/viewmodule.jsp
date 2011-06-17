@@ -34,9 +34,14 @@
           text: '<fmt:message key="modules.viewModule.basicTabRelatedActionsLabel"/>'
         });
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="modules.viewModule.basicTabRelatedActionsEditModuleLabel"/>',
+          link: GLOBAL_contextPath + '/modules/editmodule.page?module=${module.id}'  
+        }));
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
           text: '<fmt:message key="modules.viewModule.basicTabRelatedActionsCreateCourseLabel"/>',
-          link: '../courses/createcourse.page?module=${module.id}'  
+          link: GLOBAL_contextPath + '/courses/createcourse.page?module=${module.id}'  
         }));
         
         // Courses table

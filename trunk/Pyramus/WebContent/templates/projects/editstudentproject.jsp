@@ -982,7 +982,7 @@
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsEditStudentLabel"/>',
-          link: '../students/editstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}'  
+          link: GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}'  
         }));
       }
 

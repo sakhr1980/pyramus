@@ -42,7 +42,7 @@
         });
       } 
 
-          function updateComponentHours() {
+      function updateComponentHours() {
         var table = getIxTableById('componentsTable');
         var sum = 0;
         for (var row = 0; row < table.getRowCount(); row++) {
@@ -230,9 +230,14 @@
           text: '<fmt:message key="modules.editModule.basicTabRelatedActionsLabel"/>'
         });
         basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="modules.editModule.basicTabRelatedActionsViewModuleLabel"/>',
+          link: GLOBAL_contextPath + '/modules/viewmodule.page?module=${module.id}'  
+        }));
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
           text: '<fmt:message key="modules.editModule.basicTabRelatedActionsCreateCourseLabel"/>',
-          link: '../courses/createcourse.page?module=${module.id}'  
+          link: GLOBAL_contextPath + '/courses/createcourse.page?module=${module.id}'  
         }));
       }
     </script>

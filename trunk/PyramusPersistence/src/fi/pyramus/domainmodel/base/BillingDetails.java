@@ -166,6 +166,7 @@ public class BillingDetails {
   private String phoneNumber;
 
   @Field (index = Index.TOKENIZED, store = Store.NO)
+  // TODO Email annotation?
   private String emailAddress;
 
   @Field (index = Index.TOKENIZED, store = Store.NO)
