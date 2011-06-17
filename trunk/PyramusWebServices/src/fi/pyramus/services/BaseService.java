@@ -27,7 +27,7 @@ import fi.pyramus.services.entities.base.NationalityEntity;
 import fi.pyramus.services.entities.base.SchoolEntity;
 import fi.pyramus.services.entities.base.StudyProgrammeEntity;
 import fi.pyramus.services.entities.base.SubjectEntity;
-import fi.pyramus.services.utils.StringAttributeComparator;
+import fi.pyramus.util.StringAttributeComparator;
 
 public class BaseService extends PyramusService {
 
