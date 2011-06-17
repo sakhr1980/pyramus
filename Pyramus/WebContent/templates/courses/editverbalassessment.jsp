@@ -13,6 +13,7 @@
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/studentinfopopup_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/ckeditor_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     
     <script type="text/javascript">
       /**
@@ -29,6 +30,17 @@
       }
       
       function onLoad(event) {
+        CKEDITOR.on(
+            'instanceReady', function(evt) {
+              var editor = evt.editor;
+              var dialog = getDialog();
+              if (dialog) {
+                if (dialog._modifiedVerbalAssessment) {
+                  editor.setData(dialog._modifiedVerbalAssessment);
+                }
+              }
+            }
+        );
       }
     </script>
   </head>
@@ -36,7 +48,7 @@
   <body onload="onLoad(event);">
     <div id="editVerbalAssessmentDialogContainer" class="editVerbalAssessmentDialogContainer">
       <div class="editVerbalAssessmentEditorContainer"> 
-        <textarea name="verbalAssessment" ix:cktoolbar="courseGradeText" ix:ckeditor="true">${verbalAssessment}</textarea>
+        <textarea name="verbalAssessment" id="verbalAssessment" ix:cktoolbar="courseGradeText" ix:ckeditor="true">${verbalAssessment}</textarea>
       </div>
     </div>
   </body>

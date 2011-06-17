@@ -1004,7 +1004,6 @@
           centered : true,
           showOk : true,
           showCancel : true,
-          _rowIndex : row,
           title : '<fmt:message key="courses.editVerbalAssessmentDialog.dialogTitle"/>',
           okLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.okLabel"/>', 
           cancelLabel : '<fmt:message key="courses.editVerbalAssessmentDialog.cancelLabel"/>' 
@@ -1028,6 +1027,10 @@
             break;
           }
         });
+        dialog._rowIndex = row;
+        var verbalModified = table.getCellValue(row, table.getNamedColumnIndex('verbalModified'));
+        if (verbalModified == 1)
+          dialog._modifiedVerbalAssessment = table.getCellValue(row, table.getNamedColumnIndex('verbalAssessment'));
         dialog.open();
       }
       
