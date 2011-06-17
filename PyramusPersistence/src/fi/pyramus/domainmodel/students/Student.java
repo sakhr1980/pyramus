@@ -44,6 +44,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.Language;
@@ -435,7 +436,7 @@ public class Student implements ArchivableEntity {
   }
   
   public void addTag(Tag tag) {
-    if (tags.contains(tag)) {
+    if (!tags.contains(tag)) {
       tags.add(tag);
     } else {
       throw new PersistenceException("Entity already has this tag");
@@ -444,9 +445,33 @@ public class Student implements ArchivableEntity {
   
   public void removeTag(Tag tag) {
     if (tags.contains(tag)) {
-      tags.add(tag);
+      tags.remove(tag);
     } else {
       throw new PersistenceException("Entity does not have this tag");
+    }
+  }
+
+  public void setBillingDetails(List<BillingDetails> billingDetails) {
+    this.billingDetails = billingDetails;
+  }
+
+  public List<BillingDetails> getBillingDetails() {
+    return billingDetails;
+  }
+
+  public void addBillingDetails(BillingDetails billingDetails) {
+    if (!this.billingDetails.contains(billingDetails)) {
+      this.billingDetails.add(billingDetails);
+    } else {
+      throw new PersistenceException("Entity already has this BillingDetails");
+    }
+  }
+  
+  public void removeBillingDetails(BillingDetails billingDetails) {
+    if (this.billingDetails.contains(billingDetails)) {
+      this.billingDetails.remove(billingDetails);
+    } else {
+      throw new PersistenceException("Entity does not have this BillingDetails");
     }
   }
 
@@ -557,6 +582,11 @@ public class Student implements ArchivableEntity {
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn (name="student")
   private List<StudentVariable> variables = new ArrayList<StudentVariable>();
+
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__StudentBillingDetails", joinColumns=@JoinColumn(name="student"), inverseJoinColumns=@JoinColumn(name="billingDetails"))
+  @IndexedEmbedded 
+  private List<BillingDetails> billingDetails = new ArrayList<BillingDetails>();
 
   @ManyToMany (fetch = FetchType.LAZY)
   @JoinTable (name="__StudentTags", joinColumns=@JoinColumn(name="student"), inverseJoinColumns=@JoinColumn(name="tag"))

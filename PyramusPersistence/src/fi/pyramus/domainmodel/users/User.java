@@ -39,6 +39,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.usertypes.RoleUserType;
@@ -54,6 +55,7 @@ public class User {
   public Long getId() {
     return id;
   }
+  
   public String getFirstName() {
     return firstName;
   }
@@ -61,7 +63,7 @@ public class User {
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
-
+  
   public String getLastName() {
     return lastName;
   }
@@ -128,7 +130,7 @@ public class User {
   }
   
   public void addTag(Tag tag) {
-    if (tags.contains(tag)) {
+    if (!tags.contains(tag)) {
       tags.add(tag);
     } else {
       throw new PersistenceException("Entity already has this tag");
@@ -137,7 +139,7 @@ public class User {
   
   public void removeTag(Tag tag) {
     if (tags.contains(tag)) {
-      tags.add(tag);
+      tags.remove(tag);
     } else {
       throw new PersistenceException("Entity does not have this tag");
     }
@@ -174,6 +176,30 @@ public class User {
 
   public String getTitle() {
     return title;
+  }
+
+  public void setBillingDetails(List<BillingDetails> billingDetails) {
+    this.billingDetails = billingDetails;
+  }
+
+  public List<BillingDetails> getBillingDetails() {
+    return billingDetails;
+  }
+
+  public void addBillingDetails(BillingDetails billingDetails) {
+    if (!this.billingDetails.contains(billingDetails)) {
+      this.billingDetails.add(billingDetails);
+    } else {
+      throw new PersistenceException("Entity already has this BillingDetails");
+    }
+  }
+  
+  public void removeBillingDetails(BillingDetails billingDetails) {
+    if (this.billingDetails.contains(billingDetails)) {
+      this.billingDetails.remove(billingDetails);
+    } else {
+      throw new PersistenceException("Entity does not have this BillingDetails");
+    }
   }
 
   @Id
@@ -221,6 +247,11 @@ public class User {
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @JoinColumn (name="user")
   private List<UserVariable> variables = new ArrayList<UserVariable>();
+
+  @ManyToMany (fetch = FetchType.LAZY)
+  @JoinTable (name="__UserBillingDetails", joinColumns=@JoinColumn(name="user"), inverseJoinColumns=@JoinColumn(name="billingDetails"))
+  @IndexedEmbedded 
+  private List<BillingDetails> billingDetails = new ArrayList<BillingDetails>();
 
   @ManyToMany (fetch = FetchType.LAZY)
   @JoinTable (name="__UserTags", joinColumns=@JoinColumn(name="user"), inverseJoinColumns=@JoinColumn(name="tag"))
