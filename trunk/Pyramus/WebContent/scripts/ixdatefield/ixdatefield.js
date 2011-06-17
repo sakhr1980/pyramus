@@ -146,6 +146,7 @@ IxDateField = Class.create({
       relativePosition: false,
       language: language,
       topOffset: 25,
+      zindex: 99999,
       leftOffset: 0,
       dateFormat: [dateFormat, dateSeparator],
       afterClose: function () {

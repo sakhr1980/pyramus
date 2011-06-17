@@ -61,7 +61,7 @@
             from.setFullYear(event.year, 0, 1);
             from.setHours(0, 0, 0, 0);
             var to = new Date();
-            to.setFullYear(event.year, 11, 0);
+            to.setFullYear(event.year + 1, 0, 0);
             to.setHours(0, 0, 0, 0);
             this.setDateRange(from, to);
           }, 

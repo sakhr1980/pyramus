@@ -6,7 +6,6 @@ div.datepicker {
 	position: absolute;
 	table-layout: fixed;
 	width: 228px;
-	z-index: 99999;
 }
 
 div.datepicker table {

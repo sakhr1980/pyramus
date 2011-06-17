@@ -93,9 +93,9 @@ CoursePlanner = Class.create({
     Event.observe(this._view, "mousemove", this._viewMouseMoveListener);
     
     if (this._options.zoomingEnabled) {
-      this._viewScollListener = this._onViewScoll.bindAsEventListener(this);
-      Event.observe(this._view, "mousewheel", this._viewScollListener);
-      Event.observe(this._view, "DOMMouseScroll", this._viewScollListener); 
+      this._viewScrollListener = this._onViewScroll.bindAsEventListener(this);
+      Event.observe(this._view, "mousewheel", this._viewScrollListener);
+      Event.observe(this._view, "DOMMouseScroll", this._viewScrollListener); 
     }
 
     container.appendChild(this._domNode);
@@ -166,13 +166,15 @@ CoursePlanner = Class.create({
     this._renderCourses();
   },
   setDateRange: function (from, to) {
-    this._timeFrame = to.getTime() - from.getTime();
-    this._updateMsPixelRatio();
-    this._viewOffsetX = this._getDateInPixels(from);
-    this._renderBackground();
-    this._refreshVisibleCourses();
-    this._renderCourses();
-    this._refreshYear();
+    if (to.getTime() > from.getTime()) {
+      this._timeFrame = to.getTime() - from.getTime();
+      this._updateMsPixelRatio();
+      this._viewOffsetX = this._getDateInPixels(from);
+      this._renderBackground();
+      this._refreshVisibleCourses();
+      this._renderCourses();
+      this._refreshYear();
+    }
   },
   addFilter: function (filter) {
     this._filters.push(filter);
@@ -200,7 +202,7 @@ CoursePlanner = Class.create({
         var filter = this._filters[filterIndex];
         for (var i = this._filteredCourses.length - 1; i >= 0; i--) {
           if (filter.filter(this._filteredCourses[i])) {
-            var course = this._filteredCourses.splice(i, 1)[0];
+            this._filteredCourses.splice(i, 1)[0];
           }
         }
       }
@@ -460,6 +462,7 @@ CoursePlanner = Class.create({
             }
           }
         }
+        
         course.draw(left, width, top);
       }
     }
@@ -541,7 +544,7 @@ CoursePlanner = Class.create({
       this._pointerLabel.update(getLocale().getDate(this._getPixelsInDate(this._viewOffsetX + this._cursorPosX).getTime(), false));
     }
   },
-  _onViewScoll: function (event) {
+  _onViewScroll: function (event) {
     Event.stop(event);
     var endDate = new Date(this._getViewEndDate().getTime() + ((1000 * 60 * 60 * 24 * 10) * -this._wheelDelta(event)));
     this.setDateRange(this._getViewStartDate(), endDate);
