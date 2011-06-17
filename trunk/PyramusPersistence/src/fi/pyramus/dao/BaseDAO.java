@@ -27,6 +27,7 @@ import org.hibernate.search.Search;
 
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.Address;
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.ComponentBase;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.ContactType;
@@ -1579,6 +1580,69 @@ public class BaseDAO extends PyramusDAO {
     entityManager.persist(defaults);
 
     return defaults;
+  }
+
+  /* BillingDetails */
+
+  public BillingDetails findBillingDetailsById(Long billingDetailsId) {
+    EntityManager entityManager = getEntityManager();
+    return entityManager.find(BillingDetails.class, billingDetailsId);
+  }
+
+  public BillingDetails createBillingDetails(String personName, String companyName, String streetAddress1, String streetAddress2,
+      String postalCode, String city, String region, String country, String phoneNumber, String emailAddress, String bic, String iban,
+      String companyIdentifier, String referenceNumber) {
+    Session s = getHibernateSession();
+
+    BillingDetails billingDetails = new BillingDetails();
+    billingDetails.setPersonName(personName);
+    billingDetails.setCompanyName(companyName);
+    billingDetails.setStreetAddress1(streetAddress1);
+    billingDetails.setStreetAddress2(streetAddress2);
+    billingDetails.setPostalCode(postalCode);
+    billingDetails.setCity(city);
+    billingDetails.setRegion(region);
+    billingDetails.setCountry(country);
+    billingDetails.setPhoneNumber(phoneNumber);
+    billingDetails.setEmailAddress(emailAddress);
+    billingDetails.setBic(bic);
+    billingDetails.setIban(iban);
+    billingDetails.setCompanyIdentifier(companyIdentifier);
+    billingDetails.setReferenceNumber(referenceNumber);
+    s.saveOrUpdate(billingDetails);
+
+    return billingDetails;
+  }
+
+  public BillingDetails updateBillingDetails(BillingDetails billingDetails, String personName, String companyName, String streetAddress1, String streetAddress2,
+      String postalCode, String city, String region, String country, String phoneNumber, String emailAddress, String bic, String iban, String companyIdentifier,
+      String referenceNumber) {
+
+    Session s = getHibernateSession();
+
+    billingDetails.setPersonName(personName);
+    billingDetails.setCompanyName(companyName);
+    billingDetails.setStreetAddress1(streetAddress1);
+    billingDetails.setStreetAddress2(streetAddress2);
+    billingDetails.setPostalCode(postalCode);
+    billingDetails.setCity(city);
+    billingDetails.setRegion(region);
+    billingDetails.setCountry(country);
+    billingDetails.setPhoneNumber(phoneNumber);
+    billingDetails.setEmailAddress(emailAddress);
+    billingDetails.setBic(bic);
+    billingDetails.setIban(iban);
+    billingDetails.setCompanyIdentifier(companyIdentifier);
+    billingDetails.setReferenceNumber(referenceNumber);
+
+    s.saveOrUpdate(billingDetails);
+
+    return billingDetails;
+  }
+
+  public void removeBillingDetails(BillingDetails billingDetails) {
+    Session s = getHibernateSession();
+    s.delete(billingDetails);
   }
 
   /* EducationalTimeUnit */

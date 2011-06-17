@@ -236,7 +236,7 @@ public class Project implements ArchivableEntity {
   }
   
   public void addTag(Tag tag) {
-    if (tags.contains(tag)) {
+    if (!tags.contains(tag)) {
       tags.add(tag);
     } else {
       throw new PersistenceException("Entity already has this tag");
@@ -245,7 +245,7 @@ public class Project implements ArchivableEntity {
   
   public void removeTag(Tag tag) {
     if (tags.contains(tag)) {
-      tags.add(tag);
+      tags.remove(tag);
     } else {
       throw new PersistenceException("Entity does not have this tag");
     }

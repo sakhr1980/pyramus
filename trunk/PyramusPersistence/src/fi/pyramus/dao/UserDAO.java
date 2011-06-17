@@ -24,6 +24,7 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.InternalAuth;
 import fi.pyramus.domainmodel.users.Role;
@@ -75,6 +76,16 @@ public class UserDAO extends PyramusDAO {
     s.save(newUser);
 
     return newUser;
+  }
+
+  public User setUserBillingDetails(User user, List<BillingDetails> billingDetails) {
+    EntityManager entityManager = getEntityManager();
+    
+    user.setBillingDetails(billingDetails);
+    
+    entityManager.persist(user);
+    
+    return user;
   }
   
   public User setUserTags(User user, Set<Tag> tags) {

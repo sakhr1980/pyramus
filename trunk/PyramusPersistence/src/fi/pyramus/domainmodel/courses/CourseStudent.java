@@ -20,6 +20,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
@@ -117,6 +118,14 @@ public class CourseStudent implements ArchivableEntity {
     return version;
   }
 
+  public void setBillingDetails(BillingDetails billingDetails) {
+    this.billingDetails = billingDetails;
+  }
+
+  public BillingDetails getBillingDetails() {
+    return billingDetails;
+  }
+
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseStudent")  
   @TableGenerator(name="CourseStudent", allocationSize=1)
@@ -153,6 +162,10 @@ public class CourseStudent implements ArchivableEntity {
   @Column
   @Type (type="CourseOptionality")
   private CourseOptionality optionality;
+
+  @ManyToOne 
+  @JoinColumn(name="billingDetails")
+  private BillingDetails billingDetails;
 
   @Version
   @Column(nullable = false)

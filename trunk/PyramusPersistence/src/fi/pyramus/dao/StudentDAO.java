@@ -25,6 +25,7 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 
+import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.Language;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
@@ -159,6 +160,16 @@ public class StudentDAO extends PyramusDAO {
 
     entityManager.persist(abstractStudent);
 
+    return student;
+  }
+
+  public Student setStudentBillingDetails(Student student, List<BillingDetails> billingDetails) {
+    EntityManager entityManager = getEntityManager();
+    
+    student.setBillingDetails(billingDetails);
+    
+    entityManager.persist(student);
+    
     return student;
   }
 
@@ -351,7 +362,7 @@ public class StudentDAO extends PyramusDAO {
       add(Restrictions.eq("archived", Boolean.FALSE)).
       list();
   }
-
+  
   @SuppressWarnings("unchecked")
   public List<StudentActivityType> listStudentActivityTypes() {
     Session s = getHibernateSession();
