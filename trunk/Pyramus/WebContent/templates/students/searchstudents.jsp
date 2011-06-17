@@ -240,7 +240,7 @@
             </div>
       
             <div class="genericFormSubmitSection">
-              <input type="submit" name="query" value="<fmt:message key="students.searchStudents.basicSearchButton"/>">
+              <input type="submit" name="query" value="<fmt:message key="students.searchStudents.basicActiveSearchButton"/>">
             </div>
           </div>
          

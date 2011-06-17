@@ -142,12 +142,16 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
         }
       }
       
-      if ((studentProjectModule.getModule().getCourseNumber() != null) && (studentProjectModule.getModule().getCourseNumber() != -1) && (studentProjectModule.getModule().getSubject() != null)) {
-        for (TransferCredit tc : transferCreditsByStudent) {
-          if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
-            if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
-              if (tc.getGrade().getPassingGrade())
-                hasPassingGrade = true;
+      if (!hasPassingGrade) {
+        if ((studentProjectModule.getModule().getCourseNumber() != null) && (studentProjectModule.getModule().getCourseNumber() != -1) && (studentProjectModule.getModule().getSubject() != null)) {
+          for (TransferCredit tc : transferCreditsByStudent) {
+            if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
+              if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
+                if (tc.getGrade().getPassingGrade()) {
+                  hasPassingGrade = true;
+                  break;
+                }
+              }
             }
           }
         }

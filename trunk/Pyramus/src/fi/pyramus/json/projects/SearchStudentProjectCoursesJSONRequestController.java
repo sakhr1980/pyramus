@@ -40,7 +40,7 @@ public class SearchStudentProjectCoursesJSONRequestController implements JSONReq
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Course> courses = searchResult.getResults();
     for (Course course : courses) {
-      Long studentCount = new Long(courseDAO.listCourseStudentsByCourse(course).size());
+      Long studentCount = courseDAO.countCourseStudentsByCourse(course);
       Long maxStudentCount = course.getMaxParticipantCount();
       
       Map<String, Object> courseInfo = new HashMap<String, Object>();

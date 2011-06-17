@@ -150,7 +150,7 @@ public class CoursesService extends PyramusService {
 
     courseDAO.updateCourse(course, name, nameExtension, course.getState(), subject, courseNumber, beginDate, endDate, courseLength,
         courseLengthTimeUnit, course.getDistanceTeachingDays(), course.getLocalTeachingDays(), course.getTeachingHours(), 
-        course.getPlanningHours(), course.getAssessingHours(), description, null, null, modifyingUser);
+        course.getPlanningHours(), course.getAssessingHours(), description, course.getMaxParticipantCount(), course.getEnrolmentTimeEnd(), modifyingUser);
     validateEntity(course);
   }
 

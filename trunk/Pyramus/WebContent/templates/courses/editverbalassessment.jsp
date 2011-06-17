@@ -48,7 +48,7 @@
   <body onload="onLoad(event);">
     <div id="editVerbalAssessmentDialogContainer" class="editVerbalAssessmentDialogContainer">
       <div class="editVerbalAssessmentEditorContainer"> 
-        <textarea name="verbalAssessment" id="verbalAssessment" ix:cktoolbar="courseGradeText" ix:ckeditor="true">${verbalAssessment}</textarea>
+        <textarea name="verbalAssessment" ix:cktoolbar="courseGradeText" ix:ckeditor="true">${verbalAssessment}</textarea>
       </div>
     </div>
   </body>
