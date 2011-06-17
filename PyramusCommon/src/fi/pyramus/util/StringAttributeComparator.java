@@ -1,4 +1,4 @@
-package fi.pyramus.services.utils;
+package fi.pyramus.util;
 
 import java.lang.reflect.Method;
 import java.util.Comparator;
