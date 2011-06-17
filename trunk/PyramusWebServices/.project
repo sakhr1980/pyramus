@@ -5,6 +5,7 @@
 	<projects>
 		<project>PyramusPersistence</project>
 		<project>PyramusWebServices</project>
+		<project>PyramusCommon</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
