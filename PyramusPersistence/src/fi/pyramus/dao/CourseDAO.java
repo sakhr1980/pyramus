@@ -1334,12 +1334,24 @@ public class CourseDAO extends PyramusDAO {
 
     return s.createQuery(
         "from CourseStudent cs " +
-        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2 and cs.course.archived=:archived3")
+        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2")
         .setParameter("course", course)
         .setBoolean("archived", Boolean.FALSE)
         .setBoolean("archived2", Boolean.FALSE)
-        .setBoolean("archived3", Boolean.FALSE)
         .list();
+  }
+
+  public Long countCourseStudentsByCourse(Course course) {
+    Session s = getHibernateSession();
+
+    return (Long) s.createQuery(
+        "select count(cs.id)" +
+        "from CourseStudent cs " +
+        "where cs.course=:course and cs.archived=:archived and cs.student.archived=:archived2")
+        .setParameter("course", course)
+        .setBoolean("archived", Boolean.FALSE)
+        .setBoolean("archived2", Boolean.FALSE)
+        .uniqueResult();
   }
 
   @SuppressWarnings("unchecked")

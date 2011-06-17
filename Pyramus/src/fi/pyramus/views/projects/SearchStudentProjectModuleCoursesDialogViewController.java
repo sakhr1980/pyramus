@@ -96,7 +96,7 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
       if (courseStudent != null)
         courseParticipationType = courseStudent.getParticipationType();
       
-      Long courseStudentCount = new Long(courseDAO.listCourseStudentsByCourse(course).size());
+      Long courseStudentCount = courseDAO.countCourseStudentsByCourse(course);
       Long maxCourseStudentCount = course.getMaxParticipantCount();
       
       StudentProjectModuleCourseBean studentProjectModuleCourseBean = new StudentProjectModuleCourseBean(course, courseParticipationType, withinTimeFrame, courseStudentCount, maxCourseStudentCount);
