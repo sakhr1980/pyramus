@@ -54,6 +54,7 @@
           <li class="GUI_MENU_top"></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/courses/createcoursewizard.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.createCourse"/></a></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/courses/searchcourses.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.searchCourses"/></a></li>
+          <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/courses/courseplanner.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.coursePlanner"/></a></li>
           <ix:extensionHook name="generic.navigation.coursesMenu"/>
         </ul>
       </li>
