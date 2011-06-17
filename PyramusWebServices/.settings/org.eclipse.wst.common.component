@@ -18,6 +18,9 @@
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/classpath/con/org.eclipse.jdt.USER_LIBRARY/Hibernate Validator 4.1.0">
             <dependency-type>consumes</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="PyramusCommon.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusCommon/PyramusCommon">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="PyramusWebServices"/>
         <property name="java-output-path" value="/PyramusWebServices/build/classes"/>
     </wb-module>
