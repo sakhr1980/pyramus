@@ -1,6 +1,67 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.5 (110620.18)
+
+  * Added names of active and inactive study programmes of student to student search view and added tab to search from all students as default (also inactive)
+  * Added verbal assessment management to managecourseassessments view (opens in dialog)
+  * Added sorting options to subject management
+  * Added StringAttributeComparator that can be used for string sorting of simple attributes
+  * Added advanced search to modulesearch
+  * Added searching by educationtypes to coursesearch
+  * Added indexing to education types in coursebase for searching modules and courses by them
+  * Added transient methods hasStartedStudies and hasFinishedStudies to Student
+  * Added archive course option to related actions in editcourse
+  * Added View Module view
+  * Added View Project view
+  * Added creator and last modifier to the View Course view
+  * Added optionality to StudentProject
+  * Added ProjectAssessment to StudentProject
+  * Added related action to add projects for students in viewstudent
+  * Added new information about student projects to viewstudent projects tab
+  * Added month and weekday names for javascript localization
+  * Added Course Planner
+  * Added headerTooltip to ixtable
+  * Added related actions to editproject (to viewproject)
+  * Added maxParticipantCount to CourseBase
+  * Added enrolmentTimeEnd to Course
+  * Added CourseDescriptionCategory archiving to management view
+  * Added studentcounts to editstudentproject search courses dialogs
+  * Added server-side implementation of billing details for users and students
+  * Added sorting to BaseService methods that lost it while BaseDAO refactoring
+  * Changed Edit/CreateCourse to check if null values are being saved as student participationtype or enrolmenttype on the course
+  * Changed some minor localization issues
+  * Refactored Comparator sorts out of BaseDAO
+  * Fixed a bug in validation_support.jsp that caused initialization script to crash when ixtable.js was not loaded
+  * Fixed paging of searchstudentprojects
+  * Fixed managecourseassessments and editstudentproject to show the modified verbal assessment when opening the dialog
+  * Fixed erroneous addTag/removeTag methods of all entities supporting tags
+  * Removed archive course option from searchcourses
+
+*Version 0.451 (110525.17)
+
+  * Fixed issue with getSubjectByCode and sqlrestriction
+
+*Version 0.45 (110523.16)
+
+  * Added new datepicker component
+  * Added EducationType for Subject and StudyProgrammeCategory
+  * Added support for 1.1.1970 date to ixdatefield (timestamp 0)
+  * Added auto-scrolling to Manage Transfer Credit Templates view
+
+  * Changed typeof methods to Object.isFunction() methods in ixprototabs and ixtable
+  * Changed listings of Subjects to be grouped by their EducationType if available
+  * Changed managetransfercredits to take note of new Subject-EducationType arrangement (to view names correctly)
+  * Changed fnilocale library to latest version
+  * Replaced ix:datefield="true" attribute with ixDateField class (part of Issue #37)
+
+  * Removed old datepicker component
+  * Removed table dependency from validation_support
+
+  * Fixed broken layout in Search Modules and Search Students dialogs
+  * Fixed students table layout on createcourse view
+  * Fixed bug that caused input[type="hidden"] elements to be validated
+
 *Version 0.44 (110517.15)
 
   * Added CourseDescription & CourseDescriptionCategory entities and their handlers to viewcourse, create/editcourse, create/editmodule and to webservices/dao
