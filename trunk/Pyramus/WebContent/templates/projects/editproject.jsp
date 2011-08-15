@@ -75,7 +75,7 @@
                 var moduleName = event.results.modules[i].name;
                 var index = getModuleRowIndex('modulesTable', moduleId);
                 if (index == -1) {
-                  modulesTable.addRow([moduleName.escapeHTML(), 0, '', moduleId, -1]);
+                  modulesTable.addRow([moduleName.escapeHTML(), 0, '', '', moduleId, -1]);
                 }
               }
               modulesTable.reattachToDom();
