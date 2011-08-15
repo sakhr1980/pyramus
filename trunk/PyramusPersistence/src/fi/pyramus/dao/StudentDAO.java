@@ -43,6 +43,7 @@ import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.domainmodel.students.StudentGroupUser;
+import fi.pyramus.domainmodel.students.StudentImage;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
 import fi.pyramus.domainmodel.students.StudentVariable;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
@@ -1327,5 +1328,56 @@ public class StudentDAO extends PyramusDAO {
       add(Restrictions.eq("archived", Boolean.FALSE)).
       list();
   }
+ 
+  /*
+   * Student Image
+   */
   
+  public StudentImage findStudentImageByStudent(Student student) {
+    Session s = getHibernateSession();
+    return (StudentImage) s.createCriteria(StudentImage.class)
+      .add(Restrictions.eq("student", student))
+      .uniqueResult();
+  }
+
+  public Boolean findStudentHasImage(Student student) {
+    Session s = getHibernateSession();
+
+    Long count = (Long) s.createQuery(
+        "select count(si.id) " +
+        "from StudentImage si " +
+        "where si.student=:student")
+        .setParameter("student", student)
+        .uniqueResult();
+    return count > 0;
+  }
+  
+  public StudentImage createStudentImage(Student student, String contentType, byte[] data) {
+    EntityManager em = getEntityManager();
+    
+    StudentImage studentImage = new StudentImage();
+    studentImage.setStudent(student);
+    studentImage.setContentType(contentType);
+    studentImage.setData(data);
+    
+    em.persist(studentImage);
+
+    return studentImage;
+  }
+  
+  public void deleteStudentImage(StudentImage studentImage) {
+    EntityManager em = getEntityManager();
+    em.remove(studentImage);
+  }
+
+  public StudentImage updateStudentImage(StudentImage studentImage, String contentType, byte[] data) {
+    EntityManager em = getEntityManager();
+    
+    studentImage.setContentType(contentType);
+    studentImage.setData(data);
+    
+    em.persist(studentImage);
+
+    return studentImage;
+  }
 }

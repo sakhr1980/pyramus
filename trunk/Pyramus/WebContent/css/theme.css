@@ -311,6 +311,16 @@ h1.genericPageHeader{
 	vertical-align: bottom;
 }
 
+.viewStudent_studentImage {
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 180px;
+  width: 140px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 /* View Student - Courses */
 
 .viewStudentCoursesTotalContainer {
@@ -2277,4 +2287,32 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   display: inline-block;   
   font-weight: bold;
   margin-left: 8px;
+}
+
+/* editStudentImage */
+
+.editStudentImage_container {
+	display: table;
+}
+
+.editStudentImage_vcontainer {
+	display: table-row;
+}
+
+.editStudentImage_image {
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 6px;
+  height: 300px;
+  width: 200px;
+}
+
+.editStudentImage_imagecontainer {
+	width: 200px;
+	height: 300px;
+}
+
+.editStudentImage_hcontainer {
+	vertical-align: top;
+	display: table-cell;
 }

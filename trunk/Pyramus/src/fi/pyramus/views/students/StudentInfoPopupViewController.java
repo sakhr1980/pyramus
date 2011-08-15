@@ -29,7 +29,7 @@ public class StudentInfoPopupViewController implements PyramusViewController, Br
    * @return allowed roles
    */
   public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.EVERYONE };
+    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
 
   /**
@@ -97,11 +97,11 @@ public class StudentInfoPopupViewController implements PyramusViewController, Br
     });
     
     String studentImage = pageRequestContext.getRequest().getContextPath() + "/gfx/default-user-image.png";
-    // TODO Actual image once we have it :)
     
 		pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("studentImage", studentImage);
+    pageRequestContext.getRequest().setAttribute("latestStudentHasImage", abstractStudent.getLatestStudent() != null ? studentDAO.findStudentHasImage(abstractStudent.getLatestStudent()) : Boolean.FALSE);
   
     pageRequestContext.setIncludeJSP("/templates/students/studentinfopopup.jsp");
   }

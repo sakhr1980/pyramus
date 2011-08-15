@@ -47,6 +47,14 @@
           text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsManageTransferCreditsLabel"/>',
           link: GLOBAL_contextPath + '/grading/managetransfercredits.page?studentId=' + studentId  
         }));
+
+        basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsEditStudentImageLabel"/>',
+          onclick: function (event) {
+            openEditStudentImageDialog(studentId);
+          }
+        }));
         
         var gradesTabRelatedActionsHoverMenu = new IxHoverMenu($('gradesTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsLabel"/>'
@@ -747,6 +755,38 @@
       function openEditStudentProject(studentProjectId) {
         redirectTo(GLOBAL_contextPath + "/projects/editstudentproject.page?studentproject=" + studentProjectId);        
       }
+      
+      function openEditStudentImageDialog(studentId) {
+        var dialog = new IxDialog({
+          id : 'editStudentImageDialog',
+          contentURL : GLOBAL_contextPath + '/students/editstudentimagedialog.page?studentId=' + studentId,
+          centered : true,
+          showCancel : true,
+          title : '<fmt:message key="students.editStudentImageDialog.dialogTitle"/>',
+          cancelLabel : '<fmt:message key="students.editStudentImageDialog.closeLabel"/>' 
+        });
+        
+        dialog.setSize("450px", "400px");
+        dialog.addDialogListener(function(event) {
+          switch (event.name) {
+            case 'cancelClick':
+              reloadStudentImage(studentId);
+            break;
+          }
+        });
+        
+        dialog.open();
+      }
+      
+      function reloadStudentImage(studentId) {
+        var imageContainer = $('studentImage.' + studentId);
+        
+        var imageUrl = 'viewstudentimage.binary?studentId=' + studentId + '&time=' + new Date().getTime();
+        
+        imageContainer.setStyle({
+          backgroundImage: 'url("' + imageUrl + '")'
+        });
+      }
     </script>
   </head>
 
@@ -800,7 +840,7 @@
                   </a>
                 </div>
 
-                <div id="basic.${student.id}" class="tabContent">    
+                <div id="basic.${student.id}" class="tabContent">
                   <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
                   
                     <!--  Student Basic Info Starts -->
@@ -813,7 +853,16 @@
                         </jsp:include>                                        
                         <div class="genericViewFormDataText">${student.firstName}</div>
                       </div>
-            
+
+                      <c:choose>
+                        <c:when test="${studentHasImage[student.id]}">
+                          <span id="studentImage.${student.id}" style="background-image: url('viewstudentimage.binary?studentId=${student.id}');" class="viewStudent_studentImage"> </span>
+                        </c:when>
+                        <c:otherwise>
+                          <span id="studentImage.${student.id}" class="viewStudent_studentImage"> </span>
+                        </c:otherwise>
+                      </c:choose>
+                      
                       <div class="genericFormSection">  
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                           <jsp:param name="titleLocale" value="students.viewStudent.lastNameTitle"/>
