@@ -76,7 +76,7 @@
             }
           }, {
             header : '<fmt:message key="projects.viewProject.moduleTableOptionalityHeader"/>',
-            right : 8,
+            right : 8 + 22 + 8,
             width : 150,
             dataType : 'select',
             paramName: 'optionality',
@@ -106,6 +106,17 @@
               }
             ]
           }, {
+            width: 22,
+            right: 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
+            tooltip: '<fmt:message key="projects.viewProject.modulesTableViewModuleTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
+              redirectTo(GLOBAL_contextPath + '/modules/viewmodule.page?module=' + moduleId);
+            }
+          }, {
             dataType: 'hidden',
             paramName: 'moduleId'
           }, {
@@ -125,6 +136,7 @@
               rows.push([
                   projectModules[i].name.escapeHTML(),
                   projectModules[i].optionality,
+                  '',
                   projectModules[i].moduleId,
                   projectModules[i].id]);
             }
