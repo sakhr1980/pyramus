@@ -96,7 +96,8 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
           tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
           phone, lodging, studyProgramme, language, nationality, municipality, studentFilter);
-    } if ("active".equals(jsonRequestContext.getRequest().getParameter("activeTab"))) {
+    }
+    else if ("active".equals(jsonRequestContext.getRequest().getParameter("activeTab"))) {
       String query = jsonRequestContext.getRequest().getParameter("activesQuery");
       searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.SKIP_INACTIVE);
     }
