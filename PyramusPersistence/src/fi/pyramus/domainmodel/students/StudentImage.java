@@ -50,7 +50,6 @@ public class StudentImage {
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentImage")  
   @TableGenerator(name="StudentImage", allocationSize=1)
-  @DocumentId
   private Long id;
 
   @OneToOne
