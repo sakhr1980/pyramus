@@ -431,7 +431,6 @@ public class StudentDAO extends PyramusDAO {
   
   @SuppressWarnings("unchecked")
   public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText, StudentFilter studentFilter, StudyProgramme studyProgramme, StudentGroup studentGroup) {
-
     int firstResult = page * resultsPerPage;
 
     StringBuilder queryBuilder = new StringBuilder();
@@ -541,7 +540,6 @@ public class StudentDAO extends PyramusDAO {
 
     try {
       String queryString = queryBuilder.toString();
-
       QueryParser parser = new QueryParser(Version.LUCENE_29, "", new StandardAnalyzer(Version.LUCENE_29));
       Query luceneQuery = parser.parse(queryString);
 
