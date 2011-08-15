@@ -7,7 +7,14 @@
 
 <div class="studentInfoPopupContainer">
   <div class="studentInfoPopupImageContainer">
-    <img class="studentInfoPopupImage" src="${studentImage}"/> 
+    <c:choose>
+      <c:when test="${latestStudentHasImage}">
+        <img class="studentInfoPopupImage" src="${pageContext.request.contextPath}/students/viewstudentimage.binary?studentId=${abstractStudent.latestStudent.id}"/> 
+      </c:when>
+      <c:otherwise>
+        <img class="studentInfoPopupImage" src="${studentImage}"/> 
+      </c:otherwise>
+    </c:choose>
   </div>
   <div class="studentInfoPopupDetailsContainer">
     <div class="studentInfoPopupName">

@@ -113,6 +113,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     });
 
     
+    Map<Long, Boolean> studentHasImage = new HashMap<Long, Boolean>();
     Map<Long, List<CourseStudent>> courseStudents = new HashMap<Long, List<CourseStudent>>();
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
@@ -370,6 +371,9 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
         studentProjectBeans.add(bean);
       }
       
+      // Student Image
+      studentHasImage.put(student.getId(), studentDAO.findStudentHasImage(student));
+
       courseStudents.put(student.getId(), courseStudentsByStudent);
       courseAssessments.put(student.getId(), courseAssessmentsByStudent);
       contactEntries.put(student.getId(), listStudentContactEntries);
@@ -388,6 +392,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     pageRequestContext.getRequest().setAttribute("studentProjects", studentProjects);
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseAssessmentsByCourseStudent", courseAssessmentsByCourseStudent);
+    pageRequestContext.getRequest().setAttribute("studentHasImage", studentHasImage);
 
     pageRequestContext.setIncludeJSP("/templates/students/viewstudent.jsp");
   }
