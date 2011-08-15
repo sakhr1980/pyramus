@@ -149,7 +149,7 @@
             }
           }, {
             header : '<fmt:message key="projects.editProject.moduleTableOptionalityHeader"/>',
-            right : 40,
+            right : 8 + 22 + 8 + 22 + 8,
             width : 150,
             dataType : 'select',
             paramName: 'optionality',
@@ -186,8 +186,19 @@
               }
             ]
           }, {
-            width: 30,
-            right: 0,
+            width: 22,
+            right: 8 + 22 + 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            tooltip: '<fmt:message key="projects.editProject.moduleTableEditModuleTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var moduleId = table.getCellValue(event.row, table.getNamedColumnIndex('moduleId'));
+              redirectTo(GLOBAL_contextPath + '/modules/editmodule.page?module=' + moduleId);
+            }
+          }, {
+            width: 22,
+            right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editProject.moduleTableDeleteRowTooltip"/>',
@@ -230,6 +241,7 @@
               rows.push([
                   projectModules[i].name.escapeHTML(),
                   projectModules[i].optionality,
+                  '',
                   '',
                   projectModules[i].moduleId,
                   projectModules[i].id]);
