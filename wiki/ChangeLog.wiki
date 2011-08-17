@@ -1,6 +1,14 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.51 (110815.19)
+
+  * Added support for student images
+  * Added View Module button to View Project view
+  * Added Edit Module button to Edit Project view
+  * Added a status check page for external software monitoring application uptime
+  * Fix for bug #64
+
 *Version 0.5 (110620.18)
 
   * Added names of active and inactive study programmes of student to student search view and added tab to search from all students as default (also inactive)
