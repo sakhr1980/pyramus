@@ -6,7 +6,7 @@
   * Added support for student images
   * Added View Module button to View Project view
   * Added Edit Module button to Edit Project view
-  * Added a status check page for external software monitoring application uptime
+  * Added a status check page for external software monitoring application uptime (issue #43)
   * Fix for bug #64
 
 *Version 0.5 (110620.18)
