@@ -133,11 +133,9 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
       if (courseStudentList != null) {
         for (CourseStudent cs : courseStudentList) {
           CourseAssessment ca = gradingDAO.findCourseAssessmentByCourseStudent(cs); 
-          if (ca != null) {
-            if (ca.getGrade().getPassingGrade()) {
-              hasPassingGrade = true; 
-              break;
-            }
+          if (ca != null && ca.getGrade() != null && ca.getGrade().getPassingGrade()) {
+            hasPassingGrade = true; 
+            break;
           }
         }
       }
@@ -147,7 +145,7 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
           for (TransferCredit tc : transferCreditsByStudent) {
             if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
               if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
-                if (tc.getGrade().getPassingGrade()) {
+                if (tc.getGrade() != null && tc.getGrade().getPassingGrade()) {
                   hasPassingGrade = true;
                   break;
                 }

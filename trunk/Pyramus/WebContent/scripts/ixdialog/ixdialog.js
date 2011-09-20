@@ -107,7 +107,7 @@ IxDialog = Class.create({
     this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
     document.body.appendChild(this._glassPane);
     this._parentNode.appendChild(this._dialogNode);
-    this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
+    //this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
     this._originalScrollOffsets = document.viewport.getScrollOffsets();
     Event.observe(window, "scroll", this._windowScrollListener);
     this._glassPane.setStyle({
@@ -141,7 +141,7 @@ IxDialog = Class.create({
 	    this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
 	    document.body.appendChild(this._glassPane);
 	    this._parentNode.appendChild(this._dialogNode);
-	    this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
+	    //this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
 	    this._originalScrollOffsets = document.viewport.getScrollOffsets();
 	    Event.observe(window, "scroll", this._windowScrollListener);
 	    this._glassPane.setStyle({
@@ -164,8 +164,8 @@ IxDialog = Class.create({
     var viewportDims = document.viewport.getDimensions();
     var scrollOffs = document.viewport.getScrollOffsets();
     var left = (viewportDims.width / 2) - (dialogDims.width / 2);
-    var top = (viewportDims.height / 2) - (dialogDims.height / 2) + scrollOffs.top;
-
+    var top = Math.max((viewportDims.height / 2) - (dialogDims.height / 2) + scrollOffs.top, 0);
+    
     this._dialogNode.setStyle( {
       top :top + 'px',
       left :left + 'px'
@@ -404,12 +404,12 @@ IxDialog = Class.create({
     if (glassPane) {
       glassPane.remove();
     }
-  },
+  }/**,
   _onWindowScroll: function (event) {
     window.scroll(this._originalScrollOffsets.left, this._originalScrollOffsets.top);
     Event.stop(event);
     
-  }
+  }**/
 });
 
 function getDialog(id) {
