@@ -2110,6 +2110,9 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
       var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
       textInput._keyUpListener = this._onTextInputKeyUp.bindAsEventListener(this);
       Event.observe(textInput, "keyup", textInput._keyUpListener);
+      
+      textInput._pasteListener = this._onTextInputPaste.bindAsEventListener(this);
+      Event.observe(textInput, "paste", textInput._pasteListener);
     } 
   },
   detachContentHandler: function ($super, handlerInstance) {
@@ -2117,6 +2120,9 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
       var textInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectText');
       Event.stopObserving(textInput, "keyup", textInput._keyUpListener);
       textInput._keyUpListener = undefined;
+      
+      Event.stopObserving(textInput, "paste", textInput._pasteListener);
+      textInput._pasteListener = undefined;
     } 
 
     $super(handlerInstance);
@@ -2208,6 +2214,10 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
     var handlerInstance = textInput.parentNode;
     var hiddenInput = handlerInstance.down('input.ixTableCellEditorAutoCompleteSelectId');
     hiddenInput.value = -1;
+  },
+  _onTextInputPaste: function (event) {
+    Event.stop(event);
+    return false;
   }
 });
 
