@@ -107,12 +107,6 @@ IxDialog = Class.create({
     this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
     document.body.appendChild(this._glassPane);
     this._parentNode.appendChild(this._dialogNode);
-    //this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
-    this._originalScrollOffsets = document.viewport.getScrollOffsets();
-    Event.observe(window, "scroll", this._windowScrollListener);
-    this._glassPane.setStyle({
-      top: this._originalScrollOffsets.top + 'px'
-    });
     this._isOpen = true;
     this._recalculateSize();
   },
@@ -141,12 +135,6 @@ IxDialog = Class.create({
 	    this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
 	    document.body.appendChild(this._glassPane);
 	    this._parentNode.appendChild(this._dialogNode);
-	    //this._windowScrollListener = this._onWindowScroll.bindAsEventListener(this);
-	    this._originalScrollOffsets = document.viewport.getScrollOffsets();
-	    Event.observe(window, "scroll", this._windowScrollListener);
-	    this._glassPane.setStyle({
-	      top: this._originalScrollOffsets.top + 'px'
-	    });
 	    this._isHidden = false;
 	    this._recalculateSize();
     }
@@ -404,12 +392,7 @@ IxDialog = Class.create({
     if (glassPane) {
       glassPane.remove();
     }
-  }/**,
-  _onWindowScroll: function (event) {
-    window.scroll(this._originalScrollOffsets.left, this._originalScrollOffsets.top);
-    Event.stop(event);
-    
-  }**/
+  }
 });
 
 function getDialog(id) {
