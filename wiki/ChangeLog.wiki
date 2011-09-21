@@ -1,6 +1,13 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.52 (110920.20)
+
+  * Fixed a potential crash in View Project and View Student views containing course assessments without a grade
+  * Fixed mandatory validation of dropdown fields
+  * Fix for bug #51
+  * Fix for bug #61
+
 *Version 0.51 (110815.19)
 
   * Added support for student images
