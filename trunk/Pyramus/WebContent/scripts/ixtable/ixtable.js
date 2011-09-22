@@ -1357,9 +1357,9 @@ IxSelectTableEditorController = Class.create(IxTableEditorController, {
     var optionNode;
     
     if (!selected)
-      optionNode = new Element("option", {value: value || ''});
+      optionNode = new Element("option", {value: value === undefined ? '' : value});
     else
-      optionNode = new Element("option", {value: value || '', selected: "selected"});
+      optionNode = new Element("option", {value: value === undefined ? '' : value, selected: "selected"});
     
     if (text)
       optionNode.update(text);
