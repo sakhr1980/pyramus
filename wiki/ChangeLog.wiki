@@ -1,6 +1,10 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.521 (110922.21)
+
+  * Fixed a bug preventing creating and editing projects containing mandatory modules
+
 *Version 0.52 (110920.20)
 
   * Fixed a potential crash in View Project and View Student views containing course assessments without a grade
