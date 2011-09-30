@@ -51,6 +51,21 @@ public class SubjectsAutoCompleteBinaryRequestController implements BinaryReques
   }
   
   private void addSubject(StringBuilder resultBuilder, Subject subject, Locale locale) {
+    resultBuilder
+      .append("<li>")
+      .append("<span>")
+      .append(StringEscapeUtils.escapeHtml(getSubjectText(subject, locale)))
+      .append("</span>")
+      .append("<input type=\"hidden\" name=\"id\" value=\"")
+      .append(subject.getId())
+      .append("\"/>")
+      .append("</li>");
+  }
+  
+  private String getSubjectText(Subject subject, Locale locale) {
+    if (subject == null)
+      return null;
+    
     String subjectName = subject.getName();
     String subjectCode = subject.getCode();
     String subjectEducationType = subject.getEducationType() != null ? subject.getEducationType().getName() : null;
@@ -77,15 +92,8 @@ public class SubjectsAutoCompleteBinaryRequestController implements BinaryReques
         subjectName
       });
     }
-    
-    resultBuilder
-      .append("<li>")
-      .append("<span>")
-      .append(StringEscapeUtils.escapeHtml(localizedSubject))
-      .append("</span>")
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
-      .append(subject.getId())
-      .append("\"/>")
-      .append("</li>");
+
+    return localizedSubject;
   }
+  
 }
