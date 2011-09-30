@@ -104,7 +104,17 @@
             paramName: 'subject',
             options: [
               <c:forEach var="subject" items="${subjects}" varStatus="vs">
-                {text: "${fn:escapeXml(subject.name)}", value: ${subject.id}}
+                <c:set var="subjectName">${subject.name}</c:set>
+                
+                <c:if test="${not empty subject.code}">
+                  <c:set var="subjectName">${subject.code} - ${subjectName}</c:set>
+                </c:if>
+
+                <c:if test="${subject.educationType != null}">
+                  <c:set var="subjectName">${subjectName} (${subject.educationType.name})</c:set>
+                </c:if>
+                
+                {text: "${fn:escapeXml(subjectName)}", value: ${subject.id}}
                 <c:if test="${not vs.last}">,</c:if>
               </c:forEach>
             ],
