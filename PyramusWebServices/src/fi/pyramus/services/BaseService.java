@@ -8,6 +8,8 @@ import java.util.List;
 import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.pyramus.domainmodel.base.Address;
+import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
@@ -283,4 +285,13 @@ public class BaseService extends PyramusService {
     baseDAO.setSchoolVariable(school, key, value);
   }
 
+  public void updateAddress(Long addressId, Boolean defaultAddress, Long contactTypeId, 
+      String name, String streetAddress, String postalCode, String city, String country) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+
+    Address address = baseDAO.getAddressById(addressId);
+    ContactType contactType = baseDAO.getContactTypeById(contactTypeId);
+    
+    baseDAO.updateAddress(address, defaultAddress, contactType, name, streetAddress, postalCode, city, country);
+  }
 }
