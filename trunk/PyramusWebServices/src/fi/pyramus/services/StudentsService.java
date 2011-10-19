@@ -25,6 +25,7 @@ import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
 import fi.pyramus.persistence.usertypes.Sex;
 import fi.pyramus.services.entities.EntityFactoryVault;
+import fi.pyramus.services.entities.base.AddressEntity;
 import fi.pyramus.services.entities.students.AbstractStudentEntity;
 import fi.pyramus.services.entities.students.StudentEntity;
 
@@ -133,6 +134,12 @@ public class StudentsService extends PyramusService {
     return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listStudents());
   }
 
+  public AddressEntity[] listStudentsAddresses(Long studentId) {
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    Student student = studentDAO.getStudent(studentId);
+    return (AddressEntity[]) EntityFactoryVault.buildFromDomainObjects(student.getContactInfo().getAddresses());
+  }
+  
   public StudentEntity[] listStudentsByStudyProgramme(Long studyProgrammeId) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
@@ -230,6 +237,18 @@ public class StudentsService extends PyramusService {
     validateEntity(student);
   }
 
+  public void updateStudentMunicipality(Long studentId, Long municipalityId) {
+    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+
+    Student student = studentDAO.getStudent(studentId);
+    Municipality municipality = municipalityId == null ? null : baseDAO.getMunicipality(municipalityId);
+
+    studentDAO.updateStudentMunicipality(student, municipality);
+
+    validateEntity(student);
+  }
+  
   public void addStudentAddress(Long studentId, String addressType, String name, String streetAddress, String postalCode, String city, String country) {
     BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
