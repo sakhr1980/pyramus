@@ -421,6 +421,14 @@ public class StudentDAO extends PyramusDAO {
     s.saveOrUpdate(student);
   }
   
+  public void updateStudentMunicipality(Student student, Municipality municipality) {
+    Session s = getHibernateSession();
+
+    student.setMunicipality(municipality);
+
+    s.saveOrUpdate(student);
+  }
+  
   public SearchResult<AbstractStudent> searchAbstractStudentsBasic(int resultsPerPage, int page, String queryText) {
     return searchAbstractStudentsBasic(resultsPerPage, page, queryText, StudentFilter.SKIP_INACTIVE);
   }

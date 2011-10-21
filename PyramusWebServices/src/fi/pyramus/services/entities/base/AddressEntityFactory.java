@@ -10,7 +10,8 @@ public class AddressEntityFactory implements EntityFactory<AddressEntity> {
       return null;
     
     Address address = (Address) domainObject; 
-    return new AddressEntity(address.getId(), address.getCountry(), address.getCity(), address.getPostalCode(), address.getStreetAddress());
+    return new AddressEntity(address.getId(), address.getDefaultAddress(), address.getContactType().getId(), 
+        address.getCountry(), address.getCity(), address.getPostalCode(), address.getStreetAddress());
   }
 
 }
