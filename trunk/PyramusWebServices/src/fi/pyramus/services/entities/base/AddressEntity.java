@@ -3,8 +3,10 @@ package fi.pyramus.services.entities.base;
 
 public class AddressEntity {
 
-  public AddressEntity(Long id, String country, String city, String postalCode, String streetAddress) {
+  public AddressEntity(Long id, Boolean defaultAddress, Long contactTypeId, String country, String city, String postalCode, String streetAddress) {
     this.id = id;
+    this.setDefaultAddress(defaultAddress);
+    this.setContactTypeId(contactTypeId);
     this.country = country;
     this.city = city;
     this.postalCode = postalCode;
@@ -31,7 +33,17 @@ public class AddressEntity {
     return streetAddress;
   }
   
+  public Boolean getDefaultAddress() {
+    return defaultAddress;
+  }
+
+  public Long getContactTypeId() {
+    return contactTypeId;
+  }
+
   private Long id;
+  private Boolean defaultAddress;
+  private Long contactTypeId;
   private String country;
   private String city;
   private String postalCode;
