@@ -5,8 +5,8 @@ public class AddressEntity {
 
   public AddressEntity(Long id, Boolean defaultAddress, Long contactTypeId, String country, String city, String postalCode, String streetAddress) {
     this.id = id;
-    this.setDefaultAddress(defaultAddress);
-    this.setContactTypeId(contactTypeId);
+    this.defaultAddress = defaultAddress;
+    this.contactTypeId = contactTypeId;
     this.country = country;
     this.city = city;
     this.postalCode = postalCode;
