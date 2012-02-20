@@ -5,8 +5,20 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AcademicTermDAO;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.LanguageDAO;
+import fi.pyramus.dao.base.MunicipalityDAO;
+import fi.pyramus.dao.base.NationalityDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SchoolVariableDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactType;
@@ -34,83 +46,85 @@ import fi.pyramus.util.StringAttributeComparator;
 public class BaseService extends PyramusService {
 
   public NationalityEntity getNationalityByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getNationalityByCode(code));
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    return EntityFactoryVault.buildFromDomainObject(nationalityDAO.findByCode(code));
   }
 
   public NationalityEntity getNationalityById(Long nationalityId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getNationality(nationalityId));
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    return EntityFactoryVault.buildFromDomainObject(nationalityDAO.findById(nationalityId));
   }
 
   public NationalityEntity[] listNationalities() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<Nationality> nationalities = baseDAO.listNationalities();
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    List<Nationality> nationalities = nationalityDAO.listUnarchived();
     Collections.sort(nationalities, new StringAttributeComparator("getName"));
     return (NationalityEntity[]) EntityFactoryVault.buildFromDomainObjects(nationalities);
   }
 
   public LanguageEntity getLanguageByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getLanguageByCode(code));
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
+    return EntityFactoryVault.buildFromDomainObject(languageDAO.findByCode(code));
   }
 
   public LanguageEntity getLanguageById(Long languageId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getLanguage(languageId));
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
+    return EntityFactoryVault.buildFromDomainObject(languageDAO.findById(languageId));
   }
 
   public LanguageEntity[] listLanguages() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<Language> languages = baseDAO.listLanguages();
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
+    List<Language> languages = languageDAO.listUnarchived();
     Collections.sort(languages, new StringAttributeComparator("getName"));
     return (LanguageEntity[]) EntityFactoryVault.buildFromDomainObjects(languages);
   }
 
   public MunicipalityEntity getMunicipalityByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getMunicipalityByCode(code));
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    return EntityFactoryVault.buildFromDomainObject(municipalityDAO.findByCode(code));
   }
 
   public MunicipalityEntity getMunicipalityById(Long municipalityId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getMunicipality(municipalityId));
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    return EntityFactoryVault.buildFromDomainObject(municipalityDAO.findById(municipalityId));
   }
 
   public MunicipalityEntity[] listMunicipalities() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    List<Municipality> municipalities = municipalityDAO.listUnarchived();
     Collections.sort(municipalities, new StringAttributeComparator("getName"));
     return (MunicipalityEntity[]) EntityFactoryVault.buildFromDomainObjects(municipalities);
   }
 
   public EducationalTimeUnitEntity getEducationalTimeUnitById(Long educationalTimeUnitId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.findEducationalTimeUnitById(educationalTimeUnitId));
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    EducationalTimeUnit educationalTimeUnit = educationalTimeUnitDAO.findById(educationalTimeUnitId);
+    return EntityFactoryVault.buildFromDomainObject(educationalTimeUnit);
   }
 
   public EducationalTimeUnitEntity[] listEducationalTimeUnits() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
     return (EducationalTimeUnitEntity[]) EntityFactoryVault.buildFromDomainObjects(educationalTimeUnits);
   }
 
   public EducationalTimeUnitEntity createEducationalTimeUnit(Double baseUnits, String name) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationalTimeUnit educationalTimeUnit = baseDAO.createEducationalTimeUnit(baseUnits, name);
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    EducationalTimeUnit educationalTimeUnit = educationalTimeUnitDAO.create(baseUnits, name);
     validateEntity(educationalTimeUnit);
     return EntityFactoryVault.buildFromDomainObject(educationalTimeUnit);
   }
 
   public AcademicTermEntity getAcademicTermById(Long academicTermId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getAcademicTerm(academicTermId));
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
+    AcademicTerm academicTerm = academicTermDAO.findById(academicTermId);
+    return EntityFactoryVault.buildFromDomainObject(academicTerm);
   }
 
   public AcademicTermEntity[] listAcademicTerms() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<AcademicTerm> academicTerms = baseDAO.listAcademicTerms();
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
+    List<AcademicTerm> academicTerms = academicTermDAO.listUnarchived();
 
     Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
       public int compare(AcademicTerm o1, AcademicTerm o2) {
@@ -123,175 +137,183 @@ public class BaseService extends PyramusService {
 
   /*Dateformat: [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm] */
   public AcademicTermEntity createAcademicTerm(String name, Date startDate, Date endDate) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    AcademicTerm academicTerm = baseDAO.createAcademicTerm(name, startDate, endDate);
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
+    AcademicTerm academicTerm = academicTermDAO.create(name, startDate, endDate);
     validateEntity(academicTerm);
     return EntityFactoryVault.buildFromDomainObject(academicTerm);
   }
 
   public void updateAcademicTerm(Long academicTermId, String name, Date startDate, Date endDate) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    AcademicTerm academicTerm = baseDAO.getAcademicTerm(academicTermId);
-    baseDAO.updateAcademicTerm(academicTerm, name, startDate, endDate);
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
+    AcademicTerm academicTerm = academicTermDAO.findById(academicTermId);
+    academicTermDAO.update(academicTerm, name, startDate, endDate);
     validateEntity(academicTerm);
   }
 
   public EducationSubtypeEntity createEducationSubtype(Long educationTypeId, String name, String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
-    EducationSubtype educationSubtype = baseDAO.createEducationSubtype(educationType, name, code);
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+    EducationType educationType = educationTypeDAO.findById(educationTypeId);
+    EducationSubtype educationSubtype = educationSubtypeDAO.create(educationType, name, code);
     validateEntity(educationSubtype);
     return EntityFactoryVault.buildFromDomainObject(educationSubtype);
   }
 
   public void updateEducationSubtype(Long educationSubtypeId, String name, String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationSubtype educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
-    baseDAO.updateEducationSubtype(educationSubtype, name, code);
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+    EducationSubtype educationSubtype = educationSubtypeDAO.findById(educationSubtypeId);
+    educationSubtypeDAO.update(educationSubtype, name, code);
     validateEntity(educationSubtype);
   }
 
   public EducationTypeEntity createEducationType(String name, String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = baseDAO.createEducationType(name, code);
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationType educationType = educationTypeDAO.create(name, code);
     validateEntity(educationType);
     return EntityFactoryVault.buildFromDomainObject(educationType);
   }
 
   public void updateEducationType(Long educationTypeId, String name, String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
-    baseDAO.updateEducationType(educationType, name, code);
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationType educationType = educationTypeDAO.findById(educationTypeId);
+    educationTypeDAO.update(educationType, name, code);
     validateEntity(educationType);
   }
 
   public EducationSubtypeEntity getEducationSubtypeById(Long educationSubtypeId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getEducationSubtype(educationSubtypeId));
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+    return EntityFactoryVault.buildFromDomainObject(educationSubtypeDAO.findById(educationSubtypeId));
   }
 
   public EducationSubtypeEntity getEducationSubtypeByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getEducationSubtype(code));
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+    return EntityFactoryVault.buildFromDomainObject(educationSubtypeDAO.findByCode(code));
   }
 
   public EducationTypeEntity getEducationTypeById(Long educationTypeId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getEducationType(educationTypeId));
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    return EntityFactoryVault.buildFromDomainObject(educationTypeDAO.findById(educationTypeId));
   }
 
   public EducationTypeEntity getEducationTypeByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getEducationType(code));
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    return EntityFactoryVault.buildFromDomainObject(educationTypeDAO.findByCode(code));
   }
 
   public EducationTypeEntity[] listEducationTypes() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
     return (EducationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(educationTypes);
   }
 
   public EducationSubtypeEntity[] listEducationSubtypesByEducationType(Long educationTypeId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
-    List<EducationSubtype> educationSubtypes = baseDAO.listEducationSubtypes(educationType);
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+
+    EducationType educationType = educationTypeDAO.findById(educationTypeId);
+    List<EducationSubtype> educationSubtypes = educationSubtypeDAO.listByEducationType(educationType);
     Collections.sort(educationSubtypes, new StringAttributeComparator("getName"));
     return (EducationSubtypeEntity[]) EntityFactoryVault.buildFromDomainObjects(educationSubtypes);
   }
 
   public SubjectEntity getSubjectById(Long subjectId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getSubject(subjectId));
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    return EntityFactoryVault.buildFromDomainObject(subjectDAO.findById(subjectId));
   }
 
   public SubjectEntity getSubjectByCode(String code) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getSubjectByCode(code));
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    return EntityFactoryVault.buildFromDomainObject(subjectDAO.findByCode(code));
   }
 
   public SchoolEntity[] listSchools() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<School> schools = baseDAO.listSchools();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    List<School> schools = schoolDAO.listUnarchived();
     Collections.sort(schools, new StringAttributeComparator("getName"));
     return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(schools);
   }
 
   public SchoolEntity[] listSchoolsByVariable(String key, String value) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<School> schools = baseDAO.listSchoolsByVariable(key, value);
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    List<School> schools = schoolDAO.listByVariable(key, value);
     Collections.sort(schools, new StringAttributeComparator("getName"));
     return (SchoolEntity[]) EntityFactoryVault.buildFromDomainObjects(schools);
   }
 
   public StudyProgrammeEntity[] listStudyProgrammes() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return (StudyProgrammeEntity[]) EntityFactoryVault.buildFromDomainObjects(baseDAO.listStudyProgrammes());
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
+    return (StudyProgrammeEntity[]) EntityFactoryVault.buildFromDomainObjects(studyProgrammeDAO.listUnarchived());
   }
 
   public SubjectEntity[] listSubjects() {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<Subject> subjects = baseDAO.listSubjects();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    List<Subject> subjects = subjectDAO.listUnarchived();
     Collections.sort(subjects, new StringAttributeComparator("getName"));
     return (SubjectEntity[]) EntityFactoryVault.buildFromDomainObjects(subjects);
   }
 
   public SubjectEntity createSubject(String code, String name, Long educationTypeId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    EducationType educationType = educationTypeId != null ? baseDAO.getEducationType(educationTypeId) : null;
-    Subject subject = baseDAO.createSubject(code, name, educationType);
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationType educationType = educationTypeId != null ? educationTypeDAO.findById(educationTypeId) : null;
+    Subject subject = subjectDAO.create(code, name, educationType);
     validateEntity(subject);
     return EntityFactoryVault.buildFromDomainObject(subject);
   }
 
   public void updateSubject(Long subjectId, String code, String name, Long educationTypeId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    Subject subject = baseDAO.getSubject(subjectId);
-    EducationType educationType = educationTypeId != null ? baseDAO.getEducationType(educationTypeId) : null;
-    baseDAO.updateSubject(subject, code, name, educationType);
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    Subject subject = subjectDAO.findById(subjectId);
+    EducationType educationType = educationTypeId != null ? educationTypeDAO.findById(educationTypeId) : null;
+    subjectDAO.update(subject, code, name, educationType);
     validateEntity(subject);
   }
 
   public SchoolEntity createSchool(String code, String name) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
     // TODO: schoolField parameter
-    School school = baseDAO.createSchool(code, name, null);
+    School school = schoolDAO.create(code, name, null);
     validateEntity(school);
     return EntityFactoryVault.buildFromDomainObject(school);
   }
 
   public SchoolEntity getSchoolById(Long schoolId) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    return EntityFactoryVault.buildFromDomainObject(baseDAO.getSchool(schoolId));
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    return EntityFactoryVault.buildFromDomainObject(schoolDAO.findById(schoolId));
   }
 
   public void updateSchool(Long schoolId, String code, String name) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    School school = baseDAO.getSchool(schoolId);
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    School school = schoolDAO.findById(schoolId);
     // TODO: schoolField parameter
-    baseDAO.updateSchool(school, code, name, school.getField());
+    schoolDAO.update(school, code, name, school.getField());
     validateEntity(school);
   }
 
   public String getSchoolVariable(Long schoolId, String key) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    School school = baseDAO.getSchool(schoolId);
-    return baseDAO.getSchoolVariable(school, key);
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SchoolVariableDAO schoolVariableDAO = DAOFactory.getInstance().getSchoolVariableDAO();
+    School school = schoolDAO.findById(schoolId);
+    return schoolVariableDAO.findValueBySchoolAndKey(school, key);
   }
 
   public void setSchoolVariable(Long schoolId, String key, String value) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    School school = baseDAO.getSchool(schoolId);
-    baseDAO.setSchoolVariable(school, key, value);
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SchoolVariableDAO schoolVariableDAO = DAOFactory.getInstance().getSchoolVariableDAO();
+    School school = schoolDAO.findById(schoolId);
+    schoolVariableDAO.setVariable(school, key, value);
   }
 
   public void updateAddress(Long addressId, Boolean defaultAddress, Long contactTypeId, 
       String name, String streetAddress, String postalCode, String city, String country) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
 
-    Address address = baseDAO.getAddressById(addressId);
-    ContactType contactType = baseDAO.getContactTypeById(contactTypeId);
+    Address address = addressDAO.findById(addressId);
+    ContactType contactType = contactTypeDAO.findById(contactTypeId);
     
-    baseDAO.updateAddress(address, defaultAddress, contactType, name, streetAddress, postalCode, city, country);
+    addressDAO.update(address, defaultAddress, contactType, name, streetAddress, postalCode, city, country);
   }
 }
