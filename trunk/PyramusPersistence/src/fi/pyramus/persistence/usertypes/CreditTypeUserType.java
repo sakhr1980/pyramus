@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.IntegerType;
 import org.hibernate.usertype.UserType;
 
 public class CreditTypeUserType implements UserType {
@@ -35,7 +36,7 @@ public class CreditTypeUserType implements UserType {
     return false;
   }
 
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
     CreditType creditType = null;
     
     switch (rs.getInt(names[0])) {
@@ -56,9 +57,9 @@ public class CreditTypeUserType implements UserType {
     return creditType;
   }
 
-  public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
     if (value == null) {
-      st.setNull(index, Hibernate.INTEGER.sqlType());
+      st.setNull(index, IntegerType.INSTANCE.sqlType());
     } else {
       switch ((CreditType) value) {
         case CourseAssessment:
@@ -84,7 +85,7 @@ public class CreditTypeUserType implements UserType {
   }
 
   public int[] sqlTypes() {
-    return new int[]{Hibernate.INTEGER.sqlType()};
+    return new int[]{ IntegerType.INSTANCE.sqlType()};
   }
 
 }

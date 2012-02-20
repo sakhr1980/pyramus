@@ -29,11 +29,11 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
@@ -222,7 +222,7 @@ public class Project implements ArchivableEntity {
   }
 
   @Transient
-  @Field (index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field (analyze = Analyze.NO, store = Store.YES)
   public String getNameSortable() {
     return name;
   }
@@ -269,12 +269,12 @@ public class Project implements ArchivableEntity {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String name;
 
   @Basic (fetch = FetchType.LAZY)
   @Column (length=1073741824)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String description;
 
   @OneToOne (cascade = CascadeType.ALL, orphanRemoval = true)
@@ -306,7 +306,7 @@ public class Project implements ArchivableEntity {
 
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @ManyToMany (fetch = FetchType.LAZY)

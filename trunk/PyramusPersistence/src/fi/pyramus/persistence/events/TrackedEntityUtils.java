@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fi.pyramus.dao.ChangeLogDAO;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.changelog.TrackedEntityPropertyDAO;
 import fi.pyramus.domainmodel.changelog.TrackedEntityProperty;
 
 public class TrackedEntityUtils {
@@ -23,8 +24,8 @@ public class TrackedEntityUtils {
   private synchronized static Map<String, Set<String>> getTrackedEntityMap() {
     if (trackedEntities == null) {
       trackedEntities = new HashMap<String, Set<String>>();
-      ChangeLogDAO changeLogDAO = new ChangeLogDAO();
-      List<TrackedEntityProperty> trackedEntityProperties = changeLogDAO.listTrackedEntityProperties();
+      TrackedEntityPropertyDAO trackedEntityPropertyDAO = DAOFactory.getInstance().getTrackedEntityPropertyDAO();
+      List<TrackedEntityProperty> trackedEntityProperties = trackedEntityPropertyDAO.listAll();
       for (TrackedEntityProperty trackedEntityProperty : trackedEntityProperties) {
         String entity = trackedEntityProperty.getEntity();
         String property = trackedEntityProperty.getProperty();

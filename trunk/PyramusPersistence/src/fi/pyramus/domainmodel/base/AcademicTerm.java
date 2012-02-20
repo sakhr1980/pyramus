@@ -14,7 +14,6 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -84,7 +83,7 @@ public class AcademicTerm implements ArchivableEntity {
   
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @Version

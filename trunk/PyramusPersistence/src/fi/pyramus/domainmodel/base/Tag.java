@@ -13,7 +13,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -52,7 +51,7 @@ public class Tag {
   @NotNull
   @NotEmpty
   @Column (nullable = false, unique = true)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String text;
 
   @Version

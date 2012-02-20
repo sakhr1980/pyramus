@@ -15,7 +15,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -113,10 +112,10 @@ public class StudyProgramme implements ArchivableEntity {
   @NotNull
   @Column(nullable = false)
   @NotEmpty
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String name;
   
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String code;
 
   @ManyToOne

@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 
+import fi.pyramus.domainmodel.base.ArchivableEntity;
+
 @Entity
-public class CourseDescriptionCategory {
+public class CourseDescriptionCategory implements ArchivableEntity {
 
   /**
    * Returns the identifier of this entity.

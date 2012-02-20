@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
@@ -109,12 +108,10 @@ public class StudentContactLogEntryComment implements ArchivableEntity {
     return creatorName;
   }
 
-  @Override
   public Boolean getArchived() {
     return archived;
   }
 
-  @Override
   public void setArchived(Boolean archived) {
     this.archived = archived;
   }
@@ -155,7 +152,7 @@ public class StudentContactLogEntryComment implements ArchivableEntity {
   
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @Version

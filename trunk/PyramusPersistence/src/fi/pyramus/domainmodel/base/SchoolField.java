@@ -12,7 +12,6 @@ import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
@@ -24,7 +23,7 @@ import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
      impl=ArchivedEntityFilterFactory.class
   )
 )
-public class SchoolField {
+public class SchoolField implements ArchivableEntity {
 
   /**
    * Returns internal unique id.
@@ -78,11 +77,11 @@ public class SchoolField {
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String name;
   
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 }

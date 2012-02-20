@@ -15,10 +15,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Resolution;
 import org.hibernate.search.annotations.Store;
@@ -108,19 +108,19 @@ public class HelpPageContent {
   @Column (nullable=false, length=1073741824)
   @NotNull
   @NotEmpty  
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String content;
   
   @Column (nullable=false)
   @NotNull
   @Temporal (TemporalType.TIMESTAMP)
-  @Field (index=Index.UN_TOKENIZED, store=Store.YES)
+  @Field (analyze = Analyze.NO, store=Store.YES)
   @DateBridge (resolution=Resolution.MILLISECOND)
   private Date lastModified;
   
   @Column (nullable=false)
   @Temporal (TemporalType.TIMESTAMP)
-  @org.hibernate.search.annotations.Field (index=Index.UN_TOKENIZED, store=Store.YES)
+  @org.hibernate.search.annotations.Field (analyze = Analyze.NO, store=Store.YES)
   @DateBridge (resolution=Resolution.MILLISECOND)
   private Date created;
 

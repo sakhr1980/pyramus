@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -72,7 +71,7 @@ public class ContactURL {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field (index = Index.TOKENIZED, store = Store.NO) 
+  @Field (store = Store.NO) 
   private String url;
 
   @ManyToOne

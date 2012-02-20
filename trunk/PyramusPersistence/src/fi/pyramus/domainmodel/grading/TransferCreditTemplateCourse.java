@@ -15,7 +15,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -101,7 +100,7 @@ public class TransferCreditTemplateCourse {
   @NotNull
   @Column(nullable = false)
   @NotEmpty
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String courseName;
 
   private Integer courseNumber;

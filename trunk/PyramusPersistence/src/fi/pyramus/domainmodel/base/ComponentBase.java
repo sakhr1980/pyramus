@@ -18,7 +18,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -79,12 +78,12 @@ public abstract class ComponentBase implements ArchivableEntity {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String name;
 
   @Basic (fetch = FetchType.LAZY)
   @Column (length=1073741824)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String description;
   
   @OneToOne (cascade = CascadeType.ALL, orphanRemoval = true)
@@ -93,7 +92,7 @@ public abstract class ComponentBase implements ArchivableEntity {
 
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @Version

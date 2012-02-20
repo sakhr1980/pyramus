@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.IntegerType;
 import org.hibernate.usertype.UserType;
 
 public class VariableTypeUserType implements UserType {
@@ -35,7 +36,7 @@ public class VariableTypeUserType implements UserType {
     return false;
   }
 
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
     VariableType variableType = VariableType.getType(rs.getInt(names[0]));
     if (rs.wasNull()) {
       return null;
@@ -43,9 +44,9 @@ public class VariableTypeUserType implements UserType {
     return variableType;
   }
 
-  public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
     if (value == null) {
-      st.setNull(index, Hibernate.INTEGER.sqlType());
+      st.setNull(index, IntegerType.INSTANCE.sqlType());
     }
     else {
       st.setLong(index, ((VariableType) value).getValue());
@@ -62,7 +63,7 @@ public class VariableTypeUserType implements UserType {
   }
 
   public int[] sqlTypes() {
-    return new int[] { Hibernate.INTEGER.sqlType() };
+    return new int[] { IntegerType.INSTANCE.sqlType() };
   }
 
 }

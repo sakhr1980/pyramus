@@ -27,9 +27,9 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.HibernateException;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -149,7 +149,7 @@ public abstract class CourseBase implements ArchivableEntity {
    */
   @Basic (fetch = FetchType.LAZY)
   @Column (length=1073741824)
-  @Field (index=Index.TOKENIZED)
+  @Field
   // Annotations in getter for a reason; see the property comment
   public String getDescription() {
     return description;
@@ -305,7 +305,7 @@ public abstract class CourseBase implements ArchivableEntity {
   }
   
   @Transient
-  @Field (index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field (analyze = Analyze.NO, store = Store.YES)
   public String getNameSortable() {
     return name;
   }
@@ -336,7 +336,7 @@ public abstract class CourseBase implements ArchivableEntity {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String name;
   
   @ManyToOne 
@@ -368,7 +368,7 @@ public abstract class CourseBase implements ArchivableEntity {
   private Subject subject;
 
   @Column
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Integer courseNumber;
   
   @OneToOne (cascade = CascadeType.ALL, orphanRemoval = true)
@@ -382,7 +382,7 @@ public abstract class CourseBase implements ArchivableEntity {
 
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
   
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
