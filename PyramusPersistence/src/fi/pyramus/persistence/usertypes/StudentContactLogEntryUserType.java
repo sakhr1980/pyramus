@@ -5,8 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.IntegerType;
 import org.hibernate.usertype.UserType;
 
 /**
@@ -38,16 +39,16 @@ public class StudentContactLogEntryUserType implements UserType {
     return false;
   }
 
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
     StudentContactLogEntryType type = StudentContactLogEntryType.getType(rs.getInt(names[0])); 
     if (rs.wasNull())
       return null;
     return type;
   }
 
-  public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
     if (value == null) {
-      st.setNull(index, Hibernate.INTEGER.sqlType());
+      st.setNull(index, IntegerType.INSTANCE.sqlType());
     } else {
       st.setLong(index, ((StudentContactLogEntryType) value).getValue());
     }
@@ -63,7 +64,7 @@ public class StudentContactLogEntryUserType implements UserType {
   }
 
   public int[] sqlTypes() {
-    return new int[]{Hibernate.INTEGER.sqlType()};
+    return new int[]{ IntegerType.INSTANCE.sqlType()};
   }
 
 }

@@ -15,7 +15,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -144,7 +143,7 @@ public class EducationSubtype implements ArchivableEntity {
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String code;
 
   @ManyToOne

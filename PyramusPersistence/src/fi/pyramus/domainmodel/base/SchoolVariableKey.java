@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -92,7 +92,7 @@ public class SchoolVariableKey {
 
   @Column 
   @Type (type="VariableType")  
-  @Field (index = Index.UN_TOKENIZED, store = Store.NO)
+  @Field (analyze = Analyze.NO, store = Store.NO)
   private VariableType variableType;
 
   @Version

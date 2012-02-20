@@ -26,6 +26,7 @@ public class PyramusDAO {
     }
   }
   
+  @Deprecated
   protected Session getHibernateSession() {
     EntityManagerImpl entityManagerImpl = (EntityManagerImpl) getEntityManager().getDelegate();
     return entityManagerImpl.getSession();

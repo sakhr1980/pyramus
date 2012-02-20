@@ -9,8 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 
-import org.hibernate.search.annotations.DocumentId;
-
 @Entity
 public class StudentImage {
 

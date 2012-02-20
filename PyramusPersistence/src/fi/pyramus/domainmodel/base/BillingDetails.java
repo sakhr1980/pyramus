@@ -8,7 +8,6 @@ import javax.persistence.TableGenerator;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
@@ -138,47 +137,47 @@ public class BillingDetails {
   @DocumentId
   private Long id;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String personName;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String companyName;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String streetAddress1;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String streetAddress2;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String postalCode;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String city;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String region;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String country;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String phoneNumber;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   // TODO Email annotation?
   private String emailAddress;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String bic;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String iban;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String companyIdentifier;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String referenceNumber;
 
 }

@@ -26,11 +26,11 @@ import javax.persistence.Version;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
@@ -261,21 +261,21 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(analyze = Analyze.NO, store = Store.YES)
   public String getLastNameSortable() {
     Student student = getLatestStudent();
     return student != null ? student.getLastName() : "";
   }
 
   @Transient
-  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(analyze = Analyze.NO, store = Store.YES)
   public String getFirstNameSortable() {
     Student student = getLatestStudent();
     return student != null ? student.getFirstName() : "";
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -289,7 +289,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -303,7 +303,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -317,7 +317,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -331,7 +331,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -347,7 +347,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -363,7 +363,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -385,7 +385,7 @@ public class AbstractStudent {
    * @return <code>true</code> if this abstract student contains at least one inactive student, otherwise <code>false</code>
    */
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactive() {
     String result = Boolean.FALSE.toString();
     for (Student student : getStudents()) {
@@ -398,7 +398,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -414,7 +414,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -430,7 +430,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -444,7 +444,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -458,7 +458,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -471,7 +471,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -484,7 +484,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -497,7 +497,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -510,7 +510,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveFirstNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -524,7 +524,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveLastNames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -538,7 +538,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveNicknames() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -552,7 +552,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveEducations() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -566,7 +566,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveEmails() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -582,7 +582,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveStreetAddresses() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -598,7 +598,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActivePostalCodes() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -620,7 +620,7 @@ public class AbstractStudent {
    * @return <code>true</code> if this abstract student contains at least one active student, otherwise <code>false</code>
    */
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActive() {
     String result = Boolean.FALSE.toString();
     for (Student student : getStudents()) {
@@ -633,7 +633,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveCities() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -649,7 +649,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveCountries() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -665,7 +665,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActivePhones() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -679,7 +679,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveLodgings() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -693,7 +693,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveStudyProgrammeIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -706,7 +706,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveLanguageIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -719,7 +719,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveMunicipalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -732,7 +732,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveNationalityIds() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -745,7 +745,7 @@ public class AbstractStudent {
   }
 
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getActiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -766,7 +766,7 @@ public class AbstractStudent {
    * @return <code>true</code> if this abstract student contains at least one active student, otherwise <code>false</code>
    */
   @Transient
-  @Field(index = Index.TOKENIZED)
+  @Field
   public String getInactiveTags() {
     Set<String> results = new HashSet<String>();
     for (Student student : getStudents()) {
@@ -812,12 +812,12 @@ public class AbstractStudent {
   private Date birthday;
 
   @Column
-  @Field(index = Index.TOKENIZED, store = Store.NO)
+  @Field(store = Store.NO)
   private String socialSecurityNumber;
 
   @Column
   @Type(type = "Sex")
-  @Field(index = Index.TOKENIZED, store = Store.NO)
+  @Field(store = Store.NO)
   private Sex sex;
 
   @Basic(fetch = FetchType.LAZY)

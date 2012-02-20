@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Currency;
 
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.DoubleType;
 import org.hibernate.usertype.UserType;
 
 public class MonetaryAmountUserType implements UserType {
@@ -36,7 +37,7 @@ public class MonetaryAmountUserType implements UserType {
     return false;
   }
 
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
+  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException {
     Double valueInEuro = rs.getDouble(names[0]);
     
     if (rs.wasNull())
@@ -48,9 +49,9 @@ public class MonetaryAmountUserType implements UserType {
     return monetaryAmount.convertTo(currency);
   }
 
-  public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
     if (value == null || ((MonetaryAmount) value).getAmount() == null) {
-      st.setNull(index, Hibernate.DOUBLE.sqlType());
+      st.setNull(index, DoubleType.INSTANCE.sqlType());
     }
     else {
       MonetaryAmount anyCurrency = (MonetaryAmount) value;
@@ -69,7 +70,7 @@ public class MonetaryAmountUserType implements UserType {
   }
 
   public int[] sqlTypes() {
-    return new int[] { Hibernate.DOUBLE.sqlType() };
+    return new int[] { DoubleType.INSTANCE.sqlType() };
   }
 
 }

@@ -13,7 +13,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -107,18 +106,18 @@ public class Municipality implements ArchivableEntity {
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private String code;
   
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED, store = Store.YES)
+  @Field (store = Store.YES)
   private String name;
 
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @Version

@@ -1,10 +1,9 @@
 package fi.pyramus.domainmodel.users;
 
-import java.util.List;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,9 +30,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
@@ -73,13 +72,13 @@ public class User {
   }
   
   @Transient
-  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(analyze = Analyze.NO, store = Store.YES)
   public String getFirstNameSortable() {
     return getFirstName();
   }
 
   @Transient
-  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(analyze = Analyze.NO, store = Store.YES)
   public String getLastNameSortable() {
     return getLastName();
   }
@@ -216,13 +215,13 @@ public class User {
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field(index=Index.TOKENIZED)
+  @Field
   private String firstName;
   
   @NotNull
   @Column (nullable = false)
   @NotEmpty
-  @Field(index=Index.TOKENIZED)
+  @Field
   private String lastName;
 
   @NotNull
@@ -240,7 +239,7 @@ public class User {
   @NotNull
   @Column (nullable = false)
   @Type (type="Role")  
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   // TODO Some way to disallow Role.EVERYONE
   private Role role;
   

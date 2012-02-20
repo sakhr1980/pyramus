@@ -23,11 +23,11 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Resolution;
@@ -319,16 +319,16 @@ public class Course extends CourseBase implements ArchivableEntity {
   @IndexedEmbedded
   private CourseState state;
   
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String nameExtension;
   
   @Temporal (value=TemporalType.DATE)
-  @Field (index = Index.UN_TOKENIZED)
+  @Field (analyze = Analyze.NO)
   @DateBridge (resolution = Resolution.DAY)
   private Date beginDate;
   
   @Temporal (value=TemporalType.DATE)
-  @Field (index = Index.UN_TOKENIZED)
+  @Field (analyze = Analyze.NO)
   @DateBridge (resolution = Resolution.DAY)
   private Date endDate;
   

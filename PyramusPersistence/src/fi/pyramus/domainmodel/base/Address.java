@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
@@ -106,26 +105,26 @@ public class Address {
   
   @NotNull
   @Column(nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private Boolean defaultAddress = Boolean.FALSE;
 
   @ManyToOne
   @JoinColumn (name = "contactType")
   private ContactType contactType;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String name;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String streetAddress;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String postalCode;
 
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String city;
   
-  @Field (index = Index.TOKENIZED, store = Store.NO)
+  @Field (store = Store.NO)
   private String country;
 
   @ManyToOne

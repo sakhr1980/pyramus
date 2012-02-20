@@ -29,10 +29,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DateBridge;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Resolution;
@@ -157,7 +157,7 @@ public class HelpItem {
   }
   
   @Transient
-  @Field (store = Store.YES, index = Index.UN_TOKENIZED)
+  @Field (analyze = Analyze.NO, store = Store.YES)
   public String getRecursiveIndex() {
     String result = StringUtils.leftPad(String.valueOf(getIndexColumn() + 1), 3, '0'); 
     
@@ -190,20 +190,20 @@ public class HelpItem {
   private HelpFolder parent;
   
   @Column (nullable=false)
-  @Field (store = Store.YES, index = Index.UN_TOKENIZED)
+  @Field (analyze = Analyze.NO, store = Store.YES)
   @NotNull
   private Integer indexColumn;
   
   @Column (nullable=false)
   @NotNull
   @Temporal (TemporalType.TIMESTAMP)
-  @Field (index=Index.UN_TOKENIZED, store=Store.YES)
+  @Field (analyze = Analyze.NO, store=Store.YES)
   @DateBridge (resolution=Resolution.MILLISECOND)
   private Date lastModified;
   
   @Column (nullable=false)
   @Temporal (TemporalType.TIMESTAMP)
-  @org.hibernate.search.annotations.Field (index=Index.UN_TOKENIZED, store=Store.YES)
+  @org.hibernate.search.annotations.Field (analyze = Analyze.NO, store=Store.YES)
   @DateBridge (resolution=Resolution.MILLISECOND)
   private Date created;
 

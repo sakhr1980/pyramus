@@ -28,11 +28,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
@@ -79,7 +79,7 @@ public class School implements ArchivableEntity {
   }
 
   @Transient
-  @Field(index = Index.UN_TOKENIZED, store = Store.YES)
+  @Field(analyze = Analyze.NO, store = Store.YES)
   public String getNameSortable() {
     return name;
   }
@@ -185,13 +185,13 @@ public class School implements ArchivableEntity {
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String code;
   
   @NotNull
   @NotEmpty
   @Column (nullable = false)
-  @Field (index=Index.TOKENIZED)
+  @Field
   private String name;
   
   @OneToOne (fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -205,7 +205,7 @@ public class School implements ArchivableEntity {
 
   @NotNull
   @Column (nullable = false)
-  @Field (index = Index.TOKENIZED)
+  @Field
   private Boolean archived = Boolean.FALSE;
 
   @ManyToMany (fetch = FetchType.LAZY)
