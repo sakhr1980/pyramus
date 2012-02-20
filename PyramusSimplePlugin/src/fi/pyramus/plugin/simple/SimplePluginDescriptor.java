@@ -11,22 +11,18 @@ import fi.pyramus.plugin.simple.views.LoggedUserInfoViewController;
 
 public class SimplePluginDescriptor implements PluginDescriptor {
   
-  @Override
   public Map<String, Class<?>> getBinaryRequestControllers() {
     return null;
   }
   
-  @Override
   public Map<String, Class<?>> getJSONRequestControllers() {
     return null;
   }
   
-  @Override
   public String getName() {
     return "simple";
   }
   
-  @Override
   public Map<String, Class<?>> getPageHookControllers() {
     Map<String, Class<?>> hookControllers = new HashMap<String, Class<?>>();
     
@@ -36,7 +32,6 @@ public class SimplePluginDescriptor implements PluginDescriptor {
     return hookControllers;
   }
   
-  @Override
   public Map<String, Class<?>> getPageRequestControllers() {
     Map<String, Class<?>> viewControllers = new HashMap<String, Class<?>>();
     
@@ -53,7 +48,6 @@ public class SimplePluginDescriptor implements PluginDescriptor {
     return authenticationProviders;
   }
   
-  @Override
   public String getMessagesBundlePath() {
     return "fi.pyramus.plugin.simple.messages";
   }
