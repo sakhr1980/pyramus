@@ -2,20 +2,20 @@ package fi.pyramus.views.settings;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.base.SchoolFieldDAO;
 
 /**
  * The controller responsible of the School Field Management view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveEducationTypesJSONRequestController
  */
-public class ManageSchoolFieldsViewController implements PyramusViewController, Breadcrumbable {
+public class ManageSchoolFieldsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,8 +23,8 @@ public class ManageSchoolFieldsViewController implements PyramusViewController, 
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    pageRequestContext.getRequest().setAttribute("schoolFields", baseDAO.listSchoolFields());
+    SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
+    pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived());
     pageRequestContext.setIncludeJSP("/templates/settings/manageschoolfields.jsp");
   }
 

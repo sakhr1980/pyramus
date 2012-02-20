@@ -6,13 +6,14 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusFormViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.system.SettingDAO;
+import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
-import fi.pyramus.views.PyramusFormViewController;
 
 /**
  * The controller responsible of the system settings view of the application.
@@ -21,12 +22,13 @@ public class SystemSettingsViewController extends PyramusFormViewController {
 
   @Override
   public void processForm(PageRequestContext requestContext) {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    SettingDAO settingDAO = DAOFactory.getInstance().getSettingDAO();
+    SettingKeyDAO settingKeyDAO = DAOFactory.getInstance().getSettingKeyDAO();
     
     Map<String, String> settings = new HashMap<String, String>();
-    List<SettingKey> settingKeys = systemDAO.listSettingKeys();
+    List<SettingKey> settingKeys = settingKeyDAO.listAll();
     for (SettingKey settingKey : settingKeys) {
-      Setting setting = systemDAO.findSettingByKey(settingKey);
+      Setting setting = settingDAO.findByKey(settingKey);
       if (setting != null)
         settings.put(settingKey.getName(), setting.getValue());
     }
@@ -39,7 +41,8 @@ public class SystemSettingsViewController extends PyramusFormViewController {
   
   @Override
   public void processSend(PageRequestContext requestContext) {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    SettingDAO settingDAO = DAOFactory.getInstance().getSettingDAO();
+    SettingKeyDAO settingKeyDAO = DAOFactory.getInstance().getSettingKeyDAO();
     
     Long rowCount = requestContext.getLong("settingsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -49,16 +52,16 @@ public class SystemSettingsViewController extends PyramusFormViewController {
       String value = requestContext.getString(colPrefix + ".value");
       boolean hasValue = !StringUtils.isBlank(value);
       
-      SettingKey settingKey = systemDAO.findSettingKeyByName(key);
-      Setting setting = systemDAO.findSettingByKey(settingKey);
+      SettingKey settingKey = settingKeyDAO.findByName(key);
+      Setting setting = settingDAO.findByKey(settingKey);
       if (setting != null) {
         if (!hasValue)
-          systemDAO.deleteSetting(setting);
+          settingDAO.delete(setting);
         else
-          systemDAO.updateSetting(setting, settingKey, value);
+          settingDAO.update(setting, settingKey, value);
       } else {
         if (hasValue)
-          systemDAO.createSetting(settingKey, value);
+          settingDAO.create(settingKey, value);
       }
     }
     

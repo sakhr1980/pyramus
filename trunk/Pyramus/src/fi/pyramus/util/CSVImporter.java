@@ -10,9 +10,8 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.util.dataimport.DataImportContext;
 import fi.pyramus.util.dataimport.DataImportStrategyProvider;
@@ -38,7 +37,7 @@ public class CSVImporter {
         while ((nextLine = reader.readNext()) != null) {
           
           if (firstLine.length != nextLine.length) {
-            throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.VALIDATION_FAILURE, 
+            throw new SmvcRuntimeException(PyramusStatusCode.VALIDATION_FAILURE, 
                 Messages.getInstance().getText(locale, "system.importcsv.invalidNumberOfArguments", new Object[] { rowNum }));
           }
           
@@ -72,7 +71,7 @@ public class CSVImporter {
         }
       }
     } catch (Exception e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
 
     return list;

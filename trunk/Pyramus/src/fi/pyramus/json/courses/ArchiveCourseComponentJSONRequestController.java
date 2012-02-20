@@ -1,19 +1,19 @@
 package fi.pyramus.json.courses;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.CourseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.courses.CourseComponent;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.courses.CourseComponentDAO;
+import fi.pyramus.domainmodel.courses.CourseComponent;
 
-public class ArchiveCourseComponentJSONRequestController implements JSONRequestController {
+public class ArchiveCourseComponentJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
     Long componentId = requestContext.getLong("componentId");    
-    CourseComponent component = courseDAO.getCourseComponent(componentId);
-    courseDAO.archiveCourseComponent(component);
+    CourseComponent component = componentDAO.findById(componentId);
+    componentDAO.archive(component);
   }
 
   public UserRole[] getAllowedRoles() {

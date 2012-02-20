@@ -8,19 +8,19 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.HelpDAO;
+import fi.pyramus.dao.help.HelpPageDAO;
 import fi.pyramus.domainmodel.help.HelpFolder;
 import fi.pyramus.domainmodel.help.HelpPage;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
-public class SearchHelpJSONRequestController implements JSONRequestController {
+public class SearchHelpJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    HelpDAO helpDAO = DAOFactory.getInstance().getHelpDAO();
+    HelpPageDAO helpPageDAO = DAOFactory.getInstance().getHelpPageDAO();
     
     SearchResult<HelpPage> searchResult;
 
@@ -28,7 +28,7 @@ public class SearchHelpJSONRequestController implements JSONRequestController {
     if (!StringUtils.isBlank(text))
       text = QueryParser.escape(StringUtils.trim(text)) + '*';
     
-    searchResult = helpDAO.searchHelpPagesBasic(MAX_HELP_PAGES, 0, text);
+    searchResult = helpPageDAO.searchHelpPagesBasic(MAX_HELP_PAGES, 0, text);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
 

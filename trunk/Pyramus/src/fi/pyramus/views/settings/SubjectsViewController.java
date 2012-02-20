@@ -4,23 +4,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Subjects view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveSubjectsJSONRequestController
  */
-public class SubjectsViewController implements PyramusViewController, Breadcrumbable {
+public class SubjectsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -28,12 +29,13 @@ public class SubjectsViewController implements PyramusViewController, Breadcrumb
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
 
-    List<Subject> subjects = baseDAO.listSubjects();
+    List<Subject> subjects = subjectDAO.listUnarchived();
     Collections.sort(subjects, new StringAttributeComparator("getName"));
 
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("subjects", subjects);

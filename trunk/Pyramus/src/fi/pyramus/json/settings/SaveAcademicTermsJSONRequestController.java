@@ -2,17 +2,17 @@ package fi.pyramus.json.settings;
 
 import java.util.Date;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AcademicTermDAO;
+import fi.pyramus.domainmodel.base.AcademicTerm;
 
-public class SaveAcademicTermsJSONRequestController implements JSONRequestController {
+public class SaveAcademicTermsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
 
     int rowCount = jsonRequestContext.getInteger("termsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -23,11 +23,11 @@ public class SaveAcademicTermsJSONRequestController implements JSONRequestContro
       Date endDate = jsonRequestContext.getDate(colPrefix + ".endDate");
       boolean modified = jsonRequestContext.getInteger(colPrefix + ".modified") == 1; 
       if (termId == -1) {
-        baseDAO.createAcademicTerm(name, startDate, endDate); 
+        academicTermDAO.create(name, startDate, endDate); 
       }
       else if (modified) {
-        AcademicTerm term = baseDAO.getAcademicTerm(termId);
-        baseDAO.updateAcademicTerm(term, name, startDate, endDate);
+        AcademicTerm term = academicTermDAO.findById(termId);
+        academicTermDAO.update(term, name, startDate, endDate);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

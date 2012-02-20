@@ -7,13 +7,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
-import fi.pyramus.JSONRequestContext;
+
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.domainmodel.projects.StudentProject;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -21,10 +22,10 @@ import fi.pyramus.persistence.search.SearchResult;
  * 
  * @see fi.pyramus.views.modules.SearchProjectsViewController
  */
-public class SearchStudentProjectsJSONRequestController implements JSONRequestController {
+public class SearchStudentProjectsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    StudentProjectDAO studentProjectDAO = DAOFactory.getInstance().getStudentProjectDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(requestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -43,7 +44,7 @@ public class SearchStudentProjectsJSONRequestController implements JSONRequestCo
 
     // Search via the DAO object
 
-    SearchResult<StudentProject> searchResult = projectDAO.searchStudentProjectsBasic(resultsPerPage, page, projectText, studentText);
+    SearchResult<StudentProject> searchResult = studentProjectDAO.searchStudentProjectsBasic(resultsPerPage, page, projectText, studentText);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<StudentProject> studentProjects = searchResult.getResults();

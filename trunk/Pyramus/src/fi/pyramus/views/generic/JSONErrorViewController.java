@@ -1,10 +1,10 @@
 package fi.pyramus.views.generic;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class JSONErrorViewController implements PyramusViewController {
+public class JSONErrorViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
     requestContext.getRequest().setAttribute("errorCode", requestContext.getRequest().getParameter("errorCode"));

@@ -8,24 +8,30 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
+import fi.pyramus.dao.students.StudentGroupStudentDAO;
+import fi.pyramus.dao.students.StudentGroupUserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
-public class CreateStudentGroupJSONRequestController implements JSONRequestController {
+public class CreateStudentGroupJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();    
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
+    StudentGroupStudentDAO studentGroupStudentDAO = DAOFactory.getInstance().getStudentGroupStudentDAO();
+    StudentGroupUserDAO studentGroupUserDAO = DAOFactory.getInstance().getStudentGroupUserDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
 
     // StudentGroup basic information
 
@@ -39,21 +45,21 @@ public class CreateStudentGroupJSONRequestController implements JSONRequestContr
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
 
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
 
-    StudentGroup studentGroup = studentDAO.createStudentGroup(name, description, beginDate, loggedUser);
+    StudentGroup studentGroup = studentGroupDAO.create(name, description, beginDate, loggedUser);
 
     // Tags
     
-    studentDAO.setStudentGroupTags(studentGroup, tagEntities);
+    studentGroupDAO.setStudentGroupTags(studentGroup, tagEntities);
     
     // Personnel
 
@@ -61,9 +67,9 @@ public class CreateStudentGroupJSONRequestController implements JSONRequestContr
     for (int i = 0; i < rowCount; i++) {
       String colPrefix = "usersTable." + i;
       Long userId = requestContext.getLong(colPrefix + ".userId");
-      User user = userDAO.getUser(userId);
+      User user = userDAO.findById(userId);
       
-      studentDAO.addStudentGroupUser(studentGroup, user, loggedUser);
+      studentGroupUserDAO.create(studentGroup, user, loggedUser);
     }
 
     // Students
@@ -73,9 +79,9 @@ public class CreateStudentGroupJSONRequestController implements JSONRequestContr
       String colPrefix = "studentsTable." + i;
 
       Long studentId = requestContext.getLong(colPrefix + ".studentId");
-      Student student = studentDAO.getStudent(studentId);
+      Student student = studentDAO.findById(studentId);
       
-      studentDAO.addStudentGroupStudent(studentGroup, student, loggedUser);
+      studentGroupStudentDAO.create(studentGroup, student, loggedUser);
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/students/editstudentgroup.page?studentgroup=" + studentGroup.getId();

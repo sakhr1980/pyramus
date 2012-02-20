@@ -7,15 +7,15 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
 
-public class UsersAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class UsersAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
@@ -40,7 +40,7 @@ public class UsersAutoCompleteBinaryRequestController implements BinaryRequestCo
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

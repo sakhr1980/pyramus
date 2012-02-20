@@ -2,16 +2,16 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.grading.GradingScaleDAO;
 
 /**
  * The controller responsible of archiving a grading scale. 
  */
-public class ArchiveGradingScaleJSONRequestController implements JSONRequestController {
+public class ArchiveGradingScaleJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to create a new grading scale.
@@ -19,9 +19,9 @@ public class ArchiveGradingScaleJSONRequestController implements JSONRequestCont
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
     Long gradingScaleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("gradingScaleId"));
-    gradingDAO.archiveGradingScale(gradingDAO.findGradingScaleById(gradingScaleId));
+    gradingScaleDAO.archive(gradingScaleDAO.findById(gradingScaleId));
   }
 
   public UserRole[] getAllowedRoles() {

@@ -19,9 +19,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fi.pyramus.breadcrumbs.BreadcrumbHandler;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.persistence.HibernateUtils;
 import fi.pyramus.persistence.usertypes.Role;
 import fi.pyramus.views.PyramusViewController;
@@ -219,7 +219,7 @@ public class ServletTest extends DatabaseDependingTest {
     }
   }
   
-  public static class JSONDelegationTestController implements JSONRequestController {
+  public static class JSONDelegationTestController extends JSONRequestController {
     public void process(JSONRequestContext jsonRequestContext) {
       ok = true;
     }

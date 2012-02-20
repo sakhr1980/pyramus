@@ -6,22 +6,30 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SchoolFieldDAO;
+import fi.pyramus.dao.base.SchoolVariableDAO;
+import fi.pyramus.dao.base.TagDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.SchoolField;
 import fi.pyramus.domainmodel.base.Tag;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * The controller responsible of creating a new school. 
  * 
  * @see fi.pyramus.views.settings.CreateSchoolViewController
  */
-public class CreateSchoolJSONRequestController implements JSONRequestController {
+public class CreateSchoolJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to create a new grading scale.
@@ -29,7 +37,14 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
    * @param requestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
+    SchoolVariableDAO schoolVariableDAO = DAOFactory.getInstance().getSchoolVariableDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
 
     String schoolCode = requestContext.getString("code");
     String schoolName = requestContext.getString("name");
@@ -38,26 +53,26 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
     Long schoolFieldId = requestContext.getLong("schoolFieldId");
     SchoolField schoolField = null;
     if ((schoolFieldId != null) && (schoolFieldId.intValue() >= 0))
-      schoolField = baseDAO.findSchoolFieldById(schoolFieldId);
+      schoolField = schoolFieldDAO.findById(schoolFieldId);
 
     Set<Tag> tagEntities = new HashSet<Tag>();
     if (!StringUtils.isBlank(tagsText)) {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    School school = baseDAO.createSchool(schoolCode, schoolName, schoolField);
+    School school = schoolDAO.create(schoolCode, schoolName, schoolField);
     
     // Tags
     
-    baseDAO.setSchoolTags(school, tagEntities);
+    schoolDAO.updateTags(school, tagEntities);
 
     // Addresses
     
@@ -65,7 +80,7 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
     for (int i = 0; i < addressCount; i++) {
       String colPrefix = "addressTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String name = requestContext.getString(colPrefix + ".name");
       String street = requestContext.getString(colPrefix + ".street");
       String postal = requestContext.getString(colPrefix + ".postal");
@@ -73,7 +88,7 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
       String country = requestContext.getString(colPrefix + ".country");
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (hasAddress) {
-        baseDAO.createAddress(school.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
+        addressDAO.create(school.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
       }
     }
     
@@ -83,10 +98,10 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
     for (int i = 0; i < emailCount; i++) {
       String colPrefix = "emailTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String email = requestContext.getString(colPrefix + ".email");
       if (email != null) {
-        baseDAO.createEmail(school.getContactInfo(), contactType, defaultAddress, email);
+        emailDAO.create(school.getContactInfo(), contactType, defaultAddress, email);
       }
     }
     
@@ -96,10 +111,10 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
     for (int i = 0; i < phoneCount; i++) {
       String colPrefix = "phoneTable." + i;
       Boolean defaultNumber = requestContext.getBoolean(colPrefix + ".defaultNumber");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String number = requestContext.getString(colPrefix + ".phone");
       if (number != null) {
-        baseDAO.createPhoneNumber(school.getContactInfo(), contactType, defaultNumber, number);
+        phoneNumberDAO.create(school.getContactInfo(), contactType, defaultNumber, number);
       }
     }
 
@@ -110,7 +125,7 @@ public class CreateSchoolJSONRequestController implements JSONRequestController 
       String colPrefix = "variablesTable." + i;
       String key = requestContext.getRequest().getParameter(colPrefix + ".key");
       String value = requestContext.getRequest().getParameter(colPrefix + ".value");
-      baseDAO.setSchoolVariable(school, key, value);
+      schoolVariableDAO.setVariable(school, key, value);
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/settings/editschool.page?school=" + school.getId();

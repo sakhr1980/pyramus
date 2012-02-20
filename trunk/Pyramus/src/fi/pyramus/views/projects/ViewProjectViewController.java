@@ -9,16 +9,21 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.ProjectDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.ProjectAssessmentDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
+import fi.pyramus.dao.projects.StudentProjectDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
@@ -31,12 +36,11 @@ import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Project view of the application.
  */
-public class ViewProjectViewController implements PyramusViewController, Breadcrumbable {
+public class ViewProjectViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -45,13 +49,13 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
    */
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    StudentProjectDAO studentProjectDAO = DAOFactory.getInstance().getStudentProjectDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
     Long projectId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.findProjectById(projectId);
+    Project project = projectDAO.findById(projectId);
 
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = project.getTags().iterator();
@@ -62,10 +66,10 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
         tagsBuilder.append(' ');
     }
     
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
-    List<StudentProject> studentProjectsByProject = projectDAO.listStudentProjectsByProject(project);
+    List<StudentProject> studentProjectsByProject = studentProjectDAO.listByProject(project);
     List<StudentProjectBean> studentProjectBeans = new ArrayList<StudentProjectBean>();
     Collections.sort(studentProjectsByProject, new Comparator<StudentProject>() {
       @Override
@@ -77,14 +81,14 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
     });
     
     for (StudentProject sp : studentProjectsByProject) {
-      studentProjectBeans.add(beanify(sp, gradingDAO, courseDAO));
+      studentProjectBeans.add(beanify(sp, courseDAO));
     }
     
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("project", project);
     pageRequestContext.getRequest().setAttribute("studentProjects", studentProjectBeans);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
-    pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
+    pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());
 
     pageRequestContext.setIncludeJSP("/templates/projects/viewproject.jsp");
   }
@@ -110,12 +114,16 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
     return Messages.getInstance().getText(locale, "projects.viewProject.breadcrumb");
   }
 
-  private StudentProjectBean beanify(StudentProject studentProject, GradingDAO gradingDAO, CourseDAO courseDAO) {
+  private StudentProjectBean beanify(StudentProject studentProject, CourseDAO courseDAO) {
     int mandatoryModuleCount = 0;
     int optionalModuleCount = 0;
     int passedMandatoryModuleCount = 0;
     int passedOptionalModuleCount = 0;
-
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
+    
     /**
      * Go through project modules to
      *  a) count mandatory/optional modules
@@ -125,14 +133,14 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
     
     for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
       boolean hasPassingGrade = false;
-      List<CourseStudent> courseStudentList = courseDAO.listCourseStudentsByModuleAndStudent(studentProjectModule.getModule(), studentProject.getStudent());
+      List<CourseStudent> courseStudentList = courseStudentDAO.listByModuleAndStudent(studentProjectModule.getModule(), studentProject.getStudent());
 
-      List<TransferCredit> transferCreditsByStudent = gradingDAO.listTransferCreditsByStudent(studentProject.getStudent());
+      List<TransferCredit> transferCreditsByStudent = transferCreditDAO.listByStudent(studentProject.getStudent());
       
       // Find out if there is a course that has passing grade for the module
       if (courseStudentList != null) {
         for (CourseStudent cs : courseStudentList) {
-          CourseAssessment ca = gradingDAO.findCourseAssessmentByCourseStudent(cs); 
+          CourseAssessment ca = courseAssessmentDAO.findByCourseStudent(cs); 
           if (ca != null && ca.getGrade() != null && ca.getGrade().getPassingGrade()) {
             hasPassingGrade = true; 
             break;
@@ -166,7 +174,7 @@ public class ViewProjectViewController implements PyramusViewController, Breadcr
       }
     }
     
-    List<ProjectAssessment> projectAssessments = gradingDAO.listProjectAssessmentByProject(studentProject);
+    List<ProjectAssessment> projectAssessments = projectAssessmentDAO.listByProject(studentProject);
     
     Collections.sort(projectAssessments, new Comparator<ProjectAssessment>() {
       @Override

@@ -9,21 +9,22 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
 /**
  * JSON request controller to view student info.
  * 
  * @author antti.viljakainen
  */
-public class GetStudentStudyProgrammesJSONRequestController implements JSONRequestController {
+public class GetStudentStudyProgrammesJSONRequestController extends JSONRequestController {
   
   /**
    * Processes JSON request
@@ -41,10 +42,11 @@ public class GetStudentStudyProgrammesJSONRequestController implements JSONReque
    */
   public void process(JSONRequestContext requestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
 
     Long abstractStudentId = NumberUtils.createLong(requestContext.getRequest().getParameter("abstractStudentId"));
-    AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
-    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    AbstractStudent abstractStudent = abstractStudentDAO.findById(abstractStudentId);
+    List<Student> students = studentDAO.listByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {

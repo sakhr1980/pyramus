@@ -2,18 +2,18 @@ package fi.pyramus.views.settings;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 
 /**
  * The controller responsible of the List Grading Scales view of the application. 
  */
-public class ManageTransferCreditTemplatesViewController implements PyramusViewController, Breadcrumbable {
+public class ManageTransferCreditTemplatesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,8 +23,9 @@ public class ManageTransferCreditTemplatesViewController implements PyramusViewC
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    pageRequestContext.getRequest().setAttribute("transferCreditTemplates", gradingDAO.listTransferCreditTemplates());
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
+    
+    pageRequestContext.getRequest().setAttribute("transferCreditTemplates", transferCreditTemplateDAO.listAll());
     pageRequestContext.setIncludeJSP("/templates/settings/managetransfercredittemplates.jsp");
   }
 

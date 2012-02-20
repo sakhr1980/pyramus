@@ -1,26 +1,26 @@
 package fi.pyramus.json.drafts;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.DraftDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.drafts.DraftDAO;
 import fi.pyramus.domainmodel.drafts.FormDraft;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class DeleteFormDraftJSONRequestController implements JSONRequestController {
+public class DeleteFormDraftJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     DraftDAO draftDAO = DAOFactory.getInstance().getDraftDAO();
 
     String url = requestContext.getRequest().getHeader("Referer");
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
     
-    FormDraft formDraft = draftDAO.getFormDraftByURL(loggedUser, url);
+    FormDraft formDraft = draftDAO.findByUserAndURL(loggedUser, url);
     if (formDraft != null) {
-      draftDAO.deleteFormDraft(formDraft);
+      draftDAO.delete(formDraft);
     } 
   }
 

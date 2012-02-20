@@ -6,22 +6,25 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.AccessDeniedException;
+import fi.internetix.smvc.LoginRequiredException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.internetix.smvc.controllers.BinaryRequestController;
+import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.UserRole;
-import fi.pyramus.binary.BinaryRequestController;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ReportDAO;
+import fi.pyramus.dao.base.MagicKeyDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
 import fi.pyramus.domainmodel.reports.Report;
 
 public class DownloadReportBinaryRequestController implements BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
-    
+    MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+
     Long reportId = binaryRequestContext.getLong("reportId");
     String formatParameter = binaryRequestContext.getString("format");
     ReportOutputFormat outputFormat = Enum.valueOf(ReportOutputFormat.class, formatParameter);
@@ -33,9 +36,9 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
   
-    MagicKey magicKey = baseDAO.createMagicKey(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
     
-    Report report = reportDAO.findReportById(reportId);
+    Report report = reportDAO.findById(reportId);
     
     String reportName = report.getName().toLowerCase().replaceAll("[^a-z0-9\\.]", "_");
     String reportsContextPath = System.getProperty("reports.contextPath");
@@ -60,7 +63,7 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
             urlBuilder.append('&').append(parameterName).append('=').append(URLEncoder.encode(value, "ISO-8859-1"));
           }
           catch (UnsupportedEncodingException e) {
-            throw new PyramusRuntimeException(e);
+            throw new SmvcRuntimeException(e);
           }
         }
       }
@@ -101,5 +104,11 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
     reservedParameters.add("format");
     reservedParameters.add("__format");
     reservedParameters.add("__report");
+  }
+
+  @Override
+  public void authorize(RequestContext requestContext) throws LoginRequiredException, AccessDeniedException {
+    // TODO Auto-generated method stub
+    throw new RuntimeException("Not implemented");
   }
 }

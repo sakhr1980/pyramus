@@ -5,26 +5,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.ContactURLTypeDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.ContactURLType;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Create User view of the application.
  * 
  * @see fi.pyramus.json.users.CreateUserJSONRequestController
  */
-public class CreateUserViewController implements PyramusViewController, Breadcrumbable {
+public class CreateUserViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response. 
@@ -32,8 +34,9 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-        
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
+    ContactURLTypeDAO contactURLTypeDAO = DAOFactory.getInstance().getContactURLTypeDAO();
+
     List<AuthenticationProviderInfoBean> authenticationProviders = new ArrayList<AuthenticationProviderInfoBean>();
     for (String authenticationProviderName : AuthenticationProviderVault.getAuthenticationProviderClasses().keySet()) {
       boolean active = AuthenticationProviderVault.getInstance().getAuthenticationProvider(authenticationProviderName) != null;
@@ -51,10 +54,10 @@ public class CreateUserViewController implements PyramusViewController, Breadcru
       authenticationProviders.add(new AuthenticationProviderInfoBean(authenticationProviderName, active, canUpdateCredentials));
     }
 
-    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    List<ContactURLType> contactURLTypes = contactURLTypeDAO.listUnarchived();
     Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
     
-    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    List<ContactType> contactTypes = contactTypeDAO.listUnarchived();
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);

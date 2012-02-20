@@ -8,19 +8,21 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.CourseDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.courses.Course;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
-public class SearchStudentProjectCoursesJSONRequestController implements JSONRequestController {
+public class SearchStudentProjectCoursesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(requestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -40,7 +42,7 @@ public class SearchStudentProjectCoursesJSONRequestController implements JSONReq
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<Course> courses = searchResult.getResults();
     for (Course course : courses) {
-      Long studentCount = courseDAO.countCourseStudentsByCourse(course);
+      Long studentCount = courseStudentDAO.countByCourse(course);
       Long maxStudentCount = course.getMaxParticipantCount();
       
       Map<String, Object> courseInfo = new HashMap<String, Object>();

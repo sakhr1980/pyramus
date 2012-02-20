@@ -8,25 +8,29 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.resources.MaterialResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.MaterialResource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class CreateMaterialResourceJSONRequestController implements JSONRequestController {
+public class CreateMaterialResourceJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) { 
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
+    MaterialResourceDAO materialResourceDAO = DAOFactory.getInstance().getMaterialResourceDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
 
     String name = jsonRequestContext.getRequest().getParameter("name");
     Double unitCost = NumberUtils.createDouble(jsonRequestContext.getRequest().getParameter("unitCost"));
-    ResourceCategory resourceCategory = resourceDAO.findResourceCategoryById(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("category")));
+    ResourceCategory resourceCategory = resourceCategoryDAO.findById(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("category")));
     String tagsText = jsonRequestContext.getString("tags");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
@@ -34,15 +38,15 @@ public class CreateMaterialResourceJSONRequestController implements JSONRequestC
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    MaterialResource materialResource = resourceDAO.createMaterialResource(name, resourceCategory, unitCost);
+    MaterialResource materialResource = materialResourceDAO.create(name, resourceCategory, unitCost);
     resourceDAO.setResourceTags(materialResource, tagEntities);
     
     String redirectURL = jsonRequestContext.getRequest().getContextPath() + "/resources/editmaterialresource.page?resource=" + materialResource.getId();

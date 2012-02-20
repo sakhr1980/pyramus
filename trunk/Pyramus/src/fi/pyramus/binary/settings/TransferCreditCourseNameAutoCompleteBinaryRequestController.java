@@ -8,20 +8,21 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateCourseDAO;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 
-public class TransferCreditCourseNameAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class TransferCreditCourseNameAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    TransferCreditTemplateCourseDAO transferCreditTemplateCourseDAO = DAOFactory.getInstance().getTransferCreditTemplateCourseDAO();
+    
     Locale locale = binaryRequestContext.getRequest().getLocale();
 
     String text = binaryRequestContext.getString("text");
@@ -32,7 +33,7 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController impleme
     if (!StringUtils.isBlank(text)) {
       text = QueryParser.escape(StringUtils.trim(text)) + '*';
 
-      List<TransferCreditTemplateCourse> results = gradingDAO.searchTransferCreditTemplateCoursesBasic(100, 0, text).getResults();
+      List<TransferCreditTemplateCourse> results = transferCreditTemplateCourseDAO.searchTransferCreditTemplateCoursesBasic(100, 0, text).getResults();
       
       for (TransferCreditTemplateCourse course : results) {
         addResultItem(resultBuilder, course, locale);
@@ -44,7 +45,7 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController impleme
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

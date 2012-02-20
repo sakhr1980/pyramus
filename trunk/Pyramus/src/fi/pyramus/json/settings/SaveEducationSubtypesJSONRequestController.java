@@ -2,17 +2,19 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.EducationSubtype;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.domainmodel.base.EducationSubtype;
 
-public class SaveEducationSubtypesJSONRequestController implements JSONRequestController {
+public class SaveEducationSubtypesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
 
     int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("educationSubtypesTable.rowCount")).intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -23,11 +25,11 @@ public class SaveEducationSubtypesJSONRequestController implements JSONRequestCo
       String code = jsonRequestContext.getRequest().getParameter(colPrefix + ".code");
       boolean modified = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter(colPrefix + ".modified")) == 1;
       if (educationSubtypeId == -1) {
-        baseDAO.createEducationSubtype(baseDAO.getEducationType(educationTypeId), name, code); 
+        educationSubtypeDAO.create(educationTypeDAO.findById(educationTypeId), name, code); 
       }
       else if (modified) {
-        EducationSubtype educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
-        baseDAO.updateEducationSubtype(educationSubtype, name, code);
+        EducationSubtype educationSubtype = educationSubtypeDAO.findById(educationSubtypeId);
+        educationSubtypeDAO.update(educationSubtype, name, code);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

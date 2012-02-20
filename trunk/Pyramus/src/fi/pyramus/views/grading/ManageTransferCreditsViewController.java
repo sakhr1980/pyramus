@@ -4,26 +4,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Transfer Credits view of the application.
  */
-public class ManageTransferCreditsViewController implements PyramusViewController, Breadcrumbable {
+public class ManageTransferCreditsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -31,20 +33,22 @@ public class ManageTransferCreditsViewController implements PyramusViewControlle
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
     
     Long studentId = pageRequestContext.getLong("studentId");
     
-    Student student = studentDAO.getStudent(studentId);
-    List<TransferCredit> transferCredits = gradingDAO.listTransferCreditsByStudent(student);
-    List<GradingScale> gradingScales = gradingDAO.listGradingScales();
+    Student student = studentDAO.findById(studentId);
+    List<TransferCredit> transferCredits = transferCreditDAO.listByStudent(student);
+    List<GradingScale> gradingScales = gradingScaleDAO.listUnarchived();
 
-    List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> timeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(timeUnits, new StringAttributeComparator("getName"));
 
-    List<TransferCreditTemplate> transferCreditTemplates = gradingDAO.listTransferCreditTemplates();
+    List<TransferCreditTemplate> transferCreditTemplates = transferCreditTemplateDAO.listAll();
 
     Collections.sort(transferCredits, new StringAttributeComparator("getCourseName", true));
     

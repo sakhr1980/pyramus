@@ -1,17 +1,17 @@
 package fi.pyramus.views.users;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Login view of the application. 
  * 
  * @see fi.pyramus.json.users.LoginJSONRequestController
  */
-public class LoginViewController implements PyramusViewController {
+public class LoginViewController extends PyramusViewController {
 
   /**
    * Processes the page request. This is a simple case of just including the corresponding login JSP page.

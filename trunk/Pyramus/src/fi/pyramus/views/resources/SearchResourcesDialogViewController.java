@@ -1,17 +1,26 @@
 package fi.pyramus.views.resources;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
-import fi.pyramus.domainmodel.resources.ResourceType;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import java.util.Collections;
+import java.util.List;
 
-public class SearchResourcesDialogViewController implements PyramusViewController {
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.domainmodel.resources.ResourceType;
+import fi.pyramus.util.StringAttributeComparator;
+
+public class SearchResourcesDialogViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
-    requestContext.getRequest().setAttribute("resourceCategories", resourceDAO.listResourceCategories());
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
+
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+
+    requestContext.getRequest().setAttribute("resourceCategories", resourceCategories);
     requestContext.getRequest().setAttribute("resourceTypes", ResourceType.values());
     requestContext.setIncludeJSP("/templates/resources/searchresourcesdialog.jsp");
   }

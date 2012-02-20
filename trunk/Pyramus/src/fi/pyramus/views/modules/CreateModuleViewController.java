@@ -6,25 +6,28 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Create Module view of the application.
  * 
  * @see fi.pyramus.json.users.CreateGradingScaleJSONRequestController
  */
-public class CreateModuleViewController implements PyramusViewController, Breadcrumbable {
+public class CreateModuleViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -35,31 +38,34 @@ public class CreateModuleViewController implements PyramusViewController, Breadc
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     // Subjects
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
-    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    List<Subject> subjectsByNoEducationType = subjectDAO.listByEducationType(null);
     Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
     for (EducationType educationType : educationTypes) {
-      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      List<Subject> subjectsOfType = subjectDAO.listByEducationType(educationType);
       if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
         Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
       }
     }
 
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
     pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
     pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", educationalTimeUnits);
-    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", descriptionCategoryDAO.listUnarchived());
     pageRequestContext.setIncludeJSP("/templates/modules/createmodule.jsp");
   }
 

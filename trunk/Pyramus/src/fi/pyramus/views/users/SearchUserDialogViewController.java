@@ -1,10 +1,10 @@
 package fi.pyramus.views.users;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class SearchUserDialogViewController implements PyramusViewController {
+public class SearchUserDialogViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
     requestContext.setIncludeJSP("/templates/users/searchuserdialog.jsp");

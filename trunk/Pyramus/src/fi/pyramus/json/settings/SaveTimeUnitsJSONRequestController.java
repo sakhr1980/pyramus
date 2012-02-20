@@ -1,20 +1,21 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.EducationalTimeUnit;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 
-public class SaveTimeUnitsJSONRequestController implements JSONRequestController {
+public class SaveTimeUnitsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
+
     EducationalTimeUnit baseTimeUnit = null;
 
     int rowCount = jsonRequestContext.getInteger("timeUnitsTable.rowCount").intValue();
@@ -33,23 +34,23 @@ public class SaveTimeUnitsJSONRequestController implements JSONRequestController
       }
         
       if (timeUnitId == -1) {
-        timeUnit = baseDAO.createEducationalTimeUnit(baseUnits, name); 
+        timeUnit = educationalTimeUnitDAO.create(baseUnits, name); 
       } else {
-        timeUnit = baseDAO.findEducationalTimeUnitById(timeUnitId);
-        baseDAO.updateEducationalTimeUnit(timeUnit, baseUnits, name);
+        timeUnit = educationalTimeUnitDAO.findById(timeUnitId);
+        educationalTimeUnitDAO.update(timeUnit, baseUnits, name);
       }
       
       if (baseUnit) {
         if (baseTimeUnit != null)
-          throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "Two or more baseTimeUnits defined");
+          throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED, "Two or more baseTimeUnits defined");
           
         baseTimeUnit = timeUnit;
       }
     }
     
     if (baseTimeUnit != null) {
-      if (!baseTimeUnit.equals(baseDAO.getDefaults().getBaseTimeUnit())) {
-        baseDAO.updateDefaultBaseTimeUnit(baseTimeUnit);
+      if (!baseTimeUnit.equals(defaultsDAO.getDefaults().getBaseTimeUnit())) {
+        defaultsDAO.updateDefaultBaseTimeUnit(baseTimeUnit);
       }
         
     }

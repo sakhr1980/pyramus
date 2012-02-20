@@ -12,7 +12,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
@@ -64,7 +65,7 @@ public class DataImportUtils {
     if (valueInterpreter != null)
       setFieldValue(pojo, field, valueInterpreter.interpret(value));
     else
-      throw new PyramusRuntimeException(new Exception("Value interpreter for " + fieldType + " is not implemented yet"));
+      throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED, "Value interpreter for " + fieldType + " is not implemented yet");
   }
 
   /**
@@ -155,7 +156,7 @@ public class DataImportUtils {
             return df.parse(s);
           } catch (ParseException e) {
             e.printStackTrace();
-            throw new PyramusRuntimeException(e);
+            throw new SmvcRuntimeException(e);
           }
         }
 
@@ -165,7 +166,7 @@ public class DataImportUtils {
             return df.parse(s);
           } catch (ParseException e) {
             e.printStackTrace();
-            throw new PyramusRuntimeException(e);
+            throw new SmvcRuntimeException(e);
           }
         }
         

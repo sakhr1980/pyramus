@@ -2,13 +2,13 @@ package fi.pyramus.views.users;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class SearchUsersViewController implements PyramusViewController, Breadcrumbable {
+public class SearchUsersViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns roles that are allowed to use this resource.

@@ -9,15 +9,23 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.ProjectDAO;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.ProjectAssessmentDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
+import fi.pyramus.dao.projects.StudentProjectDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryCommentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
+import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
@@ -30,14 +38,13 @@ import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * ViewController for editing student information.
  * 
  * @author antti.viljakainen
  */
-public class ViewStudentViewController implements PyramusViewController, Breadcrumbable {
+public class ViewStudentViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns allowed roles for this page. Allowed are UserRole.MANAGER and UserRole.ADMINISTRATOR.
@@ -67,17 +74,24 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
    */
   public void process(PageRequestContext pageRequestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    StudentImageDAO imageDAO = DAOFactory.getInstance().getStudentImageDAO();
+    StudentContactLogEntryDAO logEntryDAO = DAOFactory.getInstance().getStudentContactLogEntryDAO();
+    StudentContactLogEntryCommentDAO entryCommentDAO = DAOFactory.getInstance().getStudentContactLogEntryCommentDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    StudentProjectDAO studentProjectDAO = DAOFactory.getInstance().getStudentProjectDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
-    AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
+    AbstractStudent abstractStudent = abstractStudentDAO.findById(abstractStudentId);
     
     pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
 
-    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    List<Student> students = studentDAO.listByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {
@@ -132,7 +146,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     	 * Fetch courses this student is part of and sort the courses by course name
     	 */
     	
-    	List<CourseStudent> courseStudentsByStudent = courseDAO.listCourseStudentsByStudent(student);
+    	List<CourseStudent> courseStudentsByStudent = courseStudentDAO.listByStudent(student);
     	Map<Long, List<CourseStudent>> courseStudentsByModule = new HashMap<Long, List<CourseStudent>>();
       for (CourseStudent courseStudent : courseStudentsByStudent) {
         Long moduleId = courseStudent.getCourse().getModule().getId(); 
@@ -168,14 +182,14 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
     	 * Contact log entries
     	 */
     	
-      List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+      List<StudentContactLogEntry> listStudentContactEntries = logEntryDAO.listByStudent(student);
 
       // Firstly populate comments
       
       for (int j = 0; j < listStudentContactEntries.size(); j++) {
         StudentContactLogEntry entry = listStudentContactEntries.get(j);
         
-        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
+        List<StudentContactLogEntryComment> listComments = entryCommentDAO.listByEntry(entry);
         
         Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
           public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {
@@ -238,7 +252,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
        * Students Course Assessments, sorted by course name
        */
       
-      List<CourseAssessment> courseAssessmentsByStudent = gradingDAO.listCourseAssessmentsByStudent(student);
+      List<CourseAssessment> courseAssessmentsByStudent = courseAssessmentDAO.listByStudent(student);
 
       for (CourseAssessment courseAssessment : courseAssessmentsByStudent) {
         Long courseStudentId = courseAssessment.getCourseStudent().getId(); 
@@ -269,7 +283,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
        * Fetching and sorting of Transfer Credits 
        */
       
-      List<TransferCredit> transferCreditsByStudent = gradingDAO.listTransferCreditsByStudent(student);
+      List<TransferCredit> transferCreditsByStudent = transferCreditDAO.listByStudent(student);
       Collections.sort(transferCreditsByStudent, new Comparator<TransferCredit>() {
         private String getCourseAssessmentCompareStr(TransferCredit tCredit) {
           String result = "";
@@ -292,7 +306,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       /**
        * Project beans setup
        */
-      List<StudentProject> studentsStudentProjects = projectDAO.listStudentsStudentProjects(student);
+      List<StudentProject> studentsStudentProjects = studentProjectDAO.listByStudent(student);
       List<StudentProjectBean> studentProjectBeans = new ArrayList<StudentProjectBean>();
       for (StudentProject studentProject : studentsStudentProjects) {
         int mandatoryModuleCount = 0;
@@ -356,7 +370,7 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
         // Add ModuleBeans to response
         studentProjectModules.put(studentProject.getId(), studentProjectModuleBeans);
         
-        List<ProjectAssessment> projectAssessments = gradingDAO.listProjectAssessmentByProject(studentProject);
+        List<ProjectAssessment> projectAssessments = projectAssessmentDAO.listByProject(studentProject);
         Collections.sort(projectAssessments, new Comparator<ProjectAssessment>() {
           @Override
           public int compare(ProjectAssessment o1, ProjectAssessment o2) {
@@ -369,13 +383,13 @@ public class ViewStudentViewController implements PyramusViewController, Breadcr
       }
       
       // Student Image
-      studentHasImage.put(student.getId(), studentDAO.findStudentHasImage(student));
+      studentHasImage.put(student.getId(), imageDAO.findStudentHasImage(student));
 
       courseStudents.put(student.getId(), courseStudentsByStudent);
       courseAssessments.put(student.getId(), courseAssessmentsByStudent);
       contactEntries.put(student.getId(), listStudentContactEntries);
       transferCredits.put(student.getId(), transferCreditsByStudent);
-      studentGroups.put(student.getId(), studentDAO.listStudentsStudentGroups(student));
+      studentGroups.put(student.getId(), studentGroupDAO.listByStudent(student));
       studentProjects.put(student.getId(), studentProjectBeans);
     }
     

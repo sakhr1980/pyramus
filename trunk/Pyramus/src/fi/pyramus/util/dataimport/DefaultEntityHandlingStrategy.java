@@ -4,7 +4,8 @@ import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 
@@ -57,7 +58,7 @@ public class DefaultEntityHandlingStrategy implements EntityHandlingStrategy {
           message += constraintViolation.getMessage() + '\n';
         }
         
-        throw new PyramusRuntimeException(new Exception("Validation failure: " + message));
+        throw new SmvcRuntimeException(PyramusStatusCode.VALIDATION_FAILURE, "Validation failure: " + message);
       }
     }
   }

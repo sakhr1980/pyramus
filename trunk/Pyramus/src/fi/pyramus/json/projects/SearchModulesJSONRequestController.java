@@ -7,13 +7,13 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -21,7 +21,7 @@ import fi.pyramus.persistence.search.SearchResult;
  * 
  * @see fi.pyramus.views.modules.SearchModulesViewController
  */
-public class SearchModulesJSONRequestController implements JSONRequestController {
+public class SearchModulesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();

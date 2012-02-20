@@ -4,21 +4,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Create Project view of the application.
  */
-public class CreateProjectViewController implements PyramusViewController, Breadcrumbable {
+public class CreateProjectViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,12 +28,12 @@ public class CreateProjectViewController implements PyramusViewController, Bread
    */
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
-    pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
+    pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.setIncludeJSP("/templates/projects/createproject.jsp");
   }

@@ -1,25 +1,29 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateCourseDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
-public class CreateTransferCreditTemplateJSONRequestController implements JSONRequestController {
+public class CreateTransferCreditTemplateJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
+    TransferCreditTemplateCourseDAO transferCreditTemplateCourseDAO = DAOFactory.getInstance().getTransferCreditTemplateCourseDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
     String name = jsonRequestContext.getString("name");
     
-    TransferCreditTemplate transferCreditTemplate = gradingDAO.createTransferCreditTemplate(name);
+    TransferCreditTemplate transferCreditTemplate = transferCreditTemplateDAO.create(name);
     
     int rowCount = jsonRequestContext.getInteger("coursesTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -32,10 +36,10 @@ public class CreateTransferCreditTemplateJSONRequestController implements JSONRe
       Long subjectId = jsonRequestContext.getLong(colPrefix + ".subject"); 
       Long courseLengthUnitId = jsonRequestContext.getLong(colPrefix + ".courseLengthUnit"); 
       
-      Subject subject = baseDAO.getSubject(subjectId);
-      EducationalTimeUnit courseLengthUnit = baseDAO.findEducationalTimeUnitById(courseLengthUnitId);;
+      Subject subject = subjectDAO.findById(subjectId);
+      EducationalTimeUnit courseLengthUnit = educationalTimeUnitDAO.findById(courseLengthUnitId);;
       
-      gradingDAO.createTransferCreditTemplateCourse(transferCreditTemplate, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
+      transferCreditTemplateCourseDAO.create(transferCreditTemplate, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
     }
     
     String redirectURL = jsonRequestContext.getRequest().getContextPath() + "/settings/edittransfercredittemplate.page?transferCreditTemplate=" + transferCreditTemplate.getId();

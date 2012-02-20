@@ -4,10 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.lang.math.NumberUtils;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.dao.BaseDAO;
+
+import fi.internetix.smvc.SmvcRuntimeException;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.users.InternalAuthDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.InternalAuth;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
@@ -33,22 +35,23 @@ public class InternalAuthenticationStrategy implements InternalAuthenticationPro
    * @return The created user
    */
   public User createUser(String firstName, String lastName, String email, String username, String password, Role role) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
 
     try {
       String passwordEncoded = EncodingUtils.md5EncodeString(password);
-      InternalAuth internalAuth = userDAO.createInternalAuth(username, passwordEncoded);
-      User user = userDAO.createUser(firstName, lastName, String.valueOf(internalAuth.getId()), getName(), role);
+      InternalAuth internalAuth = internalAuthDAO.create(username, passwordEncoded);
+      User user = userDAO.create(firstName, lastName, String.valueOf(internalAuth.getId()), getName(), role);
       // TODO Default contact type?
-      baseDAO.createEmail(user.getContactInfo(), null, Boolean.TRUE, email);
+      emailDAO.create(user.getContactInfo(), null, Boolean.TRUE, email);
       return user;
     }
     catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (NoSuchAlgorithmException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 
@@ -62,11 +65,11 @@ public class InternalAuthenticationStrategy implements InternalAuthenticationPro
    * not found
    */
   public String getUsername(String externalId) {
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
     
     Long internalAuthId = NumberUtils.createLong(externalId);
     if (internalAuthId != null && internalAuthId > 0) {
-      InternalAuth internalAuth = userDAO.getInternalAuth(internalAuthId);
+      InternalAuth internalAuth = internalAuthDAO.findById(internalAuthId);
       return internalAuth == null ? null : internalAuth.getUsername();
     }
     
@@ -84,22 +87,23 @@ public class InternalAuthenticationStrategy implements InternalAuthenticationPro
    */
   public User getUser(String username, String password) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
 
     String passwordEncoded;
     try {
       passwordEncoded = EncodingUtils.md5EncodeString(password);
     }
     catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     
     catch (NoSuchAlgorithmException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
 
-    InternalAuth internalAuth = userDAO.getInternalAuthByUsernameAndPassword(username, passwordEncoded);
+    InternalAuth internalAuth = internalAuthDAO.findByUsernameAndPassword(username, passwordEncoded);
     if (internalAuth != null) {
-      User user = userDAO.getUser(String.valueOf(internalAuth.getId()), getName());
+      User user = userDAO.findByExternalIdAndAuthProvider(String.valueOf(internalAuth.getId()), getName());
       return user;
     }
     else {
@@ -109,44 +113,44 @@ public class InternalAuthenticationStrategy implements InternalAuthenticationPro
   
   @Override
   public String createCredentials(String username, String password) {
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
     try {
       String newPasswordEncoded = EncodingUtils.md5EncodeString(password);
-      InternalAuth internalAuth = userDAO.createInternalAuth(username, newPasswordEncoded);
+      InternalAuth internalAuth = internalAuthDAO.create(username, newPasswordEncoded);
       String externalId = internalAuth.getId().toString();
       return externalId;
     }
     catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (NoSuchAlgorithmException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   
   @Override
   public void updateUsername(String externalId, String username) {
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
 
-    InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
-    userDAO.updateInternalAuthUsername(internalAuth, username);
+    InternalAuth internalAuth = internalAuthDAO.findById(NumberUtils.createLong(externalId));
+    internalAuthDAO.updateUsername(internalAuth, username);
   }
   
   @Override
   public void updatePassword(String externalId, String password) {
-    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    InternalAuthDAO internalAuthDAO = DAOFactory.getInstance().getInternalAuthDAO();
 
     try {
-      InternalAuth internalAuth = userDAO.getInternalAuth(NumberUtils.createLong(externalId));
+      InternalAuth internalAuth = internalAuthDAO.findById(NumberUtils.createLong(externalId));
 
       String newPasswordEncoded = EncodingUtils.md5EncodeString(password);
-      userDAO.updateInternalAuthPassword(internalAuth, newPasswordEncoded);
+      internalAuthDAO.updatePassword(internalAuth, newPasswordEncoded);
     }
     catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (NoSuchAlgorithmException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 

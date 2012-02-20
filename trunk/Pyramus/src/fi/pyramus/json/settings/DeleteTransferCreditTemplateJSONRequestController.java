@@ -1,17 +1,17 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.DAOFactory;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 
-public class DeleteTransferCreditTemplateJSONRequestController implements JSONRequestController {
+public class DeleteTransferCreditTemplateJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
     Long transferCreditTemplateId = jsonRequestContext.getLong("transferCreditTemplateId");
-    gradingDAO.deleteTransferCreditTemplate(gradingDAO.findTransferCreditTemplateById(transferCreditTemplateId));
+    transferCreditTemplateDAO.delete(transferCreditTemplateDAO.findById(transferCreditTemplateId));
   }
 
   public UserRole[] getAllowedRoles() {

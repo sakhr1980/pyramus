@@ -8,17 +8,18 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentGroup;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
 
@@ -27,11 +28,12 @@ import fi.pyramus.persistence.search.StudentFilter;
  * 
  * @author antti.viljakainen
  */
-public class SearchStudentsDialogJSONRequestContoller implements JSONRequestController {
+public class SearchStudentsDialogJSONRequestContoller extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -54,11 +56,11 @@ public class SearchStudentsDialogJSONRequestContoller implements JSONRequestCont
     Long studentGroupId = jsonRequestContext.getLong("studentGroupId");
     
     if (studyProgrammeId.intValue() != -1)
-      studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
+      studyProgramme = studyProgrammeDAO.findById(studyProgrammeId);
     if (studentGroupId.intValue() != -1)
-      studentGroup = studentDAO.findStudentGroupById(studentGroupId);
+      studentGroup = studentGroupDAO.findById(studentGroupId);
 
-    searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, studentFilter, studyProgramme, studentGroup);
+    searchResult = abstractStudentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, studentFilter, studyProgramme, studentGroup);
     
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<AbstractStudent> abstractStudents = searchResult.getResults();

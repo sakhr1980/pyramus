@@ -4,14 +4,13 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.I18N.Messages;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.plugin.auth.AuthenticationException;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
@@ -21,7 +20,7 @@ import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
  * 
  * @see fi.pyramus.views.users.LoginViewController
  */
-public class LoginJSONRequestController implements JSONRequestController {
+public class LoginJSONRequestController extends JSONRequestController {
   
   /**
    * Processes the request to log in. Authorizes the given credentials and if they match a user,
@@ -49,7 +48,7 @@ public class LoginJSONRequestController implements JSONRequestController {
     HttpSession session = jsonRequestContext.getRequest().getSession(true);
     if (!session.isNew() && session.getAttribute("loggedUserId") != null) {
       String msg = Messages.getInstance().getText(locale, "users.login.alreadyLoggedIn");
-      throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.ALREADY_LOGGED_IN, msg);
+      throw new SmvcRuntimeException(PyramusStatusCode.ALREADY_LOGGED_IN, msg);
     }
     
     // Go through all authentication providers and see if one authorizes the given credentials
@@ -79,16 +78,16 @@ public class LoginJSONRequestController implements JSONRequestController {
         }
       } catch (AuthenticationException ae) {
         if (ae.getErrorCode() == AuthenticationException.LOCAL_USER_MISSING)
-          throw new PyramusRuntimeException(ErrorLevel.WARNING, StatusCode.LOCAL_USER_MISSING, Messages.getInstance().getText(locale, "users.login.localUserMissing"));
+          throw new SmvcRuntimeException(PyramusStatusCode.LOCAL_USER_MISSING, Messages.getInstance().getText(locale, "users.login.localUserMissing"));
         else 
-          throw new PyramusRuntimeException(ae);
+          throw new SmvcRuntimeException(ae);
       }
     }
     
     // Reaching this point means no authentication provider authorized the user, so throw a login exception 
     
     String msg = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), "users.login.loginFailed");
-    throw new PyramusRuntimeException(ErrorLevel.WARNING, StatusCode.UNAUTHORIZED, msg);
+    throw new SmvcRuntimeException(PyramusStatusCode.UNAUTHORIZED, msg);
   }
 
   public UserRole[] getAllowedRoles() {

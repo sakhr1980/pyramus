@@ -2,16 +2,16 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
 
 /**
  * The controller responsible of archiving an education type. 
  */
-public class ArchiveEducationTypeJSONRequestController implements JSONRequestController {
+public class ArchiveEducationTypeJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to archive an education type.
@@ -19,9 +19,9 @@ public class ArchiveEducationTypeJSONRequestController implements JSONRequestCon
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();
     Long educationTypeId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("educationTypeId"));
-    baseDAO.archiveEducationType(baseDAO.getEducationType(educationTypeId));
+    educationTypeDAO.archive(educationTypeDAO.findById(educationTypeId));
   }
 
   public UserRole[] getAllowedRoles() {

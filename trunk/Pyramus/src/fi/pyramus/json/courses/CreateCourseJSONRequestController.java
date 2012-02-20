@@ -13,15 +13,36 @@ import java.util.Vector;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.ResourceDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.CourseEducationSubtypeDAO;
+import fi.pyramus.dao.base.CourseEducationTypeDAO;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.courses.BasicCourseResourceDAO;
+import fi.pyramus.dao.courses.CourseComponentDAO;
+import fi.pyramus.dao.courses.CourseComponentResourceDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
+import fi.pyramus.dao.courses.CourseDescriptionDAO;
+import fi.pyramus.dao.courses.CourseEnrolmentTypeDAO;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
+import fi.pyramus.dao.courses.CourseStateDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.courses.CourseUserDAO;
+import fi.pyramus.dao.courses.CourseUserRoleDAO;
+import fi.pyramus.dao.courses.GradeCourseResourceDAO;
+import fi.pyramus.dao.courses.OtherCostDAO;
+import fi.pyramus.dao.courses.StudentCourseResourceDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
@@ -40,29 +61,48 @@ import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
-public class CreateCourseJSONRequestController implements JSONRequestController {
+public class CreateCourseJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    CourseUserRoleDAO userRoleDAO = DAOFactory.getInstance().getCourseUserRoleDAO();
+    CourseEnrolmentTypeDAO enrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseUserDAO courseUserDAO = DAOFactory.getInstance().getCourseUserDAO();
+    CourseDescriptionDAO descriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    CourseComponentResourceDAO componentResourceDAO = DAOFactory.getInstance().getCourseComponentResourceDAO();
+    OtherCostDAO otherCostDAO = DAOFactory.getInstance().getOtherCostDAO();
+    BasicCourseResourceDAO basicCourseResourceDAO = DAOFactory.getInstance().getBasicCourseResourceDAO();
+    StudentCourseResourceDAO studentCourseResourceDAO = DAOFactory.getInstance().getStudentCourseResourceDAO();
+    GradeCourseResourceDAO gradeCourseResourceDAO = DAOFactory.getInstance().getGradeCourseResourceDAO();
+    CourseEducationTypeDAO courseEducationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    CourseEducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getCourseEducationSubtypeDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
     // Course basic information
 
     String name = requestContext.getString("name");
     String nameExtension = requestContext.getString("nameExtension");
     Long courseStateId = requestContext.getLong("state");
-    CourseState courseState = courseDAO.getCourseState(courseStateId);
+    CourseState courseState = courseStateDAO.findById(courseStateId);
     String description = requestContext.getString("description");
-    Module module = moduleDAO.getModule(requestContext.getLong("module"));
-    Subject subject = baseDAO.getSubject(requestContext.getLong("subject"));
+    Module module = moduleDAO.findById(requestContext.getLong("module"));
+    Subject subject = subjectDAO.findById(requestContext.getLong("subject"));
     Integer courseNumber = requestContext.getInteger("courseNumber");
     Date beginDate = requestContext.getDate("beginDate");
     Date endDate = requestContext.getDate("endDate");
@@ -70,13 +110,13 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     Double courseLength = requestContext.getDouble("courseLength");
     Long courseLengthTimeUnitId = requestContext.getLong("courseLengthTimeUnit");
     Long maxParticipantCount = requestContext.getLong("maxParticipantCount");
-    EducationalTimeUnit courseLengthTimeUnit = baseDAO.findEducationalTimeUnitById(courseLengthTimeUnitId);
+    EducationalTimeUnit courseLengthTimeUnit = educationalTimeUnitDAO.findById(courseLengthTimeUnitId);
     Double distanceTeachingDays = requestContext.getDouble("distanceTeachingDays");
     Double localTeachingDays = requestContext.getDouble("localTeachingDays");
     Double teachingHours = requestContext.getDouble("teachingHours");
     Double planningHours = requestContext.getDouble("planningHours");
     Double assessingHours = requestContext.getDouble("assessingHours");
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
     String tagsText = requestContext.getString("tags");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
@@ -84,15 +124,15 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    Course course = courseDAO.createCourse(module, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
+    Course course = courseDAO.create(module, name, nameExtension, courseState, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, distanceTeachingDays, localTeachingDays, teachingHours, planningHours, assessingHours, 
         description, maxParticipantCount, enrolmentTimeEnd, loggedUser);
 
@@ -102,7 +142,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
     
     // Course Descriptions
     
-    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    List<CourseDescriptionCategory> descriptionCategories = descriptionCategoryDAO.listUnarchived();
     
     for (CourseDescriptionCategory cat: descriptionCategories) {
       String varName = "courseDescription." + cat.getId().toString();
@@ -111,7 +151,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
 
       if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
         // Description has been submitted from form 
-        courseDAO.createCourseDescription(course, cat, descriptionText);
+        descriptionDAO.create(course, cat, descriptionText);
       }
     }
     
@@ -122,9 +162,9 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       String colPrefix = "personnelTable." + i;
       Long userId = requestContext.getLong(colPrefix + ".userId");
       Long roleId = requestContext.getLong(colPrefix + ".roleId");
-      User user = userDAO.getUser(userId);
-      CourseUserRole role = courseDAO.getCourseUserRole(roleId);
-      courseDAO.createCourseUser(course, user, role);
+      User user = userDAO.findById(userId);
+      CourseUserRole role = userRoleDAO.findById(roleId);
+      courseUserDAO.create(course, user, role);
     }
     
     // Course components
@@ -137,9 +177,9 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       String componentDescription = requestContext.getString(colPrefix + ".0.description");
 
       // TODO Component length; should be just hours but it currently depends on the default time unit - ok?  
-      EducationalTimeUnit componentTimeUnit = baseDAO.getDefaults().getBaseTimeUnit();
+      EducationalTimeUnit componentTimeUnit = defaultsDAO.getDefaults().getBaseTimeUnit();
 
-      CourseComponent courseComponent = courseDAO.createCourseComponent(course, componentLength, componentTimeUnit, componentName,
+      CourseComponent courseComponent = componentDAO.create(course, componentLength, componentTimeUnit, componentName,
           componentDescription);
                         
       Long resourceCategoryCount = requestContext.getLong(colPrefix + ".resourceCategoryCount");
@@ -151,7 +191,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
           String resourcePrefix = resourcesPrefix + "." + j;
           
           Long resourceId = requestContext.getLong(resourcePrefix + ".resourceId");
-          Resource resource = resourceDAO.findResourceById(resourceId);
+          Resource resource = resourceDAO.findById(resourceId);
           Double usagePercent;
           
           if (resource.getResourceType() == ResourceType.MATERIAL_RESOURCE) {
@@ -160,7 +200,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
             usagePercent = requestContext.getDouble(resourcePrefix + ".usage");
           }
           
-          courseDAO.createCourseComponentResource(courseComponent, resource, usagePercent);
+          componentResourceDAO.create(courseComponent, resource, usagePercent);
         }
       }
     }
@@ -183,10 +223,10 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       }
     }
     for (Long educationTypeId : chosenEducationTypes.keySet()) {
-      EducationType educationType = baseDAO.getEducationType(educationTypeId);
+      EducationType educationType = educationTypeDAO.findById(educationTypeId);
       CourseEducationType courseEducationType;
       if (!course.contains(educationType)) {
-        courseEducationType = courseDAO.addCourseEducationType(course, educationType);
+        courseEducationType = courseEducationTypeDAO.create(course, educationType);
       }
       else {
         courseEducationType = course.getCourseEducationTypeByEducationTypeId(educationTypeId);
@@ -194,7 +234,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       for (Long educationSubtypeId : chosenEducationTypes.get(educationTypeId)) {
         EducationSubtype educationSubtype = educationType.getEducationSubtypeById(educationSubtypeId);
         if (!courseEducationType.contains(educationSubtype)) {
-          courseDAO.addCourseEducationSubtype(courseEducationType, educationSubtype);
+          educationSubtypeDAO.create(courseEducationType, educationSubtype);
         }
       }
     }
@@ -215,8 +255,8 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       }
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = requestContext.getLong(colPrefix + ".resourceId");
-      Resource resource = resourceDAO.findResourceById(resourceId);
-      courseDAO.createBasicCourseResource(course, resource, hours, hourlyCost, units, unitCost);
+      Resource resource = resourceDAO.findById(resourceId);
+      basicCourseResourceDAO.create(course, resource, hours, hourlyCost, units, unitCost);
     }
 
     // Student course resources
@@ -231,8 +271,8 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       MonetaryAmount hourlyCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".hourlyCost"));
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = NumberUtils.createLong(requestContext.getRequest().getParameter(colPrefix + ".resourceId"));
-      Resource resource = resourceDAO.findResourceById(resourceId);
-      courseDAO.createStudentCourseResource(course, resource, hours, hourlyCost, unitCost);
+      Resource resource = resourceDAO.findById(resourceId);
+      studentCourseResourceDAO.create(course, resource, hours, hourlyCost, unitCost);
     }
 
     // Grade course resources
@@ -247,8 +287,8 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       MonetaryAmount hourlyCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".hourlyCost"));
       MonetaryAmount unitCost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".unitCost"));
       Long resourceId = requestContext.getLong(colPrefix + ".resourceId");
-      Resource resource = resourceDAO.findResourceById(resourceId);
-      courseDAO.createGradeCourseResource(course, resource, hours, hourlyCost, unitCost);
+      Resource resource = resourceDAO.findById(resourceId);
+      gradeCourseResourceDAO.create(course, resource, hours, hourlyCost, unitCost);
     }
 
     // Other costs
@@ -258,7 +298,7 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       String colPrefix = "otherCostsTable." + i;
       name = requestContext.getString(colPrefix + ".name");
       MonetaryAmount cost = new MonetaryAmount(requestContext.getDouble(colPrefix + ".cost"));
-      courseDAO.createOtherCost(course, name, cost);
+      otherCostDAO.create(course, name, cost);
     }
 
     // Students
@@ -273,11 +313,11 @@ public class CreateCourseJSONRequestController implements JSONRequestController 
       Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
       Boolean lodging = requestContext.getBoolean(colPrefix + ".lodging");
 
-      Student student = studentDAO.getStudent(studentId);
-      CourseEnrolmentType enrolmentType = enrolmentTypeId != null ? courseDAO.getCourseEnrolmentType(enrolmentTypeId) : null;
-      CourseParticipationType participationType = participationTypeId != null ? courseDAO.getCourseParticipationType(participationTypeId) : null;
+      Student student = studentDAO.findById(studentId);
+      CourseEnrolmentType enrolmentType = enrolmentTypeId != null ? enrolmentTypeDAO.findById(enrolmentTypeId) : null;
+      CourseParticipationType participationType = participationTypeId != null ? participationTypeDAO.findById(participationTypeId) : null;
       CourseOptionality optionality = (CourseOptionality) requestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
-      courseDAO.createCourseStudent(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
+      courseStudentDAO.create(course, student, enrolmentType, participationType, enrolmentDate, lodging, optionality);
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/courses/editcourse.page?course=" + course.getId();

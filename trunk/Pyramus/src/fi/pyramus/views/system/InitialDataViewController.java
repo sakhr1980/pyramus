@@ -4,21 +4,21 @@ import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
 import fi.pyramus.util.DataImporter;
-import fi.pyramus.views.PyramusViewController;
 
-public class InitialDataViewController implements PyramusViewController {
+public class InitialDataViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
-    if (baseDAO.isPyramusInitialized()) 
-      throw new PyramusRuntimeException(new Exception("Pyramus is already initialized."));
+    if (defaultsDAO.isPyramusInitialized()) 
+      throw new SmvcRuntimeException(new Exception("Pyramus is already initialized."));
     
     DataImporter dataImporter = new DataImporter();
     String classes = requestContext.getRequest().getParameter("classes");

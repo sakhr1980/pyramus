@@ -2,18 +2,18 @@ package fi.pyramus.views.projects;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Create Student Project view of the application.
  */
-public class CreateStudentProjectViewController implements PyramusViewController, Breadcrumbable {
+public class CreateStudentProjectViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,7 +23,7 @@ public class CreateStudentProjectViewController implements PyramusViewController
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 
-    pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
+    pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());
     pageRequestContext.setIncludeJSP("/templates/projects/createstudentproject.jsp");
   }
 

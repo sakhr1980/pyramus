@@ -2,17 +2,17 @@ package fi.pyramus.json.resources;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
-import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
 
-public class SaveResourceCategoriesJSONRequestController implements JSONRequestController {
+public class SaveResourceCategoriesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
 
     int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("resourceCategoriesTable.rowCount")).intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -21,11 +21,11 @@ public class SaveResourceCategoriesJSONRequestController implements JSONRequestC
       String name = jsonRequestContext.getRequest().getParameter(colPrefix + ".name");
       boolean modified = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter(colPrefix + ".modified")) == 1;
       if (resourceCategoryId == -1) {
-        resourceDAO.createResourceCategory(name); 
+        resourceCategoryDAO.createResourceCategory(name); 
       }
       else if (modified) {
-        ResourceCategory resourceCategory = resourceDAO.findResourceCategoryById(resourceCategoryId);
-        resourceDAO.updateResourceCategory(resourceCategory, name);
+        ResourceCategory resourceCategory = resourceCategoryDAO.findById(resourceCategoryId);
+        resourceCategoryDAO.updateResourceCategory(resourceCategory, name);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

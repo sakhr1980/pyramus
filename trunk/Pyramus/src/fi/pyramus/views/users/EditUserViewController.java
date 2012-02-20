@@ -5,29 +5,34 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import fi.pyramus.PageRequestContext;
+
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
-import fi.pyramus.UserRole;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.ContactURLTypeDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.users.UserVariableKeyDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.domainmodel.users.UserVariableKey;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit User view of the application.
  * 
  * @see fi.pyramus.json.users.EditUserJSONRequestController
  */
-public class EditUserViewController implements PyramusViewController, Breadcrumbable {
+public class EditUserViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response. 
@@ -36,9 +41,12 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
    */
   public void process(PageRequestContext pageRequestContext) {
     // TODO loggedUserRole vs. user role
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    User user = userDAO.getUser(pageRequestContext.getLong("userId"));
+    UserVariableKeyDAO variableKeyDAO = DAOFactory.getInstance().getUserVariableKeyDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
+    ContactURLTypeDAO contactURLTypeDAO = DAOFactory.getInstance().getContactURLTypeDAO();
+
+    User user = userDAO.findById(pageRequestContext.getLong("userId"));
     String username = "";
     
     List<AuthenticationProviderInfoBean> authenticationProviders = new ArrayList<AuthenticationProviderInfoBean>();
@@ -71,18 +79,21 @@ public class EditUserViewController implements PyramusViewController, Breadcrumb
         tagsBuilder.append(' ');
     }
 
-    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    List<ContactURLType> contactURLTypes = contactURLTypeDAO.listUnarchived();
     Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
 
-    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    List<ContactType> contactTypes = contactTypeDAO.listUnarchived();
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
 
+    List<UserVariableKey> variableKeys = variableKeyDAO.listAll();
+    Collections.sort(variableKeys, new StringAttributeComparator("getVariableName"));
+    
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("user", user);
     pageRequestContext.getRequest().setAttribute("username", username);
     pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
     pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
-    pageRequestContext.getRequest().setAttribute("variableKeys", userDAO.listUserVariableKeys());
+    pageRequestContext.getRequest().setAttribute("variableKeys", variableKeys);
     pageRequestContext.getRequest().setAttribute("authenticationProviders", authenticationProviders);
     
     pageRequestContext.setIncludeJSP("/templates/users/edituser.jsp");

@@ -5,19 +5,19 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
 /**
  * JSON request controller to view student info.
  * 
  * @author antti.viljakainen
  */
-public class GetStudentInfoJSONRequestController implements JSONRequestController {
+public class GetStudentInfoJSONRequestController extends JSONRequestController {
   
   /**
    * Processes JSON request
@@ -37,7 +37,7 @@ public class GetStudentInfoJSONRequestController implements JSONRequestControlle
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
 
     Long studentId = NumberUtils.createLong(requestContext.getRequest().getParameter("studentId"));
-    Student student = studentDAO.getStudent(studentId);
+    Student student = studentDAO.findById(studentId);
     
     Map<String, Object> studentInfo = new HashMap<String, Object>();
     

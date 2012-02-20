@@ -7,7 +7,7 @@ import org.hibernate.validator.InvalidStateException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.InternalAuth;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.usertypes.Role;

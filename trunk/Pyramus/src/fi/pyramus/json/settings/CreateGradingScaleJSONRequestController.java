@@ -3,19 +3,20 @@ package fi.pyramus.json.settings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.domainmodel.grading.GradingScale;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
+import fi.pyramus.domainmodel.grading.GradingScale;
 
 /**
  * The controller responsible of creating a new grading scale. 
  * 
  * @see fi.pyramus.views.settings.CreateGradingScaleViewController
  */
-public class CreateGradingScaleJSONRequestController implements JSONRequestController {
+public class CreateGradingScaleJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to create a new grading scale.
@@ -23,11 +24,12 @@ public class CreateGradingScaleJSONRequestController implements JSONRequestContr
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
-    GradingScale gradingScale = gradingDAO.createGradingScale(name, description);
+    GradingScale gradingScale = gradingScaleDAO.create(name, description);
 
     int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("gradesTable.rowCount")).intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -39,7 +41,7 @@ public class CreateGradingScaleJSONRequestController implements JSONRequestContr
       String gradeDescription = jsonRequestContext.getRequest().getParameter(colPrefix + ".description");
       Boolean passingGrade = "1".equals(jsonRequestContext.getRequest().getParameter(colPrefix + ".passingGrade"));
       
-      gradingDAO.createGrade(gradingScale, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
+      gradeDAO.create(gradingScale, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
     }
     
     String redirectURL = jsonRequestContext.getRequest().getContextPath() + "/settings/editgradingscale.page?gradingScaleId=" + gradingScale.getId();

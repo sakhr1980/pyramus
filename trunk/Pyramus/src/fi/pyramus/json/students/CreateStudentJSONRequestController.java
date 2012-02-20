@@ -8,11 +8,29 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
 import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactInfoDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.LanguageDAO;
+import fi.pyramus.dao.base.MunicipalityDAO;
+import fi.pyramus.dao.base.NationalityDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentActivityTypeDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentEducationalLevelDAO;
+import fi.pyramus.dao.students.StudentExaminationTypeDAO;
+import fi.pyramus.dao.students.StudentStudyEndReasonDAO;
+import fi.pyramus.dao.students.StudentVariableDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Language;
 import fi.pyramus.domainmodel.base.Municipality;
@@ -26,16 +44,30 @@ import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
 import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.Sex;
 
-public class CreateStudentJSONRequestController implements JSONRequestController {
+public class CreateStudentJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    StudentActivityTypeDAO activityTypeDAO = DAOFactory.getInstance().getStudentActivityTypeDAO();
+    StudentExaminationTypeDAO examinationTypeDAO = DAOFactory.getInstance().getStudentExaminationTypeDAO();
+    StudentEducationalLevelDAO educationalLevelDAO = DAOFactory.getInstance().getStudentEducationalLevelDAO();
+    StudentStudyEndReasonDAO studyEndReasonDAO = DAOFactory.getInstance().getStudentStudyEndReasonDAO();
+    StudentVariableDAO studentVariableDAO = DAOFactory.getInstance().getStudentVariableDAO();
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    ContactInfoDAO contactInfoDAO = DAOFactory.getInstance().getContactInfoDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
 
     Date birthday = requestContext.getDate("birthday");
     String ssecId = requestContext.getString("ssecId");
@@ -60,51 +92,50 @@ public class CreateStudentJSONRequestController implements JSONRequestController
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
     Long entityId = requestContext.getLong("language");
-    Language language = entityId == null ? null : baseDAO.getLanguage(entityId);
+    Language language = entityId == null ? null : languageDAO.findById(entityId);
 
     entityId = requestContext.getLong("municipality");
-    Municipality municipality = entityId == null ? null : baseDAO.getMunicipality(entityId);
+    Municipality municipality = entityId == null ? null : municipalityDAO.findById(entityId);
 
     entityId = requestContext.getLong("activityType");
-    StudentActivityType activityType = entityId == null ? null : studentDAO.getStudentActivityType(entityId);
+    StudentActivityType activityType = entityId == null ? null : activityTypeDAO.findById(entityId);
 
     entityId = requestContext.getLong("examinationType");
-    StudentExaminationType examinationType = entityId == null ? null : studentDAO.getStudentExaminationType(entityId);
+    StudentExaminationType examinationType = entityId == null ? null : examinationTypeDAO.findById(entityId);
 
     entityId = requestContext.getLong("educationalLevel");
-    StudentEducationalLevel educationalLevel = entityId == null ? null : studentDAO
-        .getStudentEducationalLevel(entityId);
+    StudentEducationalLevel educationalLevel = entityId == null ? null : educationalLevelDAO.findById(entityId);
 
     entityId = requestContext.getLong("nationality");
-    Nationality nationality = entityId == null ? null : baseDAO.getNationality(entityId);
+    Nationality nationality = entityId == null ? null : nationalityDAO.findById(entityId);
 
     entityId = requestContext.getLong("school");
-    School school = entityId != null && entityId > 0 ? baseDAO.getSchool(entityId) : null;
+    School school = entityId != null && entityId > 0 ? schoolDAO.findById(entityId) : null;
 
     entityId = requestContext.getLong("studyProgramme");
-    StudyProgramme studyProgramme = entityId != null && entityId > 0 ? baseDAO.getStudyProgramme(entityId) : null;
+    StudyProgramme studyProgramme = entityId != null && entityId > 0 ? studyProgrammeDAO.findById(entityId) : null;
 
     entityId = requestContext.getLong("studyEndReason");
-    StudentStudyEndReason studyEndReason = entityId == null ? null : studentDAO.getStudentStudyEndReason(entityId);
+    StudentStudyEndReason studyEndReason = entityId == null ? null : studyEndReasonDAO.findById(entityId);
 
-    AbstractStudent abstractStudent = studentDAO.getAbstractStudentBySSN(ssecId);
+    AbstractStudent abstractStudent = abstractStudentDAO.findBySSN(ssecId);
     if (abstractStudent == null) {
-      abstractStudent = studentDAO.createAbstractStudent(birthday, ssecId, sex, basicInfo);
+      abstractStudent = abstractStudentDAO.create(birthday, ssecId, sex, basicInfo);
     }
     else {
-      studentDAO.updateAbstractStudent(abstractStudent, birthday, ssecId, sex, basicInfo);
+      abstractStudentDAO.update(abstractStudent, birthday, ssecId, sex, basicInfo);
     }
     
-    Student student = studentDAO.createStudent(abstractStudent, firstName, lastName, nickname, additionalInfo,
+    Student student = studentDAO.create(abstractStudent, firstName, lastName, nickname, additionalInfo,
         studyTimeEnd, activityType, examinationType, educationalLevel, education, nationality, municipality,
         language, school, studyProgramme, previousStudies, studyStartTime, studyEndTime, studyEndReason, studyEndText, lodging);
 
@@ -114,7 +145,7 @@ public class CreateStudentJSONRequestController implements JSONRequestController
     
     // Contact info
     
-    baseDAO.updateContactInfo(student.getContactInfo(), otherContactInfo);
+    contactInfoDAO.update(student.getContactInfo(), otherContactInfo);
 
     // Addresses
     
@@ -122,7 +153,7 @@ public class CreateStudentJSONRequestController implements JSONRequestController
     for (int i = 0; i < addressCount; i++) {
       String colPrefix = "addressTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String name = requestContext.getString(colPrefix + ".name");
       String street = requestContext.getString(colPrefix + ".street");
       String postal = requestContext.getString(colPrefix + ".postal");
@@ -130,7 +161,7 @@ public class CreateStudentJSONRequestController implements JSONRequestController
       String country = requestContext.getString(colPrefix + ".country");
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (hasAddress) {
-        baseDAO.createAddress(student.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
+        addressDAO.create(student.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
       }
     }
     
@@ -140,10 +171,10 @@ public class CreateStudentJSONRequestController implements JSONRequestController
     for (int i = 0; i < emailCount; i++) {
       String colPrefix = "emailTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String email = requestContext.getString(colPrefix + ".email");
       if (email != null) {
-        baseDAO.createEmail(student.getContactInfo(), contactType, defaultAddress, email);
+        emailDAO.create(student.getContactInfo(), contactType, defaultAddress, email);
       }
     }
     
@@ -153,10 +184,10 @@ public class CreateStudentJSONRequestController implements JSONRequestController
     for (int i = 0; i < phoneCount; i++) {
       String colPrefix = "phoneTable." + i;
       Boolean defaultNumber = requestContext.getBoolean(colPrefix + ".defaultNumber");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String number = requestContext.getString(colPrefix + ".phone");
       if (number != null) {
-        baseDAO.createPhoneNumber(student.getContactInfo(), contactType, defaultNumber, number);
+        phoneNumberDAO.create(student.getContactInfo(), contactType, defaultNumber, number);
       }
     }
     
@@ -168,7 +199,7 @@ public class CreateStudentJSONRequestController implements JSONRequestController
         String colPrefix = "variablesTable." + i;
         String variableKey = requestContext.getRequest().getParameter(colPrefix + ".key");
         String variableValue = requestContext.getRequest().getParameter(colPrefix + ".value");
-        studentDAO.setStudentVariable(student, variableKey, variableValue);
+        studentVariableDAO.setStudentVariable(student, variableKey, variableValue);
       }
     }
     

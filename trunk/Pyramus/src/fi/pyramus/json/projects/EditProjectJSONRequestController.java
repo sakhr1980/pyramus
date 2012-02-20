@@ -9,34 +9,38 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.StaleObjectStateException;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.ProjectDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
+import fi.pyramus.dao.projects.ProjectModuleDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 
-public class EditProjectJSONRequestController implements JSONRequestController {
+public class EditProjectJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    ProjectModuleDAO projectModuleDAO = DAOFactory.getInstance().getProjectModuleDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
 
     // Project
 
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.findProjectById(projectId);
+    Project project = projectDAO.findById(projectId);
     
     // Version check
     Long version = jsonRequestContext.getLong("version"); 
@@ -45,11 +49,10 @@ public class EditProjectJSONRequestController implements JSONRequestController {
     
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
-    User user = userDAO.getUser(jsonRequestContext.getLoggedUserId());
+    User user = userDAO.findById(jsonRequestContext.getLoggedUserId());
     Long optionalStudiesLengthTimeUnitId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLengthTimeUnit"));
-    EducationalTimeUnit optionalStudiesLengthTimeUnit = baseDAO
-        .findEducationalTimeUnitById(optionalStudiesLengthTimeUnitId);
+    EducationalTimeUnit optionalStudiesLengthTimeUnit = educationalTimeUnitDAO.findById(optionalStudiesLengthTimeUnitId);
     Double optionalStudiesLength = NumberUtils.createDouble(jsonRequestContext.getRequest().getParameter(
         "optionalStudiesLength"));
     String tagsText = jsonRequestContext.getString("tags");
@@ -59,19 +62,19 @@ public class EditProjectJSONRequestController implements JSONRequestController {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    projectDAO.updateProject(project, name, description, optionalStudiesLength, optionalStudiesLengthTimeUnit, user);
+    projectDAO.update(project, name, description, optionalStudiesLength, optionalStudiesLengthTimeUnit, user);
 
     // Tags
 
-    projectDAO.setProjectTags(project, tagEntities);
+    projectDAO.updateTags(project, tagEntities);
 
     // Project modules
 
@@ -86,20 +89,20 @@ public class EditProjectJSONRequestController implements JSONRequestController {
           colPrefix + ".projectModuleId"));
       if (projectModuleId == -1) {
         Long moduleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".moduleId"));
-        Module module = moduleDAO.getModule(moduleId);
-        projectModuleId = projectDAO.createProjectModule(project, module,
+        Module module = moduleDAO.findById(moduleId);
+        projectModuleId = projectModuleDAO.create(project, module,
             ProjectModuleOptionality.getOptionality(optionality)).getId();
       }
       else {
-        projectDAO.updateProjectModule(projectDAO.getProjectModule(projectModuleId), ProjectModuleOptionality
+        projectModuleDAO.update(projectModuleDAO.findById(projectModuleId), ProjectModuleOptionality
             .getOptionality(optionality));
       }
       existingIds.add(projectModuleId);
     }
-    List<ProjectModule> projectModules = projectDAO.listProjectModules(projectId);
+    List<ProjectModule> projectModules = projectModuleDAO.listByProject(project);
     for (ProjectModule projectModule : projectModules) {
       if (!existingIds.contains(projectModule.getId())) {
-        projectDAO.deleteProjectModule(projectModule);
+        projectModuleDAO.delete(projectModule);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

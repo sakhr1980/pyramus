@@ -9,17 +9,19 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -27,11 +29,13 @@ import fi.pyramus.persistence.search.SearchResult;
  * 
  * @see fi.pyramus.views.modules.SearchModulesViewController
  */
-public class SearchModulesJSONRequestController implements JSONRequestController {
+public class SearchModulesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
 
     Integer resultsPerPage = NumberUtils.createInteger(requestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -58,17 +62,17 @@ public class SearchModulesJSONRequestController implements JSONRequestController
       Subject subject = null;
       Long subjectId = requestContext.getLong("subject");
       if (subjectId != null)
-        subject = baseDAO.getSubject(subjectId);
+        subject = subjectDAO.findById(subjectId);
       
       EducationType educationType = null;
       Long educationTypeId = requestContext.getLong("educationType");
       if (educationTypeId != null)
-        educationType = baseDAO.getEducationType(educationTypeId);
+        educationType = educationTypeDAO.findById(educationTypeId);
 
       EducationSubtype educationSubtype = null;
       Long educationSubtypeId = requestContext.getLong("educationSubtype");
       if (educationSubtypeId != null)
-        educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
+        educationSubtype = educationSubtypeDAO.findById(educationSubtypeId);
 
       // Search via the DAO object
       searchResult = moduleDAO.searchModules(resultsPerPage, page, null, name, tags, description, null, null, null, subject, educationType, educationSubtype, true);

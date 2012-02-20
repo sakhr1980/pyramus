@@ -6,20 +6,20 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the View Student Group view of the application.
  */
-public class ViewStudentGroupViewController implements PyramusViewController, Breadcrumbable {
+public class ViewStudentGroupViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,11 +27,11 @@ public class ViewStudentGroupViewController implements PyramusViewController, Br
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
 
     // The student group to be edited
     
-    StudentGroup studentGroup = studentDAO.findStudentGroupById(pageRequestContext.getLong("studentgroup"));
+    StudentGroup studentGroup = studentGroupDAO.findById(pageRequestContext.getLong("studentgroup"));
     pageRequestContext.getRequest().setAttribute("studentGroup", studentGroup);
     
     List<StudentGroupStudent> studentGroupStudents = new ArrayList<StudentGroupStudent>(studentGroup.getStudents());

@@ -2,14 +2,14 @@ package fi.pyramus.views.users;
 
 import javax.servlet.http.HttpSession;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of logging the user out. 
  */
-public class LogoutViewController implements PyramusViewController {
+public class LogoutViewController extends PyramusViewController {
   
   /**
    * Processes the page request. Simply invalidates the session of the logged in user

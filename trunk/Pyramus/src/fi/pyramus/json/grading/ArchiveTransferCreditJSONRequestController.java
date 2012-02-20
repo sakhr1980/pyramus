@@ -1,20 +1,20 @@
 package fi.pyramus.json.grading;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.domainmodel.grading.TransferCredit;
-import fi.pyramus.json.JSONRequestController;
 
-public class ArchiveTransferCreditJSONRequestController implements JSONRequestController {
+public class ArchiveTransferCreditJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
     
     Long transferCreditId = jsonRequestContext.getLong("transferCreditId");
-    TransferCredit transferCredit = gradingDAO.findTransferCreditById(transferCreditId);
-    gradingDAO.archiveCredit(transferCredit);
+    TransferCredit transferCredit = transferCreditDAO.findById(transferCreditId);
+    transferCreditDAO.archive(transferCredit);
     
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));
   }

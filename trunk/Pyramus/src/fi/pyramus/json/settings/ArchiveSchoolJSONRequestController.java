@@ -2,20 +2,20 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.School;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.domainmodel.base.School;
 
-public class ArchiveSchoolJSONRequestController implements JSONRequestController {
+public class ArchiveSchoolJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
     Long schoolId = NumberUtils.createLong(requestContext.getRequest().getParameter("schoolId"));
-    School school = baseDAO.getSchool(schoolId);
-    baseDAO.archiveSchool(school);
+    School school = schoolDAO.findById(schoolId);
+    schoolDAO.archive(school);
   }
 
   public UserRole[] getAllowedRoles() {

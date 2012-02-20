@@ -9,10 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;

@@ -1,15 +1,15 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
 
 /**
  * The controller responsible of archiving. 
  */
-public class ArchiveCourseDescriptionCategoryJSONRequestController implements JSONRequestController {
+public class ArchiveCourseDescriptionCategoryJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to archive.
@@ -17,9 +17,9 @@ public class ArchiveCourseDescriptionCategoryJSONRequestController implements JS
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
     Long categoryId = jsonRequestContext.getLong("categoryId");
-    courseDAO.archiveCourseDescriptionCategory(courseDAO.findCourseDescriptionCategoryById(categoryId));
+    descriptionCategoryDAO.archive(descriptionCategoryDAO.findById(categoryId));
   }
 
   public UserRole[] getAllowedRoles() {

@@ -8,9 +8,18 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SchoolFieldDAO;
+import fi.pyramus.dao.base.SchoolVariableDAO;
+import fi.pyramus.dao.base.TagDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Email;
@@ -18,15 +27,13 @@ import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.SchoolField;
 import fi.pyramus.domainmodel.base.Tag;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * The controller responsible of creating a new school. 
  * 
  * @see fi.pyramus.views.settings.CreateSchoolViewController
  */
-public class EditSchoolJSONRequestController implements JSONRequestController {
+public class EditSchoolJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to create a new grading scale.
@@ -34,15 +41,22 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
    * @param requestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
+    SchoolVariableDAO schoolVariableDAO = DAOFactory.getInstance().getSchoolVariableDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
 
     Long schoolId = NumberUtils.createLong(requestContext.getRequest().getParameter("schoolId"));
-    School school = baseDAO.getSchool(schoolId);
+    School school = schoolDAO.findById(schoolId);
 
     Long schoolFieldId = requestContext.getLong("schoolFieldId");
     SchoolField schoolField = null;
     if ((schoolFieldId != null) && (schoolFieldId.intValue() >= 0))
-      schoolField = baseDAO.findSchoolFieldById(schoolFieldId);
+      schoolField = schoolFieldDAO.findById(schoolFieldId);
     
     String schoolCode = requestContext.getString("code");
     String schoolName = requestContext.getString("name");
@@ -53,19 +67,19 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    baseDAO.updateSchool(school, schoolCode, schoolName, schoolField);
+    schoolDAO.update(school, schoolCode, schoolName, schoolField);
 
     // Tags
 
-    baseDAO.setSchoolTags(school, tagEntities);
+    schoolDAO.updateTags(school, tagEntities);
 
     // Addresses
     
@@ -75,7 +89,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
       String colPrefix = "addressTable." + i;
       Long addressId = requestContext.getLong(colPrefix + ".addressId");
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String name = requestContext.getString(colPrefix + ".name");
       String street = requestContext.getString(colPrefix + ".street");
       String postal = requestContext.getString(colPrefix + ".postal");
@@ -83,14 +97,14 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
       String country = requestContext.getString(colPrefix + ".country");
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (addressId == -1 && hasAddress) {
-        Address address = baseDAO.createAddress(school.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
+        Address address = addressDAO.create(school.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
         existingAddresses.add(address.getId());
       }
       else if (addressId > 0) {
-        Address address = baseDAO.getAddressById(addressId);
+        Address address = addressDAO.findById(addressId);
         if (hasAddress) {
           existingAddresses.add(addressId);
-          baseDAO.updateAddress(address, defaultAddress, contactType, name, street, postal, city, country);
+          addressDAO.update(address, defaultAddress, contactType, name, street, postal, city, country);
         }
       }
     }
@@ -98,7 +112,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     for (int i = addresses.size() - 1; i >= 0; i--) {
       Address address = addresses.get(i);
       if (!existingAddresses.contains(address.getId())) {
-        baseDAO.removeAddress(address);
+        addressDAO.delete(address);
       }
     }
 
@@ -109,23 +123,23 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     for (int i = 0; i < emailCount; i++) {
       String colPrefix = "emailTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String email = requestContext.getString(colPrefix + ".email");
       Long emailId = requestContext.getLong(colPrefix + ".emailId");
       if (emailId == -1 && email != null) {
-        emailId = baseDAO.createEmail(school.getContactInfo(), contactType, defaultAddress, email).getId();
+        emailId = emailDAO.create(school.getContactInfo(), contactType, defaultAddress, email).getId();
         existingEmails.add(emailId);
       }
       else if (emailId > 0 && email != null) {
         existingEmails.add(emailId);
-        baseDAO.updateEmail(baseDAO.getEmailById(emailId), contactType, defaultAddress, email);
+        emailDAO.update(emailDAO.findById(emailId), contactType, defaultAddress, email);
       }
     }
     List<Email> emails = school.getContactInfo().getEmails();
     for (int i = emails.size() - 1; i >= 0; i--) {
       Email email = emails.get(i);
       if (!existingEmails.contains(email.getId())) {
-        baseDAO.removeEmail(email);
+        emailDAO.delete(email);
       }
     }
 
@@ -136,15 +150,15 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     for (int i = 0; i < phoneCount; i++) {
       String colPrefix = "phoneTable." + i;
       Boolean defaultNumber = requestContext.getBoolean(colPrefix + ".defaultNumber");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String number = requestContext.getString(colPrefix + ".phone");
       Long phoneId = requestContext.getLong(colPrefix + ".phoneId");
       if (phoneId == -1 && number != null) {
-        phoneId = baseDAO.createPhoneNumber(school.getContactInfo(), contactType, defaultNumber, number).getId();
+        phoneId = phoneNumberDAO.create(school.getContactInfo(), contactType, defaultNumber, number).getId();
         existingPhoneNumbers.add(phoneId);
       }
       else if (phoneId > 0 && number != null) {
-        baseDAO.updatePhoneNumber(baseDAO.getPhoneNumberById(phoneId), contactType, defaultNumber, number);
+        phoneNumberDAO.update(phoneNumberDAO.findById(phoneId), contactType, defaultNumber, number);
         existingPhoneNumbers.add(phoneId);
       }
     }
@@ -152,7 +166,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
     for (int i = phoneNumbers.size() - 1; i >= 0; i--) {
       PhoneNumber phoneNumber = phoneNumbers.get(i);
       if (!existingPhoneNumbers.contains(phoneNumber.getId())) {
-        baseDAO.removePhoneNumber(phoneNumber);
+        phoneNumberDAO.delete(phoneNumber);
       }
     }
     
@@ -163,7 +177,7 @@ public class EditSchoolJSONRequestController implements JSONRequestController {
       String colPrefix = "variablesTable." + i;
       String key = requestContext.getRequest().getParameter(colPrefix + ".key");
       String value = requestContext.getRequest().getParameter(colPrefix + ".value");
-      baseDAO.setSchoolVariable(school, key, value);
+      schoolVariableDAO.setVariable(school, key, value);
     }
   }
 

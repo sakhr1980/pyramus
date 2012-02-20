@@ -2,20 +2,20 @@ package fi.pyramus.json.courses;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.CourseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class ArchiveCourseJSONRequestController implements JSONRequestController {
+public class ArchiveCourseJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     Long courseId = NumberUtils.createLong(requestContext.getRequest().getParameter("courseId"));
-    Course course = courseDAO.getCourse(courseId);
-    courseDAO.archiveCourse(course);
+    Course course = courseDAO.findById(courseId);
+    courseDAO.archive(course);
   }
 
   public UserRole[] getAllowedRoles() {

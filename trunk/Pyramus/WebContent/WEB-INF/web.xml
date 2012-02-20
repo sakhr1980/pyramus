@@ -32,7 +32,7 @@
   </filter-mapping>
   <servlet>
     <servlet-name>pyramus</servlet-name>
-    <servlet-class>fi.pyramus.Servlet</servlet-class>
+    <servlet-class>fi.pyramus.DispatcherServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>pyramus</servlet-name>

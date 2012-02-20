@@ -2,12 +2,12 @@ package fi.pyramus.views.generic;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class SimpleDialogViewController implements PyramusViewController {
+public class SimpleDialogViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
     String localeId = requestContext.getString("localeId");

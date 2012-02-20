@@ -8,19 +8,19 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.binary.BinaryRequestController;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.Subject;
 
-public class SubjectsAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
     String text = binaryRequestContext.getString("text");
 
@@ -30,7 +30,7 @@ public class SubjectsAutoCompleteBinaryRequestController implements BinaryReques
     if (!StringUtils.isBlank(text)) {
       text = QueryParser.escape(StringUtils.trim(text)) + '*';
       
-      List<Subject> subjects = baseDAO.searchSubjectsBasic(100, 0, text).getResults();
+      List<Subject> subjects = subjectDAO.searchSubjectsBasic(100, 0, text).getResults();
       
       for (Subject subject : subjects) {
         addSubject(resultBuilder, subject, binaryRequestContext.getRequest().getLocale());
@@ -42,7 +42,7 @@ public class SubjectsAutoCompleteBinaryRequestController implements BinaryReques
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

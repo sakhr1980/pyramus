@@ -5,21 +5,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class SearchStudentGroupsViewController implements PyramusViewController, Breadcrumbable {
+public class SearchStudentGroupsViewController extends PyramusViewController implements Breadcrumbable {
 
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
-    List<User> users = userDAO.listUsers();
+    List<User> users = userDAO.listAll();
     
     Collections.sort(users, new Comparator<User>() {
       @Override

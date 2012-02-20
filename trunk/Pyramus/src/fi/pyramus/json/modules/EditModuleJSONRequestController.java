@@ -12,13 +12,22 @@ import java.util.Vector;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleObjectStateException;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.CourseEducationSubtypeDAO;
+import fi.pyramus.dao.base.CourseEducationTypeDAO;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
+import fi.pyramus.dao.courses.CourseDescriptionDAO;
+import fi.pyramus.dao.modules.ModuleComponentDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationSubtype;
@@ -30,24 +39,31 @@ import fi.pyramus.domainmodel.courses.CourseDescription;
 import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * The controller responsible of modifying an existing module. 
  * 
  * @see fi.pyramus.views.modules.EditModuleViewController
  */
-public class EditModuleJSONRequestController implements JSONRequestController {
+public class EditModuleJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
+    CourseDescriptionDAO courseDescriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    CourseEducationTypeDAO courseEducationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    CourseEducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getCourseEducationSubtypeDAO();
+    ModuleComponentDAO moduleComponentDAO = DAOFactory.getInstance().getModuleComponentDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
     Long moduleId = requestContext.getLong("moduleId");
     
-    Module module = moduleDAO.getModule(moduleId);
+    Module module = moduleDAO.findById(moduleId);
 
     Long version = requestContext.getLong("version");
     if (!module.getVersion().equals(version))
@@ -74,7 +90,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
 
     // Course Descriptions
     
-    List<CourseDescriptionCategory> descriptionCategories = courseDAO.listCourseDescriptionCategories();
+    List<CourseDescriptionCategory> descriptionCategories = descriptionCategoryDAO.listUnarchived();
     Set<CourseDescription> nonExistingDescriptions = new HashSet<CourseDescription>();
     
     for (CourseDescriptionCategory cat: descriptionCategories) {
@@ -82,14 +98,14 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       Long descriptionCatId = requestContext.getLong(varName + ".catId");
       String descriptionText = requestContext.getString(varName + ".text");
 
-      CourseDescription oldDesc = courseDAO.findCourseDescriptionByCourseAndCategory(module, cat);
+      CourseDescription oldDesc = courseDescriptionDAO.findByCourseAndCategory(module, cat);
 
       if ((descriptionCatId != null) && (descriptionCatId.intValue() != -1)) {
         // Description has been submitted from form 
         if (oldDesc != null)
-          courseDAO.updateCourseDescription(oldDesc, module, cat, descriptionText);
+          courseDescriptionDAO.update(oldDesc, module, cat, descriptionText);
         else
-          courseDAO.createCourseDescription(module, cat, descriptionText);
+          courseDescriptionDAO.create(module, cat, descriptionText);
       } else {
         // Description wasn't submitted from form, if it exists, it's marked for deletion 
         if (oldDesc != null)
@@ -99,7 +115,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     
     // Delete non existing descriptions
     for (CourseDescription desc: nonExistingDescriptions) {
-      courseDAO.deleteCourseDescription(desc);
+      courseDescriptionDAO.delete(desc);
     }
     
     // Remove education types and subtypes
@@ -108,7 +124,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     for (int i = courseEducationTypes.size() - 1; i >= 0; i--) {
       CourseEducationType courseEducationType = courseEducationTypes.get(i);
       if (!chosenEducationTypes.containsKey(courseEducationType.getEducationType().getId())) {
-        courseDAO.removeCourseEducationType(courseEducationType);
+        courseEducationTypeDAO.delete(courseEducationType);
       }
       else {
         Vector<Long> v = chosenEducationTypes.get(courseEducationType.getEducationType().getId());
@@ -125,10 +141,10 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     // Add education types and subtypes
 
     for (Long educationTypeId : chosenEducationTypes.keySet()) {
-      EducationType educationType = baseDAO.getEducationType(educationTypeId);
+      EducationType educationType = educationTypeDAO.findById(educationTypeId);
       CourseEducationType courseEducationType;
       if (!module.contains(educationType)) {
-        courseEducationType = courseDAO.addCourseEducationType(module, educationType);
+        courseEducationType = courseEducationTypeDAO.create(module, educationType);
       }
       else {
         courseEducationType = module.getCourseEducationTypeByEducationTypeId(educationTypeId);
@@ -136,7 +152,7 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       for (Long educationSubtypeId : chosenEducationTypes.get(educationTypeId)) {
         EducationSubtype educationSubtype = educationType.getEducationSubtypeById(educationSubtypeId);
         if (!courseEducationType.contains(educationSubtype)) {
-          courseDAO.addCourseEducationSubtype(courseEducationType, educationSubtype);
+          educationSubtypeDAO.create(courseEducationType, educationSubtype);
         }
       }
     }
@@ -152,14 +168,14 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       Long componentId = requestContext.getLong(colPrefix + ".componentId");
 
       // TODO Component length; should be just hours but it currently depends on the default time unit - ok?  
-      EducationalTimeUnit componentTimeUnit = baseDAO.getDefaults().getBaseTimeUnit();
+      EducationalTimeUnit componentTimeUnit = defaultsDAO.getDefaults().getBaseTimeUnit();
 
       if (componentId == -1) {
-        componentId = moduleDAO.createModuleComponent(module, componentLength, componentTimeUnit, componentName,
+        componentId = moduleComponentDAO.create(module, componentLength, componentTimeUnit, componentName,
             componentDescription).getId();
       }
       else {
-        moduleDAO.updateModuleComponent(moduleDAO.getModuleComponent(componentId), componentLength, componentTimeUnit,
+        moduleComponentDAO.update(moduleComponentDAO.findById(componentId), componentLength, componentTimeUnit,
             componentName, componentDescription);
       }
     }
@@ -167,11 +183,11 @@ public class EditModuleJSONRequestController implements JSONRequestController {
     // Module basic information
 
     Long subjectId = requestContext.getLong("subject");
-    Subject subject = baseDAO.getSubject(subjectId);
+    Subject subject = subjectDAO.findById(subjectId);
     Integer courseNumber = requestContext.getInteger("courseNumber");
     String name = requestContext.getString("name");
     String description = requestContext.getString("description");
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
     Double moduleLength = requestContext.getDouble("moduleLength");
     Long moduleLengthTimeUnitId = requestContext.getLong("moduleLengthTimeUnit");
     Long maxParticipantCount = requestContext.getLong("maxParticipantCount");
@@ -182,22 +198,22 @@ public class EditModuleJSONRequestController implements JSONRequestController {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    EducationalTimeUnit moduleLengthTimeUnit = baseDAO.findEducationalTimeUnitById(moduleLengthTimeUnitId);
+    EducationalTimeUnit moduleLengthTimeUnit = educationalTimeUnitDAO.findById(moduleLengthTimeUnitId);
 
     
-    moduleDAO.updateModule(module, name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, maxParticipantCount, loggedUser);
+    moduleDAO.update(module, name, subject, courseNumber, moduleLength, moduleLengthTimeUnit, description, maxParticipantCount, loggedUser);
 
     // Tags
 
-    moduleDAO.setModuleTags(module, tagEntities);
+    moduleDAO.updateTags(module, tagEntities);
     
     requestContext.setRedirectURL(requestContext.getReferer(true));
   }

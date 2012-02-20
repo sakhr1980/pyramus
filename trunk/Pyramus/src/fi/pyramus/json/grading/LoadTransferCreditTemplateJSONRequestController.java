@@ -5,22 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
-import fi.pyramus.json.JSONRequestController;
 
-public class LoadTransferCreditTemplateJSONRequestController implements JSONRequestController {
+public class LoadTransferCreditTemplateJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
+
     Long transferCreditTemplateId = jsonRequestContext.getLong("transferCreditTemplateId");
-    TransferCreditTemplate transferCreditTemplate = gradingDAO.findTransferCreditTemplateById(transferCreditTemplateId);
+    TransferCreditTemplate transferCreditTemplate = transferCreditTemplateDAO.findById(transferCreditTemplateId);
     
     List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
     

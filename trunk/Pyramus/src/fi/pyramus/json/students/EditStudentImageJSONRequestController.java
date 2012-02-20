@@ -2,20 +2,21 @@ package fi.pyramus.json.students;
 
 import org.apache.commons.fileupload.FileItem;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentImage;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
 /**
  * The controller responsible of modifying an existing student group.
  * 
  * @see fi.pyramus.views.students.EditStudentGroupViewController
  */
-public class EditStudentImageJSONRequestController implements JSONRequestController {
+public class EditStudentImageJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to edit a student group.
@@ -25,13 +26,14 @@ public class EditStudentImageJSONRequestController implements JSONRequestControl
    */
   public void process(JSONRequestContext requestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentImageDAO imageDAO = DAOFactory.getInstance().getStudentImageDAO();
 
     String deleteImage = requestContext.getString("deleteImage");
     Long studentId = requestContext.getLong("studentId");
     FileItem studentImage = requestContext.getFile("studentImage");
 
-    Student student = studentDAO.getStudent(studentId);
-    StudentImage oldImage = studentDAO.findStudentImageByStudent(student);
+    Student student = studentDAO.findById(studentId);
+    StudentImage oldImage = imageDAO.findByStudent(student);
     
     if (deleteImage == null) {
       if (studentImage != null) {
@@ -39,13 +41,13 @@ public class EditStudentImageJSONRequestController implements JSONRequestControl
         byte[] data = studentImage.get();
         
         if (oldImage != null) {
-          studentDAO.updateStudentImage(oldImage, contentType, data);
+          imageDAO.update(oldImage, contentType, data);
         } else {
-          studentDAO.createStudentImage(student, contentType, data);
+          imageDAO.create(student, contentType, data);
         }
       }
     } else {
-      studentDAO.deleteStudentImage(oldImage);
+      imageDAO.delete(oldImage);
     }
   }
 

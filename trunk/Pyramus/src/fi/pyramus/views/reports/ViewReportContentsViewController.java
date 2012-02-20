@@ -7,20 +7,21 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.domainmodel.users.Role;
 
 /**
  * The controller responsible of the List Reports view.
  */
-public class ViewReportContentsViewController implements PyramusViewController, Breadcrumbable {
+public class ViewReportContentsViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -28,8 +29,8 @@ public class ViewReportContentsViewController implements PyramusViewController, 
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
+    MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+
     Long reportId = pageRequestContext.getLong("reportId");
     String reportsContextPath = System.getProperty("reports.contextPath");
     String outputMethod = "preview"; // output or preview
@@ -41,7 +42,7 @@ public class ViewReportContentsViewController implements PyramusViewController, 
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
     
-    MagicKey magicKey = baseDAO.createMagicKey(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
     
     StringBuilder urlBuilder = new StringBuilder()
       .append(reportsContextPath)
@@ -63,7 +64,7 @@ public class ViewReportContentsViewController implements PyramusViewController, 
             urlBuilder.append('&').append(parameterName).append('=').append(URLEncoder.encode(value, "ISO-8859-1"));
           }
           catch (UnsupportedEncodingException e) {
-            throw new PyramusRuntimeException(e);
+            throw new SmvcRuntimeException(e);
           }
         }
       }

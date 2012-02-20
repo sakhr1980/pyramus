@@ -1,20 +1,28 @@
 package fi.pyramus.views.resources;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.util.StringAttributeComparator;
 
-public class CreateMaterialResourceViewController implements PyramusViewController, Breadcrumbable {
+public class CreateMaterialResourceViewController extends PyramusViewController implements Breadcrumbable {
 
   public void process(PageRequestContext pageRequestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
-    pageRequestContext.getRequest().setAttribute("categories", resourceDAO.listResourceCategories());
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
+
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+
+    pageRequestContext.getRequest().setAttribute("categories", resourceCategories);
     pageRequestContext.setIncludeJSP("/templates/resources/creatematerialresource.jsp");
   }
 

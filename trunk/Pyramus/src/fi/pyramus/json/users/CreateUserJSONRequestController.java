@@ -7,19 +7,22 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
@@ -29,7 +32,7 @@ import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
  * 
  * @see fi.pyramus.views.users.CreateUserViewController
  */
-public class CreateUserJSONRequestController implements JSONRequestController {
+public class CreateUserJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to create a new user. Simply gathers the fields submitted from the
@@ -38,8 +41,12 @@ public class CreateUserJSONRequestController implements JSONRequestController {
    * @param requestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
 
     // Fields from the web page
 
@@ -58,9 +65,9 @@ public class CreateUserJSONRequestController implements JSONRequestController {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
@@ -80,7 +87,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
       if (!usernameBlank||!passwordBlank) {
         if (!passwordBlank) {
           if (!password.equals(password2))
-            throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.PASSWORD_MISMATCH, "Passwords don't match");
+            throw new SmvcRuntimeException(PyramusStatusCode.PASSWORD_MISMATCH, "Passwords don't match");
         }
 
         externalId = internalAuthenticationProvider.createCredentials(username, password);
@@ -89,13 +96,13 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     
     // User
 
-    User user = userDAO.createUser(firstName, lastName, externalId, authProvider, role);
+    User user = userDAO.create(firstName, lastName, externalId, authProvider, role);
     if (title != null)
-      userDAO.updateUserTitle(user, title);
+      userDAO.updateTitle(user, title);
     
     // Tags
     
-    userDAO.setUserTags(user, tagEntities);
+    userDAO.updateTags(user, tagEntities);
     
     // Addresses
     
@@ -103,7 +110,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     for (int i = 0; i < addressCount; i++) {
       String colPrefix = "addressTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String name = requestContext.getString(colPrefix + ".name");
       String street = requestContext.getString(colPrefix + ".street");
       String postal = requestContext.getString(colPrefix + ".postal");
@@ -111,7 +118,7 @@ public class CreateUserJSONRequestController implements JSONRequestController {
       String country = requestContext.getString(colPrefix + ".country");
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (hasAddress) {
-        baseDAO.createAddress(user.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
+        addressDAO.create(user.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
       }
     }
     
@@ -121,10 +128,10 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     for (int i = 0; i < emailCount; i++) {
       String colPrefix = "emailTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String email = requestContext.getString(colPrefix + ".email");
       if (email != null) {
-        baseDAO.createEmail(user.getContactInfo(), contactType, defaultAddress, email);
+        emailDAO.create(user.getContactInfo(), contactType, defaultAddress, email);
       }
     }
     
@@ -134,10 +141,10 @@ public class CreateUserJSONRequestController implements JSONRequestController {
     for (int i = 0; i < phoneCount; i++) {
       String colPrefix = "phoneTable." + i;
       Boolean defaultNumber = requestContext.getBoolean(colPrefix + ".defaultNumber");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String number = requestContext.getString(colPrefix + ".phone");
       if (number != null) {
-        baseDAO.createPhoneNumber(user.getContactInfo(), contactType, defaultNumber, number);
+        phoneNumberDAO.create(user.getContactInfo(), contactType, defaultNumber, number);
       }
     }
     

@@ -7,18 +7,18 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.binary.BinaryRequestController;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.domainmodel.base.School;
 
-public class SchoolsAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class SchoolsAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
 
     String text = binaryRequestContext.getString("text");
 
@@ -28,7 +28,7 @@ public class SchoolsAutoCompleteBinaryRequestController implements BinaryRequest
     if (!StringUtils.isBlank(text)) {
       text = QueryParser.escape(StringUtils.trim(text)) + '*';
       
-      List<School> schools = baseDAO.searchSchoolsBasic(100, 0, text).getResults();
+      List<School> schools = schoolDAO.searchSchoolsBasic(100, 0, text).getResults();
       
       for (School school : schools) {
         addSchool(resultBuilder, school);
@@ -40,7 +40,7 @@ public class SchoolsAutoCompleteBinaryRequestController implements BinaryRequest
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

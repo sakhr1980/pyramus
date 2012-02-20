@@ -5,19 +5,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ReportDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the List Reports view.
  */
-public class ListReportsViewController implements PyramusViewController, Breadcrumbable {
+public class ListReportsViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,7 +27,7 @@ public class ListReportsViewController implements PyramusViewController, Breadcr
   public void process(PageRequestContext pageRequestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
 
-    List<Report> reports = reportDAO.listReports();
+    List<Report> reports = reportDAO.listAll();
     Collections.sort(reports, new Comparator<Report>() {
       @Override
       public int compare(Report o1, Report o2) {

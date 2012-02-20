@@ -9,13 +9,19 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
+import fi.pyramus.dao.courses.CourseDescriptionDAO;
+import fi.pyramus.dao.modules.ModuleComponentDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
@@ -23,16 +29,15 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Module view of the application.
  * 
  * @see fi.pyramus.json.users.EditModuleJSONRequestController
  */
-public class EditModuleViewController implements PyramusViewController, Breadcrumbable {
+public class EditModuleViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -49,12 +54,16 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    CourseDescriptionDAO descriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
+    ModuleComponentDAO moduleComponentDAO = DAOFactory.getInstance().getModuleComponentDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
     Long moduleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("module"));
-    Module module = moduleDAO.getModule(moduleId);
+    Module module = moduleDAO.findById(moduleId);
     
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = module.getTags().iterator();
@@ -66,7 +75,7 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     }
 
     
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
@@ -80,18 +89,18 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     
     // Subjects
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
-    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    List<Subject> subjectsByNoEducationType = subjectDAO.listByEducationType(null);
     Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
     
     for (EducationType educationType : educationTypes) {
-      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      List<Subject> subjectsOfType = subjectDAO.listByEducationType(educationType);
       if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
         Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
       }
     }
 
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
@@ -99,10 +108,10 @@ public class EditModuleViewController implements PyramusViewController, Breadcru
     pageRequestContext.getRequest().setAttribute("subjectsByNoEducationType", subjectsByNoEducationType);
     pageRequestContext.getRequest().setAttribute("subjectsByEducationType", subjectsByEducationType);
     pageRequestContext.getRequest().setAttribute("moduleLengthTimeUnits", educationalTimeUnits);
-    pageRequestContext.getRequest().setAttribute("moduleComponents", moduleDAO.listModuleComponents(module));
+    pageRequestContext.getRequest().setAttribute("moduleComponents", moduleComponentDAO.listByModule(module));
     pageRequestContext.getRequest().setAttribute("enabledEducationTypes", enabledEducationTypes);
-    pageRequestContext.getRequest().setAttribute("courseDescriptions", courseDAO.listCourseDescriptionsByCourseBase(module));
-    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
+    pageRequestContext.getRequest().setAttribute("courseDescriptions", descriptionDAO.listByCourseBase(module));
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", descriptionCategoryDAO.listUnarchived());
     pageRequestContext.setIncludeJSP("/templates/modules/editmodule.jsp");
   }
 

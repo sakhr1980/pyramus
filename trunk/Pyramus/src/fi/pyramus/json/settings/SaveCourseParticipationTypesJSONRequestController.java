@@ -1,21 +1,20 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
-import fi.pyramus.json.JSONRequestController;
 
-public class SaveCourseParticipationTypesJSONRequestController implements JSONRequestController {
+public class SaveCourseParticipationTypesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
     CourseParticipationType initialCourseParticipationType = null;
     
@@ -30,25 +29,25 @@ public class SaveCourseParticipationTypesJSONRequestController implements JSONRe
       String name = jsonRequestContext.getString(colPrefix + ".name");
       
       if (id == -1) {
-        courseParticipationType = courseDAO.createCourseParticipationType(name); 
+        courseParticipationType = participationTypeDAO.create(name); 
       }
       else {
-        courseParticipationType = courseDAO.getCourseParticipationType(id);
-        courseDAO.updateCourseParticipationType(courseParticipationType, name);
+        courseParticipationType = participationTypeDAO.findById(id);
+        participationTypeDAO.update(courseParticipationType, name);
       }
       
 
       if (initialType) {
         if (initialCourseParticipationType != null)
-          throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "Two or more initial course participation types defined");
+          throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED, "Two or more initial course participation types defined");
         
         initialCourseParticipationType = courseParticipationType;
       }
     }
     
     if (initialCourseParticipationType != null) {
-      if (!initialCourseParticipationType.equals(baseDAO.getDefaults().getInitialCourseParticipationType())) {
-        baseDAO.updateInitialCourseParticipationType(initialCourseParticipationType);
+      if (!initialCourseParticipationType.equals(defaultsDAO.getDefaults().getInitialCourseParticipationType())) {
+        defaultsDAO.updateInitialCourseParticipationType(initialCourseParticipationType);
       }
         
     }

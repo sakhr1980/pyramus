@@ -1,19 +1,19 @@
 package fi.pyramus.json.courses;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.CourseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.courses.CourseComponentResource;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.courses.CourseComponentResourceDAO;
+import fi.pyramus.domainmodel.courses.CourseComponentResource;
 
-public class DeleteCourseComponentResourceJSONRequestController implements JSONRequestController {
+public class DeleteCourseComponentResourceJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseComponentResourceDAO componentDAO = DAOFactory.getInstance().getCourseComponentResourceDAO();
     Long componentResourceId = requestContext.getLong("courseComponentResourceId");    
-    CourseComponentResource componentResource = courseDAO.findComponentResourceById(componentResourceId);
-    courseDAO.deleteCourseComponentResource(componentResource);
+    CourseComponentResource componentResource = componentDAO.findById(componentResourceId);
+    componentDAO.delete(componentResource);
   }
 
   public UserRole[] getAllowedRoles() {

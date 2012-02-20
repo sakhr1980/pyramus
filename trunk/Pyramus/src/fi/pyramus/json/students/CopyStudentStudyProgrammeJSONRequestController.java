@@ -6,10 +6,15 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactInfoDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.Language;
@@ -24,17 +29,18 @@ import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
 import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class CopyStudentStudyProgrammeJSONRequestController implements JSONRequestController {
+public class CopyStudentStudyProgrammeJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    ContactInfoDAO contactInfoDAO = DAOFactory.getInstance().getContactInfoDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
 
     Long studentId = NumberUtils.createLong(requestContext.getRequest().getParameter("studentId"));
-    Student oldStudent = studentDAO.getStudent(studentId);
+    Student oldStudent = studentDAO.findById(studentId);
 
     AbstractStudent abstractStudent = oldStudent.getAbstractStudent();
     String firstName = oldStudent.getFirstName();
@@ -58,20 +64,20 @@ public class CopyStudentStudyProgrammeJSONRequestController implements JSONReque
     StudentStudyEndReason studyEndReason = null; // student.getStudyEndReason();
     Boolean lodging = false; // oldStudent.getLodging();
 
-    Student newStudent = studentDAO.createStudent(abstractStudent, firstName, lastName, nickname, additionalInfo, studyTimeEnd,
+    Student newStudent = studentDAO.create(abstractStudent, firstName, lastName, nickname, additionalInfo, studyTimeEnd,
         activityType, examinationType, educationalLevel, education, nationality, municipality, language, school, studyProgramme, previousStudies,
         studyStartTime, studyEndTime, studyEndReason, studyEndText, lodging);
     
     // Contact info
     
-    baseDAO.updateContactInfo(newStudent.getContactInfo(), oldStudent.getContactInfo().getAdditionalInfo());
+    contactInfoDAO.update(newStudent.getContactInfo(), oldStudent.getContactInfo().getAdditionalInfo());
 
     // Addresses
 
     List<Address> addresses = oldStudent.getContactInfo().getAddresses();
     for (int i = 0; i < addresses.size(); i++) {
       Address add = addresses.get(i);
-      baseDAO.createAddress(newStudent.getContactInfo(), add.getContactType(), add.getName(), add.getStreetAddress(), add.getPostalCode(), add.getCity(),
+      addressDAO.create(newStudent.getContactInfo(), add.getContactType(), add.getName(), add.getStreetAddress(), add.getPostalCode(), add.getCity(),
           add.getCountry(), add.getDefaultAddress());
     }
 
@@ -80,7 +86,7 @@ public class CopyStudentStudyProgrammeJSONRequestController implements JSONReque
     List<Email> emails = oldStudent.getContactInfo().getEmails();
     for (int i = 0; i < emails.size(); i++) {
       Email email = emails.get(i);
-      baseDAO.createEmail(newStudent.getContactInfo(), email.getContactType(), email.getDefaultAddress(), email.getAddress());
+      emailDAO.create(newStudent.getContactInfo(), email.getContactType(), email.getDefaultAddress(), email.getAddress());
     }
     
     // Phone numbers
@@ -88,7 +94,7 @@ public class CopyStudentStudyProgrammeJSONRequestController implements JSONReque
     List<PhoneNumber> phoneNumbers = oldStudent.getContactInfo().getPhoneNumbers();
     for (int i = 0; i < phoneNumbers.size(); i++) {
       PhoneNumber phoneNumber = phoneNumbers.get(i);
-      baseDAO.createPhoneNumber(newStudent.getContactInfo(), phoneNumber.getContactType(), phoneNumber.getDefaultNumber(), phoneNumber.getNumber());
+      phoneNumberDAO.create(newStudent.getContactInfo(), phoneNumber.getContactType(), phoneNumber.getDefaultNumber(), phoneNumber.getNumber());
     }
 
     String redirectURL = requestContext.getRequest().getContextPath() + "/students/editstudent.page?student=" + newStudent.getAbstractStudent().getId();

@@ -1,20 +1,20 @@
 package fi.pyramus.json.projects;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.domainmodel.projects.Project;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class ArchiveProjectJSONRequestController implements JSONRequestController {
+public class ArchiveProjectJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
     Long projectId = requestContext.getLong("projectId");
-    Project project = projectDAO.findProjectById(projectId);
-    projectDAO.archiveProject(project);
+    Project project = projectDAO.findById(projectId);
+    projectDAO.archive(project);
   }
 
   public UserRole[] getAllowedRoles() {

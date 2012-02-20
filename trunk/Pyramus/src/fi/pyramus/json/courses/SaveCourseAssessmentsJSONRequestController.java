@@ -2,28 +2,29 @@ package fi.pyramus.json.courses;
 
 import java.util.Date;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * The controller responsible of modifying an existing course. 
  * 
  * @see fi.pyramus.views.modules.EditCourseViewController
  */
-public class SaveCourseAssessmentsJSONRequestController implements JSONRequestController {
+public class SaveCourseAssessmentsJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to edit a course.
@@ -31,9 +32,11 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
    * @param requestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
 
     int rowCount = requestContext.getInteger("studentsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -44,20 +47,20 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
         continue;
       
       Long courseStudentId = requestContext.getLong(colPrefix + ".courseStudentId");
-      CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
+      CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
 
       if (courseStudent != null) {
         Long assessingUserId = requestContext.getLong(colPrefix + ".assessingUserId");
-        User assessingUser = userDAO.getUser(assessingUserId);
+        User assessingUser = userDAO.findById(assessingUserId);
         Long gradeId = requestContext.getLong(colPrefix + ".gradeId");
-        Grade grade = gradeId == null ? null : gradingDAO.findGradeById(gradeId);
+        Grade grade = gradeId == null ? null : gradeDAO.findById(gradeId);
         Date assessmentDate = requestContext.getDate(colPrefix + ".assessmentDate");
 
         Long participationTypeId = requestContext.getLong(colPrefix + ".participationType");
-        CourseParticipationType participationType = courseDAO.getCourseParticipationType(participationTypeId);
+        CourseParticipationType participationType = participationTypeDAO.findById(participationTypeId);
         String verbalAssessment = null;
 
-        CourseAssessment assessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
+        CourseAssessment assessment = courseAssessmentDAO.findByCourseStudent(courseStudent);
 
         Long verbalModified = requestContext.getLong(colPrefix + ".verbalModified");
         if ((verbalModified != null) && (verbalModified.intValue() == 1)) {
@@ -68,17 +71,17 @@ public class SaveCourseAssessmentsJSONRequestController implements JSONRequestCo
         }
 
         if (assessment != null) {
-          assessment = gradingDAO.updateCourseAssessment(assessment, assessingUser, grade, assessmentDate, verbalAssessment);
+          assessment = courseAssessmentDAO.update(assessment, assessingUser, grade, assessmentDate, verbalAssessment);
         } else {
-          assessment = gradingDAO.createCourseAssessment(courseStudent, assessingUser, grade, assessmentDate, verbalAssessment);
+          assessment = courseAssessmentDAO.create(courseStudent, assessingUser, grade, assessmentDate, verbalAssessment);
         }
 
         // Update Participation type
-        courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), 
+        courseStudentDAO.update(courseStudent, courseStudent.getStudent(), 
             courseStudent.getCourseEnrolmentType(), participationType, courseStudent.getEnrolmentTime(), 
             courseStudent.getLodging(), courseStudent.getOptionality());
       } else
-        throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "CourseStudent was not defined");
+        throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED, "CourseStudent was not defined");
     }
     requestContext.setRedirectURL(requestContext.getReferer(true));
   }

@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.JavaScriptMessages;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class GetJavaScriptLocaleJSONRequestController implements JSONRequestController {
+public class GetJavaScriptLocaleJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     Map<String, String> localeStrings = new HashMap<String, String>();

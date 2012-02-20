@@ -2,11 +2,11 @@ package fi.pyramus.views.system;
 
 import java.io.IOException;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusFormViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.util.DataImporter;
-import fi.pyramus.views.PyramusFormViewController;
 
 public class ImportDataViewController extends PyramusFormViewController {
 
@@ -21,7 +21,7 @@ public class ImportDataViewController extends PyramusFormViewController {
     try {
       dataImporter.importDataFromStream(requestContext.getFile("file").getInputStream(), null);
     } catch (IOException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     
     requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/index.page");

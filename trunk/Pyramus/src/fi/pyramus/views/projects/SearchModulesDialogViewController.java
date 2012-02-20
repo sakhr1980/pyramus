@@ -1,13 +1,13 @@
 package fi.pyramus.views.projects;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Search Modules dialog of the application.
  */
-public class SearchModulesDialogViewController implements PyramusViewController {
+public class SearchModulesDialogViewController extends PyramusViewController {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.

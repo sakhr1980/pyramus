@@ -11,12 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.internetix.smvc.controllers.RequestContext;
+import fi.internetix.smvc.controllers.RequestController;
+import fi.internetix.smvc.controllers.RequestControllerMapper;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.breadcrumbs.BreadcrumbHandler;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.json.JSONRequestController;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The main servlet of the Pyramus application, responsible of handling all application requests and
@@ -48,127 +52,127 @@ public class Servlet extends HttpServlet {
   @Override
   protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
       java.io.IOException {
-    
-    RequestContext requestContext = null;
-    
-    // Start a transaction for the request
-
-    try {
-      userTransaction.begin();
-      entityManager.setFlushMode(FlushModeType.COMMIT);
-    }
-    catch (Exception e) {
-      throw new ServletException(e);
-    } 
-    
-    try {
-
-      // Request controller
-
-      RequestController requestController = RequestControllerMapper.getRequestController(request);
-      if (requestController == null) {
-        throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNDEFINED,
-            "No registered request controller for " + request.getRequestURI());
-      }
-
-      // Request context
-      
-      requestContext = requestContextFactory.createRequestContext(requestController, request, response);
-
-      // First check that the user is authorized to access the controller.
-
-      boolean authorized = authorized(requestContext, requestController);
-      if (authorized && requestController instanceof CustomAuthorizationSupport) {
-        CustomAuthorizationSupport customAuthorizationSupport = (CustomAuthorizationSupport) requestController;
-        authorized = customAuthorizationSupport.authorize(requestContext);
-      }
-
-      // If the user is not allowed to access the request controller, either send a
-      // HTTP 403 (Forbidden) or when not logged in and trying to access a page,
-      // redirect them to the login page 
-
-      if (!authorized) {
-        if (!requestContext.isLoggedIn()) { 
-          if (requestController instanceof PyramusViewController) {
-            HttpSession session = requestContext.getRequest().getSession(true);
-            session.setAttribute("loginFollowupURL", getURL(requestContext.getRequest()));
-            response.sendRedirect(request.getContextPath() + "/users/login.page");
-          } else {
-            requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.notLoggedIn"));
-          }
-        } else {
-          requestContext.setErrorStatus(ErrorLevel.INFORMATION, StatusCode.PERMISSION_DENIED, Messages.getInstance().getText(request.getLocale(), "generic.errors.permissionDenied"));
-        }
-      }
-      else {
-
-        // Process the request
-  
-        try {
-          if (requestController instanceof PyramusViewController) {
-            
-            // Handle breadcrumbs for get requests
-  
-            BreadcrumbHandler breadcrumbHandler = getBreadcrumbHandler(request);
-            if (request.getParameter("resetbreadcrumb") != null) {
-              breadcrumbHandler.clear();
-            }
-            if (requestController instanceof Breadcrumbable && "GET".equals(request.getMethod())) {
-              Breadcrumbable breadcrumbable = (Breadcrumbable) requestController;
-              breadcrumbHandler.process(request, breadcrumbable);
-            }
-  
-            ((PyramusViewController) requestController).process((PageRequestContext) requestContext);
-          }
-          else if (requestController instanceof JSONRequestController) {
-            ((JSONRequestController) requestController).process((JSONRequestContext) requestContext);
-          }
-          else if (requestController instanceof BinaryRequestController) {
-            ((BinaryRequestController) requestController).process((BinaryRequestContext) requestContext);
-          }
-        }
-        catch (PyramusRuntimeException pre) {
-  
-          // Pyramus runtime exceptions are added to the request context so that they can
-          // be displayed in an error dialog
-  
-          requestContext.setErrorStatus(pre.getLevel(), pre.getStatusCode(), pre.getMessage(), pre);
-        }
-        catch (Exception e) {
-  
-          // All other exceptions are considered to be fatal and unexpected, so the request
-          // transaction is rolled back, the stack trace of the exception is printed out, and
-          // an error view is shown
-  
-          e.printStackTrace();
-          requestContext.setErrorStatus(ErrorLevel.CRITICAL, StatusCode.UNDEFINED, e.getMessage(), e);
-        }
-      }
-    }
-    finally {
-      try {
-
-        // Pre-commit response
-
-        requestContext.writePreCommitResponse();
-
-        // Request complete, so commit or rollback based on the status of the request
-
-        if (requestContext.getStatusCode() == StatusCode.OK) {
-          userTransaction.commit();
-        }
-        else {
-          userTransaction.rollback();
-        }
-
-        // Post-commit response
-
-        requestContext.writePostCommitResponse();
-      }
-      catch (Exception e) {
-        throw new ServletException(e);
-      }
-    }
+//    
+//    RequestContext requestContext = null;
+//    
+//    // Start a transaction for the request
+//
+//    try {
+//      userTransaction.begin();
+//      entityManager.setFlushMode(FlushModeType.COMMIT);
+//    }
+//    catch (Exception e) {
+//      throw new ServletException(e);
+//    } 
+//    
+//    try {
+//
+//      // Request controller
+//
+//      RequestController requestController = RequestControllerMapper.getRequestController(request);
+//      if (requestController == null) {
+//        throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED,
+//            "No registered request controller for " + request.getRequestURI());
+//      }
+//
+//      // Request context
+//      
+//      requestContext = requestContextFactory.createRequestContext(requestController, request, response);
+//
+//      // First check that the user is authorized to access the controller.
+//
+//      boolean authorized = authorized(requestContext, requestController);
+//      if (authorized && requestController instanceof CustomAuthorizationSupport) {
+//        CustomAuthorizationSupport customAuthorizationSupport = (CustomAuthorizationSupport) requestController;
+//        authorized = customAuthorizationSupport.authorize(requestContext);
+//      }
+//
+//      // If the user is not allowed to access the request controller, either send a
+//      // HTTP 403 (Forbidden) or when not logged in and trying to access a page,
+//      // redirect them to the login page 
+//
+//      if (!authorized) {
+//        if (!requestContext.isLoggedIn()) { 
+//          if (requestController instanceof PyramusViewController) {
+//            HttpSession session = requestContext.getRequest().getSession(true);
+//            session.setAttribute("loginFollowupURL", getURL(requestContext.getRequest()));
+//            response.sendRedirect(request.getContextPath() + "/users/login.page");
+//          } else {
+//            requestContext.setErrorStatus(PyramusStatusCode.NOT_LOGGED_IN, Messages.getInstance().getText(request.getLocale(), "generic.errors.notLoggedIn"));
+//          }
+//        } else {
+//          requestContext.setErrorStatus(PyramusStatusCode.PERMISSION_DENIED, Messages.getInstance().getText(request.getLocale(), "generic.errors.permissionDenied"));
+//        }
+//      }
+//      else {
+//
+//        // Process the request
+//  
+//        try {
+//          if (requestController instanceof PyramusViewController) {
+//            
+//            // Handle breadcrumbs for get requests
+//  
+//            BreadcrumbHandler breadcrumbHandler = getBreadcrumbHandler(request);
+//            if (request.getParameter("resetbreadcrumb") != null) {
+//              breadcrumbHandler.clear();
+//            }
+//            if (requestController instanceof Breadcrumbable && "GET".equals(request.getMethod())) {
+//              Breadcrumbable breadcrumbable = (Breadcrumbable) requestController;
+//              breadcrumbHandler.process(request, breadcrumbable);
+//            }
+//  
+//            ((PyramusViewController) requestController).process((PageRequestContext) requestContext);
+//          }
+//          else if (requestController instanceof JSONRequestController) {
+//            ((JSONRequestController) requestController).process((JSONRequestContext) requestContext);
+//          }
+//          else if (requestController instanceof BinaryRequestController) {
+//            ((BinaryRequestController) requestController).process((BinaryRequestContext) requestContext);
+//          }
+//        }
+//        catch (SmvcRuntimeException pre) {
+//  
+//          // Pyramus runtime exceptions are added to the request context so that they can
+//          // be displayed in an error dialog
+//  
+//          requestContext.setErrorStatus(pre.getStatusCode(), pre.getMessage(), pre);
+//        }
+//        catch (Exception e) {
+//  
+//          // All other exceptions are considered to be fatal and unexpected, so the request
+//          // transaction is rolled back, the stack trace of the exception is printed out, and
+//          // an error view is shown
+//  
+//          e.printStackTrace();
+//          requestContext.setErrorStatus(PyramusStatusCode.UNDEFINED, e.getMessage(), e);
+//        }
+//      }
+//    }
+//    finally {
+//      try {
+//
+//        // Pre-commit response
+//
+//        requestContext.writePreCommitResponse();
+//
+//        // Request complete, so commit or rollback based on the status of the request
+//
+//        if (requestContext.getStatusCode() == StatusCode.OK) {
+//          userTransaction.commit();
+//        }
+//        else {
+//          userTransaction.rollback();
+//        }
+//
+//        // Post-commit response
+//
+//        requestContext.writePostCommitResponse();
+//      }
+//      catch (Exception e) {
+//        throw new ServletException(e);
+//      }
+//    }
   }
 
   /**
@@ -187,11 +191,12 @@ public class Servlet extends HttpServlet {
    * otherwise <code>false</code>
    */
   private boolean authorized(RequestContext requestContext, RequestController requestController) {
-    UserRole[] roles = requestController.getAllowedRoles();
-    if (contains(roles, UserRole.EVERYONE)) {
-      return true;
-    }
-    return !requestContext.isLoggedIn() ? false : contains(roles, requestContext.getLoggedUserRole());
+//    UserRole[] roles = requestController.getAllowedRoles();
+//    if (contains(roles, UserRole.EVERYONE)) {
+//      return true;
+//    }
+//    return !requestContext.isLoggedIn() ? false : contains(roles, requestContext.getLoggedUserRole());
+    return false;
   }
 
   /**
@@ -238,5 +243,5 @@ public class Servlet extends HttpServlet {
     return breadcrumbHandler;
   }
   
-  private RequestContextFactory requestContextFactory = new RequestContextFactory();
+//  private RequestContextFactory requestContextFactory = new RequestContextFactory();
 }

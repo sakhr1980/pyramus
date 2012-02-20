@@ -1,16 +1,16 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
 import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
-import fi.pyramus.json.JSONRequestController;
 
-public class SaveCourseDescriptionCategoriesJSONRequestController implements JSONRequestController {
+public class SaveCourseDescriptionCategoriesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
 
     int rowCount = jsonRequestContext.getInteger("courseDescriptionCategoriesTable.rowCount").intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -21,10 +21,10 @@ public class SaveCourseDescriptionCategoriesJSONRequestController implements JSO
       Long categoryId = jsonRequestContext.getLong(colPrefix + ".categoryId");
       
       if (categoryId == null) {
-        category = courseDAO.createCourseDescriptionCategory(name); 
+        category = descriptionCategoryDAO.create(name); 
       } else {
-        category = courseDAO.findCourseDescriptionCategoryById(categoryId);
-        courseDAO.updateCourseDescriptionCategory(category, name);
+        category = descriptionCategoryDAO.findById(categoryId);
+        descriptionCategoryDAO.update(category, name);
       }
     }
     

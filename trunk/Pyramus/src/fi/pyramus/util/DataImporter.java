@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.Criteria;
-import org.hibernate.EntityMode;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
 import org.w3c.dom.Document;
@@ -34,7 +33,7 @@ import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.util.dataimport.DataImportUtils;
@@ -48,11 +47,11 @@ public class DataImporter {
       Document initialDataDocument = db.parse(filename);
       importDataFromDocument(initialDataDocument, entities);
     } catch (ParserConfigurationException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (SAXException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (IOException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   
@@ -62,11 +61,11 @@ public class DataImporter {
       Document initialDataDocument = db.parse(stream);
       importDataFromDocument(initialDataDocument, entities);
     } catch (ParserConfigurationException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (SAXException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (IOException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   
@@ -90,7 +89,7 @@ public class DataImporter {
             result = systemDAO.createHQLQuery(hql).uniqueResult();
             
             if (result == null)
-              throw new PyramusRuntimeException(new Exception("storeVariable hql=\"" + hql + "\" returned null"));
+              throw new SmvcRuntimeException(new Exception("storeVariable hql=\"" + hql + "\" returned null"));
           } else {
             Class variableClass;
             try {
@@ -115,9 +114,9 @@ public class DataImporter {
               result = criteriaQuery.uniqueResult();
               
               if (result == null)
-                throw new PyramusRuntimeException(new Exception("storeVariable class=\"" + variableClass.getName() + "\" returned null"));
+                throw new SmvcRuntimeException(new Exception("storeVariable class=\"" + variableClass.getName() + "\" returned null"));
             } catch (ClassNotFoundException e) {
-              throw new PyramusRuntimeException(e);
+              throw new SmvcRuntimeException(e);
             }  
           }
           
@@ -129,7 +128,7 @@ public class DataImporter {
       NodeIterator entityIterator = XPathAPI.selectNodeIterator(initialDataDocument.getDocumentElement(), "entity");
       Node node;
 
-      Map<Object, ClassMetadata> classMetaData = systemDAO.getHibernateClassMetadata();
+      Map<String, ClassMetadata> classMetaData = systemDAO.getHibernateClassMetadata();
       
       while ((node = entityIterator.nextNode()) != null) {
         if (node instanceof Element) {
@@ -141,7 +140,8 @@ public class DataImporter {
           
           if ((entities == null)||entities.contains(className)) {
             ClassMetadata metadata = classMetaData.get(className);
-            Class<?> entityClass = metadata.getMappedClass(EntityMode.POJO);
+//            Class<?> entityClass = metadata.getMappedClass(EntityMode.POJO);
+            Class<?> entityClass = metadata.getMappedClass();
          
             NodeIterator entryIterator = XPathAPI.selectNodeIterator(element, "e");
             Element entry;
@@ -154,7 +154,7 @@ public class DataImporter {
         }
       }
     } catch (TransformerException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } 
   }
 
@@ -192,7 +192,7 @@ public class DataImporter {
           String nodeName = element.getTagName();
           EntityDirective entityDirective = EntityDirective.getDirective(nodeName);
           if (entityDirective == null)
-            throw new PyramusRuntimeException(new Exception("Unknown entity directive '" + nodeName + "'"));
+            throw new SmvcRuntimeException(new Exception("Unknown entity directive '" + nodeName + "'"));
           
           switch (entityDirective) {
             case Map:
@@ -204,7 +204,7 @@ public class DataImporter {
                 Element keyElement = (Element) XPathAPI.selectSingleNode(itemElement, "key");
                 Element valueElement = (Element) XPathAPI.selectSingleNode(itemElement, "value");
                 if (keyElement == null||valueElement == null)
-                  throw new PyramusRuntimeException(new Exception("Malformed map item"));
+                  throw new SmvcRuntimeException(new Exception("Malformed map item"));
                 
                 String keyValue = ((Text) keyElement.getFirstChild()).getData();
                 String valueValue = ((Text) valueElement.getFirstChild()).getData();
@@ -222,7 +222,7 @@ public class DataImporter {
                   if (valueInterpreter != null)
                     key = valueInterpreter.interpret(keyValue);
                   else
-                    throw new PyramusRuntimeException(new Exception("Value interpreter for " + mapKeyTypeClass + " is not implemented yet"));
+                    throw new SmvcRuntimeException(new Exception("Value interpreter for " + mapKeyTypeClass + " is not implemented yet"));
                 } else {
                   key = getPojo(mapKeyTypeClass, keyValue);
                 }
@@ -232,7 +232,7 @@ public class DataImporter {
                   if (valueInterpreter != null)
                     value = valueInterpreter.interpret(valueValue);
                   else
-                    throw new PyramusRuntimeException(new Exception("Value interpreter for " + mapValueTypeClass + " is not implemented yet"));
+                    throw new SmvcRuntimeException(new Exception("Value interpreter for " + mapValueTypeClass + " is not implemented yet"));
                 } else {
                   value = getPojo(mapValueTypeClass, valueValue);
                 }
@@ -290,7 +290,7 @@ public class DataImporter {
                 if (joinedPojo != null) {
                   DataImportUtils.setFieldValue(pojo, joinField, joinedPojo);
                 } else {
-                  throw new PyramusRuntimeException(new Exception(className + " #" + idField + " could not be found"));
+                  throw new SmvcRuntimeException(new Exception(className + " #" + idField + " could not be found"));
                 }
               }
             break;
@@ -309,7 +309,7 @@ public class DataImporter {
 	      message += constraintViolation.getMessage() + '\n';
 	    }
 	    
-	    throw new PyramusRuntimeException(new Exception("Validation failure: " + message));
+	    throw new SmvcRuntimeException(new Exception("Validation failure: " + message));
 	  }
   
       Long id = getPojoId(pojo);
@@ -324,7 +324,7 @@ public class DataImporter {
       
       return id;
     } catch (Exception e) {
-      throw new PyramusRuntimeException(new Exception("Error while processing entity: " + entityClass.getName() + " " + e.getMessage(), e));
+      throw new SmvcRuntimeException(new Exception("Error while processing entity: " + entityClass.getName() + " " + e.getMessage(), e));
     }
   } 
   
@@ -336,7 +336,7 @@ public class DataImporter {
           return (Long) getIdMethod.invoke(pojo, new Object[] {});
         }
       } catch (Exception e) { 
-        throw new PyramusRuntimeException(new Exception("getId failed for " + pojo.getClass().getName()));
+        throw new SmvcRuntimeException(new Exception("getId failed for " + pojo.getClass().getName()));
       }
     }
 
@@ -350,7 +350,7 @@ public class DataImporter {
     if (identifier.startsWith("{") && identifier.endsWith("}")) {
       id = getStoredValue(identifier.substring(1, identifier.length() - 1));
       if (id == null)
-        throw new PyramusRuntimeException(new Exception("Could not resolve: " + identifier));
+        throw new SmvcRuntimeException(new Exception("Could not resolve: " + identifier));
     } else  {
       id = NumberUtils.createLong(identifier);
     }

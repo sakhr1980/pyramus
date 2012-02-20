@@ -1,30 +1,22 @@
 package fi.pyramus.views.students;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
 import fi.pyramus.domainmodel.base.StudyProgramme;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.util.StringAttributeComparator;
 
-public class SearchStudentsDialogViewController implements PyramusViewController {
+public class SearchStudentsDialogViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    List<StudyProgramme> studyProgrammes = baseDAO.listStudyProgrammes();
-    
-    Collections.sort(studyProgrammes, new Comparator<StudyProgramme>() {
-      @Override
-      public int compare(StudyProgramme sp1, StudyProgramme sp2) {
-        String name1 = sp1.getName();
-        String name2 = sp2.getName();
-        return name1.compareToIgnoreCase(name2);
-      }
-    });
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
+    List<StudyProgramme> studyProgrammes = studyProgrammeDAO.listUnarchived();
+    Collections.sort(studyProgrammes, new StringAttributeComparator("getName"));
     
     requestContext.getRequest().setAttribute("studyProgrammes", studyProgrammes);
     requestContext.setIncludeJSP("/templates/students/searchstudentsdialog.jsp");

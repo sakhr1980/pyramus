@@ -8,24 +8,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryCommentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * ViewController for managing student contact log entries.
  * 
  * @author antti.viljakainen
  */
-public class ManageStudentContactEntriesViewController implements PyramusViewController, Breadcrumbable {
+public class ManageStudentContactEntriesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns allowed roles for this page. Allowed are UserRole.MANAGER and UserRole.ADMINISTRATOR.
@@ -50,14 +53,17 @@ public class ManageStudentContactEntriesViewController implements PyramusViewCon
    */
   public void process(PageRequestContext pageRequestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    StudentContactLogEntryDAO logEntryDAO = DAOFactory.getInstance().getStudentContactLogEntryDAO();
+    StudentContactLogEntryCommentDAO entryCommentDAO = DAOFactory.getInstance().getStudentContactLogEntryCommentDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
-    AbstractStudent abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
+    AbstractStudent abstractStudent = abstractStudentDAO.findById(abstractStudentId);
     
     pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
 
-    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    List<Student> students = studentDAO.listByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {
@@ -97,14 +103,14 @@ public class ManageStudentContactEntriesViewController implements PyramusViewCon
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
     	
-      List<StudentContactLogEntry> listStudentContactEntries = studentDAO.listStudentContactEntries(student);
+      List<StudentContactLogEntry> listStudentContactEntries = logEntryDAO.listByStudent(student);
 
       // Populate comments for each entry to lists
       
       for (int j = 0; j < listStudentContactEntries.size(); j++) {
         StudentContactLogEntry entry = listStudentContactEntries.get(j);
         
-        List<StudentContactLogEntryComment> listComments = studentDAO.listStudentContactEntryComments(entry);
+        List<StudentContactLogEntryComment> listComments = entryCommentDAO.listByEntry(entry);
         
         Collections.sort(listComments, new Comparator<StudentContactLogEntryComment>() {
           public int compare(StudentContactLogEntryComment o1, StudentContactLogEntryComment o2) {

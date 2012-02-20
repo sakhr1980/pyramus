@@ -2,21 +2,21 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.domainmodel.base.StudyProgramme;
 
-public class ArchiveStudyProgrammeJSONRequestController implements JSONRequestController {
+public class ArchiveStudyProgrammeJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
 
     Long studyProgrammeId = NumberUtils.createLong(requestContext.getRequest().getParameter("studyProgrammeId"));
-    StudyProgramme studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
-    baseDAO.archiveStudyProgramme(studyProgramme);
+    StudyProgramme studyProgramme = studyProgrammeDAO.findById(studyProgrammeId);
+    studyProgrammeDAO.archive(studyProgramme);
   }
 
   public UserRole[] getAllowedRoles() {

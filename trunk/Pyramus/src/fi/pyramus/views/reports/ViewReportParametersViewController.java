@@ -2,19 +2,20 @@ package fi.pyramus.views.reports;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.domainmodel.users.Role;
 
 /**
  * The controller responsible of the List Reports view.
  */
-public class ViewReportParametersViewController implements PyramusViewController, Breadcrumbable {
+public class ViewReportParametersViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -22,8 +23,8 @@ public class ViewReportParametersViewController implements PyramusViewController
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
+    MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+
     Long reportId = pageRequestContext.getLong("reportId");
     String reportsContextPath = System.getProperty("reports.contextPath");
     
@@ -34,7 +35,7 @@ public class ViewReportParametersViewController implements PyramusViewController
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
     
-    MagicKey magicKey = baseDAO.createMagicKey(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
     
     StringBuilder urlBuilder = new StringBuilder()
       .append(reportsContextPath)

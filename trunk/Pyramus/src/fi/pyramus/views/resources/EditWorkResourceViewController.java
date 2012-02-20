@@ -1,27 +1,35 @@
 package fi.pyramus.views.resources;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
+import fi.pyramus.dao.resources.WorkResourceDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.Resource;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.util.StringAttributeComparator;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class EditWorkResourceViewController implements PyramusViewController, Breadcrumbable {
+public class EditWorkResourceViewController extends PyramusViewController implements Breadcrumbable {
 
   public void process(PageRequestContext pageRequestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    WorkResourceDAO workResourceDAO = DAOFactory.getInstance().getWorkResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
 
     Long resourceId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("resource"));
-    Resource resource = resourceDAO.findResourceById(resourceId);
+    Resource resource = resourceDAO.findById(resourceId);
 
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = resource.getTags().iterator();
@@ -32,9 +40,12 @@ public class EditWorkResourceViewController implements PyramusViewController, Br
         tagsBuilder.append(' ');
     }
     
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
-    pageRequestContext.getRequest().setAttribute("categories", resourceDAO.listResourceCategories());
-    pageRequestContext.getRequest().setAttribute("resource", resourceDAO.findWorkResourceById(resource.getId()));
+    pageRequestContext.getRequest().setAttribute("categories", resourceCategories);
+    pageRequestContext.getRequest().setAttribute("resource", workResourceDAO.findById(resource.getId()));
     pageRequestContext.setIncludeJSP("/templates/resources/editworkresource.jsp");
   }
 

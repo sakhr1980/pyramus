@@ -7,21 +7,23 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * ViewController for viewing student information within popup dialog.
  * 
  * @author antti.leppa
  */
-public class StudentInfoPopupViewController implements PyramusViewController, Breadcrumbable {
+public class StudentInfoPopupViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns allowed roles for this page. Everyone is allowed to use this view.
@@ -49,20 +51,22 @@ public class StudentInfoPopupViewController implements PyramusViewController, Br
    */
   public void process(PageRequestContext pageRequestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    StudentImageDAO imageDAO = DAOFactory.getInstance().getStudentImageDAO();
+
     Long studentId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("student"));
     Long abstractStudentId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("abstractStudent"));
     
     AbstractStudent abstractStudent;
 
     if (abstractStudentId != null) {
-    	abstractStudent = studentDAO.getAbstractStudent(abstractStudentId);
+    	abstractStudent = abstractStudentDAO.findById(abstractStudentId);
     } else {
-      Student student = studentDAO.getStudent(studentId);
+      Student student = studentDAO.findById(studentId);
       abstractStudent = student.getAbstractStudent();
     }
   
-    List<Student> students = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    List<Student> students = studentDAO.listByAbstractStudent(abstractStudent);
     Collections.sort(students, new Comparator<Student>() {
       @Override
       public int compare(Student o1, Student o2) {
@@ -101,7 +105,7 @@ public class StudentInfoPopupViewController implements PyramusViewController, Br
 		pageRequestContext.getRequest().setAttribute("abstractStudent", abstractStudent);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("studentImage", studentImage);
-    pageRequestContext.getRequest().setAttribute("latestStudentHasImage", abstractStudent.getLatestStudent() != null ? studentDAO.findStudentHasImage(abstractStudent.getLatestStudent()) : Boolean.FALSE);
+    pageRequestContext.getRequest().setAttribute("latestStudentHasImage", abstractStudent.getLatestStudent() != null ? imageDAO.findStudentHasImage(abstractStudent.getLatestStudent()) : Boolean.FALSE);
   
     pageRequestContext.setIncludeJSP("/templates/students/studentinfopopup.jsp");
   }

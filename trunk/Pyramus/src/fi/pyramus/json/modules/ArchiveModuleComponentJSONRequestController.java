@@ -1,20 +1,20 @@
 package fi.pyramus.json.modules;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.domainmodel.modules.ModuleComponent;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.modules.ModuleComponentDAO;
+import fi.pyramus.domainmodel.modules.ModuleComponent;
 
-public class ArchiveModuleComponentJSONRequestController implements JSONRequestController {
+public class ArchiveModuleComponentJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
+    ModuleComponentDAO moduleComponentDAO = DAOFactory.getInstance().getModuleComponentDAO();
 
     Long componentId = requestContext.getLong("componentId");
-    ModuleComponent component = moduleDAO.getModuleComponent(componentId);
-    moduleDAO.archiveModuleComponent(component);
+    ModuleComponent component = moduleComponentDAO.findById(componentId);
+    moduleComponentDAO.archive(component);
   }
 
   public UserRole[] getAllowedRoles() {

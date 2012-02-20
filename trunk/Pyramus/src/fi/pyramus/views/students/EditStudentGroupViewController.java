@@ -9,24 +9,24 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Student Group view of the application.
  * 
  * @see fi.pyramus.json.students.EditStudentGroupJSONRequestController
  */
-public class EditStudentGroupViewController implements PyramusViewController, Breadcrumbable {
+public class EditStudentGroupViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -34,11 +34,11 @@ public class EditStudentGroupViewController implements PyramusViewController, Br
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
 
     // The student group to be edited
     
-    StudentGroup studentGroup = studentDAO.findStudentGroupById(NumberUtils.createLong(pageRequestContext.getRequest().getParameter("studentgroup")));
+    StudentGroup studentGroup = studentGroupDAO.findById(NumberUtils.createLong(pageRequestContext.getRequest().getParameter("studentgroup")));
     pageRequestContext.getRequest().setAttribute("studentGroup", studentGroup);
 
     List<StudentGroupStudent> studentGroupStudents = new ArrayList<StudentGroupStudent>(studentGroup.getStudents());

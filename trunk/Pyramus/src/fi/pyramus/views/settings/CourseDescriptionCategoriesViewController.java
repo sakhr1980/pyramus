@@ -2,20 +2,20 @@ package fi.pyramus.views.settings;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
 
 /**
  * The controller responsible of the Manage CourseDescrptionCategories view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveCourseDescrptionCategoriesJSONRequestController
  */
-public class CourseDescriptionCategoriesViewController implements PyramusViewController, Breadcrumbable {
+public class CourseDescriptionCategoriesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,9 +23,9 @@ public class CourseDescriptionCategoriesViewController implements PyramusViewCon
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseDescriptionCategoryDAO descCatDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
     
-    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", courseDAO.listCourseDescriptionCategories());
+    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", descCatDAO.listUnarchived());
     
     pageRequestContext.setIncludeJSP("/templates/settings/coursedescriptioncategories.jsp");
   }
