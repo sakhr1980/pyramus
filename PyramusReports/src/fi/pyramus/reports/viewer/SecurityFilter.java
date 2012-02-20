@@ -12,9 +12,10 @@ import javax.servlet.ServletResponse;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.base.MagicKeyDAO;
+import fi.pyramus.dao.system.SettingDAO;
+import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
@@ -25,16 +26,17 @@ public class SecurityFilter implements Filter {
   }
 
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SettingDAO settingDAO = DAOFactory.getInstance().getSettingDAO();
+    SettingKeyDAO settingKeyDAO = DAOFactory.getInstance().getSettingKeyDAO();
+    MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
 
     /**
      * If expire time is not set it defaults to 60000 milliseconds (1 minute)
      */
     long expireMills = 60000;
-    SettingKey settingKey = systemDAO.findSettingKeyByName("reports.magicKeyExpireMills");
+    SettingKey settingKey = settingKeyDAO.findByName("reports.magicKeyExpireMills");
     if (settingKey != null) {
-      Setting setting = systemDAO.findSettingByKey(settingKey);
+      Setting setting = settingDAO.findByKey(settingKey);
       if (setting != null && NumberUtils.isNumber(setting.getValue())) 
         expireMills = NumberUtils.createLong(setting.getValue());
     }
@@ -43,7 +45,7 @@ public class SecurityFilter implements Filter {
     expireThreshold.setTime(expireThreshold.getTime() - expireMills);
     String magicKeyName = request.getParameter("magicKey");
     
-    MagicKey magicKey = baseDAO.findMagicKeyByName(magicKeyName);
+    MagicKey magicKey = magicKeyDAO.findByName(magicKeyName);
     if (magicKey != null) {
       try {
         if (magicKey.getCreated().after(expireThreshold)) {
@@ -52,7 +54,7 @@ public class SecurityFilter implements Filter {
           throw new ServletException("Session expired");
         }
       } finally {
-        baseDAO.deleteMagicKey(magicKey);
+        magicKeyDAO.delete(magicKey);
       }
     } else {
       throw new ServletException("Permission denied");

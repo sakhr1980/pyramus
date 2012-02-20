@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ReportDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.reports.Report;
 
 public class PrepareReportFilter implements Filter {
@@ -48,7 +48,7 @@ public class PrepareReportFilter implements Filter {
         Long reportId = NumberUtils.createLong(reportName.substring(8, reportName.length() - 10));
         String reportFileName = String.valueOf(reportId) + ".rptdesign";
 
-        Report report = reportDAO.findReportById(reportId);
+        Report report = reportDAO.findById(reportId);
         File reportFile = new File(getReportsFolder(), reportFileName);
 
         if (reportFile.exists()) {
