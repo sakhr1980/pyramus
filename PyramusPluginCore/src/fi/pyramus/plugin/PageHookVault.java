@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
 
 public class PageHookVault {
   
@@ -19,7 +19,7 @@ public class PageHookVault {
     return pageHooks.get(hookName);
   }
   
-  private synchronized void registerPageHook(String hookName, Class<?> hookControllerClass) throws PyramusRuntimeException {
+  private synchronized void registerPageHook(String hookName, Class<?> hookControllerClass) throws SmvcRuntimeException {
     List<PageHookController> hooks = pageHooks.get(hookName);
     
     if (hooks == null) {
@@ -30,9 +30,9 @@ public class PageHookVault {
     try {
       hooks.add((PageHookController) hookControllerClass.newInstance());
     } catch (InstantiationException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (IllegalAccessException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

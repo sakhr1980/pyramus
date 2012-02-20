@@ -1,6 +1,6 @@
 package fi.pyramus.plugin.auth;
 
-import fi.pyramus.RequestContext;
+import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.domainmodel.users.User;
 
 /**
