@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
 import fi.pyramus.plugin.PluginDescriptor;
 import fi.pyramus.plugin.PluginVault;
 
@@ -91,9 +91,9 @@ public class AuthenticationProviderVault {
         provider = authenticationProviderClasses.get(strategyName.trim()).newInstance();
         registerAuthenticationProvider(provider);
       } catch (InstantiationException e) {
-        throw new PyramusRuntimeException(e);
+        throw new SmvcRuntimeException(e);
       } catch (IllegalAccessException e) {
-        throw new PyramusRuntimeException(e);
+        throw new SmvcRuntimeException(e);
       }
     }
   }
