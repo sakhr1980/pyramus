@@ -6,22 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+
 import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPConnection;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPSearchResults;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.ldap.LDAPUtils;
-import fi.pyramus.views.PyramusFormViewController;
 
 public class ImportLDAPUsersViewController extends PyramusFormViewController {
 
@@ -58,7 +57,7 @@ public class ImportLDAPUsersViewController extends PyramusFormViewController {
         
         attr = entry.getAttribute(uniqueIdAttr);
         String id = idEncoded ? LDAPUtils.getAttributeBinaryValue(attr) : attr.getStringValue();
-        boolean existsOnDB = userDAO.getUser(id, "LDAP") != null;
+        boolean existsOnDB = userDAO.findByExternalIdAndAuthProvider(id, "LDAP") != null;
           
         if (!existsOnDB) {
           Map<String, String> info = new HashMap<String, String>();
@@ -87,16 +86,15 @@ public class ImportLDAPUsersViewController extends PyramusFormViewController {
         }
       }
     } catch (LDAPException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     
     requestContext.getRequest().setAttribute("users", result);
     requestContext.setIncludeFtl("/plugin/ldap/ftl/importldapusers.ftl");
   }
   
-  @Override
   public void processSend(PageRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 
     List<User> createdUsers = new ArrayList<User>();
@@ -111,8 +109,8 @@ public class ImportLDAPUsersViewController extends PyramusFormViewController {
         String roleName = requestContext.getString(colPrefix + ".role");
         String id = requestContext.getString(colPrefix + ".id");
         Role role = Enum.valueOf(Role.class, roleName);
-        User user = userDAO.createUser(firstName, lastName, id, "LDAP", role);
-        baseDAO.createEmail(user.getContactInfo(), null, Boolean.TRUE, email);
+        User user = userDAO.create(firstName, lastName, id, "LDAP", role);
+        emailDAO.create(user.getContactInfo(), null, Boolean.TRUE, email);
         createdUsers.add(user);
       }
     }

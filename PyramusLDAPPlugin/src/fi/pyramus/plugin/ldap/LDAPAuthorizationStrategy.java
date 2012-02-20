@@ -1,34 +1,16 @@
 package fi.pyramus.plugin.ldap;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
-import javax.ejb.EJB;
-
-import org.apache.commons.lang.math.NumberUtils;
-
-import com.novell.ldap.LDAPAttribute;
 import com.novell.ldap.LDAPConnection;
-import com.novell.ldap.LDAPConstraints;
-import com.novell.ldap.LDAPControl;
 import com.novell.ldap.LDAPEntry;
 import com.novell.ldap.LDAPException;
 import com.novell.ldap.LDAPSearchResults;
-import com.novell.ldap.asn1.ASN1Decoder;
-import com.novell.ldap.asn1.ASN1Object;
-import com.novell.ldap.asn1.ASN1OctetString;
-import com.novell.ldap.asn1.LBERDecoder;
-import com.novell.ldap.util.Base64;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.StatusCode;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
-import fi.pyramus.domainmodel.users.InternalAuth;
-import fi.pyramus.UserRole;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationException;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
@@ -67,7 +49,7 @@ public class LDAPAuthorizationStrategy implements InternalAuthenticationProvider
           boolean idEncoded = "1".equals(System.getProperty("authentication.ldap.uniqueIdEncoded"));
           connection.bind(Integer.parseInt(System.getProperty("authentication.ldap.version")), entry.getDN(), password.getBytes("UTF8"));
           String id = idEncoded ? LDAPUtils.getAttributeBinaryValue(entry.getAttribute(uniqueIdAttr)) : entry.getAttribute(uniqueIdAttr).getStringValue();
-          User user = userDAO.getUser(id, getName());
+          User user = userDAO.findByExternalIdAndAuthProvider(id, getName());
           if (user == null)
             throw new AuthenticationException(AuthenticationException.LOCAL_USER_MISSING);
           return user;
@@ -76,30 +58,26 @@ public class LDAPAuthorizationStrategy implements InternalAuthenticationProvider
         } 
       }
     } catch (LDAPException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
    
     return null;
   }
   
-  @Override
   public String getUsername(String externalId) {
     return null;
   }
   
-  @Override
   public String createCredentials(String username, String password) {
-    throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
+    throw new SmvcRuntimeException(StatusCode.UNDEFINED, "NOT SUPPORTED");
   }
   
-  @Override
   public void updateUsername(String externalId, String username) {
-    throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
+    throw new SmvcRuntimeException(StatusCode.UNDEFINED, "NOT SUPPORTED");
   }
   
-  @Override
   public void updatePassword(String externalId, String password) {
-    throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.UNSUPPORTED_AUTHENTICATION_OPERATION, "NOT SUPPORTED");
+    throw new SmvcRuntimeException(StatusCode.UNDEFINED, "NOT SUPPORTED");
   }
 
   /**
