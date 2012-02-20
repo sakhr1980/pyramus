@@ -1,25 +1,31 @@
 package fi.pyramus.plugin.simple.views;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.UserRole;
+import fi.internetix.smvc.AccessDeniedException;
+import fi.internetix.smvc.LoginRequiredException;
+import fi.internetix.smvc.controllers.PageController;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.views.PyramusViewController;
 
-public class LoggedUserInfoViewController implements PyramusViewController {
+public class LoggedUserInfoViewController implements PageController {
 
-  @Override
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    User loggedUser = userDAO.getUser(pageRequestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(pageRequestContext.getLoggedUserId());
   
     pageRequestContext.getRequest().setAttribute("loggedUser", loggedUser);
     pageRequestContext.setIncludeFtl("/plugin/simple/ftl/loggeduserinfo.ftl");
   }
 
-  @Override
-  public UserRole[] getAllowedRoles() {
-    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+//  @Override
+//  public UserRole[] getAllowedRoles() {
+//    return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
+//  }
+
+  public void authorize(RequestContext requestContext) throws LoginRequiredException, AccessDeniedException {
+    // TODO Auto-generated method stub
+    throw new RuntimeException("Not implemented");
   }
 }

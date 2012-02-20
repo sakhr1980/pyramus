@@ -1,4 +1,4 @@
-#Fri Aug 06 10:45:33 EEST 2010
+#Tue Feb 07 14:04:44 EET 2012
 default.configuration=
 eclipse.preferences.version=1
-hibernate3.enabled=false
+hibernate3.enabled=true

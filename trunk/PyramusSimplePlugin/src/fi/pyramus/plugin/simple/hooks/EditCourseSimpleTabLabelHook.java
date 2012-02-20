@@ -5,7 +5,6 @@ import fi.pyramus.plugin.PageHookController;
 
 public class EditCourseSimpleTabLabelHook implements PageHookController {
   
-  @Override
   public void execute(PageHookContext pageHookContext) {
     pageHookContext.setIncludeFtl("/plugin/simple/ftl/editcoursesimpletablabelhook.ftl");
   }

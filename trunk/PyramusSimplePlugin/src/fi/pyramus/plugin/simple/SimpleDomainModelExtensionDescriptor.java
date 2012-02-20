@@ -8,7 +8,6 @@ import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth;
 
 public class SimpleDomainModelExtensionDescriptor implements DomainModelExtensionDescriptor {
 
-  @Override
   public Set<Class<?>> getEntityClasses() {
     Set<Class<?>> entities = new HashSet<Class<?>>();
     
