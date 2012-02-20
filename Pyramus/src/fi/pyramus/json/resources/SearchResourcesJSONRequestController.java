@@ -9,23 +9,25 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.resources.MaterialResource;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.resources.WorkResource;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
-public class SearchResourcesJSONRequestController implements JSONRequestController {
+public class SearchResourcesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(requestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -52,7 +54,7 @@ public class SearchResourcesJSONRequestController implements JSONRequestControll
       ResourceCategory resourceCategory = null;
       String resourceCategoryParam = requestContext.getRequest().getParameter("resourceCategory");
       if (!StringUtils.isBlank(resourceCategoryParam)) {
-        resourceCategory = resourceDAO.findResourceCategoryById(NumberUtils.createLong(resourceCategoryParam));
+        resourceCategory = resourceCategoryDAO.findById(NumberUtils.createLong(resourceCategoryParam));
       }
 
       searchResult = resourceDAO.searchResources(resultsPerPage, page, name, tags, resourceType, resourceCategory, true);

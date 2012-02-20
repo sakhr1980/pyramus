@@ -10,18 +10,21 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseStateDAO;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseState;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.SearchTimeFilterMode;
 
@@ -30,7 +33,7 @@ import fi.pyramus.persistence.search.SearchTimeFilterMode;
  * 
  * @see fi.pyramus.views.modules.SearchCoursesViewController
  */
-public class SearchCoursesJSONRequestController implements JSONRequestController {
+public class SearchCoursesJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to search courses.
@@ -38,8 +41,11 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
 
     // Determine the number of results shown per page. If not defined, default to ten results per page
 
@@ -68,13 +74,13 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
       CourseState courseState = null;
       Long courseStateId = requestContext.getLong("state");
       if (courseStateId != null) {
-        courseState = courseDAO.getCourseState(courseStateId);
+        courseState = courseStateDAO.findById(courseStateId);
       }
 
       Subject subject = null;
       Long subjectId = requestContext.getLong("subject");
       if (subjectId != null) {
-        subject = baseDAO.getSubject(subjectId);
+        subject = subjectDAO.findById(subjectId);
       }
 
       Date timeframeStart = null;
@@ -92,13 +98,13 @@ public class SearchCoursesJSONRequestController implements JSONRequestController
       EducationType educationType = null;
       Long educationTypeId = requestContext.getLong("educationType");
       if (educationTypeId != null) {
-        educationType = baseDAO.getEducationType(educationTypeId);
+        educationType = educationTypeDAO.findById(educationTypeId);
       }
 
       EducationSubtype educationSubtype = null;
       Long educationSubtypeId = requestContext.getLong("educationSubtype");
       if (educationSubtypeId != null) {
-        educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
+        educationSubtype = educationSubtypeDAO.findById(educationSubtypeId);
       }
       
       SearchTimeFilterMode timeFilterMode = (SearchTimeFilterMode) requestContext.getEnum("timeframeMode", SearchTimeFilterMode.class);

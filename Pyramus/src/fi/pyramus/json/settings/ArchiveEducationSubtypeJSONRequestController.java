@@ -2,19 +2,19 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
 
-public class ArchiveEducationSubtypeJSONRequestController implements JSONRequestController {
+public class ArchiveEducationSubtypeJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
 
     Long educationSubtypeId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("educationSubtypeId"));
-    baseDAO.archiveEducationSubtype(baseDAO.getEducationSubtype(educationSubtypeId));
+    educationSubtypeDAO.archive(educationSubtypeDAO.findById(educationSubtypeId));
   }
 
   public UserRole[] getAllowedRoles() {

@@ -10,15 +10,15 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -26,7 +26,7 @@ import fi.pyramus.persistence.search.SearchResult;
  * 
  * @see fi.pyramus.views.students.SearchStudentGroupsViewController
  */
-public class SearchStudentGroupsJSONRequestController implements JSONRequestController {
+public class SearchStudentGroupsJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to search student groups.
@@ -34,8 +34,8 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
 
     // Determine the number of results shown per page. If not defined, default to ten results per page
 
@@ -63,7 +63,7 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
       Long userId = requestContext.getLong("user");
       User user = null;
       if ((userId != null ? userId.intValue() : -1) > -1)
-        user = userDAO.getUser(userId);
+        user = userDAO.findById(userId);
 
       
       Date timeframeStart = null;
@@ -78,12 +78,12 @@ public class SearchStudentGroupsJSONRequestController implements JSONRequestCont
         timeframeEnd = new Date(NumberUtils.createLong(value));
       }
 
-      searchResult = studentDAO.searchStudentGroups(resultsPerPage, page, name, tags, description, user, 
+      searchResult = studentGroupDAO.searchStudentGroups(resultsPerPage, page, name, tags, description, user, 
           timeframeStart, timeframeEnd, true);
     }
     else {
       String text = requestContext.getRequest().getParameter("text");
-      searchResult = studentDAO.searchStudentGroupsBasic(resultsPerPage, page, text); 
+      searchResult = studentGroupDAO.searchStudentGroupsBasic(resultsPerPage, page, text); 
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();

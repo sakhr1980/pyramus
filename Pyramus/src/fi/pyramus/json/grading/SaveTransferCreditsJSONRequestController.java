@@ -2,12 +2,17 @@ package fi.pyramus.json.grading;
 
 import java.util.Date;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
@@ -15,20 +20,21 @@ import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
-public class SaveTransferCreditsJSONRequestController implements JSONRequestController {
+public class SaveTransferCreditsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+
     Long studentId = jsonRequestContext.getLong("studentId");
-    Student student = studentDAO.getStudent(studentId);
+    Student student = studentDAO.findById(studentId);
 
     int rowCount = jsonRequestContext.getInteger("transferCreditsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -46,19 +52,19 @@ public class SaveTransferCreditsJSONRequestController implements JSONRequestCont
       Date date = jsonRequestContext.getDate(colPrefix + ".date");
       Long userId = jsonRequestContext.getLong(colPrefix + ".user");
       
-      Grade grade = gradingDAO.findGradeById(gradeId);
-      Subject subject = baseDAO.getSubject(subjectId);
-      EducationalTimeUnit timeUnit = baseDAO.findEducationalTimeUnitById(courseLengthUnitId);
-      School school = baseDAO.getSchool(schooId);
-      User user = userDAO.getUser(userId);
+      Grade grade = gradeDAO.findById(gradeId);
+      Subject subject = subjectDAO.findById(subjectId);
+      EducationalTimeUnit timeUnit = educationalTimeUnitDAO.findById(courseLengthUnitId);
+      School school = schoolDAO.findById(schooId);
+      User user = userDAO.findById(userId);
 
       TransferCredit transferCredit;
       
       if (id != null && id >= 0) {
-        transferCredit = gradingDAO.findTransferCreditById(id);
-        gradingDAO.updateTransferCredit(transferCredit, courseName, courseNumber, courseLength, timeUnit, school, subject, courseOptionality, student, user, grade, date, transferCredit.getVerbalAssessment());
+        transferCredit = transferCreditDAO.findById(id);
+        transferCreditDAO.update(transferCredit, courseName, courseNumber, courseLength, timeUnit, school, subject, courseOptionality, student, user, grade, date, transferCredit.getVerbalAssessment());
       } else {
-        transferCredit = gradingDAO.createTransferCredit(courseName, courseNumber, courseLength, timeUnit, school, subject, courseOptionality, student, user, grade, date, ""); 
+        transferCredit = transferCreditDAO.create(courseName, courseNumber, courseLength, timeUnit, school, subject, courseOptionality, student, user, grade, date, ""); 
       }
     }
     

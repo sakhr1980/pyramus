@@ -11,26 +11,30 @@ import java.util.Map;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.domainmodel.courses.Course;
+import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Course view of the application.
  * 
  * @see fi.pyramus.json.users.CreateGradingScaleJSONRequestController
  */
-public class ManageCourseAssessmentsViewController implements PyramusViewController, Breadcrumbable {
+public class ManageCourseAssessmentsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -39,12 +43,15 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
    */
   public void process(PageRequestContext pageRequestContext) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
 
-    Course course = courseDAO.getCourse(NumberUtils.createLong(pageRequestContext.getRequest().getParameter("course")));
-    List<GradingScale> gradingScales = gradingDAO.listGradingScales();
+    Course course = courseDAO.findById(NumberUtils.createLong(pageRequestContext.getRequest().getParameter("course")));
+    List<GradingScale> gradingScales = gradingScaleDAO.listUnarchived();
     
-    List<CourseStudent> courseStudents = courseDAO.listCourseStudentsByCourse(course);
+    List<CourseStudent> courseStudents = courseStudentDAO.listByCourse(course);
     Collections.sort(courseStudents, new Comparator<CourseStudent>() {
       @Override
       public int compare(CourseStudent o1, CourseStudent o2) {
@@ -62,7 +69,7 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
     while (students.hasNext()) {
       CourseStudent courseStudent = students.next();
       
-      CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
+      CourseAssessment courseAssessment = courseAssessmentDAO.findByCourseStudent(courseStudent);
       if (courseAssessment != null) {
         courseAssessments.put(courseStudent.getId(), courseAssessment);
         
@@ -77,9 +84,16 @@ public class ManageCourseAssessmentsViewController implements PyramusViewControl
       }
     }
     
+    List<CourseParticipationType> courseParticipationTypes = participationTypeDAO.listUnarchived();
+    Collections.sort(courseParticipationTypes, new Comparator<CourseParticipationType>() {
+      public int compare(CourseParticipationType o1, CourseParticipationType o2) {
+        return o1.getIndexColumn() == null ? -1 : o2.getIndexColumn() == null ? 1 : o1.getIndexColumn().compareTo(o2.getIndexColumn());
+      }
+    });
+    
     pageRequestContext.getRequest().setAttribute("course", course);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
-    pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseDAO.listCourseParticipationTypes());
+    pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseParticipationTypes);
     pageRequestContext.getRequest().setAttribute("assessments", courseAssessments);
     pageRequestContext.getRequest().setAttribute("verbalAssessments", verbalAssessments);
     pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);

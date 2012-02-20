@@ -1,22 +1,26 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateCourseDAO;
+import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
-public class EditTransferCreditTemplateJSONRequestController implements JSONRequestController {
+public class EditTransferCreditTemplateJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
+    TransferCreditTemplateCourseDAO transferCreditTemplateCourseDAO = DAOFactory.getInstance().getTransferCreditTemplateCourseDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
     Long transferCreditTemplateId = jsonRequestContext.getLong("transferCreditTemplateId");
     String name = jsonRequestContext.getString("name");
@@ -24,10 +28,10 @@ public class EditTransferCreditTemplateJSONRequestController implements JSONRequ
     TransferCreditTemplate transferCreditTemplate;
     
     if (transferCreditTemplateId != null && transferCreditTemplateId >= 0) {
-       transferCreditTemplate = gradingDAO.findTransferCreditTemplateById(transferCreditTemplateId);
-       gradingDAO.updateTransferCreditTemplate(transferCreditTemplate, name);
+       transferCreditTemplate = transferCreditTemplateDAO.findById(transferCreditTemplateId);
+       transferCreditTemplateDAO.update(transferCreditTemplate, name);
     } else {
-      transferCreditTemplate = gradingDAO.createTransferCreditTemplate(name);
+      transferCreditTemplate = transferCreditTemplateDAO.create(name);
     }
     
     int rowCount = jsonRequestContext.getInteger("coursesTable.rowCount");
@@ -42,16 +46,16 @@ public class EditTransferCreditTemplateJSONRequestController implements JSONRequ
       Long subjectId = jsonRequestContext.getLong(colPrefix + ".subject"); 
       Long courseLengthUnitId = jsonRequestContext.getLong(colPrefix + ".courseLengthUnit"); 
       
-      Subject subject = baseDAO.getSubject(subjectId);
-      EducationalTimeUnit courseLengthUnit = baseDAO.findEducationalTimeUnitById(courseLengthUnitId);;
+      Subject subject = subjectDAO.findById(subjectId);
+      EducationalTimeUnit courseLengthUnit = educationalTimeUnitDAO.findById(courseLengthUnitId);;
       
       TransferCreditTemplateCourse course;
       
       if (courseId != null && courseId > 0) {
-        course = gradingDAO.findTransferCreditTemplateCourseById(courseId);
-        gradingDAO.updateTransferCreditTemplateCourse(course, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
+        course = transferCreditTemplateCourseDAO.findById(courseId);
+        transferCreditTemplateCourseDAO.update(course, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
       } else {
-        course = gradingDAO.createTransferCreditTemplateCourse(transferCreditTemplate, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
+        course = transferCreditTemplateCourseDAO.create(transferCreditTemplate, courseName, courseNumber, courseOptionality, courseLength, courseLengthUnit, subject);
       }
     }
     

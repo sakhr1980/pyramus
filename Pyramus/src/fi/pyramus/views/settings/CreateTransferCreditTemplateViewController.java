@@ -4,22 +4,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Transfer Credit Template view of the application.
  */
-public class CreateTransferCreditTemplateViewController implements PyramusViewController, Breadcrumbable {
+public class CreateTransferCreditTemplateViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,15 +29,17 @@ public class CreateTransferCreditTemplateViewController implements PyramusViewCo
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
-    List<Subject> subjects = baseDAO.listSubjects();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+
+    List<Subject> subjects = subjectDAO.listUnarchived();
     Collections.sort(subjects, new StringAttributeComparator("getName"));
 
-    List<EducationalTimeUnit> timeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> timeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(timeUnits, new StringAttributeComparator("getName"));
 
-    List<School> schools = baseDAO.listSchools();
+    List<School> schools = schoolDAO.listUnarchived();
     Collections.sort(schools, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("subjects", subjects);

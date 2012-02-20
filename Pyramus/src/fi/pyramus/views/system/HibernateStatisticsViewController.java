@@ -10,13 +10,13 @@ import net.sf.ehcache.CacheManager;
 
 import org.hibernate.stat.Statistics;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
-public class HibernateStatisticsViewController implements PyramusViewController {
+public class HibernateStatisticsViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();

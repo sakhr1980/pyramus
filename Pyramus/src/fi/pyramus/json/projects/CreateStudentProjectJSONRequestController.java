@@ -8,33 +8,39 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
+import fi.pyramus.dao.projects.StudentProjectDAO;
+import fi.pyramus.dao.projects.StudentProjectModuleDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
-public class CreateStudentProjectJSONRequestController implements JSONRequestController {
+public class CreateStudentProjectJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    StudentProjectDAO studentProjectDAO = DAOFactory.getInstance().getStudentProjectDAO();
+    StudentProjectModuleDAO studentProjectModuleDAO = DAOFactory.getInstance().getStudentProjectModuleDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
-    User loggedUser = userDAO.getUser(jsonRequestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(jsonRequestContext.getLoggedUserId());
 
     Long studentId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("studentId"));
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("projectId"));
@@ -45,16 +51,16 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    Student student = studentDAO.getStudent(studentId);
-    Project project = projectId == -1 ? null : projectDAO.findProjectById(projectId);
+    Student student = studentDAO.findById(studentId);
+    Project project = projectId == -1 ? null : projectDAO.findById(projectId);
 
     String name;
     String description;
@@ -65,7 +71,7 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       name = Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(),
           "projects.createStudentProject.newStudentProject");
       description = null;
-      unit = baseDAO.getDefaults().getBaseTimeUnit();
+      unit = defaultsDAO.getDefaults().getBaseTimeUnit();
       units = 0.0;
     } else {
       name = project.getName();
@@ -74,13 +80,13 @@ public class CreateStudentProjectJSONRequestController implements JSONRequestCon
       units = project.getOptionalStudiesLength().getUnits();
     }
 
-    StudentProject studentProject = projectDAO.createStudentProject(student, name, description, units, unit, null, loggedUser, project);
-    projectDAO.setStudentProjectTags(studentProject, tagEntities);
+    StudentProject studentProject = studentProjectDAO.create(student, name, description, units, unit, null, loggedUser, project);
+    studentProjectDAO.updateTags(studentProject, tagEntities);
 
     if (project != null) {
       List<ProjectModule> projectModules = project.getProjectModules();
       for (ProjectModule projectModule : projectModules) {
-        projectDAO.createStudentProjectModule(studentProject, projectModule.getModule(), null,
+        studentProjectModuleDAO.create(studentProject, projectModule.getModule(), null,
             CourseOptionality.getOptionality(projectModule.getOptionality().getValue()));
       }
     }

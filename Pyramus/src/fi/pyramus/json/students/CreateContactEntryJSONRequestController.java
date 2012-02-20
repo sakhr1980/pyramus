@@ -6,14 +6,15 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
 /**
@@ -21,7 +22,7 @@ import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
  * 
  * @author antti.viljakainen
  */
-public class CreateContactEntryJSONRequestController implements JSONRequestController {
+public class CreateContactEntryJSONRequestController extends JSONRequestController {
 
   /**
    * Method to process JSON requests.
@@ -45,18 +46,19 @@ public class CreateContactEntryJSONRequestController implements JSONRequestContr
    */
   public void process(JSONRequestContext jsonRequestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentContactLogEntryDAO contactLogEntryDAO = DAOFactory.getInstance().getStudentContactLogEntryDAO();
 
     try {
       Long studentId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("studentId"));
       
-      Student student = studentDAO.getStudent(studentId);
+      Student student = studentDAO.findById(studentId);
       
       String entryText = jsonRequestContext.getRequest().getParameter("entryText");
       String entryCreator = jsonRequestContext.getRequest().getParameter("entryCreatorName");
       Date entryDate = new Date(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("entryDate"))); 
       StudentContactLogEntryType entryType = StudentContactLogEntryType.valueOf(jsonRequestContext.getString("entryType"));
       
-      StudentContactLogEntry entry = studentDAO.createStudentContactLogEntry(student, entryType, entryText, entryDate, entryCreator);
+      StudentContactLogEntry entry = contactLogEntryDAO.create(student, entryType, entryText, entryDate, entryCreator);
 
       Map<String, Object> info = new HashMap<String, Object>();
       info.put("id", entry.getId());
@@ -68,7 +70,7 @@ public class CreateContactEntryJSONRequestController implements JSONRequestContr
 
       jsonRequestContext.addResponseParameter("results", info);
     } catch (Exception e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 

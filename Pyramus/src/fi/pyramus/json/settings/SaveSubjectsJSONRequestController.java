@@ -2,18 +2,20 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class SaveSubjectsJSONRequestController implements JSONRequestController {
+public class SaveSubjectsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
 
     int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("subjectsTable.rowCount")).intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -24,15 +26,15 @@ public class SaveSubjectsJSONRequestController implements JSONRequestController 
       Long educationTypeId = jsonRequestContext.getLong(colPrefix + ".educationTypeId");
       EducationType educationType = null;
       if (educationTypeId != null)
-        educationType = baseDAO.getEducationType(educationTypeId);
+        educationType = educationTypeDAO.findById(educationTypeId);
       boolean modified = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter(colPrefix + ".modified")) == 1;
       
       if (subjectId == -1) {
-        baseDAO.createSubject(code, name, educationType); 
+        subjectDAO.create(code, name, educationType); 
       }
       else if (modified) {
-        Subject subject = baseDAO.getSubject(subjectId);
-        baseDAO.updateSubject(subject, code, name, educationType);
+        Subject subject = subjectDAO.findById(subjectId);
+        subjectDAO.update(subject, code, name, educationType);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

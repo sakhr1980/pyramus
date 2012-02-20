@@ -11,26 +11,29 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleObjectStateException;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
+import fi.pyramus.dao.students.StudentGroupStudentDAO;
+import fi.pyramus.dao.students.StudentGroupUserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.domainmodel.students.StudentGroupUser;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * The controller responsible of modifying an existing student group.
  * 
  * @see fi.pyramus.views.students.EditStudentGroupViewController
  */
-public class EditStudentGroupJSONRequestController implements JSONRequestController {
+public class EditStudentGroupJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to edit a student group.
@@ -41,7 +44,10 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
+    StudentGroupStudentDAO studentGroupStudentDAO = DAOFactory.getInstance().getStudentGroupStudentDAO();
+    StudentGroupUserDAO studentGroupUserDAO = DAOFactory.getInstance().getStudentGroupUserDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
 
     // StudentGroup basic information
 
@@ -55,27 +61,27 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
 
-    StudentGroup studentGroup = studentDAO.findStudentGroupById(requestContext.getLong("studentGroupId"));
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    StudentGroup studentGroup = studentGroupDAO.findById(requestContext.getLong("studentGroupId"));
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
 
     // Version check
     Long version = requestContext.getLong("version"); 
     if (!studentGroup.getVersion().equals(version))
       throw new StaleObjectStateException(StudentGroup.class.getName(), studentGroup.getId());
     
-    studentDAO.updateStudentGroup(studentGroup, name, description, beginDate, loggedUser);
+    studentGroupDAO.update(studentGroup, name, description, beginDate, loggedUser);
 
     // Tags
 
-    studentDAO.setStudentGroupTags(studentGroup, tagEntities);
+    studentGroupDAO.setStudentGroupTags(studentGroup, tagEntities);
 
     // Personnel
 
@@ -95,8 +101,8 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
       
       if (studentGroupUserId == null) {
         // New User
-        User user = userDAO.getUser(userId);
-        studentDAO.addStudentGroupUser(studentGroup, user, loggedUser);
+        User user = userDAO.findById(userId);
+        studentGroupUserDAO.create(studentGroup, user, loggedUser);
       } else {
         // Old User, still in list
         removables.remove(studentGroupUserId);
@@ -106,7 +112,7 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
     // Remove the ones that were deleted from group
     for (int i = 0; i < users.length; i++) {
       if (removables.contains(users[i].getId()))
-        studentDAO.removeStudentGroupUser(studentGroup, users[i], loggedUser);
+        studentGroupUserDAO.remove(studentGroup, users[i], loggedUser);
     }
 
     // Students
@@ -125,22 +131,22 @@ public class EditStudentGroupJSONRequestController implements JSONRequestControl
       
       if (studentGroupStudentId == null) {
         // New Student
-        Student student = studentDAO.getStudent(studentId);
-        studentDAO.addStudentGroupStudent(studentGroup, student, loggedUser);
+        Student student = studentDAO.findById(studentId);
+        studentGroupStudentDAO.create(studentGroup, student, loggedUser);
       } else {
         // Old User, still in list, we'll update if the student has changed student group
         removables.remove(studentGroupStudentId);
         
-        StudentGroupStudent sgStudent = studentDAO.findStudentGroupStudentById(studentGroupStudentId);
+        StudentGroupStudent sgStudent = studentGroupStudentDAO.findById(studentGroupStudentId);
         if (!sgStudent.getStudent().getId().equals(studentId))
-          studentDAO.updateStudentGroupStudent(sgStudent, studentDAO.getStudent(studentId), loggedUser);
+          studentGroupStudentDAO.update(sgStudent, studentDAO.findById(studentId), loggedUser);
       }
     }
 
     // Remove the ones that were deleted from group
     for (int i = 0; i < students.length; i++) {
       if (removables.contains(students[i].getId()))
-        studentDAO.removeStudentGroupStudent(studentGroup, students[i], loggedUser);
+        studentGroupStudentDAO.remove(studentGroup, students[i], loggedUser);
     }
     
     requestContext.setRedirectURL(requestContext.getReferer(true));

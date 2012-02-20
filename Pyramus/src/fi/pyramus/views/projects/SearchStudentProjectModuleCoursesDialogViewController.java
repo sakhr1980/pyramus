@@ -9,26 +9,28 @@ import java.util.List;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.AcademicTermDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.domainmodel.users.Role;
 
 /**
  * The controller responsible of the Search Modules dialog of the application.
  */
-public class SearchStudentProjectModuleCoursesDialogViewController implements PyramusViewController {
+public class SearchStudentProjectModuleCoursesDialogViewController extends PyramusViewController {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -37,22 +39,23 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
    */
   @SuppressWarnings("unchecked")
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
+
     Long moduleId = pageRequestContext.getLong("moduleId");
     Long academicTermId = pageRequestContext.getLong("academicTermId");
     Long studentId = pageRequestContext.getLong("studentId");
 
-    Module module = moduleDAO.getModule(moduleId);
+    Module module = moduleDAO.findById(moduleId);
     AcademicTerm academicTerm = null;
     if (academicTermId != null && academicTermId >= 0)
-      academicTerm = baseDAO.getAcademicTerm(academicTermId);
-    Student student = studentDAO.getStudent(studentId);
+      academicTerm = academicTermDAO.findById(academicTermId);
+    Student student = studentDAO.findById(studentId);
     
-    List<Course> courses = courseDAO.listCoursesByModule(module);
+    List<Course> courses = courseDAO.listByModule(module);
     
     Collections.sort(courses, new ReverseComparator(new Comparator<Course>() {
       @Override
@@ -92,11 +95,11 @@ public class SearchStudentProjectModuleCoursesDialogViewController implements Py
       }
       
       CourseParticipationType courseParticipationType = null;
-      CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
+      CourseStudent courseStudent = courseStudentDAO.findByCourseAndStudent(course, student);
       if (courseStudent != null)
         courseParticipationType = courseStudent.getParticipationType();
       
-      Long courseStudentCount = courseDAO.countCourseStudentsByCourse(course);
+      Long courseStudentCount = courseStudentDAO.countByCourse(course);
       Long maxCourseStudentCount = course.getMaxParticipantCount();
       
       StudentProjectModuleCourseBean studentProjectModuleCourseBean = new StudentProjectModuleCourseBean(course, courseParticipationType, withinTimeFrame, courseStudentCount, maxCourseStudentCount);

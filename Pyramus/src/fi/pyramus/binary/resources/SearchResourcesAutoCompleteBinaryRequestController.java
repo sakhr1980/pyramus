@@ -1,24 +1,28 @@
 package fi.pyramus.binary.resources;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.persistence.search.SearchResult;
+import fi.pyramus.util.StringAttributeComparator;
 
-public class SearchResourcesAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class SearchResourcesAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
     
     String query = binaryRequestContext.getString("query");
     
@@ -26,7 +30,9 @@ public class SearchResourcesAutoCompleteBinaryRequestController implements Binar
     
     resultBuilder.append("<ul>");
     
-    List<ResourceCategory> resourceCategories = resourceDAO.listResourceCategories();
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+    
     for (ResourceCategory resourceCategory : resourceCategories) {
       SearchResult<Resource> searchResult = resourceDAO.searchResources(5, 0, query + '*', null, null, resourceCategory, true);
       if (searchResult.getTotalHitCount() > 0) {
@@ -43,7 +49,7 @@ public class SearchResourcesAutoCompleteBinaryRequestController implements Binar
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

@@ -2,16 +2,16 @@ package fi.pyramus.json.resources;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
 
 /**
  * The controller responsible of archiving a resource category. 
  */
-public class ArchiveResourceCategoryJSONRequestController implements JSONRequestController {
+public class ArchiveResourceCategoryJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to archive a resource category.
@@ -19,10 +19,10 @@ public class ArchiveResourceCategoryJSONRequestController implements JSONRequest
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
 
     Long resourceCategoryId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("resourceCategoryId"));
-    resourceDAO.archiveResourceCategory(resourceDAO.findResourceCategoryById(resourceCategoryId));
+    resourceCategoryDAO.archiveResourceCategory(resourceCategoryDAO.findById(resourceCategoryId));
   }
 
   public UserRole[] getAllowedRoles() {

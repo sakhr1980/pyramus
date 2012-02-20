@@ -7,24 +7,24 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
 /**
  * The controller returning a list of all modules in a project. 
  */
-public class GetProjectModulesJSONRequestController implements JSONRequestController {
+public class GetProjectModulesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
     Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.findProjectById(projectId);
+    Project project = projectDAO.findById(projectId);
 
     List<Map<String, Object>> projectModules = new ArrayList<Map<String,Object>>();
     for (ProjectModule projectModule : project.getProjectModules()) {

@@ -4,25 +4,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.LanguageDAO;
+import fi.pyramus.dao.base.MunicipalityDAO;
+import fi.pyramus.dao.base.NationalityDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
 import fi.pyramus.domainmodel.base.Language;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * ViewController to search for students.
  * 
  * @author antti.viljakainen
  */
-public class SearchStudentsViewController implements PyramusViewController, Breadcrumbable {
+public class SearchStudentsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns roles that are allowed to use this resource.
@@ -39,18 +42,21 @@ public class SearchStudentsViewController implements PyramusViewController, Brea
    * @param pageRequestContext Request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
 
-    List<StudyProgramme> studyProgrammes = baseDAO.listStudyProgrammes();
+    List<StudyProgramme> studyProgrammes = studyProgrammeDAO.listUnarchived();
     Collections.sort(studyProgrammes, new StringAttributeComparator("getName"));
     
-    List<Nationality> nationalities = baseDAO.listNationalities();
+    List<Nationality> nationalities = nationalityDAO.listUnarchived();
     Collections.sort(nationalities, new StringAttributeComparator("getName"));
     
-    List<Municipality> municipalities = baseDAO.listMunicipalities();
+    List<Municipality> municipalities = municipalityDAO.listUnarchived();
     Collections.sort(municipalities, new StringAttributeComparator("getName"));
 
-    List<Language> languages = baseDAO.listLanguages();
+    List<Language> languages = languageDAO.listUnarchived();
     Collections.sort(languages, new StringAttributeComparator("getName"));
     
     pageRequestContext.getRequest().setAttribute("nationalities", nationalities);

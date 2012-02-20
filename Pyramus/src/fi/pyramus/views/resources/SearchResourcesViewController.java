@@ -1,22 +1,29 @@
 package fi.pyramus.views.resources;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.resources.ResourceType;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.util.StringAttributeComparator;
 
-public class SearchResourcesViewController implements PyramusViewController, Breadcrumbable {
+public class SearchResourcesViewController extends PyramusViewController implements Breadcrumbable {
 
   public void process(PageRequestContext requestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
 
-    requestContext.getRequest().setAttribute("resourceCategories", resourceDAO.listResourceCategories());
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+
+    requestContext.getRequest().setAttribute("resourceCategories", resourceCategories);
     requestContext.getRequest().setAttribute("resourceTypes", ResourceType.values());
     requestContext.setIncludeJSP("/templates/resources/searchresources.jsp");
   }

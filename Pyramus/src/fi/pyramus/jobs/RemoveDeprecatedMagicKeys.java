@@ -4,8 +4,8 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.MagicKeyDAO;
 
 public class RemoveDeprecatedMagicKeys implements Job {
 
@@ -13,8 +13,8 @@ public class RemoveDeprecatedMagicKeys implements Job {
   }
   
   public void execute(JobExecutionContext context) throws JobExecutionException {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    baseDAO.deleteDeprecatedMagicKeys();
+    MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+    magicKeyDAO.deleteDeprecatedMagicKeys();
   }
 
 }

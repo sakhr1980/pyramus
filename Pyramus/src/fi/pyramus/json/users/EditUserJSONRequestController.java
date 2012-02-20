@@ -9,14 +9,19 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AddressDAO;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.EmailDAO;
+import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.users.UserVariableDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Email;
@@ -24,7 +29,6 @@ import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
@@ -34,7 +38,7 @@ import fi.pyramus.plugin.auth.InternalAuthenticationProvider;
  * 
  * @see fi.pyramus.views.users.EditUserViewController
  */
-public class EditUserJSONRequestController implements JSONRequestController {
+public class EditUserJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to edit an user. Simply gathers the fields submitted from the
@@ -43,12 +47,21 @@ public class EditUserJSONRequestController implements JSONRequestController {
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    UserVariableDAO userVariableDAO = DAOFactory.getInstance().getUserVariableDAO();
+    AddressDAO addressDAO = DAOFactory.getInstance().getAddressDAO();
+    EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
+    PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
+
+    Long loggedUserId = requestContext.getLoggedUserId();
+    User loggedUser = userDAO.findById(loggedUserId);
+    Role loggedUserRole = loggedUser.getRole();
     
     Long userId = requestContext.getLong("userId");
 
-    User user = userDAO.getUser(userId);
+    User user = userDAO.findById(userId);
 
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
@@ -64,20 +77,20 @@ public class EditUserJSONRequestController implements JSONRequestController {
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    userDAO.updateUser(user, firstName, lastName, role);
-    userDAO.updateUserTitle(user, title);
+    userDAO.update(user, firstName, lastName, role);
+    userDAO.updateTitle(user, title);
 
     // Tags
 
-    userDAO.setUserTags(user, tagEntities);
+    userDAO.updateTags(user, tagEntities);
     
     // Addresses
     
@@ -87,7 +100,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
       String colPrefix = "addressTable." + i;
       Long addressId = requestContext.getLong(colPrefix + ".addressId");
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String name = requestContext.getString(colPrefix + ".name");
       String street = requestContext.getString(colPrefix + ".street");
       String postal = requestContext.getString(colPrefix + ".postal");
@@ -96,14 +109,14 @@ public class EditUserJSONRequestController implements JSONRequestController {
       
       boolean hasAddress = name != null || street != null || postal != null || city != null || country != null;
       if (addressId == -1 && hasAddress) {
-        Address address = baseDAO.createAddress(user.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
+        Address address = addressDAO.create(user.getContactInfo(), contactType, name, street, postal, city, country, defaultAddress);
         existingAddresses.add(address.getId());
       }
       else if (addressId > 0) {
-        Address address = baseDAO.getAddressById(addressId);
+        Address address = addressDAO.findById(addressId);
         if (hasAddress) {
           existingAddresses.add(addressId);
-          baseDAO.updateAddress(address, defaultAddress, contactType, name, street, postal, city, country);
+          addressDAO.update(address, defaultAddress, contactType, name, street, postal, city, country);
         }
       }
     }
@@ -111,7 +124,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
     for (int i = addresses.size() - 1; i >= 0; i--) {
       Address address = addresses.get(i);
       if (!existingAddresses.contains(address.getId())) {
-        baseDAO.removeAddress(address);
+        addressDAO.delete(address);
       }
     }
 
@@ -122,23 +135,23 @@ public class EditUserJSONRequestController implements JSONRequestController {
     for (int i = 0; i < emailCount; i++) {
       String colPrefix = "emailTable." + i;
       Boolean defaultAddress = requestContext.getBoolean(colPrefix + ".defaultAddress");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String email = requestContext.getString(colPrefix + ".email");
       Long emailId = requestContext.getLong(colPrefix + ".emailId");
       if (emailId == -1 && email != null) {
-        emailId = baseDAO.createEmail(user.getContactInfo(), contactType, defaultAddress, email).getId();
+        emailId = emailDAO.create(user.getContactInfo(), contactType, defaultAddress, email).getId();
         existingEmails.add(emailId);
       }
       else if (emailId > 0 && email != null) {
         existingEmails.add(emailId);
-        baseDAO.updateEmail(baseDAO.getEmailById(emailId), contactType, defaultAddress, email);
+        emailDAO.update(emailDAO.findById(emailId), contactType, defaultAddress, email);
       }
     }
     List<Email> emails = user.getContactInfo().getEmails();
     for (int i = emails.size() - 1; i >= 0; i--) {
       Email email = emails.get(i);
       if (!existingEmails.contains(email.getId())) {
-        baseDAO.removeEmail(email);
+        emailDAO.delete(email);
       }
     }
 
@@ -149,15 +162,15 @@ public class EditUserJSONRequestController implements JSONRequestController {
     for (int i = 0; i < phoneCount; i++) {
       String colPrefix = "phoneTable." + i;
       Boolean defaultNumber = requestContext.getBoolean(colPrefix + ".defaultNumber");
-      ContactType contactType = baseDAO.getContactTypeById(requestContext.getLong(colPrefix + ".contactTypeId"));
+      ContactType contactType = contactTypeDAO.findById(requestContext.getLong(colPrefix + ".contactTypeId"));
       String number = requestContext.getString(colPrefix + ".phone");
       Long phoneId = requestContext.getLong(colPrefix + ".phoneId");
       if (phoneId == -1 && number != null) {
-        phoneId = baseDAO.createPhoneNumber(user.getContactInfo(), contactType, defaultNumber, number).getId();
+        phoneId = phoneNumberDAO.create(user.getContactInfo(), contactType, defaultNumber, number).getId();
         existingPhoneNumbers.add(phoneId);
       }
       else if (phoneId > 0 && number != null) {
-        baseDAO.updatePhoneNumber(baseDAO.getPhoneNumberById(phoneId), contactType, defaultNumber, number);
+        phoneNumberDAO.update(phoneNumberDAO.findById(phoneId), contactType, defaultNumber, number);
         existingPhoneNumbers.add(phoneId);
       }
     }
@@ -165,11 +178,11 @@ public class EditUserJSONRequestController implements JSONRequestController {
     for (int i = phoneNumbers.size() - 1; i >= 0; i--) {
       PhoneNumber phoneNumber = phoneNumbers.get(i);
       if (!existingPhoneNumbers.contains(phoneNumber.getId())) {
-        baseDAO.removePhoneNumber(phoneNumber);
+        phoneNumberDAO.delete(phoneNumber);
       }
     }
 
-    if (requestContext.getLoggedUserRole() == UserRole.ADMINISTRATOR) {
+    if (Role.ADMINISTRATOR.equals(loggedUserRole)) {
       String authProvider = requestContext.getString("authProvider");
       
       if (!user.getAuthProvider().equals(authProvider)) {
@@ -181,7 +194,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
         String colPrefix = "variablesTable." + i;
         String variableKey = requestContext.getString(colPrefix + ".key");
         String variableValue = requestContext.getString(colPrefix + ".value");
-        userDAO.setUserVariable(user, variableKey, variableValue);
+        userVariableDAO.setUserVariable(user, variableKey, variableValue);
       }
     }
     
@@ -191,7 +204,7 @@ public class EditUserJSONRequestController implements JSONRequestController {
     if (!usernameBlank||!passwordBlank) {
       if (!passwordBlank) {
         if (!password.equals(password2))
-          throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.PASSWORD_MISMATCH, "Passwords don't match");
+          throw new SmvcRuntimeException(PyramusStatusCode.PASSWORD_MISMATCH, "Passwords don't match");
       }
       
       AuthenticationProvider authenticationProvider = AuthenticationProviderVault.getInstance().getAuthenticationProvider(user.getAuthProvider());
@@ -213,10 +226,10 @@ public class EditUserJSONRequestController implements JSONRequestController {
     }
     
     if (requestContext.getLoggedUserId().equals(user.getId())) {
-      user = userDAO.getUser(user.getId());
+      user = userDAO.findById(user.getId());
       HttpSession session = requestContext.getRequest().getSession(true);
       session.setAttribute("loggedUserName", user.getFullName());
-      session.setAttribute("loggedUserRole", UserRole.valueOf(user.getRole().name()));
+      session.setAttribute("loggedUserRole", Role.valueOf(user.getRole().name()));
     }
 
     requestContext.setRedirectURL(requestContext.getReferer(true));

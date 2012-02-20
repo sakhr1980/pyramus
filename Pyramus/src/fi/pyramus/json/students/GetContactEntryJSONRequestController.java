@@ -5,20 +5,20 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryDAO;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * JSON request controller for reading a contact entry.
  * 
  * @author antti.viljakainen
  */
-public class GetContactEntryJSONRequestController implements JSONRequestController {
+public class GetContactEntryJSONRequestController extends JSONRequestController {
 
   /**
    * Method to process JSON requests.
@@ -37,12 +37,12 @@ public class GetContactEntryJSONRequestController implements JSONRequestControll
    * @param jsonRequestContext JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentContactLogEntryDAO logEntryDAO = DAOFactory.getInstance().getStudentContactLogEntryDAO();
 
     try {
       Long entryId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("entryId"));
       
-      StudentContactLogEntry entry = studentDAO.findStudentContactLogEntryById(entryId);
+      StudentContactLogEntry entry = logEntryDAO.findById(entryId);
       
       Map<String, Object> info = new HashMap<String, Object>();
       info.put("id", entry.getId());
@@ -54,7 +54,7 @@ public class GetContactEntryJSONRequestController implements JSONRequestControll
       
       jsonRequestContext.addResponseParameter("results", info);
     } catch (Exception e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 

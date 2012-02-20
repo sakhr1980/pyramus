@@ -4,22 +4,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
 import fi.pyramus.domainmodel.base.EducationType;
-import fi.pyramus.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Fields of Education view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveEducationTypesJSONRequestController
  */
-public class EducationTypesViewController implements PyramusViewController, Breadcrumbable {
+public class EducationTypesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,9 +27,9 @@ public class EducationTypesViewController implements PyramusViewController, Brea
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
 
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);

@@ -8,19 +8,24 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import fi.pyramus.JSONRequestContext;
+
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.LanguageDAO;
+import fi.pyramus.dao.base.MunicipalityDAO;
+import fi.pyramus.dao.base.NationalityDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.base.Language;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
 import fi.pyramus.persistence.usertypes.Sex;
@@ -30,11 +35,15 @@ import fi.pyramus.persistence.usertypes.Sex;
  * 
  * @author antti.viljakainen
  */
-public class SearchStudentsJSONRequestContoller implements JSONRequestController {
+public class SearchStudentsJSONRequestContoller extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
+    LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
+    NationalityDAO nationalityDAO = DAOFactory.getInstance().getNationalityDAO();
+    StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -72,38 +81,38 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
       Language language = null;
       Long languageId = jsonRequestContext.getLong("language");
       if (languageId != null) {
-        language = baseDAO.getLanguage(languageId);
+        language = languageDAO.findById(languageId);
       }
 
       Nationality nationality = null;
       Long nationalityId = jsonRequestContext.getLong("nationality");
       if (nationalityId != null) {
-        nationality = baseDAO.getNationality(nationalityId);
+        nationality = nationalityDAO.findById(nationalityId);
       }
 
       Municipality municipality = null;
       Long municipalityId = jsonRequestContext.getLong("municipality");
       if (municipalityId != null) {
-        municipality = baseDAO.getMunicipality(municipalityId);
+        municipality = municipalityDAO.findById(municipalityId);
       }
       
       StudyProgramme studyProgramme = null;
       Long studyProgrammeId = jsonRequestContext.getLong("studyProgramme");
       if (studyProgrammeId != null) {
-        studyProgramme = baseDAO.getStudyProgramme(studyProgrammeId);
+        studyProgramme = studyProgrammeDAO.findById(studyProgrammeId);
       }
       
-      searchResult = studentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
+      searchResult = abstractStudentDAO.searchAbstractStudents(resultsPerPage, page, firstName, lastName, nickname,
           tags, education, email, sex, ssn, addressCity, addressCountry, addressPostalCode, addressStreetAddress,
           phone, lodging, studyProgramme, language, nationality, municipality, studentFilter);
     }
     else if ("active".equals(jsonRequestContext.getRequest().getParameter("activeTab"))) {
       String query = jsonRequestContext.getRequest().getParameter("activesQuery");
-      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.SKIP_INACTIVE);
+      searchResult = abstractStudentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.SKIP_INACTIVE);
     }
     else {
       String query = jsonRequestContext.getRequest().getParameter("query");
-      searchResult = studentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.INCLUDE_INACTIVE);
+      searchResult = abstractStudentDAO.searchAbstractStudentsBasic(resultsPerPage, page, query, StudentFilter.INCLUDE_INACTIVE);
     }
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
@@ -114,7 +123,7 @@ public class SearchStudentsJSONRequestContoller implements JSONRequestController
     	  String activeStudyProgrammes = "";
     	  String inactiveStudyProgrammes = "";
 
-    	  List<Student> studentList2 = studentDAO.listStudentsByAbstractStudent(abstractStudent);
+    	  List<Student> studentList2 = studentDAO.listByAbstractStudent(abstractStudent);
     	  
     	  for (Student student1 : studentList2) {
     	    if (student1.getStudyProgramme() != null) {

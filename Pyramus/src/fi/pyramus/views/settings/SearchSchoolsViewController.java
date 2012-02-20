@@ -2,16 +2,16 @@ package fi.pyramus.views.settings;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Search Schools view of the application.
  */
-public class SearchSchoolsViewController implements PyramusViewController, Breadcrumbable {
+public class SearchSchoolsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.

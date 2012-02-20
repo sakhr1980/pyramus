@@ -2,22 +2,22 @@ package fi.pyramus.views.courses;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.CreditDAO;
 import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Course view of the application.
  * 
  * @see fi.pyramus.json.users.CreateGradingScaleJSONRequestController
  */
-public class EditVerbalAssessmentViewController implements PyramusViewController, Breadcrumbable {
+public class EditVerbalAssessmentViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -25,10 +25,10 @@ public class EditVerbalAssessmentViewController implements PyramusViewController
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    CreditDAO creditDAO = DAOFactory.getInstance().getCreditDAO();
     
     Long creditId = pageRequestContext.getLong("creditId");
-    Credit credit = creditId != null ? gradingDAO.findCreditById(creditId) : null;
+    Credit credit = creditId != null ? creditDAO.findById(creditId) : null;
 
     if (credit != null)
       pageRequestContext.getRequest().setAttribute("verbalAssessment", credit.getVerbalAssessment());

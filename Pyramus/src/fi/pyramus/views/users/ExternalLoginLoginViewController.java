@@ -4,19 +4,18 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpSession;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.I18N.Messages;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusStatusCode;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationException;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;
-import fi.pyramus.views.PyramusViewController;
 
-public class ExternalLoginLoginViewController implements PyramusViewController {
+public class ExternalLoginLoginViewController extends PyramusViewController {
 
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.EVERYONE };
@@ -30,7 +29,7 @@ public class ExternalLoginLoginViewController implements PyramusViewController {
     HttpSession session = requestContext.getRequest().getSession(true);
     if (!session.isNew() && session.getAttribute("loggedUserId") != null) {
       String msg = Messages.getInstance().getText(locale, "users.login.alreadyLoggedIn");
-      throw new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.ALREADY_LOGGED_IN, msg);
+      throw new SmvcRuntimeException(PyramusStatusCode.ALREADY_LOGGED_IN, msg);
     }
     
     try {
@@ -56,13 +55,13 @@ public class ExternalLoginLoginViewController implements PyramusViewController {
         }
       } else {
         String msg = Messages.getInstance().getText(requestContext.getRequest().getLocale(), "users.login.loginFailed");
-        throw new PyramusRuntimeException(ErrorLevel.WARNING, StatusCode.UNAUTHORIZED, msg);
+        throw new SmvcRuntimeException(PyramusStatusCode.UNAUTHORIZED, msg);
       }
     } catch (AuthenticationException ae) {
       if (ae.getErrorCode() == AuthenticationException.LOCAL_USER_MISSING)
-        throw new PyramusRuntimeException(ErrorLevel.WARNING, StatusCode.LOCAL_USER_MISSING, Messages.getInstance().getText(locale, "users.login.localUserMissing"));
+        throw new SmvcRuntimeException(PyramusStatusCode.LOCAL_USER_MISSING, Messages.getInstance().getText(locale, "users.login.localUserMissing"));
       else 
-        throw new PyramusRuntimeException(ae);
+        throw new SmvcRuntimeException(ae);
     }
   }
 

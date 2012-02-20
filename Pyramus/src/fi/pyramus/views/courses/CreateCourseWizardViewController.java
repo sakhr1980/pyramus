@@ -2,18 +2,18 @@ package fi.pyramus.views.courses;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Create Course view of the application.
  * 
  * @see fi.pyramus.json.users.CreateGradingScaleJSONRequestController
  */
-public class CreateCourseWizardViewController implements PyramusViewController, Breadcrumbable {
+public class CreateCourseWizardViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.

@@ -1,15 +1,15 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.base.MunicipalityDAO;
 
 /**
  * The controller responsible of archiving a municipality. 
  */
-public class ArchiveMunicipalityJSONRequestController implements JSONRequestController {
+public class ArchiveMunicipalityJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to archive a municipality.
@@ -17,9 +17,9 @@ public class ArchiveMunicipalityJSONRequestController implements JSONRequestCont
    * @param jsonRequestContext The JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    MunicipalityDAO municipalityDAO = DAOFactory.getInstance().getMunicipalityDAO();
     Long muncipalityId = jsonRequestContext.getLong("municipalityId");
-    baseDAO.archiveMunicipality(baseDAO.getMunicipality(muncipalityId));
+    municipalityDAO.archive(municipalityDAO.findById(muncipalityId));
   }
 
   public UserRole[] getAllowedRoles() {

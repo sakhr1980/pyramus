@@ -7,18 +7,18 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.QueryParser;
 
-import fi.pyramus.BinaryRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.BinaryRequestContext;
+import fi.pyramus.BinaryRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.binary.BinaryRequestController;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
 
-public class StudentGroupsAutoCompleteBinaryRequestController implements BinaryRequestController {
+public class StudentGroupsAutoCompleteBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentGroupDAO studentGroupDAO = DAOFactory.getInstance().getStudentGroupDAO();
     String text = binaryRequestContext.getString("text");
     
     
@@ -28,7 +28,7 @@ public class StudentGroupsAutoCompleteBinaryRequestController implements BinaryR
     if (!StringUtils.isBlank(text)) {
       text = QueryParser.escape(StringUtils.trim(text)) + '*';
 
-      List<StudentGroup> studentGroups = studentDAO.searchStudentGroupsBasic(100, 0, text).getResults();
+      List<StudentGroup> studentGroups = studentGroupDAO.searchStudentGroupsBasic(100, 0, text).getResults();
 
       for (StudentGroup studentGroup : studentGroups) {
         addResult(resultBuilder, studentGroup);
@@ -40,7 +40,7 @@ public class StudentGroupsAutoCompleteBinaryRequestController implements BinaryR
     try {
       binaryRequestContext.setResponseContent(resultBuilder.toString().getBytes("UTF-8"), "text/html;charset=UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   

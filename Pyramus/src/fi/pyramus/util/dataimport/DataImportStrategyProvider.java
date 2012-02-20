@@ -4,12 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.students.AbstractStudentDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Email;
@@ -87,13 +86,13 @@ public class DataImportStrategyProvider {
       public void initializeContext(DataImportContext context) {
         super.initializeContext(context);
         
-        StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+        AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
         
         if (context.hasField("socialSecurityNumber")) {
           String ssn = context.getFieldValue("socialSecurityNumber");
 
           if (ssn != null) {
-            AbstractStudent abstractStudent = studentDAO.getAbstractStudentBySSN(ssn);
+            AbstractStudent abstractStudent = abstractStudentDAO.findBySSN(ssn);
             context.addEntity(AbstractStudent.class, abstractStudent);
           }
         }
@@ -151,14 +150,14 @@ public class DataImportStrategyProvider {
     instance().registerFieldHandler(entityStrategy, "studyProgrammeName", new DefaultFieldHandingStrategy(subClass) {
       @Override
       public void handleField(String fieldName, Object fieldValue, DataImportContext context) throws SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
-        BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+        StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
         
         Student student = (Student) getEntity(Student.class, context);
-        StudyProgramme studyProgramme = baseDAO.findStudyProgammeByName((String) fieldValue);
+        StudyProgramme studyProgramme = studyProgrammeDAO.findByName((String) fieldValue);
         if (studyProgramme != null) {
           DataImportUtils.setFieldValue(student, DataImportUtils.getField(student, "studyProgramme"), studyProgramme);
         } else {
-           new PyramusRuntimeException(ErrorLevel.INFORMATION, StatusCode.VALIDATION_FAILURE, "StudyProgramme not found with name: " + fieldValue);
+           new SmvcRuntimeException(PyramusStatusCode.VALIDATION_FAILURE, "StudyProgramme not found with name: " + fieldValue);
         } 
       }
     });

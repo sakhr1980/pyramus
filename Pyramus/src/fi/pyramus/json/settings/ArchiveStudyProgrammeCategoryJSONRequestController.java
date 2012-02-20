@@ -1,20 +1,20 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.StudyProgrammeCategoryDAO;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
-import fi.pyramus.json.JSONRequestController;
 
-public class ArchiveStudyProgrammeCategoryJSONRequestController implements JSONRequestController {
+public class ArchiveStudyProgrammeCategoryJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-
+    StudyProgrammeCategoryDAO studyProgrammeCategoryDAO = DAOFactory.getInstance().getStudyProgrammeCategoryDAO();
+    
     Long studyProgrammeCategoryId = requestContext.getLong("studyProgrammeCategory");
-    StudyProgrammeCategory studyProgrammeCategory = baseDAO.getStudyProgrammeCategory(studyProgrammeCategoryId);
-    baseDAO.archiveStudyProgrammeCategory(studyProgrammeCategory);
+    StudyProgrammeCategory studyProgrammeCategory = studyProgrammeCategoryDAO.findById(studyProgrammeCategoryId);
+    studyProgrammeCategoryDAO.archive(studyProgrammeCategory);
   }
 
   public UserRole[] getAllowedRoles() {

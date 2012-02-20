@@ -7,25 +7,27 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class EditGradingScaleJSONRequestController implements JSONRequestController {
+public class EditGradingScaleJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
 
     Long gradingScaleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("gradingScaleId"));
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
     
-    GradingScale gradingScale = gradingDAO.findGradingScaleById(gradingScaleId);
-    gradingDAO.updateGradingScale(gradingScale, name, description);
+    GradingScale gradingScale = gradingScaleDAO.findById(gradingScaleId);
+    gradingScaleDAO.update(gradingScale, name, description);
     
     Set<Long> existingGrades = new HashSet<Long>();
     
@@ -43,11 +45,11 @@ public class EditGradingScaleJSONRequestController implements JSONRequestControl
       Double gradeGPA = StringUtils.isBlank(gradeGPAParam) ? null : NumberUtils.createDouble(gradeGPAParam);
       
       if (gradeId != null) {
-        Grade grade = gradingDAO.findGradeById(gradeId);
-        gradingDAO.updateGrade(grade, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
+        Grade grade = gradeDAO.findById(gradeId);
+        gradeDAO.update(grade, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
         existingGrades.add(grade.getId());
       } else {
-        Grade grade = gradingDAO.createGrade(gradingScale, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
+        Grade grade = gradeDAO.create(gradingScale, gradeName, gradeDescription, passingGrade, gradeGPA, gradeQualification);
         existingGrades.add(grade.getId());
       }
     }

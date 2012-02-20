@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.persistence.search.SearchResult;
 
-public class SearchUsersJSONRequestController implements JSONRequestController {
+public class SearchUsersJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();

@@ -3,22 +3,22 @@ package fi.pyramus.views.settings;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.courses.CourseStateDAO;
 import fi.pyramus.domainmodel.courses.CourseState;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Time Units view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveTimeUnitsJSONRequestController
  */
-public class CourseStatesViewController implements PyramusViewController, Breadcrumbable {
+public class CourseStatesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -26,11 +26,11 @@ public class CourseStatesViewController implements PyramusViewController, Breadc
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    
-    CourseState initalCourseState = baseDAO.getDefaults().getInitialCourseState();
-    List<CourseState> courseStates = courseDAO.listCourseStates();
+    CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
+
+    CourseState initalCourseState = defaultsDAO.getDefaults().getInitialCourseState();
+    List<CourseState> courseStates = courseStateDAO.listUnarchived();
     
     pageRequestContext.getRequest().setAttribute("courseStates", courseStates);
     pageRequestContext.getRequest().setAttribute("initalCourseState", initalCourseState);

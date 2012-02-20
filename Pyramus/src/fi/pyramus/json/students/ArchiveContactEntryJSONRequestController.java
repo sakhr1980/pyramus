@@ -1,21 +1,21 @@
 package fi.pyramus.json.students;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryDAO;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
-import fi.pyramus.json.JSONRequestController;
 
-public class ArchiveContactEntryJSONRequestController implements JSONRequestController {
+public class ArchiveContactEntryJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentContactLogEntryDAO entryDAO = DAOFactory.getInstance().getStudentContactLogEntryDAO();
     Long entryId = requestContext.getLong("entryId");
     
-    StudentContactLogEntry entry = studentDAO.findStudentContactLogEntryById(entryId);
+    StudentContactLogEntry entry = entryDAO.findById(entryId);
     
-    studentDAO.archiveContactEntry(entry);
+    entryDAO.archive(entry);
   }
 
   public UserRole[] getAllowedRoles() {

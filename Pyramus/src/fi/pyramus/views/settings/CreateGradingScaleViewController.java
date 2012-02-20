@@ -2,18 +2,18 @@ package fi.pyramus.views.settings;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Create Grading Scale view of the application.
  * 
  * @see fi.pyramus.json.users.CreateGradingScaleJSONRequestController
  */
-public class CreateGradingScaleViewController implements PyramusViewController, Breadcrumbable {
+public class CreateGradingScaleViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.

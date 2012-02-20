@@ -7,13 +7,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.School;
+
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.I18N.Messages;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**
@@ -21,10 +22,10 @@ import fi.pyramus.persistence.search.SearchResult;
  * 
  * @see fi.pyramus.views.settings.SearchSchoolsViewController
  */
-public class SearchSchoolsJSONRequestController implements JSONRequestController {
+public class SearchSchoolsJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
 
     Integer resultsPerPage = NumberUtils.createInteger(requestContext.getRequest().getParameter("maxResults"));
     if (resultsPerPage == null) {
@@ -42,7 +43,7 @@ public class SearchSchoolsJSONRequestController implements JSONRequestController
 
     // Search via the DAO object
 
-    SearchResult<School> searchResult = baseDAO.searchSchoolsBasic(resultsPerPage, page, text);
+    SearchResult<School> searchResult = schoolDAO.searchSchoolsBasic(resultsPerPage, page, text);
 
     List<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
     List<School> schools = searchResult.getResults();

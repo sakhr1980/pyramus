@@ -4,45 +4,51 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.ContactTypeDAO;
+import fi.pyramus.dao.base.ContactURLTypeDAO;
+import fi.pyramus.dao.base.SchoolFieldDAO;
+import fi.pyramus.dao.base.SchoolVariableKeyDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
-import fi.pyramus.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Create School view of the application.
  * 
  * @see fi.pyramus.json.settings.CreateSchoolJSONRequestController
  */
-public class CreateSchoolViewController implements PyramusViewController, Breadcrumbable {
+public class CreateSchoolViewController extends PyramusViewController implements Breadcrumbable {
   /**
    * Processes the page request by including the corresponding JSP page to the response.
    * 
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
-    List<ContactURLType> contactURLTypes = baseDAO.listContactURLTypes();
+    SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
+    SchoolVariableKeyDAO schoolVariableKeyDAO = DAOFactory.getInstance().getSchoolVariableKeyDAO();
+    ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
+    ContactURLTypeDAO contactURLTypeDAO = DAOFactory.getInstance().getContactURLTypeDAO();
+
+    List<ContactURLType> contactURLTypes = contactURLTypeDAO.listUnarchived();
     Collections.sort(contactURLTypes, new StringAttributeComparator("getName"));
 
-    List<SchoolVariableKey> schoolUserEditableVariableKeys = baseDAO.listSchoolUserEditableVariableKeys();
+    List<SchoolVariableKey> schoolUserEditableVariableKeys = schoolVariableKeyDAO.listUserEditableVariableKeys();
     Collections.sort(schoolUserEditableVariableKeys, new StringAttributeComparator("getVariableName"));
 
-    List<ContactType> contactTypes = baseDAO.listContactTypes();
+    List<ContactType> contactTypes = contactTypeDAO.listUnarchived();
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
     pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
     pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys);
-    pageRequestContext.getRequest().setAttribute("schoolFields", baseDAO.listSchoolFields());
+    pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived());
     pageRequestContext.setIncludeJSP("/templates/settings/createschool.jsp");
   }
 

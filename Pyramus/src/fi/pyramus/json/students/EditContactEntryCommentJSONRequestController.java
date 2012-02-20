@@ -6,20 +6,20 @@ import java.util.Map;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentContactLogEntryCommentDAO;
 import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
-import fi.pyramus.json.JSONRequestController;
 
 /**
  * JSON request controller for editing a contact entry.
  * 
  * @author antti.viljakainen
  */
-public class EditContactEntryCommentJSONRequestController implements JSONRequestController {
+public class EditContactEntryCommentJSONRequestController extends JSONRequestController {
 
   /**
    * Method to process JSON requests.
@@ -41,18 +41,18 @@ public class EditContactEntryCommentJSONRequestController implements JSONRequest
    * @param jsonRequestContext JSON request context
    */
   public void process(JSONRequestContext jsonRequestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentContactLogEntryCommentDAO entryCommentDAO = DAOFactory.getInstance().getStudentContactLogEntryCommentDAO();
 
     try {
       Long commentId = jsonRequestContext.getLong("commentId");
       
-      StudentContactLogEntryComment comment = studentDAO.findStudentContactLogEntryCommentById(commentId);
+      StudentContactLogEntryComment comment = entryCommentDAO.findById(commentId);
       
       String commentText = jsonRequestContext.getRequest().getParameter("commentText");
       String commentCreatorName = jsonRequestContext.getRequest().getParameter("commentCreatorName");
       Date commentDate = new Date(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("commentDate")));
       
-      studentDAO.updateStudentContactLogEntryComment(comment, commentText, commentDate, commentCreatorName);
+      entryCommentDAO.update(comment, commentText, commentDate, commentCreatorName);
 
       Map<String, Object> info = new HashMap<String, Object>();
       info.put("id", comment.getId());
@@ -63,7 +63,7 @@ public class EditContactEntryCommentJSONRequestController implements JSONRequest
 
       jsonRequestContext.addResponseParameter("results", info);
     } catch (Exception e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 

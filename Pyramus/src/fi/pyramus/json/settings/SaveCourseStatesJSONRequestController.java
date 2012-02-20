@@ -1,22 +1,21 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.courses.CourseState;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.courses.CourseStateDAO;
+import fi.pyramus.domainmodel.courses.CourseState;
 
-public class SaveCourseStatesJSONRequestController implements JSONRequestController {
+public class SaveCourseStatesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    
+    CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
+
     CourseState initialCourseState = null;
 
     int rowCount = jsonRequestContext.getInteger("courseStatesTable.rowCount").intValue();
@@ -31,23 +30,23 @@ public class SaveCourseStatesJSONRequestController implements JSONRequestControl
       
         
       if (courseStateId == -1) {
-        courseState = courseDAO.createCourseState(name);
+        courseState = courseStateDAO.create(name);
       } else {
-        courseState = courseDAO.getCourseState(courseStateId);
-        courseDAO.updateCourseState(courseState, name);
+        courseState = courseStateDAO.findById(courseStateId);
+        courseStateDAO.update(courseState, name);
       }
       
       if (initialState) {
         if (initialCourseState != null)
-          throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.UNDEFINED, "Two or more initialCourseStates defined");
+          throw new SmvcRuntimeException(PyramusStatusCode.UNDEFINED, "Two or more initialCourseStates defined");
           
         initialCourseState = courseState;
       }
     }
     
     if (initialCourseState != null) {
-      if (!initialCourseState.equals(baseDAO.getDefaults().getInitialCourseState())) {
-        baseDAO.updateDefaultInitialCourseState(initialCourseState);
+      if (!initialCourseState.equals(defaultsDAO.getDefaults().getInitialCourseState())) {
+        defaultsDAO.updateDefaultInitialCourseState(initialCourseState);
       }
         
     }

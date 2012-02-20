@@ -3,9 +3,8 @@ package fi.pyramus.util.dataimport;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
 
 @SuppressWarnings("rawtypes")
@@ -41,7 +40,7 @@ public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {
         entity = defaultConstructor.newInstance(new Object[] {});
         context.addEntity(entityClass, entity);
       } catch (Exception e) {
-        throw new PyramusRuntimeException(ErrorLevel.CRITICAL, StatusCode.OK, "Couldn't instantiate entityClass");
+        throw new SmvcRuntimeException(PyramusStatusCode.OK, "Couldn't instantiate entityClass");
       }
     }
 

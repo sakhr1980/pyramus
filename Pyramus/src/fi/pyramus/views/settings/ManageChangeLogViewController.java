@@ -16,18 +16,18 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusFormViewController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.ChangeLogDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.changelog.TrackedEntityPropertyDAO;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntry;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntity;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntityProperty;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryProperty;
 import fi.pyramus.domainmodel.changelog.TrackedEntityProperty;
-import fi.pyramus.views.PyramusFormViewController;
 
 /**
  * The controller responsible of the system settings view of the application.
@@ -37,7 +37,7 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
   @Override
   public void processForm(PageRequestContext requestContext) {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
-    ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
+    TrackedEntityPropertyDAO trackedEntityPropertyDAO = DAOFactory.getInstance().getTrackedEntityPropertyDAO();
     
     List<ManageChangeLogViewEntityBean> entityBeans = new ArrayList<ManageChangeLogViewEntityBean>();
     List<EntityType<?>> entities = new ArrayList<EntityType<?>>(systemDAO.getEntities());
@@ -58,7 +58,7 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
               case MANY_TO_ONE:
                 if ((!attribute.equals(idAttribute)) && !this.isVersion(entityClass, attribute)) {
                   String propertyName = attribute.getName();
-                  TrackedEntityProperty trackedEntityProperty = changeLogDAO.findTrackedEntityPropertyByEntityAndProperty(entityName, propertyName);
+                  TrackedEntityProperty trackedEntityProperty = trackedEntityPropertyDAO.findByEntityAndProperty(entityName, propertyName);
                   ManageChangeLogViewEntityPropertyBean propertyBean = new ManageChangeLogViewEntityPropertyBean(propertyName, StringUtils.capitalize(propertyName), trackedEntityProperty != null);
                   properties.add(propertyBean);
                 }
@@ -76,7 +76,7 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
           ManageChangeLogViewEntityBean entityBean = new ManageChangeLogViewEntityBean(entityClass.getName(), entityClass.getSimpleName(), properties);
           entityBeans.add(entityBean);
         } catch (ClassNotFoundException e) {
-          throw new PyramusRuntimeException(e);
+          throw new SmvcRuntimeException(e);
         }
       }
     }
@@ -95,7 +95,7 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
   
   @Override
   public void processSend(PageRequestContext requestContext) {
-    ChangeLogDAO changeLogDAO = DAOFactory.getInstance().getChangeLogDAO();
+    TrackedEntityPropertyDAO trackedEntityPropertyDAO = DAOFactory.getInstance().getTrackedEntityPropertyDAO();
     
     int rowCount = requestContext.getInteger("settingsTable.rowCount");
     for (int i = 0; i < rowCount; i++) {
@@ -105,11 +105,11 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
       String property = requestContext.getString(colPrefix + ".property");
       
       if (!StringUtils.isBlank(entity) && !StringUtils.isBlank(property)) {
-        TrackedEntityProperty trackedEntityProperty = changeLogDAO.findTrackedEntityPropertyByEntityAndProperty(entity, property);
+        TrackedEntityProperty trackedEntityProperty = trackedEntityPropertyDAO.findByEntityAndProperty(entity, property);
         if (track == false && trackedEntityProperty != null)
-          changeLogDAO.deleteTrackedEntityProperty(trackedEntityProperty);
+          trackedEntityPropertyDAO.delete(trackedEntityProperty);
         else if (track == true && trackedEntityProperty == null)
-          changeLogDAO.createTrackedEntityProperty(entity, property);
+          trackedEntityPropertyDAO.create(entity, property);
       }
     }
     

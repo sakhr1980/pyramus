@@ -7,24 +7,25 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
-import fi.pyramus.UserRole;
+import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Project view of the application.
  */
-public class EditProjectViewController implements PyramusViewController, Breadcrumbable {
+public class EditProjectViewController extends PyramusViewController implements Breadcrumbable {
   
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -33,11 +34,11 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
    */
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
     Long projectId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("project"));
-    Project project = projectDAO.findProjectById(projectId);
+    Project project = projectDAO.findById(projectId);
     
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = project.getTags().iterator();
@@ -48,13 +49,13 @@ public class EditProjectViewController implements PyramusViewController, Breadcr
         tagsBuilder.append(' ');
     }
     
-    List<EducationalTimeUnit> educationalTimeUnits = baseDAO.listEducationalTimeUnits();
+    List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("project", project);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
-    pageRequestContext.getRequest().setAttribute("users", userDAO.listUsers());
+    pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());
 
     pageRequestContext.setIncludeJSP("/templates/projects/editproject.jsp");
   }

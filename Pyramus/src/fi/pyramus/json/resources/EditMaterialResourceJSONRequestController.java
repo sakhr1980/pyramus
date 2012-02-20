@@ -8,25 +8,28 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.ErrorLevel;
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.StatusCode;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.PyramusStatusCode;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.base.TagDAO;
+import fi.pyramus.dao.resources.MaterialResourceDAO;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.MaterialResource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class EditMaterialResourceJSONRequestController implements JSONRequestController {
+public class EditMaterialResourceJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {    
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
+    MaterialResourceDAO materialResourceDAO = DAOFactory.getInstance().getMaterialResourceDAO();
+    TagDAO tagDAO = DAOFactory.getInstance().getTagDAO();
 
     String name = jsonRequestContext.getRequest().getParameter("name");
     Long resourceId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("resource"));
@@ -39,21 +42,21 @@ public class EditMaterialResourceJSONRequestController implements JSONRequestCon
       List<String> tags = Arrays.asList(tagsText.split("[\\ ,]"));
       for (String tag : tags) {
         if (!StringUtils.isBlank(tag)) {
-          Tag tagEntity = baseDAO.findTagByText(tag.trim());
+          Tag tagEntity = tagDAO.findByText(tag.trim());
           if (tagEntity == null)
-            tagEntity = baseDAO.createTag(tag);
+            tagEntity = tagDAO.create(tag);
           tagEntities.add(tagEntity);
         }
       }
     }
     
-    MaterialResource materialResource = resourceDAO.findMaterialResourceById(resourceId);
+    MaterialResource materialResource = materialResourceDAO.findById(resourceId);
     if (!version.equals(materialResource.getVersion())) 
-      throw new PyramusRuntimeException(ErrorLevel.ERROR, StatusCode.CONCURRENT_MODIFICATION, Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), "generic.errors.concurrentModification"));
+      throw new SmvcRuntimeException(PyramusStatusCode.CONCURRENT_MODIFICATION, Messages.getInstance().getText(jsonRequestContext.getRequest().getLocale(), "generic.errors.concurrentModification"));
     
-    ResourceCategory resourceCategory = resourceDAO.findResourceCategoryById(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("category")));
+    ResourceCategory resourceCategory = resourceCategoryDAO.findById(NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("category")));
     
-    resourceDAO.updateMaterialResource(materialResource, name, resourceCategory, unitCost);
+    materialResourceDAO.update(materialResource, name, resourceCategory, unitCost);
     resourceDAO.setResourceTags(materialResource, tagEntities);
     
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

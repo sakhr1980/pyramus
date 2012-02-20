@@ -2,21 +2,21 @@ package fi.pyramus.json.modules;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class ArchiveModuleJSONRequestController implements JSONRequestController {
+public class ArchiveModuleJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
 
     Long moduleId = NumberUtils.createLong(requestContext.getRequest().getParameter("moduleId"));
-    Module module = moduleDAO.getModule(moduleId);
-    moduleDAO.archiveModule(module);
+    Module module = moduleDAO.findById(moduleId);
+    moduleDAO.archive(module);
   }
 
   public UserRole[] getAllowedRoles() {

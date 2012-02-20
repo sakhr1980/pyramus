@@ -1,22 +1,24 @@
 package fi.pyramus.views.projects;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ProjectDAO;
+import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.util.StringAttributeComparator;
+import fi.pyramus.PyramusViewController;
 
 /**
  * 
  */
-public class SelectProjectDialogViewController implements PyramusViewController, Breadcrumbable {
+public class SelectProjectDialogViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -26,7 +28,10 @@ public class SelectProjectDialogViewController implements PyramusViewController,
   public void process(PageRequestContext pageRequestContext) {
     ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
 
-    List<Project> projects = projectDAO.listProjects();
+    List<Project> projects = projectDAO.listUnarchived();
+    
+    Collections.sort(projects, new StringAttributeComparator("getName"));
+    
     pageRequestContext.getRequest().setAttribute("projects", projects);
     
     pageRequestContext.setIncludeJSP("/templates/projects/selectprojectdialog.jsp");

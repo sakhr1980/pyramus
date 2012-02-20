@@ -1,21 +1,25 @@
 package fi.pyramus.views.settings;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ReportDAO;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.reports.ReportCategoryDAO;
+import fi.pyramus.domainmodel.reports.ReportCategory;
 
 /**
  * The controller responsible of the Report Categories view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveReportCategoriesJSONRequestController
  */
-public class ReportCategoriesViewController implements PyramusViewController, Breadcrumbable {
+public class ReportCategoriesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,8 +27,22 @@ public class ReportCategoriesViewController implements PyramusViewController, Br
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
-    pageRequestContext.getRequest().setAttribute("categories", reportDAO.listReportCategories());
+    ReportCategoryDAO categoryDAO = DAOFactory.getInstance().getReportCategoryDAO();
+
+    List<ReportCategory> categories = categoryDAO.listAll();
+
+    Collections.sort(categories, new Comparator<ReportCategory>() {
+      public int compare(ReportCategory o1, ReportCategory o2) {
+        if (o1.getIndexColumn() == o2.getIndexColumn() || o1.getIndexColumn().equals(o2.getIndexColumn())) {
+          return o1.getName() == null ? -1 : o2.getName() == null ? 1 : o1.getName().compareTo(o2.getName());
+        }
+        else {
+          return o1.getIndexColumn() == null ? -1 : o2.getIndexColumn() == null ? 1 : o1.getIndexColumn().compareTo(o2.getIndexColumn());
+        }
+      }
+    });
+    
+    pageRequestContext.getRequest().setAttribute("categories", categories);
     pageRequestContext.setIncludeJSP("/templates/settings/reportcategories.jsp");
   }
 

@@ -2,19 +2,19 @@ package fi.pyramus.views.students;
 
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Create StudentGroup view of the application.
  * 
  * @see fi.pyramus.json.students.CreateStudentGroupJSONRequestController
  */
-public class CreateStudentGroupViewController implements PyramusViewController, Breadcrumbable {
+public class CreateStudentGroupViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.

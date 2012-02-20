@@ -13,7 +13,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.system.SettingDAO;
+import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
 import fi.pyramus.plugin.PluginDescriptor;
@@ -85,14 +86,14 @@ public class PyramusServletContextListener implements ServletContextListener {
         }
       }
       
-      // Initialize the page mapper in order to serve page requests 
-      RequestControllerMapper.mapControllers(pageControllers, ".page");
-
-      // Initialize the JSON mapper in order to serve JSON requests 
-      RequestControllerMapper.mapControllers(jsonControllers, ".json");
-
-      // Initialize the binary mapper in order to serve binary requests 
-      RequestControllerMapper.mapControllers(binaryControllers, ".binary");
+//      // Initialize the page mapper in order to serve page requests 
+//      RequestControllerMapper.mapControllers(pageControllers, ".page");
+//
+//      // Initialize the JSON mapper in order to serve JSON requests 
+//      RequestControllerMapper.mapControllers(jsonControllers, ".json");
+//
+//      // Initialize the binary mapper in order to serve binary requests 
+//      RequestControllerMapper.mapControllers(binaryControllers, ".binary");
       
       // Sets the application directory of the application, used primarily for initial data creation
 
@@ -120,11 +121,12 @@ public class PyramusServletContextListener implements ServletContextListener {
   }
   
   private void loadSystemSettings(Properties properties) {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    SettingDAO settingDAO = DAOFactory.getInstance().getSettingDAO();
+    SettingKeyDAO settingKeyDAO = DAOFactory.getInstance().getSettingKeyDAO();
     
-    List<SettingKey> settingKeys = systemDAO.listSettingKeys();
+    List<SettingKey> settingKeys = settingKeyDAO.listAll();
     for (SettingKey settingKey : settingKeys) {
-      Setting setting = systemDAO.findSettingByKey(settingKey);
+      Setting setting = settingDAO.findByKey(settingKey);
       if (setting != null)
         properties.put(settingKey.getName(), setting.getValue());
     } 

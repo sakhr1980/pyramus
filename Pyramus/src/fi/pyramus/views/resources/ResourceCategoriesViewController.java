@@ -1,21 +1,26 @@
 package fi.pyramus.views.resources;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.dao.resources.ResourceCategoryDAO;
+import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.domainmodel.users.Role;
+import fi.pyramus.util.StringAttributeComparator;
 
 /**
  * The controller responsible of the Manage Resource Categories view of the application.
  * 
  * @see fi.pyramus.json.settings.SaveResourceCategoriesJSONRequestController
  */
-public class ResourceCategoriesViewController implements PyramusViewController, Breadcrumbable {
+public class ResourceCategoriesViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -23,8 +28,12 @@ public class ResourceCategoriesViewController implements PyramusViewController, 
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
-    pageRequestContext.getRequest().setAttribute("resourceCategories", resourceDAO.listResourceCategories());
+    ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
+
+    List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
+    Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+
+    pageRequestContext.getRequest().setAttribute("resourceCategories", resourceCategories);
     pageRequestContext.setIncludeJSP("/templates/resources/resourcecategories.jsp");
   }
 

@@ -5,21 +5,21 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Manage Academic Terms view of the application.
  * 
  * @see fi.pyramus.json.settings.CreateSubjectJSONRequestController
  */
-public class AcademicTermsViewController implements PyramusViewController, Breadcrumbable {
+public class AcademicTermsViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -27,9 +27,9 @@ public class AcademicTermsViewController implements PyramusViewController, Bread
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
     
-    List<AcademicTerm> academicTerms = baseDAO.listAcademicTerms();
+    List<AcademicTerm> academicTerms = academicTermDAO.listUnarchived();
     Collections.sort(academicTerms, new Comparator<AcademicTerm>() {
       public int compare(AcademicTerm o1, AcademicTerm o2) {
         return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());

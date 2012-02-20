@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusFormViewController;
 import fi.pyramus.UserRole;
 import fi.pyramus.util.CSVImporter;
 import fi.pyramus.util.dataimport.EntityImportStrategy;
-import fi.pyramus.views.PyramusFormViewController;
 
 public class ImportCSVViewController extends PyramusFormViewController {
 
@@ -32,7 +32,7 @@ public class ImportCSVViewController extends PyramusFormViewController {
       list = dataImporter.importDataFromStream(requestContext.getFile("file").getInputStream(), 
           importStrategy, requestContext.getLoggedUserId(), requestContext.getRequest().getLocale());
     } catch (IOException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     
     List<Object> entityList = new ArrayList<Object>();

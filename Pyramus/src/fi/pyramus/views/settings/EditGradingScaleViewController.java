@@ -4,21 +4,21 @@ import java.util.Locale;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.domainmodel.grading.GradingScale;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Grading Scale view of the application. 
  * 
  * @see fi.pyramus.json.users.EditGradingScaleJSONRequestController
  */
-public class EditGradingScaleViewController implements PyramusViewController, Breadcrumbable {
+public class EditGradingScaleViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -28,10 +28,10 @@ public class EditGradingScaleViewController implements PyramusViewController, Br
    * @param pageRequestContext Page request context
    */
   public void process(PageRequestContext pageRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
 
     Long gradingScaleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("gradingScaleId"));
-    GradingScale gradingScale = gradingDAO.findGradingScaleById(gradingScaleId);
+    GradingScale gradingScale = gradingScaleDAO.findById(gradingScaleId);
     pageRequestContext.getRequest().setAttribute("gradingScale", gradingScale);
     
     pageRequestContext.setIncludeJSP("/templates/settings/editgradingscale.jsp");

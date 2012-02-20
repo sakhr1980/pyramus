@@ -2,20 +2,20 @@ package fi.pyramus.json.resources;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ResourceDAO;
+import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class ArchiveResourceJSONRequestController implements JSONRequestController {
+public class ArchiveResourceJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
 
     Long resourceId = NumberUtils.createLong(requestContext.getRequest().getParameter("resource"));
-    Resource resource = resourceDAO.findResourceById(resourceId);
+    Resource resource = resourceDAO.findById(resourceId);
     resourceDAO.archiveResource(resource);
   }
 

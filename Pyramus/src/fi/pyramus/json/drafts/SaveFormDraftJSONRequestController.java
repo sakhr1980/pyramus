@@ -1,15 +1,15 @@
 package fi.pyramus.json.drafts;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.DraftDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.drafts.DraftDAO;
 import fi.pyramus.domainmodel.drafts.FormDraft;
 import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.JSONRequestController;
 
-public class SaveFormDraftJSONRequestController implements JSONRequestController {
+public class SaveFormDraftJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
@@ -19,13 +19,13 @@ public class SaveFormDraftJSONRequestController implements JSONRequestController
     String draftData = requestContext.getString("draftData");
     
     if (draftData != null) {
-      User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+      User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
       
-      FormDraft formDraft = draftDAO.getFormDraftByURL(loggedUser, url);
+      FormDraft formDraft = draftDAO.findByUserAndURL(loggedUser, url);
       if (formDraft == null)
-        formDraft = draftDAO.createFormDraft(loggedUser, url, draftData);
+        formDraft = draftDAO.create(loggedUser, url, draftData);
       else
-        draftDAO.updateFormDraft(formDraft, draftData);
+        draftDAO.update(formDraft, draftData);
       
       requestContext.addResponseParameter("url", formDraft.getUrl());
       requestContext.addResponseParameter("draftCreated", formDraft.getCreated());

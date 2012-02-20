@@ -1,25 +1,26 @@
 package fi.pyramus.views.system;
 
 import java.io.IOException;
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.domainmodel.base.Defaults;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusViewController;
 
-public class StatusCheckViewController implements PyramusViewController {
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
+import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.domainmodel.base.Defaults;
+
+public class StatusCheckViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    Defaults defaults = baseDAO.getDefaults();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
+    Defaults defaults = defaultsDAO.getDefaults();
     if (defaults != null) {
       try {
         requestContext.getResponse().getWriter().print("OK");
       }
       catch (IOException ioe) {
-        throw new PyramusRuntimeException(ioe);
+        throw new SmvcRuntimeException(ioe);
       }
     }
   }

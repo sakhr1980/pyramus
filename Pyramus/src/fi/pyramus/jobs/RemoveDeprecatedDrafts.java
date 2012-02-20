@@ -5,7 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.DraftDAO;
+import fi.pyramus.dao.drafts.DraftDAO;
 
 public class RemoveDeprecatedDrafts implements Job {
 

@@ -2,24 +2,26 @@ package fi.pyramus.json.grading;
 
 import java.util.Date;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
-public class SaveCourseAssessmentJSONRequestController implements JSONRequestController {
+public class SaveCourseAssessmentJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
     
     Long courseStudentId = jsonRequestContext.getLong("courseStudentId");
     Date assessmentDate = jsonRequestContext.getDate("assessmentDate");
@@ -27,17 +29,17 @@ public class SaveCourseAssessmentJSONRequestController implements JSONRequestCon
     Long gradeId = jsonRequestContext.getLong("gradeId");
     String verbalAssessment = jsonRequestContext.getString("verbalAssessment");
     
-    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-    User assessingUser = userDAO.getUser(assessingUserId);
-    Grade grade = gradeId == null ? null : gradingDAO.findGradeById(gradeId);
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+    User assessingUser = userDAO.findById(assessingUserId);
+    Grade grade = gradeId == null ? null : gradeDAO.findById(gradeId);
 
-    CourseAssessment assessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
+    CourseAssessment assessment = courseAssessmentDAO.findByCourseStudent(courseStudent);
     
     if (assessment == null) {
-      assessment = gradingDAO.createCourseAssessment(courseStudent, 
+      assessment = courseAssessmentDAO.create(courseStudent, 
           assessingUser, grade, assessmentDate, verbalAssessment);
     } else {
-      assessment = gradingDAO.updateCourseAssessment(assessment, 
+      assessment = courseAssessmentDAO.update(assessment, 
           assessingUser, grade, assessmentDate, verbalAssessment);
     }
     

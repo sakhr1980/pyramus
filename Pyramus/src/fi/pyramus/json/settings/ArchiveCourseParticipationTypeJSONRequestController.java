@@ -1,20 +1,20 @@
 package fi.pyramus.json.settings;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.json.JSONRequestController;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
 
 /**
  * The controller responsible of archiving a course participation type. 
  */
-public class ArchiveCourseParticipationTypeJSONRequestController implements JSONRequestController {
+public class ArchiveCourseParticipationTypeJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
     Long courseParticipationTypeId = jsonRequestContext.getLong("courseParticipationTypeId");
-    courseDAO.archiveCourseParticipationType(courseDAO.getCourseParticipationType(courseParticipationTypeId));
+    participationTypeDAO.archive(participationTypeDAO.findById(courseParticipationTypeId));
   }
 
   public UserRole[] getAllowedRoles() {

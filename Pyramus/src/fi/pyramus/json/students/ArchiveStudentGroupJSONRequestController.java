@@ -2,26 +2,26 @@ package fi.pyramus.json.students;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.json.JSONRequestController;
 
-public class ArchiveStudentGroupJSONRequestController implements JSONRequestController {
+public class ArchiveStudentGroupJSONRequestController extends JSONRequestController {
   
   public void process(JSONRequestContext requestContext) {
-    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentGroupDAO studentDAO = DAOFactory.getInstance().getStudentGroupDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
     Long studentGroupId = NumberUtils.createLong(requestContext.getRequest().getParameter("studentGroupId"));
-    User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
 
-    StudentGroup studentGroup = studentDAO.findStudentGroupById(studentGroupId);    
-    studentDAO.archiveStudentGroup(studentGroup, loggedUser);
+    StudentGroup studentGroup = studentDAO.findById(studentGroupId);    
+    studentDAO.archive(studentGroup, loggedUser);
   }
 
   public UserRole[] getAllowedRoles() {

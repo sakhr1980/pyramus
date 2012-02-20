@@ -22,15 +22,15 @@ import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
-import fi.pyramus.PageRequestContext;
-import fi.pyramus.PyramusRuntimeException;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusFormViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ReportDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.UserRole;
-import fi.pyramus.views.PyramusFormViewController;
 
 @SuppressWarnings("deprecation")
 public class ImportReportViewController extends PyramusFormViewController {
@@ -38,7 +38,7 @@ public class ImportReportViewController extends PyramusFormViewController {
   @Override
   public void processForm(PageRequestContext requestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
-    requestContext.getRequest().setAttribute("reports", reportDAO.listReports());
+    requestContext.getRequest().setAttribute("reports", reportDAO.listAll());
     requestContext.setIncludeJSP("/templates/system/importreport.jsp");
   }
 
@@ -113,42 +113,42 @@ public class ImportReportViewController extends PyramusFormViewController {
         xmlSerializer.serialize(reportDocument);
       }
       
-      User loggedUser = userDAO.getUser(requestContext.getLoggedUserId());
+      User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
       
       if (existingReportId != null) {
-        Report report = reportDAO.findReportById(existingReportId);
+        Report report = reportDAO.findById(existingReportId);
         if (name == null && dataStream == null) {
-          reportDAO.deleteReport(report);
+          reportDAO.delete(report);
           requestContext.setRedirectURL(requestContext.getReferer(true));
         }
         else {
           if (!StringUtils.isBlank(name)) {
-            reportDAO.updateReportName(report, name, loggedUser);
+            reportDAO.updateName(report, name, loggedUser);
           }
           if (dataStream != null) {
-            reportDAO.updateReportData(report, dataStream.toString("UTF-8"), loggedUser);
+            reportDAO.updateData(report, dataStream.toString("UTF-8"), loggedUser);
           }
           requestContext.setRedirectURL(requestContext.getRequest().getContextPath()
               + "/reports/viewreport.page?&reportId=" + report.getId());
         }
       }
       else {
-        Report report = reportDAO.createReport(name, dataStream.toString("UTF-8"), loggedUser);
+        Report report = reportDAO.create(name, dataStream.toString("UTF-8"), loggedUser);
         requestContext.setRedirectURL(requestContext.getRequest().getContextPath()
             + "/reports/viewreport.page?&reportId=" + report.getId());
       }
     }
     catch (IOException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (ParserConfigurationException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (SAXException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
     catch (TransformerException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 

@@ -1,17 +1,18 @@
 package fi.pyramus.views.students;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.StudentDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.views.PyramusViewController;
+import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Edit Student Image Dialog view of the application.
  */
-public class EditStudentImageDialogViewController implements PyramusViewController {
+public class EditStudentImageDialogViewController extends PyramusViewController {
 
   /**
    * Processes the page request by including the corresponding JSP page to the response.
@@ -20,11 +21,12 @@ public class EditStudentImageDialogViewController implements PyramusViewControll
    */
   public void process(PageRequestContext pageRequestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    StudentImageDAO imageDAO = DAOFactory.getInstance().getStudentImageDAO();
 
     Long studentId = pageRequestContext.getLong("studentId");
     
-    Student student = studentDAO.getStudent(studentId);
-    Boolean hasImage = studentDAO.findStudentHasImage(student);
+    Student student = studentDAO.findById(studentId);
+    Boolean hasImage = imageDAO.findStudentHasImage(student);
     
     pageRequestContext.getRequest().setAttribute("student", student);
     pageRequestContext.getRequest().setAttribute("studentHasImage", hasImage);

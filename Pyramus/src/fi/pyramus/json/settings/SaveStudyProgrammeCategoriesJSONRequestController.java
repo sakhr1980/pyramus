@@ -2,18 +2,20 @@ package fi.pyramus.json.settings;
 
 import org.apache.commons.lang.math.NumberUtils;
 
-import fi.pyramus.JSONRequestContext;
-import fi.pyramus.dao.BaseDAO;
+import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.JSONRequestController;
+import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.StudyProgrammeCategoryDAO;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
-import fi.pyramus.UserRole;
-import fi.pyramus.json.JSONRequestController;
 
-public class SaveStudyProgrammeCategoriesJSONRequestController implements JSONRequestController {
+public class SaveStudyProgrammeCategoriesJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext jsonRequestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    StudyProgrammeCategoryDAO studyProgrammeCategoryDAO = DAOFactory.getInstance().getStudyProgrammeCategoryDAO();
 
     int rowCount = NumberUtils.createInteger(jsonRequestContext.getRequest().getParameter("studyProgrammeCategoriesTable.rowCount")).intValue();
     for (int i = 0; i < rowCount; i++) {
@@ -23,15 +25,15 @@ public class SaveStudyProgrammeCategoriesJSONRequestController implements JSONRe
       Long educationTypeId = jsonRequestContext.getLong(colPrefix + ".educationTypeId");
       EducationType educationType = null;
       if (educationTypeId != null)
-        educationType = baseDAO.getEducationType(educationTypeId);
+        educationType = educationTypeDAO.findById(educationTypeId);
       boolean modified = jsonRequestContext.getInteger(colPrefix + ".modified") == 1;
 
       if (studyProgrammeCategoryId == -1) {
-        baseDAO.createStudyProgrammeCategory(name, educationType); 
+        studyProgrammeCategoryDAO.create(name, educationType); 
       }
       else if (modified) {
-        StudyProgrammeCategory studyProgrammeCategory = baseDAO.getStudyProgrammeCategory(studyProgrammeCategoryId);
-        baseDAO.updateStudyProgrammeCategory(studyProgrammeCategory, name, educationType);
+        StudyProgrammeCategory studyProgrammeCategory = studyProgrammeCategoryDAO.findById(studyProgrammeCategoryId);
+        studyProgrammeCategoryDAO.update(studyProgrammeCategory, name, educationType);
       }
     }
     jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));

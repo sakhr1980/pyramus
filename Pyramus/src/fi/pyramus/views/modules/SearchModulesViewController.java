@@ -6,40 +6,44 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import fi.pyramus.PageRequestContext;
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.pyramus.PyramusViewController;
+import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.dao.BaseDAO;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
-import fi.pyramus.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.views.PyramusViewController;
 
-public class SearchModulesViewController implements PyramusViewController, Breadcrumbable {
+public class SearchModulesViewController extends PyramusViewController implements Breadcrumbable {
 
   public void process(PageRequestContext requestContext) {
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
-    List<EducationType> educationTypes = baseDAO.listEducationTypes();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
+
+    List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
 
     Map<Long, List<Subject>> subjectsByEducationType = new HashMap<Long, List<Subject>>();
-    List<Subject> subjectsByNoEducationType = baseDAO.listSubjectsByEducationType(null);
+    List<Subject> subjectsByNoEducationType = subjectDAO.listByEducationType(null);
     Collections.sort(subjectsByNoEducationType, new StringAttributeComparator("getName"));
     
     Map<Long, List<EducationSubtype>> educationSubtypesByEduType = new HashMap<Long, List<EducationSubtype>>();
 
     for (EducationType educationType : educationTypes) {
-      List<Subject> subjectsOfType = baseDAO.listSubjectsByEducationType(educationType);
+      List<Subject> subjectsOfType = subjectDAO.listByEducationType(educationType);
       if ((subjectsOfType != null) && (subjectsOfType.size() > 0)) {
         Collections.sort(subjectsOfType, new StringAttributeComparator("getName"));
         subjectsByEducationType.put(educationType.getId(), subjectsOfType);
       }
       
-      List<EducationSubtype> educationSubtypes = baseDAO.listEducationSubtypes(educationType);
+      List<EducationSubtype> educationSubtypes = educationSubtypeDAO.listByEducationType(educationType);
       educationSubtypesByEduType.put(educationType.getId(), educationSubtypes);
     }
     
