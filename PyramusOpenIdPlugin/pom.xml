@@ -1,0 +1,56 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fi.pyramus</groupId>
+  <artifactId>openid-plugin</artifactId>
+  <version>0.5.2-SNAPSHOT</version>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openid4java</groupId>
+      <artifactId>openid4java-consumer</artifactId>
+      <version>0.9.6</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>fi.internetix.smvcj</groupId>
+      <artifactId>smvcj</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>persistence</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>plugin-core</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+  <url>http://pyramus.googlecode.com/</url>
+  <scm>
+    <url>http://pyramus.googlecode.com/svn</url>
+  </scm>
+  <issueManagement>
+    <system>Google Code</system>
+    <url>https://code.google.com/p/pyramus/issues/</url>
+  </issueManagement>
+  <organization>
+    <name>Internetix / Otava Folk High School</name>
+    <url>http://www.otavanopisto.fi</url>
+  </organization>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <name>Pyramus OpenId Plugin</name>
+</project>
