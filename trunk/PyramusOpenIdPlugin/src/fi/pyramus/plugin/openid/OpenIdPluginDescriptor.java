@@ -7,27 +7,22 @@ import fi.pyramus.plugin.PluginDescriptor;
 
 public class OpenIdPluginDescriptor implements PluginDescriptor {
   
-  @Override
   public Map<String, Class<?>> getBinaryRequestControllers() {
     return null;
   }
 
-  @Override
   public Map<String, Class<?>> getJSONRequestControllers() {
     return null;
   }
   
-  @Override
   public String getName() {
     return "OpenID";
   }
   
-  @Override
   public Map<String, Class<?>> getPageHookControllers() {
     return null;
   }
   
-  @Override
   public Map<String, Class<?>> getPageRequestControllers() {
     return null;
   }
@@ -40,7 +35,6 @@ public class OpenIdPluginDescriptor implements PluginDescriptor {
     return authenticationProviders;
   }
   
-  @Override
   public String getMessagesBundlePath() {
     return null;
   }

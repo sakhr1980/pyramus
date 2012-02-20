@@ -20,10 +20,11 @@ import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.ax.FetchRequest;
 import org.openid4java.message.ax.FetchResponse;
 
-import fi.pyramus.PyramusRuntimeException;
-import fi.pyramus.RequestContext;
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.dao.users.UserVariableDAO;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.plugin.auth.AuthenticationException;
 import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;
@@ -31,12 +32,12 @@ import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;
 public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvider {
 
   public OpenIDAuthorizationStrategy() {
-    try {
+//    try {
       consumerManager = new ConsumerManager();
       
-    } catch (ConsumerException e) {
-      throw new PyramusRuntimeException(e);
-    }
+//    } catch (ConsumerException e) {
+//      throw new SmvcRuntimeException(e);
+//    }
   }
   
   public String getName() {
@@ -81,11 +82,11 @@ public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvid
       
       requestContext.setRedirectURL(authReq.getDestinationUrl(true));
     } catch (DiscoveryException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (MessageException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (ConsumerException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
   
@@ -124,14 +125,15 @@ public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvid
         }
         
         UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-        User user = userDAO.getUser(verified.getIdentifier(), getName());
+        UserVariableDAO userVariableDAO = DAOFactory.getInstance().getUserVariableDAO();
+        User user = userDAO.findByExternalIdAndAuthProvider(verified.getIdentifier(), getName());
         if (user == null) {
-          user = userDAO.getUserByEmail(emails.get(0));
+          user = userDAO.findByEmail(emails.get(0));
           if (user != null) {
-            String expectedLoginServer = userDAO.getUserVariable(user, "openid.expectedlogin");
+            String expectedLoginServer = userVariableDAO.findByUserAndKey(user, "openid.expectedlogin");
             String loginServer = verification.getAuthResponse().getParameterValue("openid.op_endpoint");
             if (!StringUtils.isBlank(expectedLoginServer) && expectedLoginServer.equals(loginServer)) {
-              userDAO.setUserVariable(user, "openid.expectedlogin", null);
+              userVariableDAO.setUserVariable(user, "openid.expectedlogin", null);
               userDAO.updateExternalId(user, verified.getIdentifier());
             } else {
               throw new AuthenticationException(AuthenticationException.LOCAL_USER_MISSING);
@@ -147,11 +149,11 @@ public class OpenIDAuthorizationStrategy implements ExternalAuthenticationProvid
         return null;
       }
     } catch (MessageException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (DiscoveryException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     } catch (AssociationException e) {
-      throw new PyramusRuntimeException(e);
+      throw new SmvcRuntimeException(e);
     }
   }
 
