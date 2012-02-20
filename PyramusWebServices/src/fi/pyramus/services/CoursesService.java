@@ -1,19 +1,38 @@
 package fi.pyramus.services;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.ModuleDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.CourseBaseVariableDAO;
+import fi.pyramus.dao.base.CourseEducationSubtypeDAO;
+import fi.pyramus.dao.base.CourseEducationTypeDAO;
+import fi.pyramus.dao.base.DefaultsDAO;
+import fi.pyramus.dao.base.EducationSubtypeDAO;
+import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseComponentDAO;
+import fi.pyramus.dao.courses.CourseDAO;
+import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
+import fi.pyramus.dao.courses.CourseDescriptionDAO;
+import fi.pyramus.dao.courses.CourseEnrolmentTypeDAO;
+import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
+import fi.pyramus.dao.courses.CourseStateDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.courses.CourseUserDAO;
+import fi.pyramus.dao.courses.CourseUserRoleDAO;
+import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.CourseBase;
 import fi.pyramus.domainmodel.base.CourseEducationSubtype;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.Defaults;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalLength;
@@ -55,15 +74,20 @@ public class CoursesService extends PyramusService {
       String description, Long creatingUserId) {
 
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     ModuleDAO moduleDAO = DAOFactory.getInstance().getModuleDAO();
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    CourseDescriptionDAO descriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
+    CourseEducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    CourseEducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getCourseEducationSubtypeDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
-    Module module = moduleId == null ? null : moduleDAO.getModule(moduleId);
-    Subject subject = subjectId == null ? null : baseDAO.getSubject(subjectId);
-    EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : baseDAO
-        .findEducationalTimeUnitById(courseLengthTimeUnitId);
-    User creatingUser = userDAO.getUser(creatingUserId);
+    Module module = moduleId == null ? null : moduleDAO.findById(moduleId);
+    Subject subject = subjectId == null ? null : subjectDAO.findById(subjectId);
+    EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : educationalTimeUnitDAO.findById(courseLengthTimeUnitId);
+    User creatingUser = userDAO.findById(creatingUserId);
 
     // If the course is based on a module, replace all null values with those from the module
 
@@ -78,11 +102,11 @@ public class CoursesService extends PyramusService {
       description = description == null ? module.getDescription() : description;
     }
     
-    CourseState state = baseDAO.getDefaults().getInitialCourseState();
+    CourseState state = defaultsDAO.getDefaults().getInitialCourseState();
 
     // Course creation
 
-    Course course = courseDAO.createCourse(module, name, nameExtension, state, subject, courseNumber, beginDate, endDate,
+    Course course = courseDAO.create(module, name, nameExtension, state, subject, courseNumber, beginDate, endDate,
         courseLength, courseLengthTimeUnit, null, null, null, null, null, description, null, null, creatingUser);
     
     validateEntity(course);
@@ -92,7 +116,7 @@ public class CoursesService extends PyramusService {
     if (module != null) {
 
       // Course Description copying from module to course
-      courseDAO.copyCourseDescriptions(module, course);
+      descriptionDAO.copy(module, course);
       
       // Components
 
@@ -100,7 +124,7 @@ public class CoursesService extends PyramusService {
       if (moduleComponents != null) {
         for (ModuleComponent moduleComponent : moduleComponents) {
           EducationalLength educationalLength = moduleComponent.getLength();
-          CourseComponent courseComponent = courseDAO.createCourseComponent(
+          CourseComponent courseComponent = componentDAO.create(
               course,
               educationalLength == null ? null : educationalLength.getUnits(),
               educationalLength == null ? null : educationalLength.getUnit(),
@@ -115,7 +139,7 @@ public class CoursesService extends PyramusService {
       List<CourseEducationType> typesInModule = module.getCourseEducationTypes();
       if (typesInModule != null) {
         for (CourseEducationType typeInModule : typesInModule) {
-          CourseEducationType typeInCourse = courseDAO.addCourseEducationType(course, typeInModule.getEducationType());
+          CourseEducationType typeInCourse = educationTypeDAO.create(course, typeInModule.getEducationType());
           validateEntity(typeInCourse);
 
           // Education subtypes
@@ -123,7 +147,7 @@ public class CoursesService extends PyramusService {
           List<CourseEducationSubtype> subTypesInModule = typeInModule.getCourseEducationSubtypes();
           if (subTypesInModule != null) {
             for (CourseEducationSubtype subtypeInModule : subTypesInModule) {
-              CourseEducationSubtype courseEducationSubtype = courseDAO.addCourseEducationSubtype(typeInCourse, subtypeInModule.getEducationSubtype());
+              CourseEducationSubtype courseEducationSubtype = educationSubtypeDAO.create(typeInCourse, subtypeInModule.getEducationSubtype());
               validateEntity(courseEducationSubtype);
             }
           }
@@ -139,16 +163,16 @@ public class CoursesService extends PyramusService {
       Long modifyingUserId) {
 
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
-    Course course = courseDAO.getCourse(courseId);
-    Subject subject = subjectId == null ? null : baseDAO.getSubject(subjectId);
-    EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : baseDAO
-        .findEducationalTimeUnitById(courseLengthTimeUnitId);
-    User modifyingUser = userDAO.getUser(modifyingUserId);
+    Course course = courseDAO.findById(courseId);
+    Subject subject = subjectId == null ? null : subjectDAO.findById(subjectId);
+    EducationalTimeUnit courseLengthTimeUnit = courseLengthTimeUnitId == null ? null : educationalTimeUnitDAO.findById(courseLengthTimeUnitId);
+    User modifyingUser = userDAO.findById(modifyingUserId);
 
-    courseDAO.updateCourse(course, name, nameExtension, course.getState(), subject, courseNumber, beginDate, endDate, courseLength,
+    courseDAO.update(course, name, nameExtension, course.getState(), subject, courseNumber, beginDate, endDate, courseLength,
         courseLengthTimeUnit, course.getDistanceTeachingDays(), course.getLocalTeachingDays(), course.getTeachingHours(), 
         course.getPlanningHours(), course.getAssessingHours(), description, course.getMaxParticipantCount(), course.getEnrolmentTimeEnd(), modifyingUser);
     validateEntity(course);
@@ -157,14 +181,14 @@ public class CoursesService extends PyramusService {
   public CourseComponentEntity createCourseComponent(Long courseId, Double componentLength,
       Long componentLengthTimeUnitId, String name, String description) {
 
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    
-    Course course = courseDAO.getCourse(courseId);
-    EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : baseDAO
-        .findEducationalTimeUnitById(componentLengthTimeUnitId);
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
-    CourseComponent courseComponent = courseDAO.createCourseComponent(course, componentLength,
+    Course course = courseDAO.findById(courseId);
+    EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : educationalTimeUnitDAO.findById(componentLengthTimeUnitId);
+
+    CourseComponent courseComponent = componentDAO.create(course, componentLength,
             componentLengthTimeUnit, name, description);
     
     validateEntity(courseComponent);
@@ -175,53 +199,52 @@ public class CoursesService extends PyramusService {
   public void updateCourseComponent(Long courseComponentId, Double componentLength, Long componentLengthTimeUnitId,
       String name, String description) {
     
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
 
-    CourseComponent courseComponent = courseDAO.getCourseComponent(courseComponentId);
-    EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : baseDAO
-        .findEducationalTimeUnitById(componentLengthTimeUnitId);
+    CourseComponent courseComponent = componentDAO.findById(courseComponentId);
+    EducationalTimeUnit componentLengthTimeUnit = componentLengthTimeUnitId == null ? null : educationalTimeUnitDAO.findById(componentLengthTimeUnitId);
 
-    courseDAO.updateCourseComponent(courseComponent, componentLength, componentLengthTimeUnit, name, description);
+    componentDAO.update(courseComponent, componentLength, componentLengthTimeUnit, name, description);
     validateEntity(courseComponent);
   }
 
   public CourseComponentEntity getCourseComponentById(Long courseComponentId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourseComponent(courseComponentId));
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    return EntityFactoryVault.buildFromDomainObject(componentDAO.findById(courseComponentId));
   }
 
   public CourseEducationTypeEntity[] listCourseEducationTypes(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    Course course = courseDAO.getCourse(courseId);
+    Course course = courseDAO.findById(courseId);
     return (CourseEducationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(course.getCourseEducationTypes());
   }
 
   public CourseEducationTypeEntity getCourseEducationTypeById(Long courseEducationTypeId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourseEducationType(courseEducationTypeId));
+    CourseEducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    return EntityFactoryVault.buildFromDomainObject(educationTypeDAO.findById(courseEducationTypeId));
   }
 
   public CourseEducationTypeEntity addCourseEducationType(Long courseId, Long educationTypeId) {
-
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseEducationTypeDAO courseEducationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
 
-    Course course = courseDAO.getCourse(courseId);
-    EducationType educationType = baseDAO.getEducationType(educationTypeId);
-    CourseEducationType courseEducationType = courseDAO.addCourseEducationType(course, educationType);
+    Course course = courseDAO.findById(courseId);
+    EducationType educationType = educationTypeDAO.findById(educationTypeId);
+    CourseEducationType courseEducationType = courseEducationTypeDAO.create(course, educationType);
     validateEntity(courseEducationType);
     return EntityFactoryVault.buildFromDomainObject(courseEducationType);
   }
 
   public CourseEducationSubtypeEntity addCourseEducationSubtype(Long courseEducationTypeId, Long educationSubtypeId) {
-    
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseEducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getCourseEducationTypeDAO();
+    CourseEducationSubtypeDAO courseEducationSubtypeDAO = DAOFactory.getInstance().getCourseEducationSubtypeDAO();
+    EducationSubtypeDAO educationSubtypeDAO = DAOFactory.getInstance().getEducationSubtypeDAO();    
 
-    CourseEducationType courseEducationType = courseDAO.getCourseEducationType(courseEducationTypeId);
-    EducationSubtype educationSubtype = baseDAO.getEducationSubtype(educationSubtypeId);
-    CourseEducationSubtype courseEducationSubtype = courseDAO.addCourseEducationSubtype(courseEducationType,
+    CourseEducationType courseEducationType = educationTypeDAO.findById(courseEducationTypeId);
+    EducationSubtype educationSubtype = educationSubtypeDAO.findById(educationSubtypeId);
+    CourseEducationSubtype courseEducationSubtype = courseEducationSubtypeDAO.create(courseEducationType,
             educationSubtype);
     validateEntity(courseEducationSubtype);
     return EntityFactoryVault.buildFromDomainObject(courseEducationSubtype);
@@ -229,7 +252,7 @@ public class CoursesService extends PyramusService {
 
   public CourseEntity[] listCourses() {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourses());
+    return (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listUnarchived());
   }
 
   public CourseStudentEntity addCourseStudent(Long courseId, Long studentId, Long courseEnrolmentTypeId,
@@ -237,17 +260,21 @@ public class CoursesService extends PyramusService {
     
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    CourseEnrolmentTypeDAO enrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
+    Defaults defaults = defaultsDAO.getDefaults();
 
-    Course course = courseDAO.getCourse(courseId);
-    Student student = studentDAO.getStudent(studentId);
-    CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? baseDAO.getDefaults().getInitialCourseEnrolmentType() : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
-    CourseParticipationType participationType = participationTypeId == null ? baseDAO.getDefaults().getInitialCourseParticipationType() : courseDAO.getCourseParticipationType(participationTypeId);
+    Course course = courseDAO.findById(courseId);
+    Student student = studentDAO.findById(studentId);
+    CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? defaults.getInitialCourseEnrolmentType() : enrolmentTypeDAO.findById(courseEnrolmentTypeId);
+    CourseParticipationType participationType = participationTypeId == null ? defaults.getInitialCourseParticipationType() : participationTypeDAO.findById(participationTypeId);
     CourseOptionality cOptionality = null; 
     if (!StringUtils.isBlank(optionality))
       cOptionality = CourseOptionality.valueOf(optionality);
 
-    CourseStudent courseStudent = courseDAO.createCourseStudent(course, student, courseEnrolmentType,
+    CourseStudent courseStudent = courseStudentDAO.create(course, student, courseEnrolmentType,
             participationType, enrolmentDate, lodging, cOptionality);
 
     validateEntity(courseStudent);
@@ -258,59 +285,62 @@ public class CoursesService extends PyramusService {
   public void updateCourseStudent(Long courseStudentId, Long courseEnrolmentTypeId, Long participationTypeId,
       Date enrolmentDate, Boolean lodging, String optionality) {
 
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    
-    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
-    CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId);
-    CourseParticipationType participationType = participationTypeId == null ? null : courseDAO.getCourseParticipationType(participationTypeId);
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    CourseEnrolmentTypeDAO enrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+    CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeId == null ? null : enrolmentTypeDAO.findById(courseEnrolmentTypeId);
+    CourseParticipationType participationType = participationTypeId == null ? null : participationTypeDAO.findById(participationTypeId);
     CourseOptionality cOptionality = null; 
     if (!StringUtils.isBlank(optionality))
       cOptionality = CourseOptionality.valueOf(optionality);
     
     // TODO: student-parameter (?)
-    courseDAO.updateCourseStudent(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, cOptionality);
+    courseStudentDAO.update(courseStudent, courseStudent.getStudent(), courseEnrolmentType, participationType, enrolmentDate, lodging, cOptionality);
     validateEntity(courseStudent);
   }
 
   public CourseStudentEntity getCourseStudentById(Long courseStudentId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.findCourseStudentById(courseStudentId));
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    return EntityFactoryVault.buildFromDomainObject(courseStudentDAO.findById(courseStudentId));
   }
 
   public CourseStudentEntity[] listCourseStudentsByCourse(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    Course course = courseDAO.getCourse(courseId);
-    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseStudentsByCourse(course));
+    Course course = courseDAO.findById(courseId);
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseStudentDAO.listByCourse(course));
   }
 
   public CourseStudentEntity[] listCourseStudentsByStudent(Long studentId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
 
-    Student student = studentDAO.getStudent(studentId);
-    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseStudentsByStudent(student));
+    Student student = studentDAO.findById(studentId);
+    return (CourseStudentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseStudentDAO.listByStudent(student));
   }
 
   public CourseEntity getCourseById(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourse(courseId));
+    return EntityFactoryVault.buildFromDomainObject(courseDAO.findById(courseId));
   }
 
   public CourseEnrolmentTypeEntity createCourseEnrolmentType(String name) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    CourseEnrolmentType courseEnrolmentType = courseDAO.createCourseEnrolmentType(name);
+    CourseEnrolmentTypeDAO courseEnrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+    CourseEnrolmentType courseEnrolmentType = courseEnrolmentTypeDAO.create(name);
     validateEntity(courseEnrolmentType);
     return EntityFactoryVault.buildFromDomainObject(courseEnrolmentType);
   }
 
   public CourseEnrolmentTypeEntity getCourseEnrolmentTypeById(Long courseEnrolmentTypeId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourseEnrolmentType(courseEnrolmentTypeId));
+    CourseEnrolmentTypeDAO enrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+    return EntityFactoryVault.buildFromDomainObject(enrolmentTypeDAO.findById(courseEnrolmentTypeId));
   }
 
   public CourseParticipationTypeEntity createCourseParticipationType(String name) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    CourseParticipationType courseParticipationType = courseDAO.createCourseParticipationType(name);
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    CourseParticipationType courseParticipationType = participationTypeDAO.create(name);
     validateEntity(courseParticipationType);
     return EntityFactoryVault.buildFromDomainObject(courseParticipationType);
   }
@@ -318,12 +348,14 @@ public class CoursesService extends PyramusService {
   public CourseUserEntity createCourseUser(Long courseId, Long userId, Long courseUserRoleId) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseUserRoleDAO userRoleDAO = DAOFactory.getInstance().getCourseUserRoleDAO();
+    CourseUserDAO courseUserDAO = DAOFactory.getInstance().getCourseUserDAO();
 
-    Course course = courseDAO.getCourse(courseId);
-    User user = userDAO.getUser(userId);
-    CourseUserRole role = courseDAO.getCourseUserRole(courseUserRoleId);
+    Course course = courseDAO.findById(courseId);
+    User user = userDAO.findById(userId);
+    CourseUserRole role = userRoleDAO.findById(courseUserRoleId);
     
-    CourseUser courseUser = courseDAO.createCourseUser(course, user, role);
+    CourseUser courseUser = courseUserDAO.create(course, user, role);
     
     validateEntity(courseUser);
 
@@ -331,87 +363,102 @@ public class CoursesService extends PyramusService {
   }
 
   public CourseParticipationTypeEntity getCourseParticipationTypeById(Long courseParticipationTypeId) {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return EntityFactoryVault.buildFromDomainObject(courseDAO.getCourseParticipationType(courseParticipationTypeId));
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+    return EntityFactoryVault.buildFromDomainObject(participationTypeDAO.findById(courseParticipationTypeId));
   }
 
   public CourseComponentEntity[] listCourseComponents(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseComponentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseComponents(courseDAO.getCourse(courseId)));
+    CourseComponentDAO componentDAO = DAOFactory.getInstance().getCourseComponentDAO();
+    return (CourseComponentEntity[]) EntityFactoryVault.buildFromDomainObjects(componentDAO.listByCourse(courseDAO.findById(courseId)));
   }
 
   public CourseEnrolmentTypeEntity[] listCourseEnrolmentTypes() {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseEnrolmentTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseEnrolmentTypes());
+    CourseEnrolmentTypeDAO courseEnrolmentTypeDAO = DAOFactory.getInstance().getCourseEnrolmentTypeDAO();
+    return (CourseEnrolmentTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(courseEnrolmentTypeDAO.listAll());
   }
 
   public CourseParticipationTypeEntity[] listCourseParticipationTypes() {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseParticipationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseParticipationTypes());
+    CourseParticipationTypeDAO participationTypeDAO = DAOFactory.getInstance().getCourseParticipationTypeDAO();
+   
+    List<CourseParticipationType> courseParticipationTypes = participationTypeDAO.listUnarchived();
+    Collections.sort(courseParticipationTypes, new Comparator<CourseParticipationType>() {
+      public int compare(CourseParticipationType o1, CourseParticipationType o2) {
+        return o1.getIndexColumn() == null ? -1 : o2.getIndexColumn() == null ? 1 : o1.getIndexColumn().compareTo(o2.getIndexColumn());
+      }
+    });
+    
+    return (CourseParticipationTypeEntity[]) EntityFactoryVault.buildFromDomainObjects(courseParticipationTypes);
   }
 
   public CourseEntity[] listCoursesByCourseVariable(String key, String value) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCoursesByCourseVariable(key, value));
+    return (CourseEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listByCourseVariable(key, value));
   }
 
   public String getCourseVariable(Long courseId, String key) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return courseDAO.getCourseVariable(courseDAO.getCourse(courseId), key);
+    CourseBaseVariableDAO variableDAO = DAOFactory.getInstance().getCourseBaseVariableDAO();
+    return variableDAO.findByCourseAndVariableKey(courseDAO.findById(courseId), key);
   }
 
   public void setCourseVariable(Long courseId, String key, String value) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    courseDAO.setCourseVariable(courseDAO.getCourse(courseId), key, value);
+    CourseBaseVariableDAO variableDAO = DAOFactory.getInstance().getCourseBaseVariableDAO();
+    variableDAO.setCourseVariable(courseDAO.findById(courseId), key, value);
   }
 
   public void archiveCourse(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    courseDAO.archiveCourse(courseDAO.getCourse(courseId));
+    courseDAO.archive(courseDAO.findById(courseId));
   }
 
   public void unarchiveCourse(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    courseDAO.unarchiveCourse(courseDAO.getCourse(courseId));
+    courseDAO.unarchive(courseDAO.findById(courseId));
   }
 
   public void archiveCourseStudent(Long courseId, Long studentId) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
 
-    Course course = courseDAO.getCourse(courseId);
-    Student student = studentDAO.getStudent(studentId);
-    CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
-    courseDAO.archiveCourseStudent(courseStudent);
+    Course course = courseDAO.findById(courseId);
+    Student student = studentDAO.findById(studentId);
+    CourseStudent courseStudent = courseStudentDAO.findByCourseAndStudent(course, student);
+    courseStudentDAO.archive(courseStudent);
   }
 
   public void unarchiveCourseStudent(Long courseId, Long studentId) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
 
-    Course course = courseDAO.getCourse(courseId);
-    Student student = studentDAO.getStudent(studentId);
-    CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
-    courseDAO.unarchiveCourseStudent(courseStudent);
+    Course course = courseDAO.findById(courseId);
+    Student student = studentDAO.findById(studentId);
+    CourseStudent courseStudent = courseStudentDAO.findByCourseAndStudent(course, student);
+    courseDAO.unarchive(courseStudent);
   }
 
   public CourseStudentEntity getCourseStudentByCourseIdAndStudentId(Long courseId, Long studentId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
 
-    Course course = courseDAO.getCourse(courseId);
-    Student student = studentDAO.getStudent(studentId);
-    CourseStudent courseStudent = courseDAO.findCourseStudentByCourseAndStudent(course, student);
+    Course course = courseDAO.findById(courseId);
+    Student student = studentDAO.findById(studentId);
+    CourseStudent courseStudent = courseStudentDAO.findByCourseAndStudent(course, student);
 
     return EntityFactoryVault.buildFromDomainObject(courseStudent);
   }
   
   public CourseEntitySearchResult searchCourses(Integer resultsPerPage, Integer page, String name, String tags, String nameExtension, String description, Long courseStateId, Long subjectId, String timeFilterMode, Date timeframeStart, Date timeframeEnd) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
-    
-    CourseState courseState = courseStateId != null ? courseDAO.getCourseState(courseStateId) : null;
-    Subject subject = subjectId != null ? baseDAO.getSubject(subjectId) : null;
+    CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
+
+    CourseState courseState = courseStateId != null ? courseStateDAO.findById(courseStateId) : null;
+    Subject subject = subjectId != null ? subjectDAO.findById(subjectId) : null;
     SearchTimeFilterMode tFilterMode = timeFilterMode != null ? SearchTimeFilterMode.valueOf(timeFilterMode) : null;
     
     SearchResult<Course> searchResult = courseDAO.searchCourses(resultsPerPage, page, name, tags, nameExtension, description, courseState, subject, tFilterMode, timeframeStart, timeframeEnd, true);
@@ -420,22 +467,26 @@ public class CoursesService extends PyramusService {
   }
   
   public CourseDescriptionCategoryEntity[] listCourseDescriptionCategories() {
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    return (CourseDescriptionCategoryEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptionCategories());
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    return (CourseDescriptionCategoryEntity[]) EntityFactoryVault.buildFromDomainObjects(descriptionCategoryDAO.listUnarchived());
   }
 
   public CourseDescriptionEntity[] listCourseDescriptionsByCourseId(Long courseId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    CourseBase courseBase = courseDAO.getCourse(courseId);
-    return (CourseDescriptionEntity[]) EntityFactoryVault.buildFromDomainObjects(courseDAO.listCourseDescriptionsByCourseBase(courseBase));
+    CourseBase courseBase = courseDAO.findById(courseId);
+    CourseDescriptionDAO descriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
+    return (CourseDescriptionEntity[]) EntityFactoryVault.buildFromDomainObjects(descriptionDAO.listByCourseBase(courseBase));
   }
 
   public CourseDescriptionEntity getCourseDescriptionByCourseIdAndCategoryId(Long courseId, Long categoryId) {
     CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    CourseBase courseBase = courseDAO.getCourse(courseId);
-    CourseDescriptionCategory category = courseDAO.findCourseDescriptionCategoryById(categoryId);
+    CourseDescriptionDAO descriptionDAO = DAOFactory.getInstance().getCourseDescriptionDAO();
     
-    return (CourseDescriptionEntity) EntityFactoryVault.buildFromDomainObject(courseDAO.findCourseDescriptionByCourseAndCategory(courseBase, category));
+    CourseBase courseBase = courseDAO.findById(courseId);
+    CourseDescriptionCategoryDAO descriptionCategoryDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    CourseDescriptionCategory category = descriptionCategoryDAO.findById(categoryId);
+    
+    return (CourseDescriptionEntity) EntityFactoryVault.buildFromDomainObject(descriptionDAO.findByCourseAndCategory(courseBase, category));
   }
   
 }

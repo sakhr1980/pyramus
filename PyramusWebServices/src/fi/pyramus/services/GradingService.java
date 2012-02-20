@@ -4,12 +4,17 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-import fi.pyramus.dao.BaseDAO;
-import fi.pyramus.dao.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.GradingDAO;
-import fi.pyramus.dao.StudentDAO;
-import fi.pyramus.dao.UserDAO;
+import fi.pyramus.dao.base.EducationalTimeUnitDAO;
+import fi.pyramus.dao.base.SchoolDAO;
+import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.GradeDAO;
+import fi.pyramus.dao.grading.GradingScaleDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
+import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
@@ -31,70 +36,72 @@ public class GradingService extends PyramusService {
   
   public TransferCreditEntity[] listStudentsTransferCredits(Long studentId) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    return (TransferCreditEntity[]) EntityFactoryVault.buildFromDomainObjects(gradingDAO.listTransferCreditsByStudent(studentDAO.getStudent(studentId)));
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    return (TransferCreditEntity[]) EntityFactoryVault.buildFromDomainObjects(transferCreditDAO.listByStudent(studentDAO.findById(studentId)));
   }
   
   public CourseAssessmentEntity[] listStudentsCourseAssessments(Long studentId) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    return (CourseAssessmentEntity[]) EntityFactoryVault.buildFromDomainObjects(gradingDAO.listCourseAssessmentsByStudent(studentDAO.getStudent(studentId)));
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    return (CourseAssessmentEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentDAO.listByStudent(studentDAO.findById(studentId)));
   }
 
   public GradeEntity createGrade(Long gradingScaleId, String name, String description, Boolean passingGrade, Double GPA, String qualification) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    Grade grade = gradingDAO.createGrade(gradingDAO.findGradingScaleById(gradingScaleId), name, description, passingGrade, GPA, qualification);
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    Grade grade = gradeDAO.create(gradingScaleDAO.findById(gradingScaleId), name, description, passingGrade, GPA, qualification);
     validateEntity(grade);
     return EntityFactoryVault.buildFromDomainObject(grade);
   }
   
   public GradingScaleEntity createGradingScale(String name, String description) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    GradingScale gradingScale = gradingDAO.createGradingScale(name, description);
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    GradingScale gradingScale = gradingScaleDAO.create(name, description);
     validateEntity(gradingScale);
     return EntityFactoryVault.buildFromDomainObject(gradingScale);
   } 
   
   public GradeEntity getGradeById(Long gradeId) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    return EntityFactoryVault.buildFromDomainObject(gradingDAO.findGradeById(gradeId));
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    return EntityFactoryVault.buildFromDomainObject(gradeDAO.findById(gradeId));
   }
   
   public GradingScaleEntity getGradingScaleById(Long gradingScaleId) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    return EntityFactoryVault.buildFromDomainObject(gradingDAO.findGradingScaleById(gradingScaleId));
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    return EntityFactoryVault.buildFromDomainObject(gradingScaleDAO.findById(gradingScaleId));
   }
   
   public GradingScaleEntity[] listGradingScales() {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    return (GradingScaleEntity[]) EntityFactoryVault.buildFromDomainObjects(gradingDAO.listGradingScales());
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    return (GradingScaleEntity[]) EntityFactoryVault.buildFromDomainObjects(gradingScaleDAO.listUnarchived());
   }
   
   public void updateGrade(Long gradeId, String name, String description, Boolean passingGrade, Double GPA, String qualification) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    Grade grade = gradingDAO.findGradeById(gradeId);
-    gradingDAO.updateGrade(grade, name, description, passingGrade, GPA, qualification);
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    Grade grade = gradeDAO.findById(gradeId);
+    gradeDAO.update(grade, name, description, passingGrade, GPA, qualification);
     validateEntity(grade);
   }
   
   public void updateGradingScale(Long gradingScaleId, String name, String description) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    GradingScale gradingScale = gradingDAO.findGradingScaleById(gradingScaleId);
-    gradingDAO.updateGradingScale(gradingScale, name, description);
+    GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
+    GradingScale gradingScale = gradingScaleDAO.findById(gradingScaleId);
+    gradingScaleDAO.update(gradingScale, name, description);
     validateEntity(gradingScale);
   }
   
   public CourseAssessmentEntity createCourseAssessment(Long courseStudentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
 
-    User assessingUser = userDAO.getUser(assessingUserId);
-    Grade grade = gradingDAO.findGradeById(gradeId);
+    User assessingUser = userDAO.findById(assessingUserId);
+    Grade grade = gradeDAO.findById(gradeId);
     
-    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
     
-    CourseAssessment courseAssessment = gradingDAO.createCourseAssessment(courseStudent, assessingUser, grade, date, verbalAssessment);
+    CourseAssessment courseAssessment = courseAssessmentDAO.create(courseStudent, assessingUser, grade, date, verbalAssessment);
     
     validateEntity(courseAssessment);
     
@@ -103,13 +110,14 @@ public class GradingService extends PyramusService {
   
   public CourseAssessmentEntity updateCourseAssessment(Long courseAssessmentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
 
-    User assessingUser = userDAO.getUser(assessingUserId);
-    Grade grade = gradingDAO.findGradeById(gradeId);
-    CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentById(courseAssessmentId);
+    User assessingUser = userDAO.findById(assessingUserId);
+    Grade grade = gradeDAO.findById(gradeId);
+    CourseAssessment courseAssessment = courseAssessmentDAO.findById(courseAssessmentId);
     
-    courseAssessment = gradingDAO.updateCourseAssessment(courseAssessment, assessingUser, grade, date, verbalAssessment);
+    courseAssessment = courseAssessmentDAO.update(courseAssessment, assessingUser, grade, date, verbalAssessment);
     
     validateEntity(courseAssessment);
     
@@ -117,32 +125,35 @@ public class GradingService extends PyramusService {
   }
   
   public CourseAssessmentEntity getCourseAssessmentByCourseStudentId(Long courseStudentId) {
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
-    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
 
-    CourseStudent courseStudent = courseDAO.findCourseStudentById(courseStudentId);
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
     
-    CourseAssessment courseAssessment = gradingDAO.findCourseAssessmentByCourseStudent(courseStudent);
+    CourseAssessment courseAssessment = courseAssessmentDAO.findByCourseStudent(courseStudent);
     return EntityFactoryVault.buildFromDomainObject(courseAssessment);
   }
   
   public TransferCreditEntity createTransferCredit(String courseName, Integer courseNumber, Double courseLength, Long courseLengthUnitId, Long schoolId, Long subjectId, String optionality, Long studentId, Long assessingUserId, Long gradeId, Date date, String verbalAssessment) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
-    BaseDAO baseDAO = DAOFactory.getInstance().getBaseDAO();
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    GradingDAO gradingDAO = DAOFactory.getInstance().getGradingDAO();
+    GradeDAO gradeDAO = DAOFactory.getInstance().getGradeDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
+    SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
-    EducationalTimeUnit courseLengthUnit = baseDAO.findEducationalTimeUnitById(courseLengthUnitId);
-    School school = baseDAO.getSchool(schoolId);
-    Subject subject = baseDAO.getSubject(subjectId);
-    Student student = studentDAO.getStudent(studentId);
-    User assessingUser = userDAO.getUser(assessingUserId);
-    Grade grade = gradingDAO.findGradeById(gradeId);
+    EducationalTimeUnit courseLengthUnit = educationalTimeUnitDAO.findById(courseLengthUnitId);
+    School school = schoolDAO.findById(schoolId);
+    Subject subject = subjectDAO.findById(subjectId);
+    Student student = studentDAO.findById(studentId);
+    User assessingUser = userDAO.findById(assessingUserId);
+    Grade grade = gradeDAO.findById(gradeId);
     CourseOptionality courseOptionality = null;
     if (!StringUtils.isBlank(optionality))
       courseOptionality = CourseOptionality.valueOf(optionality);
       
-    TransferCredit transferCredit = gradingDAO.createTransferCredit(courseName, courseNumber, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
+    TransferCredit transferCredit = transferCreditDAO.create(courseName, courseNumber, courseLength, courseLengthUnit, school, subject, courseOptionality, student, assessingUser, grade, date, verbalAssessment);
     
     validateEntity(transferCredit);
     

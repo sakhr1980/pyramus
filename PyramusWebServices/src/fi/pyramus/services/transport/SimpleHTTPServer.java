@@ -6,18 +6,20 @@ import org.apache.axis2.description.Parameter;
 import org.apache.axis2.description.TransportInDescription;
 
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.dao.system.SettingDAO;
+import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
 
 public class SimpleHTTPServer extends org.apache.axis2.transport.http.SimpleHTTPServer {
 
   private String getSetting(String key) {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    SettingDAO settingDAO = DAOFactory.getInstance().getSettingDAO();
+    SettingKeyDAO settingKeyDAO = DAOFactory.getInstance().getSettingKeyDAO();
     
-    SettingKey settingKey = systemDAO.findSettingKeyByName(key);  
+    SettingKey settingKey = settingKeyDAO.findByName(key);  
     if (settingKey != null) {
-      Setting setting = systemDAO.findSettingByKey(settingKey);
+      Setting setting = settingDAO.findByKey(settingKey);
       if (setting != null)
         return setting.getValue();
     }
