@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.JavaScriptMessages;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class GetJavaScriptLocaleJSONRequestController extends JSONRequestController {
   

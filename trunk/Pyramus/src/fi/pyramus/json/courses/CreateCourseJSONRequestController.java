@@ -14,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.CourseEducationSubtypeDAO;
 import fi.pyramus.dao.base.CourseEducationTypeDAO;
@@ -61,6 +59,8 @@ import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 

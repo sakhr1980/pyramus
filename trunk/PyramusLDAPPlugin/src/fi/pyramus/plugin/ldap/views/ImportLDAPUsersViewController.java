@@ -20,6 +20,8 @@ import fi.pyramus.dao.base.EmailDAO;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.plugin.ldap.LDAPUtils;
 
 public class ImportLDAPUsersViewController extends PyramusFormViewController {

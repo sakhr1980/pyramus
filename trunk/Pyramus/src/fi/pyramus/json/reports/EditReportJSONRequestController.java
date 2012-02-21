@@ -6,8 +6,8 @@ import fi.pyramus.dao.reports.ReportCategoryDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of editing a report. 

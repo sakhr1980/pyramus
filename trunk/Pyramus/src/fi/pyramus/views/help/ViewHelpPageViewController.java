@@ -3,8 +3,6 @@ package fi.pyramus.views.help;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -12,6 +10,8 @@ import fi.pyramus.dao.help.HelpPageDAO;
 import fi.pyramus.domainmodel.help.HelpItemTitle;
 import fi.pyramus.domainmodel.help.HelpPage;
 import fi.pyramus.domainmodel.help.HelpPageContent;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class ViewHelpPageViewController extends PyramusViewController implements Breadcrumbable {
 

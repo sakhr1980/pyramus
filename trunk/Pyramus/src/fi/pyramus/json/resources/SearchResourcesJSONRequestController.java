@@ -19,8 +19,8 @@ import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.resources.WorkResource;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.search.SearchResult;
 
 public class SearchResourcesJSONRequestController extends JSONRequestController {

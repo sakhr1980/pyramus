@@ -3,8 +3,6 @@ package fi.pyramus.json.grading;
 import java.util.Date;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.SchoolDAO;
@@ -20,6 +18,8 @@ import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class SaveTransferCreditsJSONRequestController extends JSONRequestController {

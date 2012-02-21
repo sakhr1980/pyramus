@@ -1,8 +1,6 @@
 package fi.pyramus.json.settings;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.SubjectDAO;
@@ -11,6 +9,8 @@ import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class CreateTransferCreditTemplateJSONRequestController extends JSONRequestController {

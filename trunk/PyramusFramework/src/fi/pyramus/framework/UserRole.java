@@ -1,8 +1,9 @@
-package fi.pyramus;
+package fi.pyramus.framework;
 
 /**
  * The user privileges of the application.
  */
+@Deprecated
 public enum UserRole {
     /**
      * Everyone role, including users who haven't yet logged in.

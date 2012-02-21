@@ -3,8 +3,8 @@ package fi.pyramus.views.users;
 import javax.servlet.http.HttpSession;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of logging the user out. 

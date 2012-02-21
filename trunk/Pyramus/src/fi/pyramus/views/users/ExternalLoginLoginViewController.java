@@ -6,11 +6,11 @@ import javax.servlet.http.HttpSession;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusStatusCode;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.PyramusStatusCode;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.plugin.auth.AuthenticationException;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;

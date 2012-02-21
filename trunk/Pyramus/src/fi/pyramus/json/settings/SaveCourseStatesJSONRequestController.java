@@ -2,13 +2,13 @@ package fi.pyramus.json.settings;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.PyramusStatusCode;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.DefaultsDAO;
 import fi.pyramus.dao.courses.CourseStateDAO;
 import fi.pyramus.domainmodel.courses.CourseState;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.PyramusStatusCode;
+import fi.pyramus.framework.UserRole;
 
 public class SaveCourseStatesJSONRequestController extends JSONRequestController {
 

@@ -18,8 +18,6 @@ import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusFormViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.dao.changelog.TrackedEntityPropertyDAO;
@@ -28,6 +26,8 @@ import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntity;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntityProperty;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryProperty;
 import fi.pyramus.domainmodel.changelog.TrackedEntityProperty;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the system settings view of the application.

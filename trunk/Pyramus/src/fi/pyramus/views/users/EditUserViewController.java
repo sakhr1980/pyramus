@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -22,6 +20,8 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.domainmodel.users.UserVariableKey;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.plugin.auth.AuthenticationProvider;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.InternalAuthenticationProvider;

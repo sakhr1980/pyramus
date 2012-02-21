@@ -3,11 +3,11 @@ package fi.pyramus.json.settings;
 import java.util.Date;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class SaveAcademicTermsJSONRequestController extends JSONRequestController {
 

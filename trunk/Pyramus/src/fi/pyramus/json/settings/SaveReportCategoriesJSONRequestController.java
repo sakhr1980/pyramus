@@ -3,11 +3,11 @@ package fi.pyramus.json.settings;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.reports.ReportCategoryDAO;
 import fi.pyramus.domainmodel.reports.ReportCategory;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class SaveReportCategoriesJSONRequestController extends JSONRequestController {
 

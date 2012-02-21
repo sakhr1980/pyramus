@@ -5,9 +5,9 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.dao.drafts.DraftDAO;
 import fi.pyramus.domainmodel.drafts.FormDraft;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class RetrieveFormDraftJSONRequestController extends JSONRequestController {
   

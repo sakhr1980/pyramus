@@ -3,12 +3,12 @@ package fi.pyramus.views.settings;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.grading.GradingScaleDAO;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the List Grading Scales view of the application. 

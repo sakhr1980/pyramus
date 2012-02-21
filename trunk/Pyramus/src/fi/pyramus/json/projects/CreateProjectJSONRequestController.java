@@ -9,8 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.TagDAO;
@@ -23,6 +21,8 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 
 public class CreateProjectJSONRequestController extends JSONRequestController {

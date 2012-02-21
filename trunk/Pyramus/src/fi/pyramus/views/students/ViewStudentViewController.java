@@ -10,8 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -37,6 +35,8 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 /**

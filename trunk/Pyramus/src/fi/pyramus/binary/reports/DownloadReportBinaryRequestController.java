@@ -12,12 +12,12 @@ import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
 import fi.internetix.smvc.controllers.BinaryRequestController;
 import fi.internetix.smvc.controllers.RequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
 import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.framework.UserRole;
 
 public class DownloadReportBinaryRequestController implements BinaryRequestController {
 

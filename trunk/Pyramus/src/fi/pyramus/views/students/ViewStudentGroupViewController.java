@@ -13,8 +13,8 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the View Student Group view of the application.

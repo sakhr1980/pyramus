@@ -9,8 +9,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -21,6 +19,8 @@ import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.users.Role;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the Create Course view of the application.

@@ -12,8 +12,8 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.search.SearchResult;
 
 /**

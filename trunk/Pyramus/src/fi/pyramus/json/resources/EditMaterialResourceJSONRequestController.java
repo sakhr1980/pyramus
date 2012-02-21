@@ -10,9 +10,6 @@ import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.PyramusStatusCode;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.TagDAO;
@@ -22,6 +19,9 @@ import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.MaterialResource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.PyramusStatusCode;
+import fi.pyramus.framework.UserRole;
 
 public class EditMaterialResourceJSONRequestController extends JSONRequestController {
 

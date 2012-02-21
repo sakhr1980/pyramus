@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.TagDAO;
 import fi.pyramus.domainmodel.base.Tag;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class GetAllTagsJSONRequestController extends JSONRequestController {
   

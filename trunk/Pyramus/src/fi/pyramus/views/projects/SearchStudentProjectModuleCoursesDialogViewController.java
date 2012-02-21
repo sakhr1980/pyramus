@@ -10,8 +10,6 @@ import org.apache.commons.collections.comparators.ReverseComparator;
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AcademicTermDAO;
@@ -26,6 +24,8 @@ import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the Search Modules dialog of the application.

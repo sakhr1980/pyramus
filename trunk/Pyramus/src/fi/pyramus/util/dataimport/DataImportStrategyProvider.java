@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.StudyProgrammeDAO;
 import fi.pyramus.dao.students.AbstractStudentDAO;
@@ -20,6 +19,7 @@ import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.PyramusStatusCode;
 
 public class DataImportStrategyProvider {
 

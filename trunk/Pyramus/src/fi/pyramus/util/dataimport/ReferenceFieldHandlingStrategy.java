@@ -4,8 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.framework.PyramusStatusCode;
 
 @SuppressWarnings("rawtypes")
 public class ReferenceFieldHandlingStrategy implements FieldHandlingStrategy {

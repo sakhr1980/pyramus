@@ -15,9 +15,9 @@ import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
 
 public class EditMaterialResourceViewController extends PyramusViewController implements Breadcrumbable {
 

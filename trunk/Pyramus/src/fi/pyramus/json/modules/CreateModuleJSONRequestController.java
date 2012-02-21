@@ -12,8 +12,6 @@ import java.util.Vector;
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.CourseEducationSubtypeDAO;
 import fi.pyramus.dao.base.CourseEducationTypeDAO;
@@ -36,6 +34,8 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of creating a new module.

@@ -9,11 +9,11 @@ import org.apache.lucene.queryParser.QueryParser;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
-import fi.pyramus.BinaryRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.domainmodel.students.StudentGroup;
+import fi.pyramus.framework.BinaryRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class StudentGroupsAutoCompleteBinaryRequestController extends BinaryRequestController {
 

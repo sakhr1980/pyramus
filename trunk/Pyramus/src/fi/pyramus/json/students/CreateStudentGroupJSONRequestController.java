@@ -9,8 +9,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.TagDAO;
 import fi.pyramus.dao.students.StudentDAO;
@@ -22,6 +20,8 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class CreateStudentGroupJSONRequestController extends JSONRequestController {
 

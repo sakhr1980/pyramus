@@ -4,8 +4,8 @@ import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class SimpleDialogViewController extends PyramusViewController {
 

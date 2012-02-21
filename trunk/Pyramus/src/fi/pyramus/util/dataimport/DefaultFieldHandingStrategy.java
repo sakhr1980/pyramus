@@ -3,7 +3,7 @@ package fi.pyramus.util.dataimport;
 import java.lang.reflect.Constructor;
 
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
+import fi.pyramus.framework.PyramusStatusCode;
 
 @SuppressWarnings("rawtypes")
 public class DefaultFieldHandingStrategy implements FieldHandlingStrategy {

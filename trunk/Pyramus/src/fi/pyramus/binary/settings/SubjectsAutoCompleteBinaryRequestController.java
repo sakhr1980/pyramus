@@ -10,12 +10,12 @@ import org.apache.lucene.queryParser.QueryParser;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
-import fi.pyramus.BinaryRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.framework.BinaryRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestController {
 

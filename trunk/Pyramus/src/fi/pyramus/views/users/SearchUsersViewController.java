@@ -5,15 +5,15 @@ import java.util.Locale;
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class SearchUsersViewController extends PyramusViewController implements Breadcrumbable {
 
   /**
    * Returns roles that are allowed to use this resource.
    *  
-   * @see fi.pyramus.views.PyramusViewController#getAllowedRoles()
+   * @see fi.fi.pyramus.framework.PyramusViewController#getAllowedRoles()
    */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.GUEST, UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };

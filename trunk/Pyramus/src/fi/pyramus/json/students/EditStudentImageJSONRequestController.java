@@ -3,13 +3,13 @@ package fi.pyramus.json.students;
 import org.apache.commons.fileupload.FileItem;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentImage;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of modifying an existing student group.

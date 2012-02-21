@@ -1,13 +1,13 @@
 package fi.pyramus.views.students;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.Role;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the Edit Student Image Dialog view of the application.

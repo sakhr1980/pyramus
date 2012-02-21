@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -17,6 +15,8 @@ import fi.pyramus.dao.base.SchoolVariableKeyDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**

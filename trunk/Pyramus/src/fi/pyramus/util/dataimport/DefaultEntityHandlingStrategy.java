@@ -5,9 +5,9 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
+import fi.pyramus.framework.PyramusStatusCode;
 
 @SuppressWarnings("rawtypes")
 public class DefaultEntityHandlingStrategy implements EntityHandlingStrategy {

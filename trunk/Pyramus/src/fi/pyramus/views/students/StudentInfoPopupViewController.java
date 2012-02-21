@@ -8,7 +8,6 @@ import java.util.Locale;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.AbstractStudentDAO;
@@ -16,7 +15,8 @@ import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * ViewController for viewing student information within popup dialog.
