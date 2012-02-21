@@ -1,11 +1,11 @@
 package fi.pyramus.json.grading;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.domainmodel.grading.TransferCredit;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class ArchiveTransferCreditJSONRequestController extends JSONRequestController {
 

@@ -10,13 +10,13 @@ import org.apache.lucene.queryParser.QueryParser;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
-import fi.pyramus.BinaryRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.grading.TransferCreditTemplateCourseDAO;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
+import fi.pyramus.framework.BinaryRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class TransferCreditCourseNameAutoCompleteBinaryRequestController extends BinaryRequestController {
 

@@ -1,10 +1,10 @@
 package fi.pyramus.views.users;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.ExternalAuthenticationProvider;
-import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the Login view of the application. 

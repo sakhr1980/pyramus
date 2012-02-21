@@ -11,8 +11,8 @@ import org.apache.commons.lang.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
 import fi.pyramus.I18N.Messages;
+import fi.pyramus.framework.PyramusStatusCode;
 import fi.pyramus.util.dataimport.DataImportContext;
 import fi.pyramus.util.dataimport.DataImportStrategyProvider;
 import fi.pyramus.util.dataimport.EntityHandlingStrategy;

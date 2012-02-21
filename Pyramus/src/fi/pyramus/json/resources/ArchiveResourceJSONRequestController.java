@@ -6,8 +6,8 @@ import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.resources.Resource;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class ArchiveResourceJSONRequestController extends JSONRequestController {
   

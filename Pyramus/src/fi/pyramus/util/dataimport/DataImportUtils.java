@@ -13,9 +13,9 @@ import java.util.Map;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.SmvcRuntimeException;
-import fi.pyramus.PyramusStatusCode;
-import fi.pyramus.UserRole;
 import fi.pyramus.domainmodel.users.Role;
+import fi.pyramus.framework.PyramusStatusCode;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 import fi.pyramus.persistence.usertypes.Sex;

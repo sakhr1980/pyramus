@@ -6,8 +6,8 @@ import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.courses.Course;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class ArchiveCourseJSONRequestController extends JSONRequestController {
   

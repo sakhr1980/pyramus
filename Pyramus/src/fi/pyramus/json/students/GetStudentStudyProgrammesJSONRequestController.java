@@ -16,8 +16,8 @@ import fi.pyramus.dao.students.AbstractStudentDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * JSON request controller to view student info.

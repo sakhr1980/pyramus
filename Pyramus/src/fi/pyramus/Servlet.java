@@ -21,6 +21,7 @@ import fi.internetix.smvc.controllers.RequestControllerMapper;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.BreadcrumbHandler;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The main servlet of the Pyramus application, responsible of handling all application requests and
@@ -29,8 +30,8 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
  * @see fi.pyramus.RequestContext
  * @see fi.pyramus.RequestController
  * @see fi.pyramus.RequestControllerMapper
- * @see fi.pyramus.json.JSONRequestController
- * @see fi.pyramus.views.PyramusViewController
+ * @see fi.fi.pyramus.framework.JSONRequestController
+ * @see fi.fi.pyramus.framework.PyramusViewController
  */
 public class Servlet extends HttpServlet {
   

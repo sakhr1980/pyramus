@@ -8,13 +8,13 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
-import fi.pyramus.BinaryRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.resources.ResourceCategoryDAO;
 import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
+import fi.pyramus.framework.BinaryRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.util.StringAttributeComparator;
 

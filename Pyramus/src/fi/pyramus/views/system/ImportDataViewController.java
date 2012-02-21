@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusFormViewController;
-import fi.pyramus.UserRole;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.DataImporter;
 
 public class ImportDataViewController extends PyramusFormViewController {

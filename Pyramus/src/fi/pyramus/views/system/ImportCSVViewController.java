@@ -6,8 +6,8 @@ import java.util.List;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusFormViewController;
-import fi.pyramus.UserRole;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.CSVImporter;
 import fi.pyramus.util.dataimport.EntityImportStrategy;
 

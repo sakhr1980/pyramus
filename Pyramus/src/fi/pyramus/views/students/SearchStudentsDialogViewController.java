@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.List;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.StudyProgrammeDAO;
 import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
 
 public class SearchStudentsDialogViewController extends PyramusViewController {

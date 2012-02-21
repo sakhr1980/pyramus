@@ -11,8 +11,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.StaleObjectStateException;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.dao.base.AddressDAO;
@@ -49,6 +47,8 @@ import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
 import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.Sex;
 
 public class EditStudentJSONRequestController extends JSONRequestController {

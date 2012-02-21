@@ -1,11 +1,11 @@
 package fi.pyramus.json.settings;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.StudyProgrammeCategoryDAO;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class ArchiveStudyProgrammeCategoryJSONRequestController extends JSONRequestController {
   

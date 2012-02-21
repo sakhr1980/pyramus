@@ -4,12 +4,12 @@ import java.util.Collections;
 import java.util.List;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.resources.ResourceCategoryDAO;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.resources.ResourceType;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
 
 public class SearchResourcesDialogViewController extends PyramusViewController {

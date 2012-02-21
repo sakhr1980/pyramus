@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
@@ -18,7 +17,8 @@ import fi.pyramus.domainmodel.projects.ProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class CreateStudentProjectJSONRequestController extends JSONRequestController {

@@ -1,8 +1,8 @@
 package fi.pyramus.views.projects;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the Search Modules dialog of the application.

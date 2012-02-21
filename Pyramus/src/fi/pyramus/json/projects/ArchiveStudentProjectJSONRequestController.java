@@ -1,11 +1,11 @@
 package fi.pyramus.json.projects;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.domainmodel.projects.StudentProject;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class ArchiveStudentProjectJSONRequestController extends JSONRequestController {
   

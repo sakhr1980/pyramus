@@ -1,8 +1,8 @@
 package fi.pyramus.views.generic;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class JSONErrorViewController extends PyramusViewController {
 

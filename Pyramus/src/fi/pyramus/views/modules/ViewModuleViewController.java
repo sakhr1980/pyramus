@@ -14,9 +14,9 @@ import fi.pyramus.dao.modules.ModuleComponentDAO;
 import fi.pyramus.dao.modules.ModuleDAO;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.UserRole;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.StringAttributeComparator;
-import fi.pyramus.PyramusViewController;
 
 /**
  * The controller responsible of the View Module view of the application.

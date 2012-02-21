@@ -7,13 +7,13 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusFormViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.system.SettingDAO;
 import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller responsible of the system settings view of the application.

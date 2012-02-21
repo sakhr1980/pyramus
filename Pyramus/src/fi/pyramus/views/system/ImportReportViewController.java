@@ -24,13 +24,13 @@ import com.sun.org.apache.xpath.internal.XPathAPI;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.PyramusFormViewController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.dao.reports.ReportDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.users.User;
+import fi.pyramus.framework.PyramusFormViewController;
+import fi.pyramus.framework.UserRole;
 
 @SuppressWarnings("deprecation")
 public class ImportReportViewController extends PyramusFormViewController {

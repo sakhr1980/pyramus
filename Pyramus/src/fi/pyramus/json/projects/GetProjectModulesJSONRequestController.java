@@ -12,8 +12,8 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
-import fi.pyramus.UserRole;
-import fi.pyramus.JSONRequestController;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 /**
  * The controller returning a list of all modules in a project. 

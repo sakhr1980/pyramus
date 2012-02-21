@@ -1,8 +1,8 @@
 package fi.pyramus.views.system;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class ElementCheatSheetViewController extends PyramusViewController {
 

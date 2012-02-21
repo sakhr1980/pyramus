@@ -1,11 +1,11 @@
 package fi.pyramus.json.courses;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
-import fi.pyramus.JSONRequestController;
-import fi.pyramus.UserRole;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.courses.CourseComponentResourceDAO;
 import fi.pyramus.domainmodel.courses.CourseComponentResource;
+import fi.pyramus.framework.JSONRequestController;
+import fi.pyramus.framework.UserRole;
 
 public class DeleteCourseComponentResourceJSONRequestController extends JSONRequestController {
   

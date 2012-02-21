@@ -3,8 +3,8 @@ package fi.pyramus.views.system;
 import java.util.Date;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
-import fi.pyramus.UserRole;
-import fi.pyramus.PyramusViewController;
+import fi.pyramus.framework.PyramusViewController;
+import fi.pyramus.framework.UserRole;
 
 public class SystemInfoViewController extends PyramusViewController {
 

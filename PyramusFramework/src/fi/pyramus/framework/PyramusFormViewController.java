@@ -1,4 +1,4 @@
-package fi.pyramus;
+package fi.pyramus.framework;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 
