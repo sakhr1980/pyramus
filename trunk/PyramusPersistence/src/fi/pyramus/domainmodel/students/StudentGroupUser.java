@@ -54,7 +54,7 @@ public class StudentGroupUser {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentGroupUser")  
-  @TableGenerator(name="StudentGroupUser", allocationSize=1)
+  @TableGenerator(name="StudentGroupUser", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
 

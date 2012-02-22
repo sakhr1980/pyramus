@@ -29,7 +29,7 @@ public class SettingKey {
   
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="SettingKey")  
-  @TableGenerator(name="SettingKey", allocationSize=1)
+  @TableGenerator(name="SettingKey", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @Column (nullable = false, unique = true)

@@ -89,7 +89,7 @@ public class Grade implements ArchivableEntity {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Grade")  
-  @TableGenerator(name="Grade", allocationSize=1)
+  @TableGenerator(name="Grade", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

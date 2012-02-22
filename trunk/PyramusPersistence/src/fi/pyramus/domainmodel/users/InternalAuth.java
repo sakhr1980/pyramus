@@ -73,7 +73,7 @@ public class InternalAuth {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="InternalAuth")  
-  @TableGenerator(name="InternalAuth", allocationSize=1)
+  @TableGenerator(name="InternalAuth", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @Column (nullable = false, unique = true)

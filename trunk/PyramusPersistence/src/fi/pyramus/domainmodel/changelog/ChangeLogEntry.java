@@ -66,7 +66,7 @@ public class ChangeLogEntry {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ChangeLogEntry")  
-  @TableGenerator(name="ChangeLogEntry", allocationSize=1)
+  @TableGenerator(name="ChangeLogEntry", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @Column (nullable = false)

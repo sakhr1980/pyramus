@@ -99,7 +99,7 @@ public class Municipality implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Municipality")  
-  @TableGenerator(name="Municipality", allocationSize=1)
+  @TableGenerator(name="Municipality", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId 
   private Long id;
 

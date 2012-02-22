@@ -99,7 +99,7 @@ public class Address {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Address")  
-  @TableGenerator(name="Address", allocationSize=1)
+  @TableGenerator(name="Address", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

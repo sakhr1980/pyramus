@@ -45,7 +45,7 @@ public class ReportCategory {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ReportCategory")  
-  @TableGenerator(name="ReportCategory", allocationSize=1)
+  @TableGenerator(name="ReportCategory", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

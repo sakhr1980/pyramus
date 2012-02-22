@@ -136,7 +136,7 @@ public class ContactInfo {
   @Id 
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ContactInfo")  
-  @TableGenerator(name="ContactInfo", allocationSize=1)
+  @TableGenerator(name="ContactInfo", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)

@@ -77,7 +77,7 @@ public class StudentStudyEndReason {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentStudyEndReason")  
-  @TableGenerator(name="StudentStudyEndReason", allocationSize=1)
+  @TableGenerator(name="StudentStudyEndReason", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
 

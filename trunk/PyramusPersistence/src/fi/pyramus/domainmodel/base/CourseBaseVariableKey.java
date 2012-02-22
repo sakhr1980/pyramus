@@ -73,7 +73,7 @@ public class CourseBaseVariableKey {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseBaseVariableKey")  
-  @TableGenerator(name="CourseBaseVariableKey", allocationSize=1)
+  @TableGenerator(name="CourseBaseVariableKey", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @NotNull

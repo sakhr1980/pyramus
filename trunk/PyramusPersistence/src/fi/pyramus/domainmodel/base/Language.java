@@ -91,7 +91,7 @@ public class Language implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Language")  
-  @TableGenerator(name="Language", allocationSize=1)
+  @TableGenerator(name="Language", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
 

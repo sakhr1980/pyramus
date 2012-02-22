@@ -50,7 +50,7 @@ public class ContactType implements ArchivableEntity {
   @Id 
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ContactType")  
-  @TableGenerator(name="ContactType", allocationSize=1)
+  @TableGenerator(name="ContactType", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

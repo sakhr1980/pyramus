@@ -44,7 +44,7 @@ public class Tag {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Tag")  
-  @TableGenerator(name="Tag", allocationSize=1)
+  @TableGenerator(name="Tag", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
 

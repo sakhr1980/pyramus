@@ -192,7 +192,7 @@ public class EducationType implements ArchivableEntity {
   @Id
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationType")  
-  @TableGenerator(name="EducationType", allocationSize=1)
+  @TableGenerator(name="EducationType", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

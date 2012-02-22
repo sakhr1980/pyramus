@@ -57,7 +57,7 @@ public class EducationalTimeUnit implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="EducationalTimeUnit")  
-  @TableGenerator(name="EducationalTimeUnit", allocationSize=1)
+  @TableGenerator(name="EducationalTimeUnit", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @NotNull

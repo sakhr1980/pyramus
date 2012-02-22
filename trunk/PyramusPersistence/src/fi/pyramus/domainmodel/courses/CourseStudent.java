@@ -128,7 +128,7 @@ public class CourseStudent implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseStudent")  
-  @TableGenerator(name="CourseStudent", allocationSize=1)
+  @TableGenerator(name="CourseStudent", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @Column (nullable=false)
