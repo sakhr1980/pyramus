@@ -88,7 +88,8 @@ public class AuthenticationProviderVault {
     for (String strategyName : strategies) {
       AuthenticationProvider provider;
       try {
-        provider = authenticationProviderClasses.get(strategyName.trim()).newInstance();
+        Class<AuthenticationProvider> authProviderClass = authenticationProviderClasses.get(strategyName.trim());
+        provider = authProviderClass.newInstance();
         registerAuthenticationProvider(provider);
       } catch (InstantiationException e) {
         throw new SmvcRuntimeException(e);
