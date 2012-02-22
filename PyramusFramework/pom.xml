@@ -30,6 +30,11 @@
       <artifactId>javax.servlet-api</artifactId>
       <version>3.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>persistence</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   
   <build>
