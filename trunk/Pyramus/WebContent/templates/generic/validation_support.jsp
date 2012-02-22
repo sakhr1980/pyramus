@@ -3,12 +3,13 @@
 
 <c:choose>
   <c:when test="${validationSupportIncluded != true}">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/ixvalidation/ixvalidation.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/pfvlib/pfvlib-uncompressed.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/pfvlib-custom/extra-validators.js"></script>
     <link rel="StyleSheet" href="${pageContext.request.contextPath}/css/validation.css" type="text/css"></link>
     <script type="text/javascript">
       function revalidateTableCell(tableComponent, row, column) {
         var cellEditor = tableComponent.getCellEditor(row, column);
-        var validationDelegator = IxValidationDelegatorVault.getDelegator(cellEditor);
+        var validationDelegator = fi.internetix.validation.ValidationDelegatorVault.getDelegator(cellEditor);
         if (validationDelegator)
           validationDelegator.validate(true);
       }
@@ -35,16 +36,7 @@
         tableComponent.addListener("beforeRowDelete", function (event) {
           deinitializeValidation(event.tableComponent.getRowElement(event.row)); 
         });
-
-        // tableComponent.addListener("beforeRowDelete", function (event) {
-        //  deinitializeValidation(event.tableComponent.domNode); 
-        // });
-
-        // tableComponent.addListener("rowDelete", function (event) {
-        //  initializeValidation(event.tableComponent.domNode); 
-        //  revalidateAll();  
-        // });
-
+        
         tableComponent.addListener("cellValueChange", function (event) {
           revalidateTableCell(event.tableComponent, event.row, event.column);
         });
