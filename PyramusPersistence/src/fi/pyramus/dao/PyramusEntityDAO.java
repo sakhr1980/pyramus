@@ -23,7 +23,7 @@ public abstract class PyramusEntityDAO<T> extends GenericDAO<T> {
     return query.getResultList();
   }
   
-  protected void forceReindex(Object o) {
+  public void forceReindex(T o) {
     FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(getEntityManager());
     fullTextEntityManager.index(o);
   }

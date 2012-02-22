@@ -51,6 +51,7 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
       Student student = (Student) entity;
 
       CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+      AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
   
       // Also archive course students of the archived student
       
@@ -64,7 +65,7 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
       // This is necessary because AbstractStudent entity does not really
       // change in this operation but it still needs to be reindexed
   
-      forceReindex(student.getAbstractStudent());
+      abstractStudentDAO.forceReindex(student.getAbstractStudent());
     }
   }
 
@@ -76,6 +77,7 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
    */
   @Override
   public void unarchive(ArchivableEntity entity, User modifier) {
+    AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
     unarchive(entity, modifier);
     
     if (entity instanceof Student) {
@@ -83,8 +85,8 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
       // change in this operation but it still needs to be reindexed
 
       Student student = (Student) entity;
-      
-      forceReindex(student.getAbstractStudent());
+
+      abstractStudentDAO.forceReindex(student.getAbstractStudent());
     }
   }
 

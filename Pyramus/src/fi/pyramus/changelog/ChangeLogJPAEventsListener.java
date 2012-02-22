@@ -211,7 +211,7 @@ public class ChangeLogJPAEventsListener implements MessageListener {
   } 
   
   private Object getEntityId(Class<?> entityClass, Object entity) {
-    SystemDAO systemDAO = new SystemDAO();
+    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     Attribute<?, ?> idAttribute = systemDAO.getEntityIdAttribute(entityClass);
     try {
       return ReflectionApiUtils.getObjectFieldValue(entity, idAttribute.getName(), true);
