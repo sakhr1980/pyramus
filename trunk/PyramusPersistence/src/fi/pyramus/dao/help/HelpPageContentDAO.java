@@ -3,6 +3,7 @@ package fi.pyramus.dao.help;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.help.HelpPageContent;
 import fi.pyramus.domainmodel.help.HelpPageContent_;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class HelpPageContentDAO extends PyramusEntityDAO<HelpPageContent> {
 
   public HelpPageContent findByPageAndLocale(HelpPage page, Locale locale) {

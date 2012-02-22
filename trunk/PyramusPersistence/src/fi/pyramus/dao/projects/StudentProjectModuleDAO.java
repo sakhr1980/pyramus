@@ -2,6 +2,7 @@ package fi.pyramus.dao.projects;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +16,7 @@ import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProjectModule_;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
+@Stateless
 public class StudentProjectModuleDAO extends PyramusEntityDAO<StudentProjectModule> {
 
   public StudentProjectModule create(StudentProject studentProject, Module module,

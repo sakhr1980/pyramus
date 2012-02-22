@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -36,6 +37,7 @@ import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
 import fi.pyramus.persistence.usertypes.Sex;
 
+@Stateless
 public class AbstractStudentDAO extends PyramusEntityDAO<AbstractStudent> {
 
   /**

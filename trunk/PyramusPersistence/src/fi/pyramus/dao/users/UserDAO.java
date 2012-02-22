@@ -3,6 +3,7 @@ package fi.pyramus.dao.users;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -39,6 +40,7 @@ import fi.pyramus.domainmodel.users.UserVariable_;
 import fi.pyramus.domainmodel.users.User_;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class UserDAO extends PyramusEntityDAO<User> {
   
   public User create(String firstName, String lastName, String externalId, String authProvider, Role role) {

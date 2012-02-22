@@ -2,6 +2,7 @@ package fi.pyramus.dao.students;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -10,6 +11,7 @@ import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class StudentGroupStudentDAO extends PyramusEntityDAO<StudentGroupStudent> {
 
   public StudentGroupStudent create(StudentGroup studentGroup, Student student, User updatingUser) {

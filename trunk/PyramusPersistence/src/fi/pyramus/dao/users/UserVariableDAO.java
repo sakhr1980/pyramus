@@ -1,5 +1,6 @@
 package fi.pyramus.dao.users;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,6 +16,7 @@ import fi.pyramus.domainmodel.users.UserVariable;
 import fi.pyramus.domainmodel.users.UserVariableKey;
 import fi.pyramus.domainmodel.users.UserVariable_;
 
+@Stateless
 public class UserVariableDAO extends PyramusEntityDAO<UserVariable> {
 
   private UserVariable create(User user, UserVariableKey key, String value) {

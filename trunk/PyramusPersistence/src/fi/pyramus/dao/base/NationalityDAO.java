@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.Nationality_;
 
+@Stateless
 public class NationalityDAO extends PyramusEntityDAO<Nationality> {
 
   /**

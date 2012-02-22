@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,6 +34,7 @@ import fi.pyramus.domainmodel.students.StudentVariable_;
 import fi.pyramus.domainmodel.students.Student_;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class StudentDAO extends PyramusEntityDAO<Student> {
 
   /**
@@ -309,5 +311,4 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
-  
 }

@@ -2,6 +2,7 @@ package fi.pyramus.dao.help;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.help.HelpItem;
 import fi.pyramus.domainmodel.help.HelpItemTitle;
 import fi.pyramus.domainmodel.help.HelpItem_;
 
+@Stateless
 public class HelpItemDAO extends PyramusEntityDAO<HelpItem> {
 
   public List<HelpItem> listByParent(HelpFolder parent) {

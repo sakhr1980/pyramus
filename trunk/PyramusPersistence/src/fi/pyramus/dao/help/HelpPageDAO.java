@@ -2,6 +2,7 @@ package fi.pyramus.dao.help;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -26,6 +27,7 @@ import fi.pyramus.domainmodel.help.HelpPageContent;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class HelpPageDAO extends PyramusEntityDAO<HelpPage> {
 
   @SuppressWarnings("unchecked")

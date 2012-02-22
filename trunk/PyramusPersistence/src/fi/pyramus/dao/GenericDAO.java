@@ -6,12 +6,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.users.User;
 
-public class GenericDAO<T> {
+public abstract class GenericDAO<T> {
   
   @SuppressWarnings("unchecked")
   public T findById(Long id) {
@@ -93,21 +94,31 @@ public class GenericDAO<T> {
     throw new NonUniqueResultException("SingleResult query returned " + list.size() + " elements");
   }
 
-  protected EntityManager getEntityManager() {
-    return THREAD_LOCAL.get();
-  }
+//  protected abstract EntityManager getEntityManager();
   
-  public static void setEntityManager(EntityManager entityManager) {
-    if (entityManager == null)
-      THREAD_LOCAL.remove();
-    else
-      THREAD_LOCAL.set(entityManager);
-  }
+//  protected EntityManager getEntityManager() {
+//    return THREAD_LOCAL.get();
+//  }
+//  
+//  public static void setEntityManager(EntityManager entityManager) {
+//    if (entityManager == null)
+//      THREAD_LOCAL.remove();
+//    else
+//      THREAD_LOCAL.set(entityManager);
+//  }
   
   protected Class<?> getGenericTypeClass() {
     ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
     return (Class<?>) parameterizedType.getActualTypeArguments()[0];
   }
   
-  private static final ThreadLocal<EntityManager> THREAD_LOCAL = new ThreadLocal<EntityManager>();
+//  private static final ThreadLocal<EntityManager> THREAD_LOCAL = new ThreadLocal<EntityManager>();
+  
+//  @Override
+  protected EntityManager getEntityManager() {
+    return entityManager;
+  }
+  
+  @PersistenceContext
+  private EntityManager entityManager;
 }

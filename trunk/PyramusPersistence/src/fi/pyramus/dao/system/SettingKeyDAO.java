@@ -1,5 +1,6 @@
 package fi.pyramus.dao.system;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.system.SettingKey;
 import fi.pyramus.domainmodel.system.SettingKey_;
 
+@Stateless
 public class SettingKeyDAO extends PyramusEntityDAO<SettingKey> {
 
   public SettingKey create(String name) {

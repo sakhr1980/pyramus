@@ -1,5 +1,6 @@
 package fi.pyramus.dao.users;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.users.InternalAuth;
 import fi.pyramus.domainmodel.users.InternalAuth_;
 
+@Stateless
 public class InternalAuthDAO extends PyramusEntityDAO<InternalAuth> {
 
   public InternalAuth create(String username, String password) {

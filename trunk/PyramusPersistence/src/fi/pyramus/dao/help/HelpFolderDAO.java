@@ -2,12 +2,14 @@ package fi.pyramus.dao.help;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.help.HelpFolder;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class HelpFolderDAO extends PyramusEntityDAO<HelpFolder> {
 
   public HelpFolder create(HelpFolder parent, Integer indexColum, User creatingUser) {

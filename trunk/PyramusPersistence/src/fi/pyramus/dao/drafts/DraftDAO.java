@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.drafts.FormDraft;
 import fi.pyramus.domainmodel.drafts.FormDraft_;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class DraftDAO extends PyramusEntityDAO<FormDraft> {
   
   public FormDraft create(User creator, String url, String draftData) {

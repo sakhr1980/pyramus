@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -34,6 +35,7 @@ import fi.pyramus.domainmodel.students.StudentGroup_;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class StudentGroupDAO extends PyramusEntityDAO<StudentGroup> {
 
   public StudentGroup create(String name, String description, Date beginDate, User creatingUser) {

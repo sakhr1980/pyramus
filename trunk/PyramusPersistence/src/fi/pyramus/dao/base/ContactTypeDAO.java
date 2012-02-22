@@ -1,10 +1,12 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.ContactType;
 
+@Stateless
 public class ContactTypeDAO extends PyramusEntityDAO<ContactType> {
 
   public ContactType create(String name) {

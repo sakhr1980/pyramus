@@ -1,11 +1,13 @@
 package fi.pyramus.dao.grading;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
 
+@Stateless
 public class GradeDAO extends PyramusEntityDAO<Grade> {
 
   /**

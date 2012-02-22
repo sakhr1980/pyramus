@@ -3,6 +3,7 @@ package fi.pyramus.dao.projects;
 import java.util.Date;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -26,6 +27,7 @@ import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class ProjectDAO extends PyramusEntityDAO<Project> {
 
   public Project create(String name, String description, Double optionalStudiesLength,

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
 import fi.pyramus.domainmodel.base.MagicKey_;
 
+@Stateless
 public class MagicKeyDAO extends PyramusEntityDAO<MagicKey> {
 
   public MagicKey create(String name) {

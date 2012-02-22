@@ -2,6 +2,7 @@ package fi.pyramus.dao.courses;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +16,7 @@ import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.domainmodel.courses.CourseDescriptionCategory_;
 import fi.pyramus.domainmodel.courses.CourseDescription_;
 
+@Stateless
 public class CourseDescriptionDAO extends PyramusEntityDAO<CourseDescription> {
   public CourseDescription create(CourseBase courseBase, CourseDescriptionCategory category, String description) {
     EntityManager entityManager = getEntityManager();

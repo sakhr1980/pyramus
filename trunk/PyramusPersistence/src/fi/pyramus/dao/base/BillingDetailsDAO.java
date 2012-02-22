@@ -1,10 +1,12 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.BillingDetails;
 
+@Stateless
 public class BillingDetailsDAO extends PyramusEntityDAO<BillingDetails> {
 
   public BillingDetails create(String personName, String companyName, String streetAddress1, String streetAddress2,

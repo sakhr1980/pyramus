@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -7,6 +8,7 @@ import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.ContactType;
 import fi.pyramus.domainmodel.base.Email;
 
+@Stateless
 public class EmailDAO extends PyramusEntityDAO<Email> {
 
   public Email create(ContactInfo contactInfo, ContactType contactType, Boolean defaultAddress, String address) {

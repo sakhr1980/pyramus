@@ -1,5 +1,6 @@
 package fi.pyramus.dao.reports;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,6 +11,7 @@ import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
 import fi.pyramus.domainmodel.reports.Report_;
 
+@Stateless
 public class ReportCategoryDAO extends PyramusEntityDAO<ReportCategory> {
 
   public ReportCategory create(String name, Integer indexColumn) {

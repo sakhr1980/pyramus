@@ -1,10 +1,12 @@
 package fi.pyramus.dao.courses;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 
+@Stateless
 public class CourseEnrolmentTypeDAO extends PyramusEntityDAO<CourseEnrolmentType> {
 
   public CourseEnrolmentType create(String name) {

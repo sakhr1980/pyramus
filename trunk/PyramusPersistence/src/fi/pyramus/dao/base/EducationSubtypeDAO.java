@@ -2,6 +2,7 @@ package fi.pyramus.dao.base;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,6 +13,7 @@ import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationSubtype_;
 import fi.pyramus.domainmodel.base.EducationType;
 
+@Stateless
 public class EducationSubtypeDAO extends PyramusEntityDAO<EducationSubtype> {
 
   /**

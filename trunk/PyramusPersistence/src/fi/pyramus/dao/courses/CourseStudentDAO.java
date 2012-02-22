@@ -3,6 +3,7 @@ package fi.pyramus.dao.courses;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -21,6 +22,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.Student_;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
+@Stateless
 public class CourseStudentDAO extends PyramusEntityDAO<CourseStudent> {
 
   public CourseStudent findByCourseAndStudent(Course course, Student student) {
