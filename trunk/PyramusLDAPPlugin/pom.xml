@@ -36,12 +36,6 @@
       <version>0.5.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>fi.smvcj</groupId>
-      <artifactId>smvcj</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-      <type>pom.lastUpdated</type>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.0.1</version>
@@ -51,6 +45,12 @@
       <groupId>com.novell.ldap</groupId>
       <artifactId>jldap</artifactId>
       <version>devel-2009.10.07-1unix</version>
+    </dependency>
+    <dependency>
+      <groupId>fi.smvcj</groupId>
+      <artifactId>smvcj</artifactId>
+      <version>0.0.2-SNAPSHOT</version>
+      <type>pom.lastUpdated</type>
     </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
