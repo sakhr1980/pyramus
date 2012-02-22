@@ -3,6 +3,7 @@ package fi.pyramus.dao.grading;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +16,7 @@ import fi.pyramus.domainmodel.grading.ProjectAssessment_;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class ProjectAssessmentDAO extends PyramusEntityDAO<ProjectAssessment> {
 
   public ProjectAssessment create(StudentProject studentProject, User assessingUser, Grade grade, Date date, String verbalAssessment) {

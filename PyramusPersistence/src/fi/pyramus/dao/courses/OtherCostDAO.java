@@ -2,6 +2,7 @@ package fi.pyramus.dao.courses;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,7 @@ import fi.pyramus.domainmodel.courses.OtherCost;
 import fi.pyramus.domainmodel.courses.OtherCost_;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
+@Stateless
 public class OtherCostDAO extends PyramusEntityDAO<OtherCost> {
 
   /**

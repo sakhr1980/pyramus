@@ -1,5 +1,6 @@
 package fi.pyramus.dao.resources;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -7,6 +8,7 @@ import fi.pyramus.domainmodel.resources.MaterialResource;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
+@Stateless
 public class MaterialResourceDAO extends PyramusEntityDAO<MaterialResource> {
 
   public MaterialResource create(String name, ResourceCategory category, Double unitCost) {

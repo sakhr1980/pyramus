@@ -2,12 +2,14 @@ package fi.pyramus.dao.changelog;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.changelog.TrackedEntityProperty;
 
+@Stateless
 public class TrackedEntityPropertyDAO extends PyramusEntityDAO<TrackedEntityProperty> {
 
   public TrackedEntityProperty create(String entity, String property) {

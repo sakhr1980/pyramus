@@ -2,6 +2,7 @@ package fi.pyramus.dao.courses;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.courses.CourseUserRole;
 import fi.pyramus.domainmodel.courses.CourseUser_;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class CourseUserDAO extends PyramusEntityDAO<CourseUser> {
 
   public CourseUser create(Course course, User user, CourseUserRole role) {

@@ -1,5 +1,6 @@
 package fi.pyramus.dao.students;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,6 +16,7 @@ import fi.pyramus.domainmodel.students.StudentVariable;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
 import fi.pyramus.domainmodel.students.StudentVariable_;
 
+@Stateless
 public class StudentVariableDAO extends PyramusEntityDAO<StudentVariable> {
 
   public StudentVariable create(Student student, StudentVariableKey key, String value) {

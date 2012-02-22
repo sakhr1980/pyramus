@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.CourseBaseVariableKey;
 import fi.pyramus.domainmodel.base.CourseBaseVariableKey_;
 
+@Stateless
 public class CourseBaseVariableKeyDAO extends PyramusEntityDAO<CourseBaseVariableKey> {
 
   public CourseBaseVariableKey findByVariableKey(String key) {

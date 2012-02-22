@@ -2,11 +2,13 @@ package fi.pyramus.dao.base;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
 
+@Stateless
 public class AcademicTermDAO extends PyramusEntityDAO<AcademicTerm> {
 
   /**

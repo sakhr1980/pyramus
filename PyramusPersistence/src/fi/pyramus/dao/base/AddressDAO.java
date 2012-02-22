@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -7,6 +8,7 @@ import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.ContactType;
 
+@Stateless
 public class AddressDAO extends PyramusEntityDAO<Address> {
 
   public Address create(ContactInfo contactInfo, ContactType contactType, String name, String streetAddress, String postalCode, String city,

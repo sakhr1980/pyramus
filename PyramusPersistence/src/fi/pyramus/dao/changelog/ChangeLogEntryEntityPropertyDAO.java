@@ -2,6 +2,7 @@ package fi.pyramus.dao.changelog;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntity;
 import fi.pyramus.domainmodel.changelog.ChangeLogEntryEntityProperty;
 
+@Stateless
 public class ChangeLogEntryEntityPropertyDAO extends PyramusEntityDAO<ChangeLogEntryEntityProperty> {
 
   public ChangeLogEntryEntityProperty create(ChangeLogEntryEntity entity, String name) {

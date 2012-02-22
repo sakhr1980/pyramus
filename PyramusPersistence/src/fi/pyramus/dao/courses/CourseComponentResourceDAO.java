@@ -2,6 +2,7 @@ package fi.pyramus.dao.courses;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,7 @@ import fi.pyramus.domainmodel.courses.CourseComponentResource;
 import fi.pyramus.domainmodel.courses.CourseComponentResource_;
 import fi.pyramus.domainmodel.resources.Resource;
 
+@Stateless
 public class CourseComponentResourceDAO extends PyramusEntityDAO<CourseComponentResource> {
 
   public List<CourseComponentResource> listByCourseComponent(CourseComponent courseComponent) {

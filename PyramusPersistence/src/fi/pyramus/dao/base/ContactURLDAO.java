@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -7,6 +8,7 @@ import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.ContactURL;
 import fi.pyramus.domainmodel.base.ContactURLType;
 
+@Stateless
 public class ContactURLDAO extends PyramusEntityDAO<ContactURL> {
 
   public ContactURL create(ContactInfo contactInfo, ContactURLType contactURLType, String url) {

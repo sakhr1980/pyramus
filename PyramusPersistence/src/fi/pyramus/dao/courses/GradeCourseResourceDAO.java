@@ -2,6 +2,7 @@ package fi.pyramus.dao.courses;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.courses.GradeCourseResource_;
 import fi.pyramus.domainmodel.resources.Resource;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
+@Stateless
 public class GradeCourseResourceDAO extends PyramusEntityDAO<GradeCourseResource> {
   /**
    * Creates a grade course resource to the database.

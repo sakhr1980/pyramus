@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -43,6 +44,7 @@ import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.SearchTimeFilterMode;
 
+@Stateless
 public class CourseDAO extends PyramusEntityDAO<Course> {
 
   /**

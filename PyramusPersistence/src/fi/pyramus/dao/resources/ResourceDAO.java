@@ -2,6 +2,7 @@ package fi.pyramus.dao.resources;
 
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -27,6 +28,7 @@ import fi.pyramus.domainmodel.resources.ResourceType;
 import fi.pyramus.domainmodel.resources.WorkResource;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class ResourceDAO extends PyramusEntityDAO<Resource> {
 
   @SuppressWarnings("unchecked")

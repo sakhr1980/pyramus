@@ -1,5 +1,8 @@
 package fi.pyramus.dao;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.dao.base.AddressDAO;
 import fi.pyramus.dao.base.BillingDetailsDAO;
@@ -40,6 +43,7 @@ import fi.pyramus.dao.changelog.TrackedEntityPropertyDAO;
 import fi.pyramus.dao.courses.BasicCourseResourceDAO;
 import fi.pyramus.dao.courses.CourseComponentDAO;
 import fi.pyramus.dao.courses.CourseComponentResourceDAO;
+import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
 import fi.pyramus.dao.courses.CourseDescriptionDAO;
 import fi.pyramus.dao.courses.CourseEnrolmentTypeDAO;
@@ -81,6 +85,7 @@ import fi.pyramus.dao.students.AbstractStudentDAO;
 import fi.pyramus.dao.students.StudentActivityTypeDAO;
 import fi.pyramus.dao.students.StudentContactLogEntryCommentDAO;
 import fi.pyramus.dao.students.StudentContactLogEntryDAO;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentEducationalLevelDAO;
 import fi.pyramus.dao.students.StudentExaminationTypeDAO;
 import fi.pyramus.dao.students.StudentGroupDAO;
@@ -112,419 +117,436 @@ public class DAOFactory {
   /* Draft */
   
   public DraftDAO getDraftDAO() {
-    return new DraftDAO();
+    return (DraftDAO) findByClass(DraftDAO.class);
   }
-  
   
   /* Student */
   
   public fi.pyramus.dao.students.StudentDAO getStudentDAO() {
-    return new fi.pyramus.dao.students.StudentDAO();
+    return (StudentDAO) findByClass(fi.pyramus.dao.students.StudentDAO.class);
   }
 
   public AbstractStudentDAO getAbstractStudentDAO() {
-    return new AbstractStudentDAO();
+    return (AbstractStudentDAO) findByClass(AbstractStudentDAO.class);
   }
   
   public StudentActivityTypeDAO getStudentActivityTypeDAO() {
-    return new StudentActivityTypeDAO();
+    return (StudentActivityTypeDAO) findByClass(StudentActivityTypeDAO.class);
   }
   
   public StudentContactLogEntryDAO getStudentContactLogEntryDAO() {
-    return new StudentContactLogEntryDAO();
+    return (StudentContactLogEntryDAO) findByClass(StudentContactLogEntryDAO.class);
   }
   
   public StudentContactLogEntryCommentDAO getStudentContactLogEntryCommentDAO() {
-    return new StudentContactLogEntryCommentDAO();
+    return (StudentContactLogEntryCommentDAO) findByClass(StudentContactLogEntryCommentDAO.class);
   }
   
   public StudentEducationalLevelDAO getStudentEducationalLevelDAO() {
-    return new StudentEducationalLevelDAO();
+    return (StudentEducationalLevelDAO) findByClass(StudentEducationalLevelDAO.class);
   }
   
   public StudentExaminationTypeDAO getStudentExaminationTypeDAO() {
-    return new StudentExaminationTypeDAO();
+    return (StudentExaminationTypeDAO) findByClass(StudentExaminationTypeDAO.class);
   }
   
   public StudentGroupDAO getStudentGroupDAO() {
-    return new StudentGroupDAO();
+    return (StudentGroupDAO) findByClass(StudentGroupDAO.class);
   }
   
   public StudentGroupStudentDAO getStudentGroupStudentDAO() {
-    return new StudentGroupStudentDAO();
+    return (StudentGroupStudentDAO) findByClass(StudentGroupStudentDAO.class);
   }
   
   public StudentGroupUserDAO getStudentGroupUserDAO() {
-    return new StudentGroupUserDAO();
+    return (StudentGroupUserDAO) findByClass(StudentGroupUserDAO.class);
   }
   
   public StudentImageDAO getStudentImageDAO() {
-    return new StudentImageDAO();
+    return (StudentImageDAO) findByClass(StudentImageDAO.class);
   }
 
   public StudentStudyEndReasonDAO getStudentStudyEndReasonDAO() {
-    return new StudentStudyEndReasonDAO();
+    return (StudentStudyEndReasonDAO) findByClass(StudentStudyEndReasonDAO.class);
   }
   
   public StudentVariableDAO getStudentVariableDAO() {
-    return new StudentVariableDAO();
+    return (StudentVariableDAO) findByClass(StudentVariableDAO.class);
   }
   
   public StudentVariableKeyDAO getStudentVariableKeyDAO() {
-    return new StudentVariableKeyDAO();
+    return (StudentVariableKeyDAO) findByClass(StudentVariableKeyDAO.class);
   }
 
   /* Course */
   
   public BasicCourseResourceDAO getBasicCourseResourceDAO() {
-    return new BasicCourseResourceDAO();
+    return (BasicCourseResourceDAO) findByClass(BasicCourseResourceDAO.class);
   }
   
   public CourseComponentDAO getCourseComponentDAO() {
-    return new CourseComponentDAO();
+    return (CourseComponentDAO) findByClass(CourseComponentDAO.class);
   }
   
   public CourseComponentResourceDAO getCourseComponentResourceDAO() {
-    return new CourseComponentResourceDAO();
+    return (CourseComponentResourceDAO) findByClass(CourseComponentResourceDAO.class);
   }
   
   public fi.pyramus.dao.courses.CourseDAO getCourseDAO() {
-    return new fi.pyramus.dao.courses.CourseDAO();
+    return (CourseDAO) findByClass(fi.pyramus.dao.courses.CourseDAO.class);
   }
   
   public CourseDescriptionCategoryDAO getCourseDescriptionCategoryDAO() {
-    return new CourseDescriptionCategoryDAO();
+    return (CourseDescriptionCategoryDAO) findByClass(CourseDescriptionCategoryDAO.class);
   }
   
   public CourseDescriptionDAO getCourseDescriptionDAO() {
-    return new CourseDescriptionDAO();
+    return (CourseDescriptionDAO) findByClass(CourseDescriptionDAO.class);
   }
   
   public CourseEnrolmentTypeDAO getCourseEnrolmentTypeDAO() {
-    return new CourseEnrolmentTypeDAO();
+    return (CourseEnrolmentTypeDAO) findByClass(CourseEnrolmentTypeDAO.class);
   }
   
   public CourseParticipationTypeDAO getCourseParticipationTypeDAO() {
-    return new CourseParticipationTypeDAO();
+    return (CourseParticipationTypeDAO) findByClass(CourseParticipationTypeDAO.class);
   }
   
   public CourseStateDAO getCourseStateDAO() {
-    return new CourseStateDAO();
+    return (CourseStateDAO) findByClass(CourseStateDAO.class);
   }
   
   public CourseStudentDAO getCourseStudentDAO() {
-    return new CourseStudentDAO();
+    return (CourseStudentDAO) findByClass(CourseStudentDAO.class);
   }
 
   public CourseUserDAO getCourseUserDAO() {
-    return new CourseUserDAO();
+    return (CourseUserDAO) findByClass(CourseUserDAO.class);
   }
   
   public CourseUserRoleDAO getCourseUserRoleDAO() {
-    return new CourseUserRoleDAO();
+    return (CourseUserRoleDAO) findByClass(CourseUserRoleDAO.class);
   }
   
   public GradeCourseResourceDAO getGradeCourseResourceDAO() {
-    return new GradeCourseResourceDAO();
+    return (GradeCourseResourceDAO) findByClass(GradeCourseResourceDAO.class);
   }
 
   public OtherCostDAO getOtherCostDAO() {
-    return new OtherCostDAO();
+    return (OtherCostDAO) findByClass(OtherCostDAO.class);
   }
   
   public StudentCourseResourceDAO getStudentCourseResourceDAO() {
-    return new StudentCourseResourceDAO();
+    return (StudentCourseResourceDAO) findByClass(StudentCourseResourceDAO.class);
   }
 
   /* System */
   
   public SettingDAO getSettingDAO() {
-    return new SettingDAO();
+    return (SettingDAO) findByClass(SettingDAO.class);
   }
 
   public SettingKeyDAO getSettingKeyDAO() {
-    return new SettingKeyDAO();
+    return (SettingKeyDAO) findByClass(SettingKeyDAO.class);
   }
 
   /* Report */
   
   public ReportDAO getReportDAO() {
-    return new ReportDAO();
+    return (ReportDAO) findByClass(ReportDAO.class);
   }
   
   public ReportCategoryDAO getReportCategoryDAO() {
-    return new ReportCategoryDAO();
+    return (ReportCategoryDAO) findByClass(ReportCategoryDAO.class);
   }
 
   /* Users */
   
   public InternalAuthDAO getInternalAuthDAO() {
-    return new InternalAuthDAO();
+    return (InternalAuthDAO) findByClass(InternalAuthDAO.class);
   }
   
   public UserDAO getUserDAO() {
-    return new UserDAO();
+    return (UserDAO) findByClass(UserDAO.class);
   }
   
   public UserVariableDAO getUserVariableDAO() {
-    return new UserVariableDAO();
+    return (UserVariableDAO) findByClass(UserVariableDAO.class);
   }
   
   public UserVariableKeyDAO getUserVariableKeyDAO() {
-    return new UserVariableKeyDAO();
+    return (UserVariableKeyDAO) findByClass(UserVariableKeyDAO.class);
   }
   
   /* Change Log */
   
   public ChangeLogEntryDAO getChangeLogEntryDAO() {
-    return new ChangeLogEntryDAO();
+    return (ChangeLogEntryDAO) findByClass(ChangeLogEntryDAO.class);
   }
   
   public ChangeLogEntryEntityDAO getChangeLogEntryEntityDAO() {
-    return new ChangeLogEntryEntityDAO();
+    return (ChangeLogEntryEntityDAO) findByClass(ChangeLogEntryEntityDAO.class);
   }
   
   public ChangeLogEntryEntityPropertyDAO getChangeLogEntryEntityPropertyDAO() {
-    return new ChangeLogEntryEntityPropertyDAO();
+    return (ChangeLogEntryEntityPropertyDAO) findByClass(ChangeLogEntryEntityPropertyDAO.class);
   }
   
   public ChangeLogEntryPropertyDAO getChangeLogEntryPropertyDAO() {
-    return new ChangeLogEntryPropertyDAO();
+    return (ChangeLogEntryPropertyDAO) findByClass(ChangeLogEntryPropertyDAO.class);
   }
   
   public TrackedEntityPropertyDAO getTrackedEntityPropertyDAO() {
-    return new TrackedEntityPropertyDAO();
+    return (TrackedEntityPropertyDAO) findByClass(TrackedEntityPropertyDAO.class);
   }
 
   /* Resource */
   
   public MaterialResourceDAO getMaterialResourceDAO() {
-    return new MaterialResourceDAO();
+    return (MaterialResourceDAO) findByClass(MaterialResourceDAO.class);
   }
   
   public ResourceCategoryDAO getResourceCategoryDAO() {
-    return new ResourceCategoryDAO();
+    return (ResourceCategoryDAO) findByClass(ResourceCategoryDAO.class);
   }
   
   public ResourceDAO getResourceDAO() {
-    return new ResourceDAO();
+    return (ResourceDAO) findByClass(ResourceDAO.class);
   }
   
   public WorkResourceDAO getWorkResourceDAO() {
-    return new WorkResourceDAO();
+    return (WorkResourceDAO) findByClass(WorkResourceDAO.class);
   }
 
   /* Module */
   
   public ModuleDAO getModuleDAO() {
-    return new ModuleDAO();
+    return (ModuleDAO) findByClass(ModuleDAO.class);
   }
   
   public ModuleComponentDAO getModuleComponentDAO() {
-    return new ModuleComponentDAO();
+    return (ModuleComponentDAO) findByClass(ModuleComponentDAO.class);
   }
 
   /* Project */
   
   public ProjectDAO getProjectDAO() {
-    return new ProjectDAO();
+    return (ProjectDAO) findByClass(ProjectDAO.class);
   }
   
   public ProjectModuleDAO getProjectModuleDAO() {
-    return new ProjectModuleDAO();
+    return (ProjectModuleDAO) findByClass(ProjectModuleDAO.class);
   }
   
   public StudentProjectDAO getStudentProjectDAO() {
-    return new StudentProjectDAO();
+    return (StudentProjectDAO) findByClass(StudentProjectDAO.class);
   }
   
   public StudentProjectModuleDAO getStudentProjectModuleDAO() {
-    return new StudentProjectModuleDAO();
+    return (StudentProjectModuleDAO) findByClass(StudentProjectModuleDAO.class);
   }
 
   /* Help */
   
   public HelpFolderDAO getHelpFolderDAO() {
-    return new HelpFolderDAO();
+    return (HelpFolderDAO) findByClass(HelpFolderDAO.class);
   }
   
   public HelpItemDAO getHelpItemDAO() {
-    return new HelpItemDAO();
+    return (HelpItemDAO) findByClass(HelpItemDAO.class);
   }
   
   public HelpItemTitleDAO getHelpItemTitleDAO() {
-    return new HelpItemTitleDAO();
+    return (HelpItemTitleDAO) findByClass(HelpItemTitleDAO.class);
   }
   
   public HelpPageContentDAO getHelpPageContentDAO() {
-    return new HelpPageContentDAO();
+    return (HelpPageContentDAO) findByClass(HelpPageContentDAO.class);
   }
   
   public HelpPageDAO getHelpPageDAO() {
-    return new HelpPageDAO();
+    return (HelpPageDAO) findByClass(HelpPageDAO.class);
   }
   
   /* Grading */
   
   public CourseAssessmentDAO getCourseAssessmentDAO() {
-    return new CourseAssessmentDAO();
+    return (CourseAssessmentDAO) findByClass(CourseAssessmentDAO.class);
   }
   
   public CreditDAO getCreditDAO() {
-    return new CreditDAO();
+    return (CreditDAO) findByClass(CreditDAO.class);
   }
   
   public GradeDAO getGradeDAO() {
-    return new GradeDAO();
+    return (GradeDAO) findByClass(GradeDAO.class);
   }
   
   public GradingScaleDAO getGradingScaleDAO() {
-    return new GradingScaleDAO();
+    return (GradingScaleDAO) findByClass(GradingScaleDAO.class);
   }
   
   public ProjectAssessmentDAO getProjectAssessmentDAO() {
-    return new ProjectAssessmentDAO();
+    return (ProjectAssessmentDAO) findByClass(ProjectAssessmentDAO.class);
   }
   
   public TransferCreditDAO getTransferCreditDAO() {
-    return new TransferCreditDAO();
+    return (TransferCreditDAO) findByClass(TransferCreditDAO.class);
   }
   
   public TransferCreditTemplateCourseDAO getTransferCreditTemplateCourseDAO() {
-    return new TransferCreditTemplateCourseDAO();
+    return (TransferCreditTemplateCourseDAO) findByClass(TransferCreditTemplateCourseDAO.class);
   }
   
   public TransferCreditTemplateDAO getTransferCreditTemplateDAO() {
-    return new TransferCreditTemplateDAO();
+    return (TransferCreditTemplateDAO) findByClass(TransferCreditTemplateDAO.class);
   }
   
   /* Base */
   
   public AcademicTermDAO getAcademicTermDAO() {
-    return new AcademicTermDAO();
+    return (AcademicTermDAO) findByClass(AcademicTermDAO.class);
   }
 
   public AddressDAO getAddressDAO() {
-    return new AddressDAO();
+    return (AddressDAO) findByClass(AddressDAO.class);
   }
 
   public BillingDetailsDAO getBillingDetailsDAO() {
-    return new BillingDetailsDAO();
+    return (BillingDetailsDAO) findByClass(BillingDetailsDAO.class);
   }
 
   public ComponentBaseDAO getComponentBaseDAO() {
-    return new ComponentBaseDAO();
+    return (ComponentBaseDAO) findByClass(ComponentBaseDAO.class);
   }
 
   public ContactInfoDAO getContactInfoDAO() {
-    return new ContactInfoDAO();
+    return (ContactInfoDAO) findByClass(ContactInfoDAO.class);
   }
 
   public ContactTypeDAO getContactTypeDAO() {
-    return new ContactTypeDAO();
+    return (ContactTypeDAO) findByClass(ContactTypeDAO.class);
   }
 
   public ContactURLDAO getContactURLDAO() {
-    return new ContactURLDAO();
+    return (ContactURLDAO) findByClass(ContactURLDAO.class);
   }
 
   public ContactURLTypeDAO getContactURLTypeDAO() {
-    return new ContactURLTypeDAO();
+    return (ContactURLTypeDAO) findByClass(ContactURLTypeDAO.class);
   }
 
   public CourseBaseDAO getCourseBaseDAO() {
-    return new CourseBaseDAO();
+    return (CourseBaseDAO) findByClass(CourseBaseDAO.class);
   }
 
   public CourseBaseVariableDAO getCourseBaseVariableDAO() {
-    return new CourseBaseVariableDAO();
+    return (CourseBaseVariableDAO) findByClass(CourseBaseVariableDAO.class);
   }
 
   public CourseBaseVariableKeyDAO getCourseBaseVariableKeyDAO() {
-    return new CourseBaseVariableKeyDAO();
+    return (CourseBaseVariableKeyDAO) findByClass(CourseBaseVariableKeyDAO.class);
   }
 
   public CourseEducationSubtypeDAO getCourseEducationSubtypeDAO() {
-    return new CourseEducationSubtypeDAO();
+    return (CourseEducationSubtypeDAO) findByClass(CourseEducationSubtypeDAO.class);
   }
 
   public CourseEducationTypeDAO getCourseEducationTypeDAO() {
-    return new CourseEducationTypeDAO();
+    return (CourseEducationTypeDAO) findByClass(CourseEducationTypeDAO.class);
   }
 
   public DefaultsDAO getDefaultsDAO() {
-    return new DefaultsDAO();
+    return (DefaultsDAO) findByClass(DefaultsDAO.class);
   }
 
   public EducationalLengthDAO getEducationalLengthDAO() {
-    return new EducationalLengthDAO();
+    return (EducationalLengthDAO) findByClass(EducationalLengthDAO.class);
   }
 
   public EducationalTimeUnitDAO getEducationalTimeUnitDAO() {
-    return new EducationalTimeUnitDAO();
+    return (EducationalTimeUnitDAO) findByClass(EducationalTimeUnitDAO.class);
   }
 
   public EducationSubtypeDAO getEducationSubtypeDAO() {
-    return new EducationSubtypeDAO();
+    return (EducationSubtypeDAO) findByClass(EducationSubtypeDAO.class);
   }
 
   public EducationTypeDAO getEducationTypeDAO() {
-    return new EducationTypeDAO();
+    return (EducationTypeDAO) findByClass(EducationTypeDAO.class);
   }
 
   public EmailDAO getEmailDAO() {
-    return new EmailDAO();
+    return (EmailDAO) findByClass(EmailDAO.class);
   }
 
   public LanguageDAO getLanguageDAO() {
-    return new LanguageDAO();
+    return (LanguageDAO) findByClass(LanguageDAO.class);
   }
 
   public MagicKeyDAO getMagicKeyDAO() {
-    return new MagicKeyDAO();
+    return (MagicKeyDAO) findByClass(MagicKeyDAO.class);
   }
 
   public MunicipalityDAO getMunicipalityDAO() {
-    return new MunicipalityDAO();
+    return (MunicipalityDAO) findByClass(MunicipalityDAO.class);
   }
 
   public NationalityDAO getNationalityDAO() {
-    return new NationalityDAO();
+    return (NationalityDAO) findByClass(NationalityDAO.class);
   }
 
   public PhoneNumberDAO getPhoneNumberDAO() {
-    return new PhoneNumberDAO();
+    return (PhoneNumberDAO) findByClass(PhoneNumberDAO.class);
   }
 
   public SchoolDAO getSchoolDAO() {
-    return new SchoolDAO();
+    return (SchoolDAO) findByClass(SchoolDAO.class);
   }
 
   public SchoolFieldDAO getSchoolFieldDAO() {
-    return new SchoolFieldDAO();
+    return (SchoolFieldDAO) findByClass(SchoolFieldDAO.class);
   }
 
   public SchoolVariableDAO getSchoolVariableDAO() {
-    return new SchoolVariableDAO();
+    return (SchoolVariableDAO) findByClass(SchoolVariableDAO.class);
   }
 
   public SchoolVariableKeyDAO getSchoolVariableKeyDAO() {
-    return new SchoolVariableKeyDAO();
+    return (SchoolVariableKeyDAO) findByClass(SchoolVariableKeyDAO.class);
   }
 
   public StudyProgrammeDAO getStudyProgrammeDAO() {
-    return new StudyProgrammeDAO();
+    return (StudyProgrammeDAO) findByClass(StudyProgrammeDAO.class);
   }
 
   public StudyProgrammeCategoryDAO getStudyProgrammeCategoryDAO() {
-    return new StudyProgrammeCategoryDAO();
+    return (StudyProgrammeCategoryDAO) findByClass(StudyProgrammeCategoryDAO.class);
   }
 
   public SubjectDAO getSubjectDAO() {
-    return new SubjectDAO();
+    return (SubjectDAO) findByClass(SubjectDAO.class);
   }
 
   public TagDAO getTagDAO() {
-    return new TagDAO();
+    return (TagDAO) findByClass(TagDAO.class);
+  }
+  
+  private GenericDAO<?> findByClass(Class<? extends GenericDAO> cls) {
+    String jndiName = "java:app/Pyramus/" + cls.getSimpleName();
+    
+    InitialContext initialContext;
+    try {
+      initialContext = new InitialContext();
+
+      Object lookup = initialContext.lookup(jndiName);
+      // TODO stuff
+      return (GenericDAO<?>) lookup;
+    } catch (NamingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return null;
   }
 }

@@ -2,6 +2,7 @@ package fi.pyramus.dao.base;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,6 +27,7 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.base.Subject_;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class SubjectDAO extends PyramusEntityDAO<Subject> {
 
   /**

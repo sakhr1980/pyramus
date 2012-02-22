@@ -5,8 +5,8 @@ import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
-//import javax.jms.MessageProducer;
-//import javax.jms.Queue;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -73,7 +73,7 @@ public class EntityListener {
           if (loggedUserId != null)
             message.setLong("loggedUserId", loggedUserId);
 
-//          sendMessage(session, message);
+          sendMessage(session, message);
         }
       } catch (JMSException e) {
         throw new EventException(e);
@@ -101,7 +101,7 @@ public class EntityListener {
         if (loggedUserId != null)
           message.setLong("loggedUserId", loggedUserId);
 
-//        sendMessage(session, message);
+        sendMessage(session, message);
       } catch (JMSException e) {
         throw new EventException(e);
       } catch (NamingException e) {
@@ -125,9 +125,9 @@ public class EntityListener {
   }
 
   private void sendMessage(Session session, Message message) throws NamingException, JMSException {
-//    Queue queue = getQueue();
-//    MessageProducer producer = session.createProducer(queue);
-//    producer.send(message);
+    Queue queue = getQueue();
+    MessageProducer producer = session.createProducer(queue);
+    producer.send(message);
   }
 
   private Session createSession() throws JMSException, NamingException {
@@ -138,12 +138,12 @@ public class EntityListener {
   }
 
   private ConnectionFactory getConnectionFactory() throws NamingException {
-    return (ConnectionFactory) new InitialContext().lookup("jms/JPAEventsFactory");
+    return (ConnectionFactory) new InitialContext().lookup("java:/jms/JPAEventsFactory");
   }
 
-//  private Queue getQueue() throws NamingException {
-//    return (Queue) new InitialContext().lookup("jms/JPAEvents");
-//  }
+  private Queue getQueue() throws NamingException {
+    return (Queue) new InitialContext().lookup("java:/jms/JPAEvents");
+  }
   
   private Long getLoggedUserId() {
     HttpSession httpSession = ThreadSessionContainer.getSession();

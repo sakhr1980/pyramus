@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,6 +11,7 @@ import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.StudyProgrammeCategory;
 import fi.pyramus.domainmodel.base.StudyProgramme_;
 
+@Stateless
 public class StudyProgrammeDAO extends PyramusEntityDAO<StudyProgramme> {
 
   public StudyProgramme create(String name, StudyProgrammeCategory category, String code) {

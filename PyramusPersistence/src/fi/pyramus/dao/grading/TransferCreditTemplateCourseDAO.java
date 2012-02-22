@@ -2,6 +2,7 @@ package fi.pyramus.dao.grading;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,6 +30,7 @@ import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse_;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
+@Stateless
 public class TransferCreditTemplateCourseDAO extends PyramusEntityDAO<TransferCreditTemplateCourse> {
 
   @SuppressWarnings("unchecked")

@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Municipality_;
 
+@Stateless
 public class MunicipalityDAO extends PyramusEntityDAO<Municipality> {
 
   public void create(String name, String code) {

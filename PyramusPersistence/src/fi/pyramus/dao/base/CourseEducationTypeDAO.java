@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -7,6 +8,7 @@ import fi.pyramus.domainmodel.base.CourseBase;
 import fi.pyramus.domainmodel.base.CourseEducationType;
 import fi.pyramus.domainmodel.base.EducationType;
 
+@Stateless
 public class CourseEducationTypeDAO extends PyramusEntityDAO<CourseEducationType> {
 
   public CourseEducationType create(CourseBase courseBase, EducationType educationType) {

@@ -2,6 +2,7 @@ package fi.pyramus.dao.modules;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,7 @@ import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.modules.ModuleComponent;
 import fi.pyramus.domainmodel.modules.ModuleComponent_;
 
+@Stateless
 public class ModuleComponentDAO extends PyramusEntityDAO<ModuleComponent> {
 
   public ModuleComponent create(Module module, Double length, EducationalTimeUnit lengthTimeUnit, String name, String description) {

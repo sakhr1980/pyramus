@@ -3,6 +3,7 @@ package fi.pyramus.dao.base;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -32,6 +33,7 @@ import fi.pyramus.domainmodel.base.SchoolVariable_;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.search.SearchResult;
 
+@Stateless
 public class SchoolDAO extends PyramusEntityDAO<School> {
 
   /**

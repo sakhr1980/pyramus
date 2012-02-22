@@ -2,6 +2,7 @@ package fi.pyramus.dao.students;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -11,6 +12,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
 import fi.pyramus.domainmodel.students.StudentVariableKey_;
 
+@Stateless
 public class StudentVariableKeyDAO extends PyramusEntityDAO<StudentVariableKey> {
 
   public StudentVariableKey findByKey(String key) {

@@ -1,5 +1,6 @@
 package fi.pyramus.dao.students;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -10,6 +11,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentImage;
 import fi.pyramus.domainmodel.students.StudentImage_;
 
+@Stateless
 public class StudentImageDAO extends PyramusEntityDAO<StudentImage> {
 
   public StudentImage create(Student student, String contentType, byte[] data) {

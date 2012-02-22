@@ -3,6 +3,7 @@ package fi.pyramus.dao.grading;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -20,6 +21,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.usertypes.CourseOptionality;
 
+@Stateless
 public class TransferCreditDAO extends PyramusEntityDAO<TransferCredit> {
 
   public TransferCredit create(String courseName, Integer courseNumber, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, CourseOptionality optionality, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {

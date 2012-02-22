@@ -3,6 +3,7 @@ package fi.pyramus.dao.students;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +15,7 @@ import fi.pyramus.domainmodel.students.StudentContactLogEntry;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry_;
 import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
+@Stateless
 public class StudentContactLogEntryDAO extends PyramusEntityDAO<StudentContactLogEntry> {
 
   /**

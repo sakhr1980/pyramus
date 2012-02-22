@@ -1,10 +1,12 @@
 package fi.pyramus.dao.courses;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 
+@Stateless
 public class CourseDescriptionCategoryDAO extends PyramusEntityDAO<CourseDescriptionCategory> {
   public CourseDescriptionCategory create(String name) {
     EntityManager entityManager = getEntityManager();

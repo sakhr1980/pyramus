@@ -1,5 +1,6 @@
 package fi.pyramus.dao.base;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -8,6 +9,7 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseState;
 
+@Stateless
 public class DefaultsDAO extends PyramusEntityDAO<Defaults> {
 
   public boolean isPyramusInitialized() {

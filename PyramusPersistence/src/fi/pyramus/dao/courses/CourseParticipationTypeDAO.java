@@ -1,5 +1,6 @@
 package fi.pyramus.dao.courses;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,6 +10,7 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType_;
 
+@Stateless
 public class CourseParticipationTypeDAO extends PyramusEntityDAO<CourseParticipationType> {
   
   public CourseParticipationType create(String name) {

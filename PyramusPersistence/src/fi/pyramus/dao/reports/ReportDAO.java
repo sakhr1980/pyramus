@@ -2,6 +2,7 @@ package fi.pyramus.dao.reports;
 
 import java.util.Date;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
@@ -9,6 +10,7 @@ import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
 import fi.pyramus.domainmodel.users.User;
 
+@Stateless
 public class ReportDAO extends PyramusEntityDAO<Report> {
 
   public Report create(String name, String data, User creatingUser) {

@@ -1,10 +1,12 @@
 package fi.pyramus.dao.resources;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 
+@Stateless
 public class ResourceCategoryDAO extends PyramusEntityDAO<ResourceCategory> {
 
   public ResourceCategory createResourceCategory(String name) {
