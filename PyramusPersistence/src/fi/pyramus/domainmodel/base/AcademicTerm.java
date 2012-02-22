@@ -66,7 +66,7 @@ public class AcademicTerm implements ArchivableEntity {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="AcademicTerm")  
-  @TableGenerator(name="AcademicTerm", allocationSize=1)
+  @TableGenerator(name="AcademicTerm", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @Column (nullable=false)

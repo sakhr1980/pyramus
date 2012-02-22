@@ -58,7 +58,7 @@ public class CourseUser {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseUser")  
-  @TableGenerator(name="CourseUser", allocationSize=1)
+  @TableGenerator(name="CourseUser", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @ManyToOne

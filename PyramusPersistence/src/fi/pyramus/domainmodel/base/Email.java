@@ -68,7 +68,7 @@ public class Email {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Email")  
-  @TableGenerator(name="Email", allocationSize=1)
+  @TableGenerator(name="Email", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

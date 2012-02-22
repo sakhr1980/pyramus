@@ -55,7 +55,7 @@ public class ResourceCategory implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ResourceCategory")  
-  @TableGenerator(name="ResourceCategory", allocationSize=1)
+  @TableGenerator(name="ResourceCategory", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
 

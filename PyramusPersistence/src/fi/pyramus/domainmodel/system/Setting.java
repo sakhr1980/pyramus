@@ -34,7 +34,7 @@ public class Setting {
 
 	@Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="Setting")  
-  @TableGenerator(name="Setting", allocationSize=1)
+  @TableGenerator(name="Setting", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
 	private Long id;
 	
 	@ManyToOne

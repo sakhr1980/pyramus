@@ -69,7 +69,7 @@ public class ProjectModule {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ProjectModule")  
-  @TableGenerator(name="ProjectModule", allocationSize=1)
+  @TableGenerator(name="ProjectModule", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @ManyToOne

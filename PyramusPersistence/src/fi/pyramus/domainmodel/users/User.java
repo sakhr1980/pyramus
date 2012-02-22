@@ -203,7 +203,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="User")  
-  @TableGenerator(name="User", allocationSize=1)
+  @TableGenerator(name="User", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

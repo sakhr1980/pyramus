@@ -60,7 +60,7 @@ public class ContactURL {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ContactURL")  
-  @TableGenerator(name="ContactURL", allocationSize=1)
+  @TableGenerator(name="ContactURL", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

@@ -47,7 +47,7 @@ public class MagicKey {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="MagicKey")  
-  @TableGenerator(name="MagicKey", allocationSize=1)
+  @TableGenerator(name="MagicKey", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @Column (nullable = false, unique = true)

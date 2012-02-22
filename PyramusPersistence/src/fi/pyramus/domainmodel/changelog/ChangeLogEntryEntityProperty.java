@@ -36,7 +36,7 @@ public class ChangeLogEntryEntityProperty {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ChangeLogEntryEntityProperty")  
-  @TableGenerator(name="ChangeLogEntryEntityProperty", allocationSize=1)
+  @TableGenerator(name="ChangeLogEntryEntityProperty", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @NotEmpty

@@ -54,7 +54,7 @@ public class SchoolVariable {
 
 	@Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="SchoolVariable")  
-  @TableGenerator(name="SchoolVariable", allocationSize=1)
+  @TableGenerator(name="SchoolVariable", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
 	private Long id;
 	
 	@ManyToOne

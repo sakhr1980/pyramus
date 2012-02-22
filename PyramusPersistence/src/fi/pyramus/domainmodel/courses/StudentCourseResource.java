@@ -98,7 +98,7 @@ public class StudentCourseResource {
  
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudentCourseResource")  
-  @TableGenerator(name="StudentCourseResource", allocationSize=1)
+  @TableGenerator(name="StudentCourseResource", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @ManyToOne

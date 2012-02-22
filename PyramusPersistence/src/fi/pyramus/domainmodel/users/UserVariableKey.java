@@ -73,7 +73,7 @@ public class UserVariableKey {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="UserVariableKey")  
-  @TableGenerator(name="UserVariableKey", allocationSize=1)
+  @TableGenerator(name="UserVariableKey", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @NotNull

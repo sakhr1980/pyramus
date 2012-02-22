@@ -55,7 +55,7 @@ public class StudyProgrammeCategory implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="StudyProgrammeCategory")  
-  @TableGenerator(name="StudyProgrammeCategory", allocationSize=1)
+  @TableGenerator(name="StudyProgrammeCategory", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
   
   @NotNull

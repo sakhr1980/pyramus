@@ -40,7 +40,7 @@ public class CourseUserRole {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="CourseUserRole")  
-  @TableGenerator(name="CourseUserRole", allocationSize=1)
+  @TableGenerator(name="CourseUserRole", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

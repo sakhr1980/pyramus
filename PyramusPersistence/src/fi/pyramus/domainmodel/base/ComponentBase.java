@@ -72,7 +72,7 @@ public abstract class ComponentBase implements ArchivableEntity {
   @Id 
   @DocumentId
   @GeneratedValue(strategy=GenerationType.TABLE, generator="ComponentBase")  
-  @TableGenerator(name="ComponentBase", allocationSize=1)
+  @TableGenerator(name="ComponentBase", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   private Long id;
 
   @NotNull

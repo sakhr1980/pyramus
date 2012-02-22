@@ -92,7 +92,7 @@ public class HelpItemTitle {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="HelpItemTitle")  
-  @TableGenerator(name="HelpItemTitle", allocationSize=1)
+  @TableGenerator(name="HelpItemTitle", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

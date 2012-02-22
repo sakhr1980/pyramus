@@ -93,7 +93,7 @@ public class HelpPageContent {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="HelpPageContent")  
-  @TableGenerator(name="HelpPageContent", allocationSize=1)
+  @TableGenerator(name="HelpPageContent", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

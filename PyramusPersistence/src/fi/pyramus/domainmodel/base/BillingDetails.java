@@ -133,7 +133,7 @@ public class BillingDetails {
 
   @Id
   @GeneratedValue(strategy=GenerationType.TABLE, generator="BillingDetails")  
-  @TableGenerator(name="BillingDetails", allocationSize=1)
+  @TableGenerator(name="BillingDetails", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   

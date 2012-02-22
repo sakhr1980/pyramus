@@ -178,7 +178,7 @@ public class School implements ArchivableEntity {
 
   @Id 
   @GeneratedValue(strategy=GenerationType.TABLE, generator="School")  
-  @TableGenerator(name="School", allocationSize=1)
+  @TableGenerator(name="School", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
   @DocumentId
   private Long id;
   
