@@ -33,6 +33,32 @@
   <servlet>
     <servlet-name>pyramus</servlet-name>
     <servlet-class>fi.pyramus.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>errorJspPage</param-name>
+      <param-value>/templates/generic/errorpage.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>loginUrlRelative</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>loginUrl</param-name>
+      <param-value>users/login.page</param-value>
+    </init-param>
+    <!-- 
+    <init-param>
+      <param-name>requestDispatcher</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>applicationPath</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>platformErrorListener</param-name>
+      <param-value></param-value>
+    </init-param>
+    -->
   </servlet>
   <servlet-mapping>
     <servlet-name>pyramus</servlet-name>
