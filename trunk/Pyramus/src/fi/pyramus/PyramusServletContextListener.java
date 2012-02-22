@@ -12,6 +12,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import fi.internetix.smvc.controllers.RequestControllerMapper;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.system.SettingDAO;
 import fi.pyramus.dao.system.SettingKeyDAO;
@@ -86,14 +87,14 @@ public class PyramusServletContextListener implements ServletContextListener {
         }
       }
       
-//      // Initialize the page mapper in order to serve page requests 
-//      RequestControllerMapper.mapControllers(pageControllers, ".page");
-//
-//      // Initialize the JSON mapper in order to serve JSON requests 
-//      RequestControllerMapper.mapControllers(jsonControllers, ".json");
-//
-//      // Initialize the binary mapper in order to serve binary requests 
-//      RequestControllerMapper.mapControllers(binaryControllers, ".binary");
+      // Initialize the page mapper in order to serve page requests 
+      RequestControllerMapper.mapControllers(pageControllers, ".page");
+
+      // Initialize the JSON mapper in order to serve JSON requests 
+      RequestControllerMapper.mapControllers(jsonControllers, ".json");
+
+      // Initialize the binary mapper in order to serve binary requests 
+      RequestControllerMapper.mapControllers(binaryControllers, ".binary");
       
       // Sets the application directory of the application, used primarily for initial data creation
 

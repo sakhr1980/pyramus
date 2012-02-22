@@ -4,6 +4,9 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/" source-path="/WebContent"/>
+        <dependent-module archiveName="smvcj-0.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/smvcj/smvcj">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="persistence-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPersistence/PyramusPersistence">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -17,6 +20,9 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="framework-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusFramework/PyramusFramework">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="openid-plugin-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusOpenIdPlugin/PyramusOpenIdPlugin">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/Pyramus/target/classes"/>

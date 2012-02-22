@@ -155,6 +155,11 @@
       <artifactId>framework</artifactId>
       <version>0.5.2-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>openid-plugin</artifactId>
+      <version>0.5.2-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
   <scm>
