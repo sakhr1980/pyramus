@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolation;
@@ -16,16 +18,17 @@ import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.ejb.EntityManagerImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.stat.Statistics;
 
-public class SystemDAO extends PyramusDAO {
+@Stateless
+public class SystemDAO {
   
-  public void forceReindex(Object o) {
-    super.forceReindex(o);
+  private SystemDAO() {
   }
   
   // JPA methods
@@ -65,10 +68,14 @@ public class SystemDAO extends PyramusDAO {
   
   @Deprecated
   public Session getHibernateSession() {
-    return super.getHibernateSession();
+    EntityManagerImpl entityManagerImpl = (EntityManagerImpl) getEntityManager().getDelegate();
+    return entityManagerImpl.getSession();
   }
-  
+
   public Set<ConstraintViolation<Object>> validateEntity(Object entity) {
+    // TODO: dfafsf
+    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    
   	Validator validator = validatorFactory.getValidator();
   	return validator.validate(entity);
   }
@@ -107,5 +114,12 @@ public class SystemDAO extends PyramusDAO {
     massIndexer.startAndWait();
   }
   
-  private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+//  private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+
+  protected EntityManager getEntityManager() {
+    return entityManager;
+  }
+  
+  @PersistenceContext
+  private EntityManager entityManager;
 }

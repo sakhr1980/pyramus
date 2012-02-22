@@ -12,7 +12,6 @@ import org.hibernate.StaleObjectStateException;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.dao.base.AddressDAO;
 import fi.pyramus.dao.base.ContactInfoDAO;
 import fi.pyramus.dao.base.ContactTypeDAO;
@@ -55,7 +54,6 @@ public class EditStudentJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
     StudentActivityTypeDAO activityTypeDAO = DAOFactory.getInstance().getStudentActivityTypeDAO();
     StudentExaminationTypeDAO examinationTypeDAO = DAOFactory.getInstance().getStudentExaminationTypeDAO();
@@ -266,7 +264,7 @@ public class EditStudentJSONRequestController extends JSONRequestController {
     // Contact information of a student won't be reflected to AbstractStudent
     // used when searching students, so a manual re-index is needed
 
-    systemDAO.forceReindex(abstractStudent);
+    abstractStudentDAO.forceReindex(abstractStudent);
         
     requestContext.setRedirectURL(requestContext.getReferer(true));
   }

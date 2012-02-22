@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
-import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.dao.base.AddressDAO;
 import fi.pyramus.dao.base.ContactInfoDAO;
 import fi.pyramus.dao.base.ContactTypeDAO;
@@ -50,7 +49,6 @@ public class CreateStudentJSONRequestController extends JSONRequestController {
 
   public void process(JSONRequestContext requestContext) {
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
     StudentActivityTypeDAO activityTypeDAO = DAOFactory.getInstance().getStudentActivityTypeDAO();
     StudentExaminationTypeDAO examinationTypeDAO = DAOFactory.getInstance().getStudentExaminationTypeDAO();
@@ -205,8 +203,8 @@ public class CreateStudentJSONRequestController extends JSONRequestController {
     
     // Contact information of a student won't be reflected to AbstractStudent
     // used when searching students, so a manual re-index is needed
-    
-    systemDAO.forceReindex(student.getAbstractStudent());
+
+    abstractStudentDAO.forceReindex(student.getAbstractStudent());
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/students/editstudent.page?abstractStudent=" + student.getAbstractStudent().getId();
     String refererAnchor = requestContext.getRefererAnchor();

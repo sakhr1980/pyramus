@@ -16,6 +16,7 @@ import javax.persistence.PreRemove;
 import javax.persistence.metamodel.Attribute;
 import javax.servlet.http.HttpSession;
 
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.SystemDAO;
 import fi.pyramus.util.ReflectionApiUtils;
 import fi.pyramus.util.ThreadSessionContainer;
@@ -115,7 +116,7 @@ public class EntityListener {
   }
   
   private Object getEntityId(Class<?> entityClass, Object entity) {
-    SystemDAO systemDAO = new SystemDAO();
+    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     Attribute<?, ?> idAttribute = systemDAO.getEntityIdAttribute(entityClass);
     try {
       return ReflectionApiUtils.getObjectFieldValue(entity, idAttribute.getName(), true);

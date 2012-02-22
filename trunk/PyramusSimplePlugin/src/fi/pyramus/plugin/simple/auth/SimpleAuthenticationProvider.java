@@ -18,7 +18,7 @@ public class SimpleAuthenticationProvider implements InternalAuthenticationProvi
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
     
-    SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthByUserNameAndPassword(username, password);
+    SimpleAuth simpleAuth = simpleAuthDAO.findByUserNameAndPassword(username, password);
     
     if (simpleAuth != null) {
       User user = userDAO.findByExternalIdAndAuthProvider(String.valueOf(simpleAuth.getId()), getName());
@@ -48,7 +48,7 @@ public class SimpleAuthenticationProvider implements InternalAuthenticationProvi
     SimpleAuthDAO simpleAuthDAO = new SimpleAuthDAO();
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     
-    SimpleAuth simpleAuth = simpleAuthDAO.createSimpleAuth(username, password);
+    SimpleAuth simpleAuth = simpleAuthDAO.create(username, password);
     
     String externalId = simpleAuth.getId().toString();
   
@@ -60,7 +60,7 @@ public class SimpleAuthenticationProvider implements InternalAuthenticationProvi
     
     SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthById(Long.parseLong(externalId));
     
-    simpleAuthDAO.updateSimpleAuthPassword(simpleAuth, password);
+    simpleAuthDAO.updatePassword(simpleAuth, password);
   }
   
   public void updateUsername(String externalId, String username) {
@@ -68,7 +68,7 @@ public class SimpleAuthenticationProvider implements InternalAuthenticationProvi
     
     SimpleAuth simpleAuth = simpleAuthDAO.findSimpleAuthById(Long.parseLong(externalId));
     
-    simpleAuthDAO.updateSimpleAuthUsername(simpleAuth, username);
+    simpleAuthDAO.updateUsername(simpleAuth, username);
   }
 
 }

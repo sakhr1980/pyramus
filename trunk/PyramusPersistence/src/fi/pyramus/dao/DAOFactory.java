@@ -111,7 +111,21 @@ public class DAOFactory {
   private final static DAOFactory instance = new DAOFactory();
   
   public SystemDAO getSystemDAO() {
-    return new SystemDAO();
+    String jndiName = "java:app/Pyramus/" + SystemDAO.class.getSimpleName();
+    
+    InitialContext initialContext;
+    try {
+      initialContext = new InitialContext();
+
+      Object lookup = initialContext.lookup(jndiName);
+      // TODO stuff
+      return (SystemDAO) lookup;
+    } catch (NamingException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return null;
   }
 
   /* Draft */

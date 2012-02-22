@@ -1,58 +1,61 @@
 package fi.pyramus.plugin.simple.dao;
 
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
-import fi.pyramus.dao.PyramusDAO;
+import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth;
 
-public class SimpleAuthDAO extends PyramusDAO {
+public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
 
-  public SimpleAuth findSimpleAuthById(Long id) {
-    Session session = getHibernateSession();
-    return (SimpleAuth) session.load(SimpleAuth.class, id);
-  }
-  
-  public SimpleAuth findSimpleAuthByUserNameAndPassword(String username, String password) {
-    Session session = getHibernateSession();
-    
-    return (SimpleAuth) session.createCriteria(SimpleAuth.class)
-      .add(Restrictions.eq("username", username))
-      .add(Restrictions.eq("password", password))
-      .uniqueResult();
-  }
-  
-  public SimpleAuth createSimpleAuth(String username, String password) {
-    Session session = getHibernateSession();
+  public SimpleAuth create(String username, String password) {
+    EntityManager entityManager = getEntityManager();
     
     SimpleAuth simpleAuth = new SimpleAuth();
     simpleAuth.setUsername(username);
     simpleAuth.setPassword(password);
     
-    session.saveOrUpdate(simpleAuth);
+    entityManager.persist(simpleAuth);
     
     return simpleAuth;
   }
+
+  public SimpleAuth findByUserNameAndPassword(String username, String password) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SimpleAuth> criteria = criteriaBuilder.createQuery(SimpleAuth.class);
+    Root<SimpleAuth> root = criteria.from(SimpleAuth.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(SimpleAuth_.username), username),
+            criteriaBuilder.equal(root.get(SimpleAuth_.password), password)
+        ));
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
   
-  public void updateSimpleAuthUsername(SimpleAuth simpleAuth, String username) {
-    Session session = getHibernateSession();
+  public void updateUsername(SimpleAuth simpleAuth, String username) {
+    EntityManager entityManager = getEntityManager();
     
     simpleAuth.setUsername(username);
     
-    session.saveOrUpdate(simpleAuth);
+    entityManager.persist(simpleAuth);
   }
   
-  public void updateSimpleAuthPassword(SimpleAuth simpleAuth, String password) {
-    Session session = getHibernateSession();
+  public void updatePassword(SimpleAuth simpleAuth, String password) {
+    EntityManager entityManager = getEntityManager();
     
     simpleAuth.setPassword(password);
     
-    session.saveOrUpdate(simpleAuth);
+    entityManager.persist(simpleAuth);
   }
   
-  public void deleteSimpleAuth(SimpleAuth simpleAuth) {
-    Session session = getHibernateSession();
-    
-    session.delete(simpleAuth);
+  @Override
+  public void delete(SimpleAuth simpleAuth) {
+    super.delete(simpleAuth);
   }
 }
