@@ -51,7 +51,7 @@ public class DefaultEntityHandlingStrategy implements EntityHandlingStrategy {
       Set<ConstraintViolation<Object>> constraintViolations = systemDAO.validateEntity(entity);
 
       if (constraintViolations.size() == 0) {
-        systemDAO.getHibernateSession().saveOrUpdate(entity);
+        systemDAO.persistEntity(entity);
       } else {
         String message = "";
         for (ConstraintViolation<Object> constraintViolation : constraintViolations) {
