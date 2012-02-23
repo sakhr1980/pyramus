@@ -111,7 +111,9 @@ public class DAOFactory {
   private final static DAOFactory instance = new DAOFactory();
   
   public SystemDAO getSystemDAO() {
-    String jndiName = "java:app/Pyramus/" + SystemDAO.class.getSimpleName();
+    
+    
+    String jndiName = "java:module/" + SystemDAO.class.getSimpleName();
     
     InitialContext initialContext;
     try {
@@ -547,7 +549,7 @@ public class DAOFactory {
   }
   
   private GenericDAO<?> findByClass(Class<? extends GenericDAO<?>> cls) {
-    String jndiName = "java:app/Pyramus/" + cls.getSimpleName();
+    String jndiName = "java:module/" + cls.getSimpleName();
     
     InitialContext initialContext;
     try {
