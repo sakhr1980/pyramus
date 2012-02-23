@@ -302,7 +302,7 @@ public class DataImporter {
       Set<ConstraintViolation<Object>> constraintViolations = systemDAO.validateEntity(pojo);
       
 	  if (constraintViolations.size() == 0) {
-	    systemDAO.getHibernateSession().saveOrUpdate(pojo);
+	    systemDAO.persistEntity(pojo);
 	  } else {
 	    String message = "";
 	    for (ConstraintViolation<Object> constraintViolation : constraintViolations) {
@@ -355,7 +355,7 @@ public class DataImporter {
       id = NumberUtils.createLong(identifier);
     }
     
-    return systemDAO.getHibernateSession().load(clazz, id);
+    return systemDAO.findEntityById(clazz, id);
   }
   
   private Object getPojo(String className, String identifier) throws ClassNotFoundException {
