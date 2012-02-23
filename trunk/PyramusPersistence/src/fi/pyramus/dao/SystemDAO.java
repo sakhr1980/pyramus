@@ -11,7 +11,6 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import org.hibernate.CacheMode;
@@ -28,7 +27,7 @@ import org.hibernate.stat.Statistics;
 @Stateless
 public class SystemDAO {
   
-  private SystemDAO() {
+  SystemDAO() {
   }
   
   // JPA methods
@@ -64,22 +63,23 @@ public class SystemDAO {
     return result;
   }
   
+  public void persistEntity(Object entity) {
+    getEntityManager().persist(entity);
+  }
+  
+  public Set<ConstraintViolation<Object>> validateEntity(Object entity) {
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    return factory.getValidator().validate(entity);
+  }
+
   // Hibernate methods
   
   @Deprecated
-  public Session getHibernateSession() {
+  private Session getHibernateSession() {
     EntityManagerImpl entityManagerImpl = (EntityManagerImpl) getEntityManager().getDelegate();
     return entityManagerImpl.getSession();
   }
 
-  public Set<ConstraintViolation<Object>> validateEntity(Object entity) {
-    // TODO: dfafsf
-    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    
-  	Validator validator = validatorFactory.getValidator();
-  	return validator.validate(entity);
-  }
-  
   @Deprecated
   public Query createHQLQuery(String hql) {
     return getHibernateSession().createQuery(hql);
@@ -114,9 +114,7 @@ public class SystemDAO {
     massIndexer.startAndWait();
   }
   
-//  private static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-
-  protected EntityManager getEntityManager() {
+  private EntityManager getEntityManager() {
     return entityManager;
   }
   

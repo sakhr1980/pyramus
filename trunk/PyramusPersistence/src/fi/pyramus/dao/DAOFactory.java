@@ -546,7 +546,7 @@ public class DAOFactory {
     return (TagDAO) findByClass(TagDAO.class);
   }
   
-  private GenericDAO<?> findByClass(Class<? extends GenericDAO> cls) {
+  private GenericDAO<?> findByClass(Class<? extends GenericDAO<?>> cls) {
     String jndiName = "java:app/Pyramus/" + cls.getSimpleName();
     
     InitialContext initialContext;
