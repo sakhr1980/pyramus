@@ -14,6 +14,9 @@ import fi.pyramus.domainmodel.users.User;
 
 public abstract class GenericDAO<T> {
   
+  GenericDAO() {
+  }
+
   @SuppressWarnings("unchecked")
   public T findById(Long id) {
     EntityManager entityManager = getEntityManager();
