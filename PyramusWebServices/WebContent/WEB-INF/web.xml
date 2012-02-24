@@ -98,7 +98,6 @@
     <servlet-name>UsersService</servlet-name>
     <url-pattern>/services/Users/*</url-pattern>
   </servlet-mapping>
-<!-- 
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>webservices</web-resource-name>
@@ -111,16 +110,16 @@
       <http-method>TRACE</http-method>
       <http-method>DELETE</http-method>
     </web-resource-collection>
-
+<!-- 
     <auth-constraint>
       <role-name>webservices</role-name>
     </auth-constraint>
-
+-->
     <user-data-constraint>
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
-
+<!-- 
   <login-config>
     <auth-method>BASIC</auth-method>
     <realm-name>webservices</realm-name>
