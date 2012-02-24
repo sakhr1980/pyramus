@@ -2,6 +2,7 @@ package fi.pyramus.dao;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.PersistenceException;
 
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.dao.base.AddressDAO;
@@ -110,24 +111,10 @@ public class DAOFactory {
   
   private final static DAOFactory instance = new DAOFactory();
   
+  /* SystemDAO */
+  
   public SystemDAO getSystemDAO() {
-    
-    
-    String jndiName = "java:module/" + SystemDAO.class.getSimpleName();
-    
-    InitialContext initialContext;
-    try {
-      initialContext = new InitialContext();
-
-      Object lookup = initialContext.lookup(jndiName);
-      // TODO stuff
-      return (SystemDAO) lookup;
-    } catch (NamingException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    
-    return null;
+    return (SystemDAO) findByClass(SystemDAO.class);
   }
 
   /* Draft */
@@ -548,21 +535,17 @@ public class DAOFactory {
     return (TagDAO) findByClass(TagDAO.class);
   }
   
-  private GenericDAO<?> findByClass(Class<? extends GenericDAO<?>> cls) {
-    String jndiName = "java:module/" + cls.getSimpleName();
-    
-    InitialContext initialContext;
+  private String getAppName() throws NamingException {
+    String jndiName = "java:app/AppName";
+    return (String) new InitialContext().lookup(jndiName);
+  }
+  
+  private Object findByClass(Class<?> cls) {
     try {
-      initialContext = new InitialContext();
-
-      Object lookup = initialContext.lookup(jndiName);
-      // TODO stuff
-      return (GenericDAO<?>) lookup;
+      String jndiName = "java:app/" + getAppName() + "/" + cls.getSimpleName();
+      return (GenericDAO<?>) new InitialContext().lookup(jndiName);
     } catch (NamingException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      throw new PersistenceException(e);
     }
-    
-    return null;
   }
 }
