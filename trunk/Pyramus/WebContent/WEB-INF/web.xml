@@ -72,15 +72,15 @@
     <servlet-name>pyramus</servlet-name>
     <url-pattern>*.binary</url-pattern>
   </servlet-mapping>
-<!--   <security-constraint> -->
-<!--     <web-resource-collection> -->
-<!--       <web-resource-name>secure</web-resource-name> -->
-<!--       <url-pattern>/*</url-pattern> -->
-<!--     </web-resource-collection> -->
-<!--     <user-data-constraint> -->
-<!--       <transport-guarantee>CONFIDENTIAL</transport-guarantee> -->
-<!--     </user-data-constraint> -->
-<!--   </security-constraint> -->
+   <security-constraint>
+     <web-resource-collection>
+       <web-resource-name>secure</web-resource-name>
+       <url-pattern>/*</url-pattern>
+     </web-resource-collection>
+     <user-data-constraint>
+       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+     </user-data-constraint>
+   </security-constraint>
   <servlet>
     <servlet-name>freemarker</servlet-name>
     <servlet-class>fi.pyramus.freemarker.FreemarkerServlet</servlet-class>
