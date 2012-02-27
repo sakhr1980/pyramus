@@ -50,6 +50,49 @@ public class TransferCreditDAO extends PyramusEntityDAO<TransferCredit> {
     return transferCredit;
   }
   
+  /**
+   * Lists all student's transfer credits excluding archived ones
+   * 
+   * @return list of all students transfer credits
+   */
+  public List<TransferCredit> listByStudent(Student student) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<TransferCredit> criteria = criteriaBuilder.createQuery(TransferCredit.class);
+    Root<TransferCredit> root = criteria.from(TransferCredit.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(TransferCredit_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(TransferCredit_.student), student)
+        ));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  /**
+   * Lists all student's transfer credits excluding archived ones
+   * 
+   * @return list of all students transfer credits
+   */
+  public List<TransferCredit> listByStudentAndSubject(Student student, Subject subject) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<TransferCredit> criteria = criteriaBuilder.createQuery(TransferCredit.class);
+    Root<TransferCredit> root = criteria.from(TransferCredit.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(TransferCredit_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(TransferCredit_.student), student),
+            criteriaBuilder.equal(root.get(TransferCredit_.subject), subject)
+        ));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public TransferCredit update(TransferCredit transferCredit, String courseName, Integer courseNumber, Double courseLength, EducationalTimeUnit courseLengthUnit, School school, Subject subject, CourseOptionality optionality, Student student, User assessingUser, Grade grade, Date date, String verbalAssessment) {
     EntityManager entityManager = getEntityManager();
     
@@ -71,27 +114,6 @@ public class TransferCreditDAO extends PyramusEntityDAO<TransferCredit> {
     entityManager.persist(transferCredit);
     
     return transferCredit;
-  }
-  
-  /**
-   * Lists all student's transfer credits excluding archived ones
-   * 
-   * @return list of all students transfer credits
-   */
-  public List<TransferCredit> listByStudent(Student student) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<TransferCredit> criteria = criteriaBuilder.createQuery(TransferCredit.class);
-    Root<TransferCredit> root = criteria.from(TransferCredit.class);
-    criteria.select(root);
-    criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(TransferCredit_.archived), Boolean.FALSE),
-            criteriaBuilder.equal(root.get(TransferCredit_.student), student)
-        ));
-    
-    return entityManager.createQuery(criteria).getResultList();
   }
   
 }

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.courses.CourseStudent_;
@@ -60,6 +61,33 @@ public class CourseAssessmentDAO extends PyramusEntityDAO<CourseAssessment> {
             criteriaBuilder.equal(root.get(CourseAssessment_.archived), Boolean.FALSE),
             criteriaBuilder.equal(courseStudentJoin.get(CourseStudent_.archived), Boolean.FALSE),
             criteriaBuilder.equal(courseJoin.get(Course_.archived), Boolean.FALSE)
+        ));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }  
+  
+  /**
+   * Lists all student's course assessments excluding archived ones
+   * 
+   * @return list of all students course assessments
+   */
+  public List<CourseAssessment> listByStudentAndSubject(Student student, Subject subject) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CourseAssessment> criteria = criteriaBuilder.createQuery(CourseAssessment.class);
+    Root<CourseAssessment> root = criteria.from(CourseAssessment.class);
+    Join<CourseAssessment, CourseStudent> courseStudentJoin = root.join(CourseAssessment_.courseStudent);
+    Join<CourseStudent, Course> courseJoin = courseStudentJoin.join(CourseStudent_.course);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(courseStudentJoin.get(CourseStudent_.student), student),
+            criteriaBuilder.equal(root.get(CourseAssessment_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(courseStudentJoin.get(CourseStudent_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(courseJoin.get(Course_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(courseJoin.get(Course_.subject), subject)
         ));
     
     return entityManager.createQuery(criteria).getResultList();

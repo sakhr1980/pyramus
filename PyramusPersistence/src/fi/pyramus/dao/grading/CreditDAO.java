@@ -16,9 +16,18 @@ public class CreditDAO extends PyramusEntityDAO<Credit> {
 //  @SuppressWarnings("unchecked")
 //  public List<Credit> listCreditsByStudent(Student student) {
 //    EntityManager entityManager = getEntityManager();
-//    return s.createCriteria(Credit.class)
-//      .add(Restrictions.eq("student", student))
-//      .add(Restrictions.eq("archived", Boolean.FALSE)).list();
+//
+//    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//    CriteriaQuery<Credit> criteria = criteriaBuilder.createQuery(Credit.class);
+//    Root<Credit> root = criteria.from(Credit.class);
+//    criteria.select(root);
+//    criteria.where(
+//        criteriaBuilder.and(
+//            criteriaBuilder.equal(root.get(Credit_.archived), Boolean.FALSE),
+//            criteriaBuilder.equal(root.get(Credit_.student), student)
+//        ));
+//    
+//    return entityManager.createQuery(criteria).getResultList();
 //  }
   
 }
