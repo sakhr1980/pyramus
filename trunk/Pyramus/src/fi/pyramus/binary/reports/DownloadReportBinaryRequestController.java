@@ -6,20 +6,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import fi.internetix.smvc.AccessDeniedException;
-import fi.internetix.smvc.LoginRequiredException;
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.BinaryRequestContext;
-import fi.internetix.smvc.controllers.BinaryRequestController;
-import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
 import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
 
-public class DownloadReportBinaryRequestController implements BinaryRequestController {
+public class DownloadReportBinaryRequestController extends BinaryRequestController {
 
   public void process(BinaryRequestContext binaryRequestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
@@ -105,10 +102,5 @@ public class DownloadReportBinaryRequestController implements BinaryRequestContr
     reservedParameters.add("__format");
     reservedParameters.add("__report");
   }
-
-  @Override
-  public void authorize(RequestContext requestContext) throws LoginRequiredException, AccessDeniedException {
-    // TODO Auto-generated method stub
-    throw new RuntimeException("Not implemented");
-  }
+  
 }
