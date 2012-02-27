@@ -3,6 +3,12 @@
 
   <alterTables>
     <table name="CourseAssessment">
+      <dropForeignKeys>
+        <key name="FK9833115D5475C87B"/>
+      </dropForeignKeys>
+    </table>
+  
+    <table name="CourseAssessment">
       <addFields>
         <field name="courseStudent" type="java.lang.Long" nullable="true" unique="true" />
       </addFields>
