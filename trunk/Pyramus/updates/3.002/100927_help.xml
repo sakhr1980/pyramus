@@ -75,7 +75,7 @@
   <alterTables>
     <table name="HelpItem">
       <addForeignKeys>
-        <key name="FKD4C29A148774E157" columns="parent" referencedColumns="id" referencedTable="HelpFolder"/>
+        <key columns="parent" referencedColumns="id" referencedTable="HelpFolder"/>
       </addForeignKeys>
     </table>
   </alterTables>
