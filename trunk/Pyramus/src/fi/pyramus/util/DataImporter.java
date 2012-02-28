@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Query;
+import javax.persistence.metamodel.Metamodel;
 import javax.validation.ConstraintViolation;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +22,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.xpath.XPathAPI;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
@@ -30,8 +34,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.SAXException;
-
-import com.sun.org.apache.xpath.internal.XPathAPI;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.pyramus.dao.DAOFactory;
@@ -86,7 +88,7 @@ public class DataImporter {
           System.out.println("Processing " + variableName);
           
           if (!StringUtils.isBlank(hql)) {
-            result = systemDAO.createHQLQuery(hql).uniqueResult();
+            result = systemDAO.createJPQLQuery(hql).getSingleResult();
             
             if (result == null)
               throw new SmvcRuntimeException(new Exception("storeVariable hql=\"" + hql + "\" returned null"));
@@ -94,24 +96,33 @@ public class DataImporter {
             Class variableClass;
             try {
               variableClass = Class.forName(storeElement.getAttribute("class"));
-              Criteria criteriaQuery = systemDAO.createHibernateCriteria(variableClass);
-            
+              StringBuilder jpqlBuilder = new StringBuilder();
+              jpqlBuilder.append("from ");
+              jpqlBuilder.append(variableClass);
               NodeList criteriaList = storeElement.getChildNodes();
-              for (int i = 0; i < criteriaList.getLength(); i++) {
-                if (criteriaList.item(i) instanceof Element) {
-                  Element criteriaElement = (Element) criteriaList.item(i);
-                  StoreVariableCriteria criteria = StoreVariableCriteria.getCriteria(criteriaElement.getNodeName());
-                  switch (criteria) {
-                    case Equals:
-                      String property = criteriaElement.getAttribute("name");
-                      String value = ((Text) criteriaElement.getFirstChild()).getData();
-                      criteriaQuery.add(Restrictions.eq(property, value));
-                    break;
+
+              if (criteriaList.getLength() > 0) {
+                jpqlBuilder.append(" where ");
+                for (int i = 0; i < criteriaList.getLength(); i++) {
+                  if (criteriaList.item(i) instanceof Element) {
+                    Element criteriaElement = (Element) criteriaList.item(i);
+                    StoreVariableCriteria criteria = StoreVariableCriteria.getCriteria(criteriaElement.getNodeName());
+                    switch (criteria) {
+                      case Equals:
+                        String property = criteriaElement.getAttribute("name");
+                        String value = ((Text) criteriaElement.getFirstChild()).getData();
+                        jpqlBuilder.append(property + " = " + value);
+                      break;
+                    }
+                  }
+                  
+                  if (i < (criteriaList.getLength() - 1)) {
+                    jpqlBuilder.append(" AND ");
                   }
                 }
               }
               
-              result = criteriaQuery.uniqueResult();
+              result = systemDAO.createJPQLQuery(jpqlBuilder.toString()).getSingleResult();
               
               if (result == null)
                 throw new SmvcRuntimeException(new Exception("storeVariable class=\"" + variableClass.getName() + "\" returned null"));
@@ -127,8 +138,6 @@ public class DataImporter {
       
       NodeIterator entityIterator = XPathAPI.selectNodeIterator(initialDataDocument.getDocumentElement(), "entity");
       Node node;
-
-      Map<String, ClassMetadata> classMetaData = systemDAO.getHibernateClassMetadata();
       
       while ((node = entityIterator.nextNode()) != null) {
         if (node instanceof Element) {
@@ -139,9 +148,7 @@ public class DataImporter {
           String className = entityPackageName + '.' + entityClassName;
           
           if ((entities == null)||entities.contains(className)) {
-            ClassMetadata metadata = classMetaData.get(className);
-//            Class<?> entityClass = metadata.getMappedClass(EntityMode.POJO);
-            Class<?> entityClass = metadata.getMappedClass();
+            Class<?> entityClass = Class.forName(entityPackageName + "." + entityClassName);
          
             NodeIterator entryIterator = XPathAPI.selectNodeIterator(element, "e");
             Element entry;
@@ -154,6 +161,8 @@ public class DataImporter {
         }
       }
     } catch (TransformerException e) {
+      throw new SmvcRuntimeException(e);
+    } catch (ClassNotFoundException e) {
       throw new SmvcRuntimeException(e);
     } 
   }
@@ -363,15 +372,8 @@ public class DataImporter {
     return getPojo(pojoClass, identifier);
   }
   
-  
-  
-  private boolean isHibernateClass (String className) {
-    SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
-    return systemDAO.getHibernateClassMetadata().containsKey(className);
-  }
-  
-  private boolean isHibernateClass (Class<?> clazz) {
-    return isHibernateClass(clazz.getName());
+  private boolean isHibernateClass(Class<?> clazz) {
+    return clazz.isAnnotationPresent(Entity.class);
   }
   
   private Long getStoredValue(String name) {
