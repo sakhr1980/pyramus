@@ -543,7 +543,7 @@ public class DAOFactory {
   private Object findByClass(Class<?> cls) {
     try {
       String jndiName = "java:app/" + getAppName() + "/" + cls.getSimpleName();
-      return (GenericDAO<?>) new InitialContext().lookup(jndiName);
+      return new InitialContext().lookup(jndiName);
     } catch (NamingException e) {
       throw new PersistenceException(e);
     }
