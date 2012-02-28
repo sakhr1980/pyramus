@@ -7,6 +7,12 @@
         <key name="FK9833115D5475C87B"/>
       </dropForeignKeys>
     </table>
+    
+    <table name="Credit">
+      <dropForeignKeys>
+        <key name="FK78CA9719EE2B836F"/>
+      </dropForeignKeys>
+    </table>
   
     <table name="CourseAssessment">
       <addFields>
