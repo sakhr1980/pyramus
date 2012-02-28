@@ -1,12 +1,12 @@
 package fi.pyramus.dao;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolation;
@@ -14,11 +14,6 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
 import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.ejb.EntityManagerImpl;
-import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -72,32 +67,15 @@ public class SystemDAO {
     return factory.getValidator().validate(entity);
   }
 
+  public Query createJPQLQuery(String jpql) {
+    return getEntityManager().createQuery(jpql);
+  }
+  
   // Hibernate methods
   
   @Deprecated
-  private Session getHibernateSession() {
-    EntityManagerImpl entityManagerImpl = (EntityManagerImpl) getEntityManager().getDelegate();
-    return entityManagerImpl.getSession();
-  }
-
-  @Deprecated
-  public Query createHQLQuery(String hql) {
-    return getHibernateSession().createQuery(hql);
-  }
-  
-  @Deprecated
-  public Criteria createHibernateCriteria(Class<?> entity) {
-    return getHibernateSession().createCriteria(entity);
-  }
-
-  @Deprecated
-  public Map<String, ClassMetadata> getHibernateClassMetadata() {
-    return getHibernateSession().getSessionFactory().getAllClassMetadata();
-  } 
-  
-  @Deprecated
   public Statistics getHibernateStatistics() {
-    return getHibernateSession().getSessionFactory().getStatistics();
+    return null;
   }
   
   public void reindexHibernateSearchObjects() throws InterruptedException {
