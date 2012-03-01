@@ -121,6 +121,10 @@
     <listener-class>org.eclipse.birt.report.listener.ViewerServletContextListener</listener-class>
   </listener>
   
+  <listener>
+    <listener-class>fi.pyramus.reports.PyramusReportsServletContextListener</listener-class>
+  </listener>
+  
   <!-- Servlet mappings -->
   
   <servlet>
