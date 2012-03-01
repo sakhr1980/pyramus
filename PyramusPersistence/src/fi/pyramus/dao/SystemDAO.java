@@ -1,6 +1,8 @@
 package fi.pyramus.dao;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateless;
@@ -8,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -15,6 +18,7 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.CacheMode;
 import org.hibernate.search.MassIndexer;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.stat.Statistics;
@@ -78,13 +82,28 @@ public class SystemDAO {
     return null;
   }
   
-  public void reindexHibernateSearchObjects() throws InterruptedException {
+  public List<Class<?>> getIndexedEntities() {
+    List<Class<?>> result = new ArrayList<Class<?>>();
+    
+    EntityManager entityManager = getEntityManager();
+    Metamodel metamodel = entityManager.getEntityManagerFactory().getMetamodel();
+    for (EntityType<?> entityType : metamodel.getEntities()) {
+      Class<?> entityClass = entityType.getJavaType();
+      if (entityClass.isAnnotationPresent(Indexed.class)) {
+        result.add(entityClass);
+      }
+    }
+    
+    return result;
+  }
+  
+  public void reindexHibernateSearchObjects(Class<?> entity) throws InterruptedException {
     EntityManager entityManager = getEntityManager();
     
     FullTextEntityManager fullTextSession = Search.getFullTextEntityManager(entityManager);
-    MassIndexer massIndexer = fullTextSession.createIndexer();
+    MassIndexer massIndexer = fullTextSession.createIndexer(entity);
     
-    massIndexer.batchSizeToLoadObjects(10);
+    massIndexer.batchSizeToLoadObjects(1);
     massIndexer.threadsForSubsequentFetching(1);
     massIndexer.threadsToLoadObjects(1);
     massIndexer.cacheMode(CacheMode.IGNORE);

@@ -12,8 +12,8 @@ import javax.persistence.criteria.Root;
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryType;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry_;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
 @Stateless
 public class StudentContactLogEntryDAO extends PyramusEntityDAO<StudentContactLogEntry> {

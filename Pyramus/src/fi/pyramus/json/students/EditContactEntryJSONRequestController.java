@@ -11,9 +11,9 @@ import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.students.StudentContactLogEntryDAO;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryType;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
 /**
  * JSON request controller for editing a contact entry.

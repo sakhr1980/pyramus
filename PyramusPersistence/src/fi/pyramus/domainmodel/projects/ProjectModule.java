@@ -2,6 +2,8 @@ package fi.pyramus.domainmodel.projects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,17 +14,10 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 
 import fi.pyramus.domainmodel.modules.Module;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionalityUserType;
 
 @Entity
-@TypeDefs ({
-  @TypeDef (name="ProjectModuleOptionality", typeClass=ProjectModuleOptionalityUserType.class)
-})
 public class ProjectModule {
 
   /**
@@ -82,7 +77,7 @@ public class ProjectModule {
 
   @NotNull
   @Column (nullable = false)
-  @Type (type="ProjectModuleOptionality")  
+  @Enumerated (EnumType.STRING)
   private ProjectModuleOptionality optionality;
 
   @Version

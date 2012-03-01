@@ -11,6 +11,7 @@ import fi.pyramus.dao.grading.GradeDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
@@ -20,7 +21,6 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class SaveTransferCreditsJSONRequestController extends JSONRequestController {
 

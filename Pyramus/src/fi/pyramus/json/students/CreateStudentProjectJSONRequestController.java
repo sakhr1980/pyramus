@@ -11,6 +11,7 @@ import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.dao.projects.StudentProjectModuleDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
@@ -19,7 +20,6 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class CreateStudentProjectJSONRequestController extends JSONRequestController {
 

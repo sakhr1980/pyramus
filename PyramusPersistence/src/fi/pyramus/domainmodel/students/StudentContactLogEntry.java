@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,17 +17,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.FullTextFilterDefs;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryUserType;
 
 /**
  * StudentContactLogEntry class defines a message bind to a student
@@ -43,12 +40,6 @@ import fi.pyramus.persistence.usertypes.StudentContactLogEntryUserType;
  */
 
 @Entity
-@TypeDefs ({
-  @TypeDef (
-      name="StudentContactLogEntryType", 
-      typeClass=StudentContactLogEntryUserType.class
-  )
-})
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedContactLogEntry",
@@ -187,7 +178,7 @@ public class StudentContactLogEntry implements ArchivableEntity {
   
   private String creatorName;
 
-  @Type (type="StudentContactLogEntryType")
+  @Enumerated (EnumType.STRING)
   private StudentContactLogEntryType type;
   
   @Temporal (value=TemporalType.TIMESTAMP)

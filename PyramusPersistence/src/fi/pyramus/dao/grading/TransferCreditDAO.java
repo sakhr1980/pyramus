@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
@@ -19,7 +20,6 @@ import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.grading.TransferCredit_;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Stateless
 public class TransferCreditDAO extends PyramusEntityDAO<TransferCredit> {

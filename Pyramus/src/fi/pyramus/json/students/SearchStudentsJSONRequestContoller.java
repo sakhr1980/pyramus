@@ -23,12 +23,12 @@ import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
+import fi.pyramus.domainmodel.students.Sex;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
-import fi.pyramus.persistence.usertypes.Sex;
 
 /**
  * Request handler for searching students.

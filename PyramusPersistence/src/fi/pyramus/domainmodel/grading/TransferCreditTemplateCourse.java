@@ -2,6 +2,8 @@ package fi.pyramus.domainmodel.grading;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,9 +20,9 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.Subject;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Entity
 @Indexed
@@ -111,7 +113,7 @@ public class TransferCreditTemplateCourse {
   
   @NotNull
   @Column (nullable = false)
-  @Type (type="CourseOptionality")
+  @Enumerated (EnumType.STRING)
   private CourseOptionality optionality;
 
   @ManyToOne

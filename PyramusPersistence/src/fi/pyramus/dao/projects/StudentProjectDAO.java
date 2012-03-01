@@ -25,6 +25,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.projects.Project;
@@ -33,7 +34,6 @@ import fi.pyramus.domainmodel.projects.StudentProject_;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.SearchResult;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Stateless
 public class StudentProjectDAO extends PyramusEntityDAO<StudentProject> {

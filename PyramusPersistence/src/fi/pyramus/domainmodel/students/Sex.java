@@ -1,4 +1,4 @@
-package fi.pyramus.persistence.usertypes;
+package fi.pyramus.domainmodel.students;
 
 /**
  * Self explanatory enum for human sex.

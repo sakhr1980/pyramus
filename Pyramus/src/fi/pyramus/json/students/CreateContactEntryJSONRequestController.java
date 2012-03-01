@@ -13,9 +13,9 @@ import fi.pyramus.dao.students.StudentContactLogEntryDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryType;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
 
 /**
  * JSON request controller for creating new contact entry.

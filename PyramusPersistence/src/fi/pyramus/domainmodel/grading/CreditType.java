@@ -1,4 +1,4 @@
-package fi.pyramus.persistence.usertypes;
+package fi.pyramus.domainmodel.grading;
 
 public enum CreditType {
   CourseAssessment,

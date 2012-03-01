@@ -2,6 +2,8 @@ package fi.pyramus.domainmodel.base;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,20 +12,13 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.pyramus.persistence.usertypes.VariableType;
-import fi.pyramus.persistence.usertypes.VariableTypeUserType;
 
 @Entity
-@TypeDefs ({
-  @TypeDef (name="VariableType", typeClass=VariableTypeUserType.class)
-})
 public class SchoolVariableKey {
 
   public Long getId() {
@@ -91,7 +86,7 @@ public class SchoolVariableKey {
   private Boolean userEditable = Boolean.FALSE;
 
   @Column 
-  @Type (type="VariableType")  
+  @Enumerated (EnumType.STRING)  
   @Field (analyze = Analyze.NO, store = Store.NO)
   private VariableType variableType;
 

@@ -20,10 +20,10 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.courses.CourseState;
 import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.students.AbstractStudent;
+import fi.pyramus.domainmodel.students.Sex;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.Sex;
 
 public class DebugDataViewController extends PyramusViewController {
 

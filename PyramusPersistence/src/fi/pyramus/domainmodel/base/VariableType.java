@@ -1,4 +1,4 @@
-package fi.pyramus.persistence.usertypes;
+package fi.pyramus.domainmodel.base;
 
 /**
  * Data types for the various custom variables of the application.

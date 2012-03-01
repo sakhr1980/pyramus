@@ -2,29 +2,23 @@ package fi.pyramus.domainmodel.grading;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
-import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
-import fi.pyramus.persistence.usertypes.CreditType;
 
 @Entity
-@TypeDefs ({
-  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
-})
 @PrimaryKeyJoinColumn(name = "id")
 public class TransferCredit extends Credit {
 
@@ -105,7 +99,7 @@ public class TransferCredit extends Credit {
   private EducationalLength courseLength;
   
   @Column
-  @Type (type="CourseOptionality")
+  @Enumerated (EnumType.STRING)
   private CourseOptionality optionality;
 
   @ManyToOne
