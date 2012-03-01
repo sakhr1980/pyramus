@@ -31,11 +31,11 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.AbstractStudent_;
+import fi.pyramus.domainmodel.students.Sex;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.domainmodel.students.StudentGroupStudent;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.StudentFilter;
-import fi.pyramus.persistence.usertypes.Sex;
 
 @Stateless
 public class AbstractStudentDAO extends PyramusEntityDAO<AbstractStudent> {

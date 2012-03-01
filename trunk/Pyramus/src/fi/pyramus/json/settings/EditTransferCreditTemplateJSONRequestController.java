@@ -6,13 +6,13 @@ import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.dao.grading.TransferCreditTemplateCourseDAO;
 import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 public class EditTransferCreditTemplateJSONRequestController extends JSONRequestController {
 

@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,9 +25,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -40,8 +39,6 @@ import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.persistence.search.filters.StudentIdFilterFactory;
-import fi.pyramus.persistence.usertypes.Sex;
-import fi.pyramus.persistence.usertypes.SexUserType;
 
 /**
  * AbstractStudent defines a student "shell" that can be used to link different student instances to each other. i.e. same student can be "archived" from
@@ -53,7 +50,6 @@ import fi.pyramus.persistence.usertypes.SexUserType;
 
 @Entity
 @Indexed
-@TypeDefs({ @TypeDef(name = "Sex", typeClass = SexUserType.class) })
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="StudentIdFilter",
@@ -816,7 +812,7 @@ public class AbstractStudent {
   private String socialSecurityNumber;
 
   @Column
-  @Type(type = "Sex")
+  @Enumerated (EnumType.STRING)
   @Field(store = Store.NO)
   private Sex sex;
 

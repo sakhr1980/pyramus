@@ -1,10 +1,10 @@
-package fi.pyramus.persistence.usertypes;
+package fi.pyramus.domainmodel.projects;
 
-public enum CourseOptionality {
+public enum ProjectModuleOptionality {
   MANDATORY       (0),
   OPTIONAL        (1);
   
-  private CourseOptionality(int value) {
+  private ProjectModuleOptionality(int value) {
     this.value = value;
   }
   
@@ -12,8 +12,8 @@ public enum CourseOptionality {
     return value;
   }
   
-  public static CourseOptionality getOptionality(int value) {
-    for (CourseOptionality optionality : values()) {
+  public static ProjectModuleOptionality getOptionality(int value) {
+    for (ProjectModuleOptionality optionality : values()) {
       if (optionality.getValue() == value) {
         return optionality;
       }

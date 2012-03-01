@@ -13,14 +13,14 @@ import java.util.Map;
 import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.SmvcRuntimeException;
+import fi.pyramus.domainmodel.base.VariableType;
+import fi.pyramus.domainmodel.projects.ProjectModuleOptionality;
+import fi.pyramus.domainmodel.students.Sex;
+import fi.pyramus.domainmodel.students.StudentContactLogEntryType;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.framework.PyramusStatusCode;
 import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
-import fi.pyramus.persistence.usertypes.Sex;
-import fi.pyramus.persistence.usertypes.StudentContactLogEntryType;
-import fi.pyramus.persistence.usertypes.VariableType;
 
 public class DataImportUtils {
 

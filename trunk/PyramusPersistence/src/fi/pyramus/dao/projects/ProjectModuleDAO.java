@@ -12,8 +12,8 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
 import fi.pyramus.domainmodel.projects.ProjectModule;
+import fi.pyramus.domainmodel.projects.ProjectModuleOptionality;
 import fi.pyramus.domainmodel.projects.ProjectModule_;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 
 @Stateless
 public class ProjectModuleDAO extends PyramusEntityDAO<ProjectModule> {

@@ -21,6 +21,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Subject;
@@ -28,7 +29,6 @@ import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse_;
 import fi.pyramus.persistence.search.SearchResult;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Stateless
 public class TransferCreditTemplateCourseDAO extends PyramusEntityDAO<TransferCreditTemplateCourse> {

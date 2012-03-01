@@ -20,10 +20,10 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.Project;
+import fi.pyramus.domainmodel.projects.ProjectModuleOptionality;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.ProjectModuleOptionality;
 
 public class CreateProjectJSONRequestController extends JSONRequestController {
 

@@ -22,6 +22,7 @@ import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.dao.users.UserDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
@@ -34,7 +35,6 @@ import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**

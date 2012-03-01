@@ -10,6 +10,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,9 +31,6 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -43,13 +42,12 @@ import org.hibernate.search.annotations.Store;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.pyramus.domainmodel.base.ArchivableEntity;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalLength;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
-import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 
 @Entity
 @Indexed
@@ -59,9 +57,6 @@ import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
      impl=ArchivedEntityFilterFactory.class
   )
 )
-@TypeDefs ({
-  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
-})
 public class StudentProject implements ArchivableEntity {
 
   /**
@@ -367,7 +362,7 @@ public class StudentProject implements ArchivableEntity {
   private Project project;
 
   @Column
-  @Type (type="CourseOptionality")
+  @Enumerated (EnumType.STRING)
   private CourseOptionality optionality;
   
   @Version

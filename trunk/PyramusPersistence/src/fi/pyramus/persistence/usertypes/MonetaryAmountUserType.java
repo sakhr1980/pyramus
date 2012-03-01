@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Currency;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.DoubleType;
 import org.hibernate.usertype.UserType;
 
 public class MonetaryAmountUserType implements UserType {
@@ -51,7 +51,7 @@ public class MonetaryAmountUserType implements UserType {
 
   public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException {
     if (value == null || ((MonetaryAmount) value).getAmount() == null) {
-      st.setNull(index, DoubleType.INSTANCE.sqlType());
+      st.setNull(index, Types.DOUBLE );
     }
     else {
       MonetaryAmount anyCurrency = (MonetaryAmount) value;
@@ -70,7 +70,7 @@ public class MonetaryAmountUserType implements UserType {
   }
 
   public int[] sqlTypes() {
-    return new int[] { DoubleType.INSTANCE.sqlType() };
+    return new int[] { Types.DOUBLE };
   }
 
 }

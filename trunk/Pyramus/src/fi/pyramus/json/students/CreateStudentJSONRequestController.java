@@ -36,6 +36,7 @@ import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.students.AbstractStudent;
+import fi.pyramus.domainmodel.students.Sex;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
@@ -43,7 +44,6 @@ import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.Sex;
 
 public class CreateStudentJSONRequestController extends JSONRequestController {
 

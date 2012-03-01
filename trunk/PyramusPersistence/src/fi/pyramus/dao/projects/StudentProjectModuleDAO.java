@@ -10,11 +10,11 @@ import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.projects.StudentProjectModule_;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Stateless
 public class StudentProjectModuleDAO extends PyramusEntityDAO<StudentProjectModule> {

@@ -24,6 +24,7 @@ import fi.pyramus.dao.students.StudentContactLogEntryDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.dao.students.StudentImageDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
@@ -37,7 +38,6 @@ import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 /**
  * ViewController for editing student information.

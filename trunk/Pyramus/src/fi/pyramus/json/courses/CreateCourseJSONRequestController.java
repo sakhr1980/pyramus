@@ -42,6 +42,7 @@ import fi.pyramus.dao.resources.ResourceDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.CourseEducationType;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
@@ -61,7 +62,6 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 import fi.pyramus.persistence.usertypes.MonetaryAmount;
 
 public class CreateCourseJSONRequestController extends JSONRequestController {

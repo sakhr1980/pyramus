@@ -11,6 +11,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseEnrolmentType;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
@@ -20,7 +21,6 @@ import fi.pyramus.domainmodel.courses.Course_;
 import fi.pyramus.domainmodel.modules.Module;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.Student_;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
 
 @Stateless
 public class CourseStudentDAO extends PyramusEntityDAO<CourseStudent> {

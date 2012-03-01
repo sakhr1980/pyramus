@@ -8,7 +8,6 @@ import javax.persistence.Transient;
 
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.persistence.usertypes.CreditType;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")

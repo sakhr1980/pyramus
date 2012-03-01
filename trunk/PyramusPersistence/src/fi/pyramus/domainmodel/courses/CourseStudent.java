@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,20 +17,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.base.BillingDetails;
+import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.students.Student;
-import fi.pyramus.persistence.usertypes.CourseOptionality;
-import fi.pyramus.persistence.usertypes.CourseOptionalityUserType;
 
 @Entity
-@TypeDefs ({
-  @TypeDef (name="CourseOptionality", typeClass=CourseOptionalityUserType.class)
-})
 public class CourseStudent implements ArchivableEntity {
   
   public Long getId() {
@@ -160,7 +154,7 @@ public class CourseStudent implements ArchivableEntity {
   private Boolean lodging = Boolean.FALSE;
   
   @Column
-  @Type (type="CourseOptionality")
+  @Enumerated (EnumType.STRING)
   private CourseOptionality optionality;
 
   @ManyToOne 

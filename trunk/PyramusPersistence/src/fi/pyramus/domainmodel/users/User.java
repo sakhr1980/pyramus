@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,9 +29,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -41,12 +40,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.pyramus.domainmodel.base.BillingDetails;
 import fi.pyramus.domainmodel.base.ContactInfo;
 import fi.pyramus.domainmodel.base.Tag;
-import fi.pyramus.persistence.usertypes.RoleUserType;
 
 @Entity
-@TypeDefs ({
-  @TypeDef (name="Role", typeClass=RoleUserType.class)
-})
 @Indexed
 @Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User {
@@ -238,7 +233,7 @@ public class User {
   
   @NotNull
   @Column (nullable = false)
-  @Type (type="Role")  
+  @Enumerated (EnumType.STRING)
   @Field (store = Store.NO)
   // TODO Some way to disallow Role.EVERYONE
   private Role role;

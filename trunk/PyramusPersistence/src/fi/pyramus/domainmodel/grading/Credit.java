@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,21 +22,12 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
-import fi.pyramus.persistence.usertypes.CreditType;
-import fi.pyramus.persistence.usertypes.CreditTypeUserType;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-@TypeDefs ({
-  @TypeDef (name="CreditType", typeClass=CreditTypeUserType.class)
-})
 public class Credit implements ArchivableEntity {
 
   public Long getId() {
@@ -127,7 +120,7 @@ public class Credit implements ArchivableEntity {
   @Basic (optional = false)
   private Boolean archived = Boolean.FALSE;
 
-  @Type (type="CreditType")  
+  @Enumerated (EnumType.STRING)
   @Column (insertable = true, updatable = false, nullable = false)
   private CreditType creditType;
 
