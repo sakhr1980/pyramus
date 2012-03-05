@@ -19,6 +19,7 @@ import fi.pyramus.framework.UserRole;
 public class HibernateStatisticsViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
+    /**
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
     Statistics statistics = systemDAO.getHibernateStatistics();
     requestContext.getRequest().setAttribute("statistics", statistics); 
@@ -53,6 +54,7 @@ public class HibernateStatisticsViewController extends PyramusViewController {
     requestContext.getRequest().setAttribute("cacheInfos", cacheInfos); 
 
     requestContext.setIncludeJSP("/templates/system/hibernatestatistics.jsp");
+    **/
   }
 
   public UserRole[] getAllowedRoles() {
