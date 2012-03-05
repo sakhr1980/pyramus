@@ -6,6 +6,19 @@
 
   <repositories>
     <repository>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snaphosts</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+      <snapshots>
+        <enabled/>
+      </snapshots>
+    </repository>
+    <repository>
+	  <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+	  <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+	</repository>
+    <repository>
       <id>repository.jboss.org-public</id>
       <name>JBoss repository</name>
       <url>https://repository.jboss.org/nexus/content/groups/public</url>
@@ -93,10 +106,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>fi.internetix.smvcj</groupId>
-      <artifactId>smvcj</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-    </dependency>
+	  <groupId>fi.internetix.smvcj</groupId>
+	  <artifactId>smvcj</artifactId>
+	  <version>0.0.2-SNAPSHOT</version>
+	</dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
