@@ -55,7 +55,7 @@
   * Open keystore with Portecle (http://sourceforge.net/projects/portecle/)
   * Export tomcat alias in PEM format to hard drive
   * Import exported sertificate as trusted back to keystore with name root
-  * Edit JBoss/standalone/standalone.xml file
+  * Edit JBoss/standalone/configuration/standalone.xml file
   * Locate urn:jboss:domain:web:1.1 -subsystem
   * Add redirect-port="8443" attribute into http connector
   * Add https connector:
