@@ -3,6 +3,8 @@ package fi.pyramus.views.system;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,6 +32,7 @@ import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.PyramusFormViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 
 @SuppressWarnings("deprecation")
 public class ImportReportViewController extends PyramusFormViewController {
@@ -37,7 +40,11 @@ public class ImportReportViewController extends PyramusFormViewController {
   @Override
   public void processForm(PageRequestContext requestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
-    requestContext.getRequest().setAttribute("reports", reportDAO.listAll());
+    List<Report> reports = reportDAO.listAll();
+    
+    Collections.sort(reports, new StringAttributeComparator("getName"));
+    
+    requestContext.getRequest().setAttribute("reports", reports);
     requestContext.setIncludeJSP("/templates/system/importreport.jsp");
   }
 
