@@ -8,6 +8,7 @@ import fi.pyramus.domainmodel.DomainModelExtensionDescriptor;
 
 import sun.misc.Service;
 
+@SuppressWarnings("restriction")
 public class DomainModelExtensionVault {
 
   public static DomainModelExtensionVault getInstance() {
