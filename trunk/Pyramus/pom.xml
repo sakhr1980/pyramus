@@ -170,11 +170,6 @@
       <version>0.5.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>fi.pyramus</groupId>
-      <artifactId>openid-plugin</artifactId>
-      <version>0.5.2-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>4.1.0.Final</version>
@@ -184,6 +179,16 @@
       <groupId>org.apache.xalan</groupId>
       <artifactId>xalan</artifactId>
       <version>2.7.1-1.jbossorg</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-aether-provider</artifactId>
+      <version>3.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.aether</groupId>
+      <artifactId>aether-connector-wagon</artifactId>
+      <version>1.13.1</version>
     </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
@@ -207,7 +212,7 @@
   <build>
     <directory>target</directory>
     <outputDirectory>target/classes</outputDirectory>
-    <finalName>${artifactId}-${version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
     <sourceDirectory>src</sourceDirectory>
     
     <plugins>
@@ -229,4 +234,19 @@
       </plugin>
     </plugins>
   </build>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snapshots</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 </project>
