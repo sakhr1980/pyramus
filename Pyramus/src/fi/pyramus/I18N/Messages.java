@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringUtils;
 
 import fi.pyramus.plugin.PluginDescriptor;
-import fi.pyramus.plugin.PluginVault;
+import fi.pyramus.plugin.PluginManager;
 
 public class Messages {
 
@@ -34,7 +34,7 @@ public class Messages {
       ResourceBundleDelegate resourceBundle = new ResourceBundleDelegate(locale);
       
       for (String bundleName : bundleNames) {
-        ResourceBundle localeBundle = ResourceBundle.getBundle(bundleName, locale); 
+        ResourceBundle localeBundle = ResourceBundle.getBundle(bundleName, locale, PluginManager.getInstance().getPluginsClassLoader()); 
         if (localeBundle != null) {
           resourceBundle.addResourceBundle(localeBundle);
         }
@@ -49,7 +49,7 @@ public class Messages {
   private void loadBundleNames() {
     bundleNames.add("fi.pyramus.I18N.pyramuslocale");
     
-    List<PluginDescriptor> plugins = PluginVault.getInstance().getPlugins();
+    List<PluginDescriptor> plugins = PluginManager.getInstance().getPlugins();
     for (PluginDescriptor plugin : plugins) {
       if (!StringUtils.isBlank(plugin.getMessagesBundlePath())) {
         bundleNames.add(plugin.getMessagesBundlePath());
