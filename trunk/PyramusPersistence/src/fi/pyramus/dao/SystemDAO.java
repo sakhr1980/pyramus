@@ -75,12 +75,7 @@ public class SystemDAO {
     return getEntityManager().createQuery(jpql);
   }
   
-  // Hibernate methods
-  
-  @Deprecated
-  public Statistics getHibernateStatistics() {
-    return null;
-  }
+  // Hibernate search methods
   
   public List<Class<?>> getIndexedEntities() {
     List<Class<?>> result = new ArrayList<Class<?>>();

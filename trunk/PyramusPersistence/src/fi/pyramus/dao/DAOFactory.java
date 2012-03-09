@@ -4,6 +4,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.PersistenceException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.dao.base.AddressDAO;
 import fi.pyramus.dao.base.BillingDetailsDAO;
@@ -72,6 +74,8 @@ import fi.pyramus.dao.help.HelpPageContentDAO;
 import fi.pyramus.dao.help.HelpPageDAO;
 import fi.pyramus.dao.modules.ModuleComponentDAO;
 import fi.pyramus.dao.modules.ModuleDAO;
+import fi.pyramus.dao.plugins.PluginDAO;
+import fi.pyramus.dao.plugins.PluginRepositoryDAO;
 import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.dao.projects.ProjectModuleDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
@@ -535,9 +539,28 @@ public class DAOFactory {
     return (TagDAO) findByClass(TagDAO.class);
   }
   
+  /* Plugins */
+
+  public PluginRepositoryDAO getPluginRepositoryDAO() {
+    return (PluginRepositoryDAO) findByClass(PluginRepositoryDAO.class);
+  }
+
+  public PluginDAO getPluginDAO() {
+    return (PluginDAO) findByClass(PluginDAO.class);
+  }
+  
   private String getAppName() throws NamingException {
-    String jndiName = "java:app/AppName";
-    return (String) new InitialContext().lookup(jndiName);
+    String appName = "";
+    try {
+      String jndiName = "java:app/AppName";
+      appName = (String) new InitialContext().lookup(jndiName);
+    } catch (Throwable t) {
+    }
+    
+    if (StringUtils.isBlank(appName))
+      appName = "Pyramus";
+    
+    return appName;
   }
   
   private Object findByClass(Class<?> cls) {
