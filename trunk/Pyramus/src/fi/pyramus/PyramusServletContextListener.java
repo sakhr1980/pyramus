@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -16,14 +18,21 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.internetix.smvc.controllers.RequestController;
 import fi.internetix.smvc.controllers.RequestControllerMapper;
+import fi.internetix.smvc.logging.Logging;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.plugins.PluginDAO;
+import fi.pyramus.dao.plugins.PluginRepositoryDAO;
 import fi.pyramus.dao.system.SettingDAO;
 import fi.pyramus.dao.system.SettingKeyDAO;
+import fi.pyramus.domainmodel.plugins.Plugin;
+import fi.pyramus.domainmodel.plugins.PluginRepository;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
 import fi.pyramus.plugin.PluginDescriptor;
-import fi.pyramus.plugin.PluginVault;
+import fi.pyramus.plugin.PluginManager;
 import fi.pyramus.plugin.auth.AuthenticationProviderVault;
 import fi.pyramus.plugin.auth.internal.InternalAuthenticationStrategy;
 
@@ -49,15 +58,17 @@ public class PyramusServletContextListener implements ServletContextListener {
    */
   public void contextInitialized(ServletContextEvent servletContextEvent) {
     try {
+      Properties pageControllers = new Properties();
+      Properties jsonControllers = new Properties();
+      Properties binaryControllers = new Properties();
+      
+      loadPlugins();
+
       ServletContext ctx = servletContextEvent.getServletContext();
       String webappPath = ctx.getRealPath("/");
       
       // Load the system settings into the system properties
       loadSystemSettings(System.getProperties());
-      
-      Properties pageControllers = new Properties();
-      Properties jsonControllers = new Properties();
-      Properties binaryControllers = new Properties();
       
       // Load default page mappings from properties file
       loadPropertiesFile(ctx, pageControllers, "pagemapping.properties");
@@ -65,31 +76,6 @@ public class PyramusServletContextListener implements ServletContextListener {
       loadPropertiesFile(ctx, jsonControllers, "jsonmapping.properties");
       // Load default binary mappings from properties file
       loadPropertiesFile(ctx, binaryControllers, "binarymapping.properties");
-      
-      // Load additional request mappings from plugins
-      List<PluginDescriptor> plugins = PluginVault.getInstance().getPlugins();
-      for (PluginDescriptor plugin : plugins) {
-        Map<String, Class<?>> pageRequestControllers = plugin.getPageRequestControllers();
-        if (pageRequestControllers != null) {
-          for (String key : pageRequestControllers.keySet()) {
-            pageControllers.put(key, pageRequestControllers.get(key).getName());
-          }
-        }
-        
-        Map<String, Class<?>> jsonRequestControllers = plugin.getJSONRequestControllers();
-        if (jsonRequestControllers != null) {
-          for (String key : jsonRequestControllers.keySet()) {
-            jsonControllers.put(key, jsonRequestControllers.get(key).getName());
-          }
-        }
-        
-        Map<String, Class<?>> binaryRequestControllers = plugin.getBinaryRequestControllers();
-        if (binaryRequestControllers != null) {
-          for (String key : binaryRequestControllers.keySet()) {
-            binaryControllers.put(key, binaryRequestControllers.get(key).getName());
-          }
-        }
-      }
       
       // Initialize the page mapper in order to serve page requests 
       RequestControllerMapper.mapControllers(pageControllers, ".page");
@@ -137,6 +123,61 @@ public class PyramusServletContextListener implements ServletContextListener {
       if (setting != null)
         properties.put(settingKey.getName(), setting.getValue());
     } 
+  }
+  
+  @SuppressWarnings("unchecked")
+  private void loadPlugins() {
+    try {
+      PluginRepositoryDAO pluginRepositoryDAO = DAOFactory.getInstance().getPluginRepositoryDAO();
+      List<PluginRepository> pluginRepositories = pluginRepositoryDAO.listAll();
+      List<String> repositoryUrls = new ArrayList<String>(pluginRepositories.size());
+      for (PluginRepository pluginRepository : pluginRepositories) {
+        repositoryUrls.add(pluginRepository.getUrl());
+      }
+      
+      PluginManager pluginManager = PluginManager.initialize(getClass().getClassLoader(), repositoryUrls);
+      
+      PluginDAO pluginDAO = DAOFactory.getInstance().getPluginDAO();
+      List<Plugin> enabledPlugins = pluginDAO.listByEnabled(Boolean.TRUE);
+      for (Plugin plugin : enabledPlugins) {
+        pluginManager.loadPlugin(plugin.getGroupId(), plugin.getArtifactId(), plugin.getVersion());
+      }
+      
+      pluginManager.registerPlugins();
+            
+      // Load additional request mappings from plugins
+      List<PluginDescriptor> plugins = pluginManager.getPlugins();
+      for (PluginDescriptor plugin : plugins) {
+        Map<String, Class<?>> pageRequestControllers = plugin.getPageRequestControllers();
+        if (pageRequestControllers != null) {
+          for (String key : pageRequestControllers.keySet()) {
+            String className = pageRequestControllers.get(key).getName();
+            Class<? extends RequestController> pageController = (Class<? extends RequestController>) Class.forName(className, false, pluginManager.getPluginsClassLoader());
+            RequestControllerMapper.mapController(key, ".page", pageController.newInstance());
+          }
+        }
+        
+        Map<String, Class<?>> jsonRequestControllers = plugin.getJSONRequestControllers();
+        if (jsonRequestControllers != null) {
+          for (String key : jsonRequestControllers.keySet()) {
+            String className = pageRequestControllers.get(key).getName();
+            Class<? extends RequestController> pageController = (Class<? extends RequestController>) Class.forName(className, false, pluginManager.getPluginsClassLoader());
+            RequestControllerMapper.mapController(key, ".json", pageController.newInstance());
+          }
+        }
+        
+        Map<String, Class<?>> binaryRequestControllers = plugin.getBinaryRequestControllers();
+        if (binaryRequestControllers != null) {
+          for (String key : binaryRequestControllers.keySet()) {
+            String className = pageRequestControllers.get(key).getName();
+            Class<? extends RequestController> pageController = (Class<? extends RequestController>) Class.forName(className, false, pluginManager.getPluginsClassLoader());
+            RequestControllerMapper.mapController(key, ".binary", pageController.newInstance());
+          }
+        }
+      }
+    } catch (Exception e) {
+      Logging.logException("Plugins loading failed", e);
+    }
   }
   
   private static void trustSelfSignedCerts() {
