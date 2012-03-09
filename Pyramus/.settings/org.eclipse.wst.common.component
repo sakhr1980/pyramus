@@ -1,28 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="Pyramus">
+        <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/WebContent/WEB-INF/web.xml"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/" source-path="/WebContent"/>
-        <dependent-module archiveName="smvcj-0.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/smvcj/smvcj">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="persistence-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPersistence/PyramusPersistence">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="common-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusCommon/PyramusCommon">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="domainmodelextension-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusDomainModelExtension/PyramusDomainModelExtension">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="plugin-core-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPluginCore/PyramusPluginCore">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="framework-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusFramework/PyramusFramework">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="openid-plugin-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusOpenIdPlugin/PyramusOpenIdPlugin">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/Pyramus/target/classes"/>
