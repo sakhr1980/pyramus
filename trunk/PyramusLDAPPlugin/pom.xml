@@ -1,8 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>fi.internetix.pyramus</groupId>
+  <groupId>fi.pyramus</groupId>
   <artifactId>ldap-plugin</artifactId>
-  <version>0.5.2-SNAPSHOT</version>
+  <version>0.5.2</version>
+
+  <repositories>
+    <repository>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snaphosts</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </repository>
+    <repository>
+      <id>otavanopisto-releases</id>
+        <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+    <repository>
+      <id>otavanopisto-thirdparty</id>
+        <name>Otavan Opisto Thirdparty</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/thirdparty</url>
+    </repository>
+  </repositories>
 
   <distributionManagement>
     <snapshotRepository>
@@ -24,16 +42,19 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>plugin-core</artifactId>
       <version>0.5.2-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
       <version>0.5.2-SNAPSHOT</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -45,12 +66,6 @@
       <groupId>com.novell.ldap</groupId>
       <artifactId>jldap</artifactId>
       <version>devel-2009.10.07-1unix</version>
-    </dependency>
-    <dependency>
-      <groupId>fi.smvcj</groupId>
-      <artifactId>smvcj</artifactId>
-      <version>0.0.2-SNAPSHOT</version>
-      <type>pom.lastUpdated</type>
     </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
