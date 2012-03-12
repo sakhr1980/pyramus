@@ -1,18 +1,16 @@
 package fi.pyramus.jobs;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import javax.ejb.Schedule;
+import javax.ejb.Stateless;
 
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
 
-public class RemoveDeprecatedMagicKeys implements Job {
+@Stateless
+public class RemoveDeprecatedMagicKeys {
 
-  public RemoveDeprecatedMagicKeys() {
-  }
-  
-  public void execute(JobExecutionContext context) throws JobExecutionException {
+  @Schedule(second = "0", minute = "0/5", hour = "*", persistent = false)
+  public void removeDeprecatedMagicKeys() {
     MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
     magicKeyDAO.deleteDeprecatedMagicKeys();
   }
