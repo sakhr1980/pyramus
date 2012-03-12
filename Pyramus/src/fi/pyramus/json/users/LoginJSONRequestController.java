@@ -27,7 +27,7 @@ public class LoginJSONRequestController extends JSONRequestController {
    * stores the user into the session (keys <code>loggedUserId</code>, <code>loggedUserName</code>,
    * and <code>loggedUserRole</code>).
    * <p/>
-   * If the session contains a <code>loginFollowupURL</code> key, redirects the user to that URL.
+   * If the session contains a <code>loginRedirectUrl</code> key, redirects the user to that URL.
    * Otherwise, redirects back to the index page of the application.
    * <p/>
    * If the user is already logged in or the authentication fails, a <code>PyramusRuntimeException</code>
@@ -66,9 +66,9 @@ public class LoginJSONRequestController extends JSONRequestController {
           
           // If the session contains a followup URL, redirect there and if not, redirect to the index page 
           
-          if (session.getAttribute("loginFollowupURL") != null) {
-            String url = (String) session.getAttribute("loginFollowupURL");
-            session.removeAttribute("loginFollowupURL");
+          if (session.getAttribute("loginRedirectUrl") != null) {
+            String url = (String) session.getAttribute("loginRedirectUrl");
+            session.removeAttribute("loginRedirectUrl");
             jsonRequestContext.setRedirectURL(url);
           }
           else {
