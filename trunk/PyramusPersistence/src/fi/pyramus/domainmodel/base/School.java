@@ -42,7 +42,7 @@ import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 
 @Entity
 @Indexed
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedSchool",

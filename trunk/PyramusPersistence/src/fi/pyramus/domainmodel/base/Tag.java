@@ -17,7 +17,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Indexed
 public class Tag {
 

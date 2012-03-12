@@ -41,7 +41,7 @@ import fi.pyramus.persistence.search.filters.ArchivedEntityFilterFactory;
 @Entity
 @Indexed
 @Inheritance(strategy=InheritanceType.JOINED)
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @FullTextFilterDefs (
   @FullTextFilterDef (
      name="ArchivedResource",

@@ -43,7 +43,7 @@ import fi.pyramus.domainmodel.base.Tag;
 
 @Entity
 @Indexed
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class User {
 
   public Long getId() {

@@ -19,7 +19,7 @@ import fi.pyramus.domainmodel.base.ArchivableEntity;
 
 @Entity
 @Indexed
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class ResourceCategory implements ArchivableEntity {
 
   public Long getId() {
