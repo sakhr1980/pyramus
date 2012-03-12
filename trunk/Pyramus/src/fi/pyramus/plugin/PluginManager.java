@@ -103,11 +103,9 @@ public class PluginManager {
       ArtifactDescriptorResult descriptorResult = mavenClient.describeArtifact(groupId, artifactId, version);
       File jarFile = mavenClient.getArtifactJarFile(descriptorResult.getArtifact());
       return jarLoader.isJarLoaded(jarFile);
-    } catch (ArtifactResolutionException e) {
-      throw new PluginManagerException(e);
-    } catch (ArtifactDescriptorException e) {
-      throw new PluginManagerException(e);
-    } 
+    } catch (Exception e) {
+      return false;
+    }
   }
   
   public void registerPlugins() {

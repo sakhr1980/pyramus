@@ -3,16 +3,6 @@ package fi.pyramus.views.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.TableGenerator;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
@@ -21,7 +11,6 @@ import fi.pyramus.dao.plugins.PluginRepositoryDAO;
 import fi.pyramus.domainmodel.plugins.Plugin;
 import fi.pyramus.domainmodel.plugins.PluginRepository;
 import fi.pyramus.framework.PyramusFormViewController;
-import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 import fi.pyramus.plugin.PluginManager;
 
