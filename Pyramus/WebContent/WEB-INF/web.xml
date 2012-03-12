@@ -117,13 +117,6 @@
   <listener>
     <listener-class>freemarker.ext.jsp.EventForwarding</listener-class>
   </listener>
-  <context-param>
-    <param-name>config-file</param-name>
-    <param-value>quartz.properties</param-value>
-  </context-param>
-  <listener>
-    <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
-  </listener>
   <listener>
     <listener-class>fi.pyramus.PyramusServletContextListener</listener-class>
   </listener>
