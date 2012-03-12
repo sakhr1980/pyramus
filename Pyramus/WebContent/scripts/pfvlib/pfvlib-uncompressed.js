@@ -285,7 +285,7 @@ fi.internetix.validation.FieldValidatorVault =
         if (status != fi.internetix.validation.FieldValidator.STATUS_INVALID) {
           switch (validators[i].validate(this._field)) {
             case fi.internetix.validation.FieldValidator.STATUS_INVALID:
-              if (requiredCheckAsUnknown && (validators[i].getClassName() == "required"))
+              if (requiredCheckAsUnknown && (validators[i].getType() == fi.internetix.validation.FieldValidator.TYPE_MANDATORY))
                 status = fi.internetix.validation.FieldValidator.STATUS_UNKNOWN;
               else
                 status = fi.internetix.validation.FieldValidator.STATUS_INVALID;
@@ -534,7 +534,7 @@ Element.addMethods({
   validate : function(element, requiredCheckAsUnknown, forceRevalidate) {
     var delegator = fi.internetix.validation.ValidationDelegatorVault.getDelegator(element);
     if (delegator) {
-      if (forceRevalidate)
+      if (!forceRevalidate)
         delegator.validate(requiredCheckAsUnknown);
       else
         delegator.forceValidate(requiredCheckAsUnknown);
