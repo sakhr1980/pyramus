@@ -45,9 +45,9 @@ public class ExternalLoginLoginViewController extends PyramusViewController {
         
         // If the session contains a followup URL, redirect there and if not, redirect to the index page 
         
-        if (session.getAttribute("loginFollowupURL") != null) {
-          String url = (String) session.getAttribute("loginFollowupURL");
-          session.removeAttribute("loginFollowupURL");
+        if (session.getAttribute("loginRedirectUrl") != null) {
+          String url = (String) session.getAttribute("loginRedirectUrl");
+          session.removeAttribute("loginRedirectUrl");
           requestContext.setRedirectURL(url);
         }
         else {

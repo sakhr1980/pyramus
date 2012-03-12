@@ -1,5 +1,9 @@
 package fi.pyramus.framework;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
 import fi.internetix.smvc.AccessDeniedException;
 import fi.internetix.smvc.LoginRequiredException;
 import fi.internetix.smvc.controllers.PageController;
@@ -16,8 +20,16 @@ public abstract class PyramusViewController implements PageController {
   public void authorize(RequestContext requestContext) throws LoginRequiredException, AccessDeniedException {
     UserRole[] roles = getAllowedRoles();
     if (!contains(roles, UserRole.EVERYONE)) {
-      if (!requestContext.isLoggedIn())
-        throw new LoginRequiredException();
+      if (!requestContext.isLoggedIn()) {
+        HttpServletRequest request = requestContext.getRequest();
+        StringBuilder currentUrl = new StringBuilder(request.getRequestURL());
+        String queryString = request.getQueryString();
+        if (!StringUtils.isBlank(queryString)) {
+          currentUrl.append('?');
+          currentUrl.append(queryString);
+        }
+        throw new LoginRequiredException(currentUrl.toString());
+      }
       else {
         Long loggedUserId = requestContext.getLoggedUserId();
         
