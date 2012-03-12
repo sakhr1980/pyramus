@@ -52,6 +52,10 @@
           deinitializeValidation(rowElement); 
           initializeValidation(rowElement);  
         });
+
+        tableComponent.addListener("afterReattachToDom", function (event) {
+          forceRevalidateAll(true);
+        }); 
       };
 
       document.observe("dom:loaded", function(event) {

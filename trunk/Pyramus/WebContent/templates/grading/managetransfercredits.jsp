@@ -522,7 +522,7 @@
     
     <div id="manageTransferCreditsFormContainer"> 
 	    <div class="genericFormContainer"> 
-	      <form action="savetransfercredits.json" method="post" ix:jsonform="true" ix:useglasspane="true">
+	      <form action="savetransfercredits.json" method="post" ix:jsonform="true" ix:useglasspane="true" name="saveTransferCreditsForm" id="saveTransferCreditsForm">
 	        <input type="hidden" value="${student.id}" name="studentId"/>
 	  
 	        <div class="tabLabelsContainer" id="tabs">
