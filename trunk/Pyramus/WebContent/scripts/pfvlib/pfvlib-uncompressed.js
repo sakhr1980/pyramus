@@ -430,7 +430,9 @@ function __formValidationHook(formElement, isInvalid) {
   _generateFieldName: function (field) {
     var name = field.name + ';' + field.id;
     if (field.form) {
-      name += field.form.name + ';' + field.form.id;
+      var formName = field.form.getAttribute('name')||'';
+      var formId = field.form.getAttribute('id')||'';
+      name += formName + ';' + formId;
     }
     return name;
   },
