@@ -21,7 +21,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  * Education subtype to further define the education type it belongs to.
  */
 @Entity
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class EducationSubtype implements ArchivableEntity {
   
   /**

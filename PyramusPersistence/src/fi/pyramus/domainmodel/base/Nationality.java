@@ -24,7 +24,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Indexed
-@Cache (usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Nationality implements ArchivableEntity {
 
   /**
