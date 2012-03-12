@@ -2087,7 +2087,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
 
         var li = $(li);
         idElement.value = li.down('input[name="id"]').value;
-        inputElement.validate(false);
+        inputElement.validate(true, true);
 
         table.fire("cellValueChange", {
           tableComponent: table,
