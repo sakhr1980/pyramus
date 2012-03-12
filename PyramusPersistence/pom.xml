@@ -42,12 +42,6 @@
       <version>4.2.0.Final</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-      <version>4.0.1.Final</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-queries</artifactId>
       <version>3.4.0</version>
