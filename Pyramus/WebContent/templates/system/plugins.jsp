@@ -34,38 +34,41 @@
           }, {
             header : '<fmt:message key="system.plugins.pluginsTableStatusHeader"/>',
             left : 8 + 100 + 8,
-            width: 100,
+            width: 150,
             dataType: 'text',
             editable: false,
             paramName: 'status'
           }, {
             header : '<fmt:message key="system.plugins.pluginsTableGroupIdHeader"/>',
-            left : 8 + 100 + 8 + 100 + 8,
+            left : 8 + 100 + 8 + 150 + 8,
             width: 200,
             dataType: 'text',
             editable: true,
-            paramName: 'groupId'
+            paramName: 'groupId',
+            required: true
           }, {
             header : '<fmt:message key="system.plugins.pluginsTableArtifactIdHeader"/>',
-            left : 8 + 100 + 8 + 100 + 8 + 200 + 8,
-            right: 8 + 100 + 8,
+            left : 8 + 100 + 8 + 150 + 8 + 200 + 8,
+            right: 8 + 100 + 8 + 22 + 8,
             dataType: 'text',
             editable: true,
-            paramName: 'artifactId'
+            paramName: 'artifactId',
+            required: true
           }, {
             header : '<fmt:message key="system.plugins.pluginsTableVersionHeader"/>',
             width : 100,
             right: 8 + 22 + 8,
             dataType: 'text',
             editable: true,
-            paramName: 'version'
+            paramName: 'version',
+            required: true
           }, {
             right: 8,
             width: 22,
             dataType: 'button',
             paramName: 'deleteButton',
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/mail-mark-junk.png',
-            tooltip: '<fmt:message key="system.plugins.pluginsTableDeleteButtonTooltip"/>',
+            tooltip: '<fmt:message key="system.plugins.pluginsTableRemoveButtonTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
               table.setCellValue(event.row, table.getNamedColumnIndex('remove'), 1);
@@ -114,7 +117,7 @@
       
       function addPlugin() {
         var table = getIxTableById('pluginsTable');
-        rowIndex = table.addRow(['', 0, false, '<fmt:message key="system.plugins.pluginsTableStatusNotLoaded"/>', '', '', '', null, null], true);
+        rowIndex = table.addRow(['', 0, false, '<fmt:message key="system.plugins.pluginsTableStatusNotLoaded"/>', '', '', '', null, null]);
       }
       
       function setupRepositories() {
@@ -132,7 +135,8 @@
             right: 8 + 22 + 8,
             dataType: 'text',
             editable: true,
-            paramName: 'url'
+            paramName: 'url',
+            required: true
           }, {
             right: 8,
             width: 22,
@@ -223,7 +227,7 @@
         </div>
         
         <div class="genericFormSubmitSectionOffTab">
-          <input type="submit" value="<fmt:message key="system.plugins.save"/>">
+          <input type="submit" class="formvalid" value="<fmt:message key="system.plugins.save"/>">
         </div>
       </form>
     </div>
