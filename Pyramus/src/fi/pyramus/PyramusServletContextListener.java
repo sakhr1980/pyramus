@@ -96,7 +96,9 @@ public class PyramusServletContextListener implements ServletContextListener {
       // Initializes all configured authentication strategies
       AuthenticationProviderVault.getInstance().initializeStrategies();
       
-      trustSelfSignedCerts();
+      if ("development".equals(System.getProperties().getProperty("system.environment"))) {
+        trustSelfSignedCerts();
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
