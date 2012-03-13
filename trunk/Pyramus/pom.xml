@@ -98,12 +98,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-      <version>4.0.1.Final</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
 	  <groupId>fi.internetix.smvcj</groupId>
 	  <artifactId>smvcj</artifactId>
 	  <version>0.0.2-SNAPSHOT</version>

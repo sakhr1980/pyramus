@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.metamodel.EntityType;
@@ -18,12 +17,11 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
 import org.hibernate.CacheMode;
-import org.hibernate.ScrollableResults;
 import org.hibernate.search.MassIndexer;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.batchindexing.MassIndexerProgressMonitor;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
-import org.hibernate.stat.Statistics;
 
 @Stateless
 public class SystemDAO {
@@ -94,16 +92,19 @@ public class SystemDAO {
     return result;
   }
   
-  public void reindexHibernateSearchObjects(Class<?> entity) throws InterruptedException {
+  public void reindexHibernateSearchObjects(Class<?> entity, MassIndexerProgressMonitor monitor) throws InterruptedException {
     EntityManager entityManager = getEntityManager();
     
     FullTextEntityManager fullTextSession = Search.getFullTextEntityManager(entityManager);
     MassIndexer massIndexer = fullTextSession.createIndexer(entity);
     
-    massIndexer.batchSizeToLoadObjects(1);
+    massIndexer.batchSizeToLoadObjects(100);
     massIndexer.threadsForSubsequentFetching(1);
     massIndexer.threadsToLoadObjects(1);
-    massIndexer.cacheMode(CacheMode.IGNORE);
+    massIndexer.cacheMode(CacheMode.NORMAL);
+    massIndexer.optimizeOnFinish(true);
+    if (monitor != null)
+      massIndexer.progressMonitor(monitor);
     
     massIndexer.startAndWait();
   }
