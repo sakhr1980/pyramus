@@ -327,12 +327,12 @@ public class StudentProject implements ArchivableEntity {
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
   @IndexColumn (name = "indexColumn")
   @JoinColumn (name="studentProject")
-  @IndexedEmbedded
+  @IndexedEmbedded 
   private List<StudentProjectModule> studentProjectModules = new Vector<StudentProjectModule>();
 
   @ManyToOne 
   @JoinColumn(name="creator")
-  @IndexedEmbedded
+  @IndexedEmbedded (depth = 1)
   private User creator;
   
   @Column (updatable=false, nullable=false)

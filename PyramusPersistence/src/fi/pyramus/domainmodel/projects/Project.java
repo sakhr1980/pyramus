@@ -289,7 +289,7 @@ public class Project implements ArchivableEntity {
 
   @ManyToOne 
   @JoinColumn(name="creator")
-  @IndexedEmbedded
+  @IndexedEmbedded (depth = 1)
   private User creator;
   
   @Column (updatable=false, nullable=false)

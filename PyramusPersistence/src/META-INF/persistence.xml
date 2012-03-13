@@ -20,6 +20,7 @@
 
       <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" />
       <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
+      <property name="hibernate.search.default.exclusive_index_use" value="true"/>
 
     </properties>
   </persistence-unit>

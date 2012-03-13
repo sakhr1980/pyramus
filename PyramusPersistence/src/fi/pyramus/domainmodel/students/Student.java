@@ -528,7 +528,7 @@ public class Student implements ArchivableEntity {
 
   @ManyToOne
   @JoinColumn (name = "school")
-  @IndexedEmbedded
+  @IndexedEmbedded (depth = 1)
   private School school;
   
   @NotNull
