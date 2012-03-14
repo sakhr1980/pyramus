@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.internetix.smvc.controllers.RequestController;
 import fi.internetix.smvc.controllers.RequestControllerMapper;
 import fi.internetix.smvc.logging.Logging;

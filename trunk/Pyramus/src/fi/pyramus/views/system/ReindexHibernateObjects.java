@@ -5,8 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.search.impl.SimpleIndexingProgressMonitor;
-import org.hibernate.search.jmx.IndexingProgressMonitor;
 
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
@@ -20,6 +18,7 @@ public class ReindexHibernateObjects extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
     SystemDAO systemDAO = DAOFactory.getInstance().getSystemDAO();
+    boolean redirectBack = false;
     
     Class<?> indexClass = null;
     String indexClassName = requestContext.getString("class");
@@ -31,17 +30,16 @@ public class ReindexHibernateObjects extends PyramusViewController {
       if (pendingIndexingTasks == null) {
         pendingIndexingTasks = systemDAO.getIndexedEntities();
         session.setAttribute("pendingIndexingTasks", pendingIndexingTasks);
-        requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/system/reindexhibernateobjects.page");
-        return;
-      }
-      
-      if (pendingIndexingTasks.size() != 0) {
-        indexClass = pendingIndexingTasks.get(0);
-        pendingIndexingTasks.remove(0);
-        session.setAttribute("pendingIndexingTasks", pendingIndexingTasks);
+        redirectBack = true;
       } else {
-        requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/index.page");
-        return;
+        if (pendingIndexingTasks.size() != 0) {
+          indexClass = pendingIndexingTasks.get(0);
+          pendingIndexingTasks.remove(0);
+          session.setAttribute("pendingIndexingTasks", pendingIndexingTasks);
+          redirectBack = true;
+        } else {
+          session.removeAttribute("pendingIndexingTasks");
+        }
       }
     } else {
       try {
@@ -49,27 +47,26 @@ public class ReindexHibernateObjects extends PyramusViewController {
       } catch (ClassNotFoundException e) {
       }
     }
-
-    if (indexClass == null) {
-      requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/index.page");
-      return;
-    }
    
-    Logging.logInfo("Indexing class " + indexClass.toString());
-
-    IndexingProgressMonitor progressMonitor = new IndexingProgressMonitor();
-    try {
-      systemDAO.reindexHibernateSearchObjects(indexClass, progressMonitor);
-    } catch (InterruptedException e) {
-      throw new SmvcRuntimeException(e);
+    if (indexClass != null) {
+      Logging.logInfo("Indexing class " + indexClass.toString());
+  
+      try {
+        systemDAO.reindexHibernateSearchObjects(indexClass, 200);
+      } catch (InterruptedException e) {
+        throw new SmvcRuntimeException(e);
+      }
     }
     
-    if (StringUtils.isNotBlank(indexClassName)) {
+    if (redirectBack) {
+      if (indexClass != null) {
+        requestContext.getRequest().setAttribute("entityName", indexClass.toString());
+      }
+      
+      requestContext.setIncludeJSP("/templates/system/reindexhibernateobjects.jsp");
+    } else {
       requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/index.page");
-      return;
     }
-
-    requestContext.setRedirectURL(requestContext.getRequest().getContextPath() + "/system/reindexhibernateobjects.page");
   }
 
   public UserRole[] getAllowedRoles() {
