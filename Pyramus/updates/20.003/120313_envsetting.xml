@@ -1,31 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-  <alterData>
-    <insert table="SettingKey">
-      <value type="java.lang.Long" column="id" value="21"/>
-      <value type="java.lang.String" column="name" value="system.environment"/>
-    </insert>
-    <insert table="Setting">
-      <value type="java.lang.Long" column="id" value="21"/>
-      <value type="java.lang.Long" column="settingKey" value="21"/>
-      <value type="java.lang.String" column="value" value="production"/>
-    </insert>
-    <update table="SettingKey">
-      <set>
-        <value type="java.lang.Long" column="sequence_next_hi_value" value="22"/>
-      </set>
-      <where>
-        <equals type="java.lang.String" column="sequence_name" value="SettingKey"/>
-      </where>
-    </update>
-    <update table="Setting">
-      <set>
-        <value type="java.lang.Long" column="sequence_next_hi_value" value="22"/>
-      </set>
-      <where>
-        <equals type="java.lang.String" column="sequence_name" value="Setting"/>
-      </where>
-    </update>
-  </alterData>
+  <sql>insert into SettingKey (id, name) select max(id) + 1, 'system.environment' from SettingKey</sql>
+  <sql>insert into Setting (id, settingKey, value) select max(id) + 1, (select id from SettingKey where name = 'system.environment'), 'production' from Setting</sql>
+  <sql>update hibernate_sequences set sequence_next_hi_value = (select max(id) + 1 from Setting) where sequence_name = 'Setting'</sql>
+  <sql>update hibernate_sequences set sequence_next_hi_value = (select max(id) + 1 from SettingKey) where sequence_name = 'SettingKey'</sql>
+
 </update>
