@@ -70,12 +70,7 @@ public class CreateStudentViewController extends PyramusViewController implement
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
 
     List<StudentVariableKey> studentVariableKeys = variableKeyDAO.listUserEditableStudentVariableKeys();
-    Collections.sort(contactTypes, new StringAttributeComparator("getVariableName"));
-//    Collections.sort(studentVariableKeys, new Comparator<StudentVariableKey>() {
-//      public int compare(StudentVariableKey o1, StudentVariableKey o2) {
-//        return o1.getVariableName() == null ? -1 : o2.getVariableName() == null ? 1 : o1.getVariableName().compareTo(o2.getVariableName());
-//      }
-//    });
+    Collections.sort(studentVariableKeys, new StringAttributeComparator("getVariableName"));
     
     pageRequestContext.getRequest().setAttribute("schools", schools);
     pageRequestContext.getRequest().setAttribute("activityTypes", studentActivityTypeDAO.listUnarchived());
