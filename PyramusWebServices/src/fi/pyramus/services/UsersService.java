@@ -3,6 +3,7 @@ package fi.pyramus.services;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.persistence.EnumType;
+import javax.xml.ws.BindingType;
 
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.ContactTypeDAO;
@@ -17,6 +18,7 @@ import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.users.UserEntity;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class UsersService extends PyramusService {
 
   public UserEntity[] listUsers() {

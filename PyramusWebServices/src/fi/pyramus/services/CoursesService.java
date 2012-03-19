@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -71,6 +72,7 @@ import fi.pyramus.services.entities.courses.CourseStudentEntity;
 import fi.pyramus.services.entities.courses.CourseUserEntity;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class CoursesService extends PyramusService {
 
   public CourseEntity createCourse(@WebParam (name = "moduleId") Long moduleId, @WebParam (name = "name") String name, @WebParam (name = "nameExtension") String nameExtension, @WebParam (name = "subjectId") Long subjectId,

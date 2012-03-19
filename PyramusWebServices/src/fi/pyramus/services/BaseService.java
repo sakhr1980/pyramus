@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AcademicTermDAO;
@@ -47,6 +48,7 @@ import fi.pyramus.services.entities.base.SubjectEntity;
 import fi.pyramus.util.StringAttributeComparator;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class BaseService extends PyramusService {
 
   public NationalityEntity getNationalityByCode(@WebParam (name = "code") String code) {

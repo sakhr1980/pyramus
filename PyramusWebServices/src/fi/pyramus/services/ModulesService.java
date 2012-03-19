@@ -2,6 +2,7 @@ package fi.pyramus.services;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationTypeDAO;
@@ -27,6 +28,7 @@ import fi.pyramus.services.entities.modules.ModuleComponentEntity;
 import fi.pyramus.services.entities.modules.ModuleEntity;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class ModulesService extends PyramusService {
 
   public ModuleEntity createModule(@WebParam(name = "name") String name, @WebParam(name = "subjectId") Long subjectId,
