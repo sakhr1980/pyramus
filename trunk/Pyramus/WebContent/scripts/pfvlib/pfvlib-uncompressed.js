@@ -250,7 +250,12 @@ fi.internetix.validation.FieldValidatorVault =
    * @returns {Boolean} true if field is mandatory
    */
   isMandatory: function () {
-    return this._field.hasClassName('required');
+    for (var i = this._validators.length - 1; i >= 0; i--) {
+      if (this._validators[i].getType() == fi.internetix.validation.FieldValidator.TYPE_MANDATORY)
+        return true;
+    }
+    
+    return false;
   },
   /**
    * Returns whether field is inside form  
@@ -319,7 +324,7 @@ fi.internetix.validation.FieldValidatorVault =
         case fi.internetix.validation.FieldValidator.STATUS_UNKNOWN:
           if (oldStatus == fi.internetix.validation.FieldValidator.STATUS_VALID)
             this._field.removeClassName('valid');
-          else if (oldStatus == fi.internetix.validation.FieldValidator.STATUS_INVALID)
+          else 
             this._field.removeClassName('invalid');
           __formValidationHook(this._field.form, this.isMandatory());          
         break;
@@ -330,7 +335,7 @@ fi.internetix.validation.FieldValidatorVault =
           __formValidationHook(this._field.form, true);
         break;
         case fi.internetix.validation.FieldValidator.STATUS_VALID:
-          if (oldStatus == fi.internetix.validation.FieldValidator.STATUS_INVALID)
+          if (oldStatus != fi.internetix.validation.FieldValidator.STATUS_VALID)
             this._field.removeClassName('invalid');
           this._field.addClassName('valid');
           __formValidationHook(this._field.form, false);
@@ -428,13 +433,7 @@ function __formValidationHook(formElement, isInvalid) {
     return delegators;
   },
   _generateFieldName: function (field) {
-    var name = field.name + ';' + field.id;
-    if (field.form) {
-      var formName = field.form.getAttribute('name')||'';
-      var formId = field.form.getAttribute('id')||'';
-      name += formName + ';' + formId;
-    }
-    return name;
+    return field.identify();
   },
   _delegators: new Hash()
 };/**

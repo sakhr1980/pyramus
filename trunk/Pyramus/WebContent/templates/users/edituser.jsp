@@ -539,7 +539,7 @@
                   <jsp:param name="titleLocale" value="users.editUser.password1Title"/>
                   <jsp:param name="helpLocale" value="users.editUser.password1Help"/>
                 </jsp:include>                  
-                <input type="password" class="equals" ix:equals-field-name="password2" name="password1" value="" size="30">
+                <input type="password" class="equals equals-password2" name="password1" value="" size="30">
               </div>
               
               <div class="genericFormSection">  
@@ -547,7 +547,7 @@
                   <jsp:param name="titleLocale" value="users.editUser.password2Title"/>
                   <jsp:param name="helpLocale" value="users.editUser.password2Help"/>
                 </jsp:include>                  
-                <input type="password" class="equals" ix:equals-field-name="password1" name="password2" value="" size="30">
+                <input type="password" class="equals equals-password1" name="password2" value="" size="30">
               </div>
             </div>
 
