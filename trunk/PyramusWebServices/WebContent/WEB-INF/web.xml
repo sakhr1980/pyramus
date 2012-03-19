@@ -98,9 +98,10 @@
     <servlet-name>UsersService</servlet-name>
     <url-pattern>/services/Users/*</url-pattern>
   </servlet-mapping>
+  
   <security-constraint>
     <web-resource-collection>
-      <web-resource-name>webservices</web-resource-name>
+      <web-resource-name>WebServices</web-resource-name>
       <url-pattern>/*</url-pattern>
       <http-method>GET</http-method>
       <http-method>POST</http-method>
@@ -110,19 +111,19 @@
       <http-method>TRACE</http-method>
       <http-method>DELETE</http-method>
     </web-resource-collection>
-<!-- 
     <auth-constraint>
-      <role-name>webservices</role-name>
+      <role-name>WebServices</role-name>
     </auth-constraint>
--->
     <user-data-constraint>
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
-<!-- 
   <login-config>
     <auth-method>BASIC</auth-method>
-    <realm-name>webservices</realm-name>
+    <realm-name>WebServices</realm-name>
   </login-config>
- -->
+  <security-role>
+    <description>Pyramus WebServices</description>
+    <role-name>WebServices</role-name>
+  </security-role>
 </web-app>

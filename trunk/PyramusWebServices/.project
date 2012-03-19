@@ -3,6 +3,7 @@
 	<name>PyramusWebServices</name>
 	<comment></comment>
 	<projects>
+		<project>PyramusWebServices</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
