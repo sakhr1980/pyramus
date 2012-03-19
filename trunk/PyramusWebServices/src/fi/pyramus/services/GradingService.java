@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.BindingType;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -36,6 +37,7 @@ import fi.pyramus.services.entities.grading.GradingScaleEntity;
 import fi.pyramus.services.entities.grading.TransferCreditEntity;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class GradingService extends PyramusService {
   
   public TransferCreditEntity[] listStudentsTransferCredits(@WebParam (name = "studentId") Long studentId) {

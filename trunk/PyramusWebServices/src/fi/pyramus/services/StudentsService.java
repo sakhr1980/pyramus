@@ -6,6 +6,7 @@ import java.util.List;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.persistence.EnumType;
+import javax.xml.ws.BindingType;
 
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AddressDAO;
@@ -47,6 +48,7 @@ import fi.pyramus.services.entities.students.AbstractStudentEntity;
 import fi.pyramus.services.entities.students.StudentEntity;
 
 @WebService
+@BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
 public class StudentsService extends PyramusService {
 
   public AbstractStudentEntity getAbstractStudentById(@WebParam (name="abstractStudentId") Long abstractStudentId) {
