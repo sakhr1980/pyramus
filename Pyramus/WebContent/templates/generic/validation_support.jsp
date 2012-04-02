@@ -5,7 +5,7 @@
   <c:when test="${validationSupportIncluded != true}">
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/pfvlib/pfvlib-uncompressed.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/pfvlib-custom/extra-validators.js"></script>
-    <link rel="StyleSheet" href="${pageContext.request.contextPath}/css/validation.css" type="text/css"></link>
+    <link rel="StyleSheet" href="${pageContext.request.contextPath}/css/validation.css" type="text/css" />
     <script type="text/javascript">
       function revalidateTableCell(tableComponent, row, column) {
         var cellEditor = tableComponent.getCellEditor(row, column);
