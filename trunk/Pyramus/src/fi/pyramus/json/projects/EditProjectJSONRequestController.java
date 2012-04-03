@@ -3,13 +3,15 @@ package fi.pyramus.json.projects;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.StaleObjectStateException;
 
+import fi.internetix.smvc.Severity;
 import fi.internetix.smvc.controllers.JSONRequestContext;
+import fi.pyramus.I18N.Messages;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.TagDAO;
@@ -39,7 +41,7 @@ public class EditProjectJSONRequestController extends JSONRequestController {
 
     // Project
 
-    Long projectId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter("project"));
+    Long projectId = jsonRequestContext.getLong("project");
     Project project = projectDAO.findById(projectId);
     
     // Version check
@@ -50,11 +52,9 @@ public class EditProjectJSONRequestController extends JSONRequestController {
     String name = jsonRequestContext.getRequest().getParameter("name");
     String description = jsonRequestContext.getRequest().getParameter("description");
     User user = userDAO.findById(jsonRequestContext.getLoggedUserId());
-    Long optionalStudiesLengthTimeUnitId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(
-        "optionalStudiesLengthTimeUnit"));
+    Long optionalStudiesLengthTimeUnitId = jsonRequestContext.getLong("optionalStudiesLengthTimeUnit");
     EducationalTimeUnit optionalStudiesLengthTimeUnit = educationalTimeUnitDAO.findById(optionalStudiesLengthTimeUnitId);
-    Double optionalStudiesLength = NumberUtils.createDouble(jsonRequestContext.getRequest().getParameter(
-        "optionalStudiesLength"));
+    Double optionalStudiesLength = jsonRequestContext.getDouble("optionalStudiesLength");
     String tagsText = jsonRequestContext.getString("tags");
     
     Set<Tag> tagEntities = new HashSet<Tag>();
@@ -70,6 +70,13 @@ public class EditProjectJSONRequestController extends JSONRequestController {
       }
     }
     
+    if (optionalStudiesLength == null) {
+      Messages messages = Messages.getInstance();
+      Locale locale = jsonRequestContext.getRequest().getLocale();
+
+      jsonRequestContext.addMessage(Severity.ERROR, messages.getText(locale, "projects.editProject.projectOptionalStudiesLengthNotDefined"));
+    }
+    
     projectDAO.update(project, name, description, optionalStudiesLength, optionalStudiesLengthTimeUnit, user);
 
     // Tags
@@ -79,16 +86,14 @@ public class EditProjectJSONRequestController extends JSONRequestController {
     // Project modules
 
     Set<Long> existingIds = new HashSet<Long>();
-    int rowCount = NumberUtils.createInteger(
-        jsonRequestContext.getRequest().getParameter("modulesTable.rowCount")).intValue();
+    int rowCount = jsonRequestContext.getInteger("modulesTable.rowCount").intValue();
     for (int i = 0; i < rowCount; i++) {
       String colPrefix = "modulesTable." + i;
       int optionality = new Integer(jsonRequestContext.getRequest().getParameter(colPrefix + ".optionality"))
           .intValue();
-      Long projectModuleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(
-          colPrefix + ".projectModuleId"));
+      Long projectModuleId = jsonRequestContext.getLong(colPrefix + ".projectModuleId");
       if (projectModuleId == -1) {
-        Long moduleId = NumberUtils.createLong(jsonRequestContext.getRequest().getParameter(colPrefix + ".moduleId"));
+        Long moduleId = jsonRequestContext.getLong(colPrefix + ".moduleId");
         Module module = moduleDAO.findById(moduleId);
         projectModuleId = projectModuleDAO.create(project, module,
             ProjectModuleOptionality.getOptionality(optionality)).getId();
