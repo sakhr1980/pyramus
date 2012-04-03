@@ -341,4 +341,7 @@ function replaceDateFields(container) {
   for (var i = 0; i < dateFields.length; i++) {
     replaceDateField(dateFields[i]);
   }
+  
+  if (Object.isFunction(forceRevalidateAll))
+    forceRevalidateAll(true);
 }
