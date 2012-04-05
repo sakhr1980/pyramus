@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
@@ -25,8 +28,11 @@ import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentGroupDAO;
 import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.base.CourseOptionality;
+import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CreditLink;
+import fi.pyramus.domainmodel.grading.CreditType;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.projects.StudentProject;
@@ -84,6 +90,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
     TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
     ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
+    CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
@@ -126,7 +133,6 @@ public class ViewStudentViewController extends PyramusViewController implements 
       }
     });
 
-    
     Map<Long, Boolean> studentHasImage = new HashMap<Long, Boolean>();
     Map<Long, List<CourseStudent>> courseStudents = new HashMap<Long, List<CourseStudent>>();
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
@@ -138,6 +144,9 @@ public class ViewStudentViewController extends PyramusViewController implements 
     // StudentProject.id -> List of module beans
     Map<Long, List<StudentProjectModuleBean>> studentProjectModules = new HashMap<Long, List<StudentProjectModuleBean>>();
     final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
+    
+    JSONObject linkedCourseAssessments = new JSONObject();
+    JSONObject linkedTransferCredits = new JSONObject();
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
@@ -304,6 +313,109 @@ public class ViewStudentViewController extends PyramusViewController implements 
       });
 
       /**
+       * Linked CourseAssessments
+       */
+      
+      List<CreditLink> linkedCourseAssessmentByStudent = creditLinkDAO.listByStudentAndType(student, CreditType.CourseAssessment);
+      
+      Collections.sort(linkedCourseAssessmentByStudent, new Comparator<CreditLink>() {
+        private String getCourseAssessmentCompareStr(CourseAssessment courseAssessment) {
+          String result = "";
+          if (courseAssessment != null)
+            if (courseAssessment.getCourseStudent() != null)
+              if (courseAssessment.getCourseStudent().getCourse() != null)
+                result = courseAssessment.getCourseStudent().getCourse().getName();
+            
+          return result;
+        }
+        
+        @Override
+        public int compare(CreditLink o1, CreditLink o2) {
+          String s1 = getCourseAssessmentCompareStr((CourseAssessment) o1.getCredit());
+          String s2 = getCourseAssessmentCompareStr((CourseAssessment) o2.getCredit());
+          
+          return s1.compareToIgnoreCase(s2);
+        }
+      });
+      
+      JSONArray arr = new JSONArray();
+      for (CreditLink linkedCourseAssessment : linkedCourseAssessmentByStudent) {
+        CourseAssessment courseAssessment = (CourseAssessment) linkedCourseAssessment.getCredit();
+        
+        String subjectName = getSubjectText(courseAssessment.getCourseStudent().getCourse().getSubject(), pageRequestContext.getRequest().getLocale());
+        
+        JSONObject obj = new JSONObject();
+        obj.put("creditLinkId", linkedCourseAssessment.getId().toString());
+        obj.put("courseStudentId", courseAssessment.getCourseStudent().getId().toString());
+
+        obj.put("courseName", courseAssessment.getCourseStudent().getCourse().getName());
+        obj.put("subjectName", subjectName);
+        obj.put("creditDate", courseAssessment.getDate().getTime());
+        obj.put("courseLength", courseAssessment.getCourseStudent().getCourse().getCourseLength().getUnits().toString());
+        obj.put("courseLengthUnitName", courseAssessment.getCourseStudent().getCourse().getCourseLength().getUnit().getName());
+        
+        obj.put("gradeName", courseAssessment.getGrade() != null ? courseAssessment.getGrade().getName() : null);
+        obj.put("gradingScaleName", courseAssessment.getGrade() != null ? courseAssessment.getGrade().getGradingScale().getName() : null);
+        obj.put("assessingUserName", courseAssessment.getAssessingUser().getFullName());
+        
+        arr.add(obj);
+      }
+      
+      if (arr.size() > 0)
+        linkedCourseAssessments.put(student.getId(), arr);
+      
+      /**
+       * Linked TransferCredits
+       */
+      
+      List<CreditLink> linkedTransferCreditsByStudent = creditLinkDAO.listByStudentAndType(student, CreditType.TransferCredit);
+
+      Collections.sort(linkedTransferCreditsByStudent, new Comparator<CreditLink>() {
+        private String getCourseAssessmentCompareStr(TransferCredit tCredit) {
+          String result = "";
+         
+          if (tCredit != null)
+            result = tCredit.getCourseName();
+           
+          return result;
+        }
+        
+        @Override
+        public int compare(CreditLink o1, CreditLink o2) {
+          String s1 = getCourseAssessmentCompareStr((TransferCredit) o1.getCredit());
+          String s2 = getCourseAssessmentCompareStr((TransferCredit) o2.getCredit());
+          
+          return s1.compareToIgnoreCase(s2);
+        }
+      });
+      
+      arr = new JSONArray();
+      for (CreditLink linkedTransferCredit : linkedTransferCreditsByStudent) {
+        TransferCredit transferCredit = (TransferCredit) linkedTransferCredit.getCredit();
+        
+        String subjectName = getSubjectText(transferCredit.getSubject(), pageRequestContext.getRequest().getLocale());
+        
+        JSONObject obj = new JSONObject();
+        obj.put("creditLinkId", linkedTransferCredit.getId().toString());
+        obj.put("transferCreditId", transferCredit.getId().toString());
+
+        obj.put("courseName", transferCredit.getCourseName());
+        obj.put("subjectName", subjectName);
+        obj.put("creditDate", transferCredit.getDate().getTime());
+        obj.put("courseLength", transferCredit.getCourseLength().getUnits().toString());
+        obj.put("courseLengthUnitName", transferCredit.getCourseLength().getUnit().getName());
+        
+        obj.put("gradeName", transferCredit.getGrade() != null ? transferCredit.getGrade().getName() : null);
+        obj.put("gradingScaleName", transferCredit.getGrade() != null ? transferCredit.getGrade().getGradingScale().getName() : null);
+        obj.put("assessingUserName", transferCredit.getAssessingUser().getFullName());
+        
+        arr.add(obj);
+      }
+      
+      if (arr.size() > 0)
+        linkedTransferCredits.put(student.getId(), arr);
+      
+      /**
        * Project beans setup
        */
       List<StudentProject> studentsStudentProjects = studentProjectDAO.listByStudent(student);
@@ -392,6 +504,9 @@ public class ViewStudentViewController extends PyramusViewController implements 
       studentGroups.put(student.getId(), studentGroupDAO.listByStudent(student));
       studentProjects.put(student.getId(), studentProjectBeans);
     }
+
+    setJsDataVariable(pageRequestContext, "linkedCourseAssessments", linkedCourseAssessments.toString());
+    setJsDataVariable(pageRequestContext, "linkedTransferCredits", linkedTransferCredits.toString());
     
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("courses", courseStudents);
@@ -499,5 +614,40 @@ public class ViewStudentViewController extends PyramusViewController implements 
       return transferCredits;
     }
   }
+  
+  private String getSubjectText(Subject subject, Locale locale) {
+    if (subject == null)
+      return null;
+    
+    String subjectName = subject.getName();
+    String subjectCode = subject.getCode();
+    String subjectEducationType = subject.getEducationType() != null ? subject.getEducationType().getName() : null;
+    
+    String localizedSubject = subjectName;
+    
+    if ((subjectCode != null) && (subjectEducationType != null)) {
+      localizedSubject = Messages.getInstance().getText(locale, 
+          "generic.subjectFormatterWithEducationType", new Object[] {
+        subjectCode,
+        subjectName,
+        subjectEducationType
+      });
+    } else if (subjectEducationType != null) {
+      localizedSubject = Messages.getInstance().getText(locale, 
+          "generic.subjectFormatterNoSubjectCode", new Object[] {
+        subjectName,
+        subjectEducationType
+      });
+    } else if (subjectCode != null) {
+      localizedSubject = Messages.getInstance().getText(locale, 
+          "generic.subjectFormatterNoEducationType", new Object[] {
+        subjectCode,
+        subjectName
+      });
+    }
+
+    return localizedSubject;
+  }
+  
 }
 
