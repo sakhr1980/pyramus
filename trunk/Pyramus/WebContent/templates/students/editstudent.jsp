@@ -345,7 +345,7 @@
             </c:otherwise>
           </c:choose>
         
-          setupRelatedCommands(${student.id}, '${sprogName}');
+          setupRelatedCommands(${student.id}, '${sprogName}', ${studentHasCredits[student.id]});
 
           // Addresses
 
@@ -465,7 +465,7 @@
         }));
       }
 
-      function setupRelatedCommands(studentId, studyProgrammeName) {
+      function setupRelatedCommands(studentId, studyProgrammeName, studentHasCredits) {
         var studentRelatedActionsHoverMenu = new IxHoverMenu($('studentRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.editStudent.studentTabRelatedActionsLabel"/>'
         });
@@ -474,14 +474,53 @@
           iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
           text: '<fmt:message key="students.editStudent.studentTabRelatedActionsCopyAsNewStudyProgrammeLabel"/>',
           onclick: function (event) {
-            JSONRequest.request("students/copystudyprogramme.json", {
-              parameters: {
-                studentId: studentId
-              },
-              onSuccess: function (jsonResponse) {
-                window.location.reload();
-              }
-            });   
+
+            if (studentHasCredits) {
+              var dialog = new IxDialog({
+                id : 'chooseCopyMethod',
+                contentURL : GLOBAL_contextPath + '/students/studyprogrammecopydialog.page?student=' + studentId,
+                centered : true,
+                showOk : true,  
+                showCancel : true,
+                title : '<fmt:message key="students.copyStudyProgrammePopup.dialogTitle"/>',
+                okLabel : '<fmt:message key="students.copyStudyProgrammePopup.okLabel"/>',
+                cancelLabel : '<fmt:message key="students.copyStudyProgrammePopup.cancelLabel"/>'
+              });
+            
+              dialog.addDialogListener( function(event) {
+                var dlg = event.dialog;
+            
+                switch (event.name) {
+                  case 'okClick':
+                    var pelem = $(dlg.getContentDocument().documentElement);
+                    var cbox = pelem.down("input[name='linkStudentCreditsCheckbox']");
+                    var linkCredits = cbox.checked == true ? true : false;
+                    
+                    JSONRequest.request("students/copystudyprogramme.json", {
+                      parameters: {
+                        studentId: studentId,
+                        linkCredits: linkCredits
+                      },
+                      onSuccess: function (jsonResponse) {
+                        window.location.reload();
+                      }
+                    });   
+                  break;
+                }
+              });
+            
+              dialog.open();
+            } else {
+              JSONRequest.request("students/copystudyprogramme.json", {
+                parameters: {
+                  studentId: studentId,
+                  linkCredits: false
+                },
+                onSuccess: function (jsonResponse) {
+                  window.location.reload();
+                }
+              }); 
+            }
           }
         }));       
     
@@ -541,7 +580,7 @@
         <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
       </fmt:message>
     </h1>
-  
+
     <div id="editStudentEditFormContainer"> 
       <div class="genericFormContainer"> 
 

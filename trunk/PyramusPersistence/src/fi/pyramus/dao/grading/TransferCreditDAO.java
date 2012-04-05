@@ -115,5 +115,22 @@ public class TransferCreditDAO extends PyramusEntityDAO<TransferCredit> {
     
     return transferCredit;
   }
+
+  public Long countByStudent(Student student) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<TransferCredit> root = criteria.from(TransferCredit.class);
+    
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(TransferCredit_.student), student),
+            criteriaBuilder.equal(root.get(TransferCredit_.archived), Boolean.FALSE)
+        ));
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
   
 }

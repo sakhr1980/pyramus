@@ -1,5 +1,32 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
+<%@page import="java.util.Iterator"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@page import="java.util.Map"%>
+<%
+  @SuppressWarnings("unchecked")
+  Map<String, String> jsData = (Map<String, String>) request.getAttribute("jsData");
+  if (jsData != null) {
+    out.append("<script type=\"text/javascript\">");
+    out.append("var JSDATA={");
+    
+    Iterator<String> keys = jsData.keySet().iterator();
+    while (keys.hasNext()) {
+      String key = keys.next();
+      String value = jsData.get(key);
+      out.append("'");
+      out.append(StringEscapeUtils.escapeJavaScript(key));
+      out.append("':'");
+      out.append(StringEscapeUtils.escapeJavaScript(value));
+      out.append("'");
+      if (keys.hasNext())
+        out.append(',');
+    }
+    
+    out.append("};</script>");
+  }
+%>
+
 <!-- Global javascript variables -->
 
 <script type="text/javascript">

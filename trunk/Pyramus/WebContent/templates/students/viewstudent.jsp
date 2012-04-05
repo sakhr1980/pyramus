@@ -239,11 +239,11 @@
         return coursesTable;
       }
 
-      function setupTransferCreditsTab(studentId) {
+      function setupTransferCreditsTable(studentId, containerElement, tableId) {
         /* TODO: Oppilaitos */
         
-        var transferCreditsTable = new IxTable($('transferCreditsTableContainer.' + studentId), {
-          id: 'transferCreditsTable.' + studentId,
+        var transferCreditsTable = new IxTable(containerElement, {
+          id: tableId,
           rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.transferCreditsTableNameHeader"/>',
@@ -353,9 +353,9 @@
         return transferCreditsTable;
       }
       
-      function setupCourseAssessmentsTab(studentId) {
-        var courseAssessmentsTable = new IxTable($('courseAssessmentsTableContainer.' + studentId), {
-          id: 'courseAssessmentsTable.' + studentId,
+      function setupCourseAssessmentsTable(studentId, containerElement, tableId, editable) {
+        var courseAssessmentsTable = new IxTable(containerElement, {
+          id: tableId,
           rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableNameHeader"/>',
@@ -466,6 +466,7 @@
             width: 22,
             right: 8,
             dataType: 'button',
+            hidden: !editable,
             imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
             tooltip: '<fmt:message key="students.viewStudent.courseAssessmentsTableEditTooltip"/>',
             onclick: function (event) {
@@ -533,6 +534,9 @@
         var transferCreditsTable;
         var courseAssessmentsTable;
         
+        var linkedCourseAssessmentsContainer = JSDATA["linkedCourseAssessments"].evalJSON();
+        var linkedTransferCreditsContainer = JSDATA["linkedTransferCredits"].evalJSON();
+
         <c:forEach var="student" items="${students}">
           // Setup basics
           setupBasicTab(${abstractStudent.id}, ${student.id}, '${fn:escapeXml(student.fullName)}');
@@ -570,7 +574,10 @@
           });
           
           // Setup grade tabs
-          transferCreditsTable = setupTransferCreditsTab(${student.id});
+          transferCreditsTable = setupTransferCreditsTable(
+              ${student.id}, 
+              $('transferCreditsTableContainer.' + '${student.id}'),
+              'transferCreditsTable.' + '${student.id}');
 
           rows.clear();
           <c:forEach var="studentTransferCredit" items="${transferCredits[student.id]}">
@@ -630,7 +637,11 @@
               $('viewStudentTransferCreditsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
           });
           
-          courseAssessmentsTable = setupCourseAssessmentsTab(${student.id});
+          courseAssessmentsTable = setupCourseAssessmentsTable(
+              ${student.id}, 
+              $('courseAssessmentsTableContainer.' + '${student.id}'), 
+              'courseAssessmentsTable.' + '${student.id}',
+              true);
 
           rows.clear();
           <c:forEach var="studentCourseAssessment" items="${courseAssessments[student.id]}">
@@ -692,8 +703,100 @@
               $('viewStudentCourseAssessmentsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
           });
 
+          // Linked course assessments
           
+          var linkedCourseAssessmentsTable = setupCourseAssessmentsTable(
+              ${student.id}, 
+              $('linkedCourseAssessmentsTableContainer.' + '${student.id}'), 
+              'linkedCourseAssessmentsTable.' + '${student.id}',
+              false);
 
+          var linkedCourseAssessments = linkedCourseAssessmentsContainer['${student.id}'];
+
+          if (linkedCourseAssessments) {
+            rows.clear();
+            for (var i = 0, l = linkedCourseAssessments.length; i < l; i++) {
+              var cAs = linkedCourseAssessments[i];
+              rows.push([
+                  cAs.courseName,
+                  cAs.subjectName,
+                  cAs.creditDate,
+                  cAs.courseLength,
+                  cAs.courseLengthUnitName,
+                  cAs.gradeName,
+                  cAs.gradingScaleName,
+                  cAs.assessingUserName,
+                  cAs.courseStudentId,
+                  '']);
+            }
+            linkedCourseAssessmentsTable.addRows(rows);
+          }
+
+          if (linkedCourseAssessmentsTable.getRowCount() > 0) {
+            $('viewStudentLinkedCourseAssessmentsTotalValue.${student.id}').innerHTML = linkedCourseAssessmentsTable.getRowCount(); 
+          }
+          else {
+            $('viewStudentLinkedCourseAssessmentsTotalContainer.${student.id}').setStyle({
+              display: 'none'
+            });
+          }
+
+          linkedCourseAssessmentsTable.addListener("afterFiltering", function (event) {
+            var visibleRows = event.tableComponent.getVisibleRowCount();
+            var totalRows = event.tableComponent.getRowCount();
+            if (visibleRows == totalRows)
+              $('viewStudentLinkedCourseAssessmentsTotalValue.${student.id}').innerHTML = totalRows;
+            else
+              $('viewStudentLinkedCourseAssessmentsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
+          });
+          
+          // Linked transfer credits
+          
+          var linkedTransferCreditsTable = setupTransferCreditsTable(
+              ${student.id}, 
+              $('linkedTransferCreditsTableContainer.' + '${student.id}'),
+              'linkedTransferCreditsTable.' + '${student.id}');
+
+          var linkedTransferCredits = linkedTransferCreditsContainer['${student.id}'];
+
+          if (linkedTransferCredits) {
+            rows.clear();
+            for (var i = 0, l = linkedTransferCredits.length; i < l; i++) {
+              var tc = linkedTransferCredits[i];
+              rows.push([
+                  tc.courseName,
+                  tc.subjectName,
+                  tc.creditDate,
+                  tc.courseLength,
+                  tc.courseLengthUnitName,
+                  tc.gradeName,
+                  tc.gradingScaleName,
+                  tc.assessingUserName,
+                  tc.courseStudentId,
+                  '']);
+            }
+            linkedTransferCreditsTable.addRows(rows);
+          }
+          
+          if (linkedTransferCreditsTable.getRowCount() > 0) {
+            $('viewStudentLinkedTransferCreditsTotalValue.${student.id}').innerHTML = linkedTransferCreditsTable.getRowCount(); 
+          }
+          else {
+            $('viewStudentLinkedTransferCreditsTotalContainer.${student.id}').setStyle({
+              display: 'none'
+            });
+          }
+          
+          linkedTransferCreditsTable.addListener("afterFiltering", function (event) {
+            var visibleRows = event.tableComponent.getVisibleRowCount();
+            var totalRows = event.tableComponent.getRowCount();
+            if (visibleRows == totalRows)
+              $('viewStudentLinkedTransferCreditsTotalValue.${student.id}').innerHTML = totalRows;
+            else
+              $('viewStudentLinkedTransferCreditsTotalValue.${student.id}').innerHTML = visibleRows + " (" + totalRows + ")";
+          });
+
+          // Projects 
           
           var projectTable;
           <c:forEach var="sp" items="${studentProjects[student.id]}">
@@ -1303,6 +1406,28 @@
                     <div id="viewStudentTransferCreditsTableContainer"><div id="transferCreditsTableContainer.${student.id}"></div></div>
                     <div id="viewStudentTransferCreditsTotalContainer.${student.id}" class="viewStudentTransferCreditsTotalContainer">
                       <fmt:message key="students.viewStudent.transferCreditsTotal"/> <span id="viewStudentTransferCreditsTotalValue.${student.id}"></span>
+                    </div>
+                  </div>
+
+                  <div class="genericFormSection">                                
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="students.viewStudent.linkedCourseAssessmentsTitle"/>
+                      <jsp:param name="helpLocale" value="students.viewStudent.linkedCourseAssessmentsHelp"/>
+                    </jsp:include> 
+                    <div id="viewStudentLinkedCourseAssessmentsTableContainer"><div id="linkedCourseAssessmentsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentLinkedCourseAssessmentsTotalContainer.${student.id}" class="viewStudentLinkedCourseAssessmentsTotalContainer">
+                      <fmt:message key="students.viewStudent.linkedCourseAssessmentsTotal"/> <span id="viewStudentLinkedCourseAssessmentsTotalValue.${student.id}"></span>
+                    </div>
+                  </div>
+
+                  <div class="genericFormSection">                                  
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="students.viewStudent.linkedTransferCreditsTitle"/>
+                      <jsp:param name="helpLocale" value="students.viewStudent.linkedTransferCreditsHelp"/>
+                    </jsp:include> 
+                    <div id="viewStudentLinkedTransferCreditsTableContainer"><div id="linkedTransferCreditsTableContainer.${student.id}"></div></div>
+                    <div id="viewStudentLinkedTransferCreditsTotalContainer.${student.id}" class="viewStudentLinkedTransferCreditsTotalContainer">
+                      <fmt:message key="students.viewStudent.linkedTransferCreditsTotal"/> <span id="viewStudentLinkedTransferCreditsTotalValue.${student.id}"></span>
                     </div>
                   </div>
 

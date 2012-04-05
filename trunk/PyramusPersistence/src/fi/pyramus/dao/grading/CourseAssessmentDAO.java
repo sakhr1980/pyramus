@@ -119,5 +119,24 @@ public class CourseAssessmentDAO extends PyramusEntityDAO<CourseAssessment> {
     
     return assessment;
   }
+
+  public Long countByStudent(Student student) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<CourseAssessment> root = criteria.from(CourseAssessment.class);
+    Join<CourseAssessment, CourseStudent> courseStudentJoin = root.join(CourseAssessment_.courseStudent);
+    
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(courseStudentJoin.get(CourseStudent_.student), student),
+            criteriaBuilder.equal(courseStudentJoin.get(CourseStudent_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(CourseAssessment_.archived), Boolean.FALSE)
+        ));
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
   
 }

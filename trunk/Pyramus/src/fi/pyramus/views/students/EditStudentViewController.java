@@ -19,6 +19,10 @@ import fi.pyramus.dao.base.MunicipalityDAO;
 import fi.pyramus.dao.base.NationalityDAO;
 import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CreditDAO;
+import fi.pyramus.dao.grading.CreditLinkDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.students.AbstractStudentDAO;
 import fi.pyramus.dao.students.StudentActivityTypeDAO;
 import fi.pyramus.dao.students.StudentDAO;
@@ -57,6 +61,9 @@ public class EditStudentViewController extends PyramusViewController implements 
     LanguageDAO languageDAO = DAOFactory.getInstance().getLanguageDAO();
     ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
     ContactURLTypeDAO contactURLTypeDAO = DAOFactory.getInstance().getContactURLTypeDAO();
+    CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     AbstractStudent abstractStudent = abstractStudentDAO.findById(abstractStudentId);
@@ -97,6 +104,7 @@ public class EditStudentViewController extends PyramusViewController implements 
     });
     
     Map<Long, String> studentTags = new HashMap<Long, String>();
+    Map<Long, Boolean> studentHasCredits = new HashMap<Long, Boolean>();
     
     for (Student student : students) {
       StringBuilder tagsBuilder = new StringBuilder();
@@ -109,8 +117,13 @@ public class EditStudentViewController extends PyramusViewController implements 
       }
       
       studentTags.put(student.getId(), tagsBuilder.toString());
+      
+      studentHasCredits.put(student.getId(), 
+          creditLinkDAO.countByStudent(student) +
+          courseAssessmentDAO.countByStudent(student) +
+          transferCreditDAO.countByStudent(student) > 0);
     }
-
+    
     List<Nationality> nationalities = nationalityDAO.listUnarchived();
     Collections.sort(nationalities, new StringAttributeComparator("getName"));
     
@@ -147,6 +160,7 @@ public class EditStudentViewController extends PyramusViewController implements 
     pageRequestContext.getRequest().setAttribute("studyProgrammes", studyProgrammeDAO.listUnarchived());
     pageRequestContext.getRequest().setAttribute("studyEndReasons", studyEndReasonDAO.listTopLevelStudentStudyEndReasons());
     pageRequestContext.getRequest().setAttribute("variableKeys", studentVariableKeys);
+    pageRequestContext.getRequest().setAttribute("studentHasCredits", studentHasCredits);
     
     pageRequestContext.setIncludeJSP("/templates/students/editstudent.jsp");
   }

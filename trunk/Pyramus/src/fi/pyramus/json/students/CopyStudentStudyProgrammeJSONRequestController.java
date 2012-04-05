@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
@@ -12,7 +11,11 @@ import fi.pyramus.dao.base.AddressDAO;
 import fi.pyramus.dao.base.ContactInfoDAO;
 import fi.pyramus.dao.base.EmailDAO;
 import fi.pyramus.dao.base.PhoneNumberDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CreditLinkDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.students.StudentDAO;
+import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.Language;
@@ -21,12 +24,16 @@ import fi.pyramus.domainmodel.base.Nationality;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.StudyProgramme;
+import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CreditLink;
+import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentActivityType;
 import fi.pyramus.domainmodel.students.StudentEducationalLevel;
 import fi.pyramus.domainmodel.students.StudentExaminationType;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
+import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
 
@@ -38,10 +45,18 @@ public class CopyStudentStudyProgrammeJSONRequestController extends JSONRequestC
     ContactInfoDAO contactInfoDAO = DAOFactory.getInstance().getContactInfoDAO();
     EmailDAO emailDAO = DAOFactory.getInstance().getEmailDAO();
     PhoneNumberDAO phoneNumberDAO = DAOFactory.getInstance().getPhoneNumberDAO();
+    CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
+    UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 
-    Long studentId = NumberUtils.createLong(requestContext.getRequest().getParameter("studentId"));
+    Long studentId = requestContext.getLong("studentId");
     Student oldStudent = studentDAO.findById(studentId);
 
+    Boolean linkCredits = requestContext.getBoolean("linkCredits");
+    
+    User loggedUser = userDAO.findById(requestContext.getLoggedUserId());
+    
     AbstractStudent abstractStudent = oldStudent.getAbstractStudent();
     String firstName = oldStudent.getFirstName();
     String lastName = oldStudent.getLastName();
@@ -97,6 +112,23 @@ public class CopyStudentStudyProgrammeJSONRequestController extends JSONRequestC
       phoneNumberDAO.create(newStudent.getContactInfo(), phoneNumber.getContactType(), phoneNumber.getDefaultNumber(), phoneNumber.getNumber());
     }
 
+    if (linkCredits) {
+      List<CourseAssessment> assessments = courseAssessmentDAO.listByStudent(oldStudent);
+      for (CourseAssessment assessment : assessments) {
+        creditLinkDAO.create(assessment, newStudent, loggedUser);
+      }
+      
+      List<TransferCredit> transferCredits = transferCreditDAO.listByStudent(oldStudent);
+      for (TransferCredit transferCredit : transferCredits) {
+        creditLinkDAO.create(transferCredit, newStudent, loggedUser);
+      }
+      
+      List<CreditLink> creditLinks = creditLinkDAO.listByStudent(oldStudent);
+      for (CreditLink creditLink : creditLinks) {
+        creditLinkDAO.create(creditLink.getCredit(), newStudent, loggedUser);
+      }
+    }
+    
     String redirectURL = requestContext.getRequest().getContextPath() + "/students/editstudent.page?student=" + newStudent.getAbstractStudent().getId();
     String refererAnchor = requestContext.getRefererAnchor();
 
