@@ -48,7 +48,8 @@ public class CreditLinkDAO extends PyramusEntityDAO<CreditLink> {
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CreditLink_.student), student),
-            criteriaBuilder.equal(join.get(Credit_.creditType), creditType)
+            criteriaBuilder.equal(join.get(Credit_.creditType), creditType),
+            criteriaBuilder.equal(root.get(CreditLink_.archived), Boolean.FALSE)
         )
     );
     
@@ -64,7 +65,10 @@ public class CreditLinkDAO extends PyramusEntityDAO<CreditLink> {
     
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(CreditLink_.student), student)
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CreditLink_.student), student),
+            criteriaBuilder.equal(root.get(CreditLink_.archived), Boolean.FALSE)
+        )
     );
     
     return entityManager.createQuery(criteria).getResultList();
@@ -85,6 +89,25 @@ public class CreditLinkDAO extends PyramusEntityDAO<CreditLink> {
         ));
     
     return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public CreditLink findByStudentAndCredit(Student student, Credit credit) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CreditLink> criteria = criteriaBuilder.createQuery(CreditLink.class);
+    Root<CreditLink> root = criteria.from(CreditLink.class);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CreditLink_.student), student),
+            criteriaBuilder.equal(root.get(CreditLink_.credit), credit),
+            criteriaBuilder.equal(root.get(CreditLink_.archived), Boolean.FALSE)
+        )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
 }
