@@ -156,17 +156,6 @@ public class ViewStudentViewController extends PyramusViewController implements 
     	 */
     	
     	List<CourseStudent> courseStudentsByStudent = courseStudentDAO.listByStudent(student);
-    	Map<Long, List<CourseStudent>> courseStudentsByModule = new HashMap<Long, List<CourseStudent>>();
-      for (CourseStudent courseStudent : courseStudentsByStudent) {
-        Long moduleId = courseStudent.getCourse().getModule().getId(); 
-
-        List<CourseStudent> list = courseStudentsByModule.get(moduleId);
-        if (list == null)
-          list = new ArrayList<CourseStudent>();
-        
-        list.add(courseStudent);
-        courseStudentsByModule.put(moduleId, list);
-      }
     	
     	Collections.sort(courseStudentsByStudent, new Comparator<CourseStudent>() {
         private String getCourseAssessmentCompareStr(CourseStudent courseStudent) {
@@ -435,29 +424,44 @@ public class ViewStudentViewController extends PyramusViewController implements 
          *  c) create beans to be passed to jsp
          */
         
+        List<CourseAssessment> allStudentCourseAssessments = courseAssessmentDAO.listByStudent(student);
+        List<TransferCredit> allStudentTransferCredits = transferCreditDAO.listByStudent(student);
+        List<CreditLink> allStudentCreditLinks = creditLinkDAO.listByStudent(student);
+
+        for (CreditLink creditLink : allStudentCreditLinks) {
+          switch (creditLink.getCredit().getCreditType()) {
+            case CourseAssessment:
+              allStudentCourseAssessments.add(((CourseAssessment) creditLink.getCredit()));
+            break;
+
+            case TransferCredit:
+              allStudentTransferCredits.add(((TransferCredit) creditLink.getCredit()));
+            break;
+          }
+        }
+        
         for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
-          boolean hasCourse = courseStudentsByModule.containsKey(studentProjectModule.getModule().getId());
           boolean hasPassingGrade = false;
-          List<CourseStudent> courseStudentList = courseStudentsByModule.get(studentProjectModule.getModule().getId());
-          List<TransferCredit> transferCreditList = new ArrayList<TransferCredit>();
+
+          List<CourseStudent> projectCourseCourseStudentList = new ArrayList<CourseStudent>();
+          List<TransferCredit> projectCourseTransferCreditList = new ArrayList<TransferCredit>();
 
           // Find out if there is a course that has passing grade for the module
-          if (courseStudentList != null) {
-            for (CourseStudent cs : courseStudentList) {
-              CourseAssessment ca = courseAssessmentsByCourseStudent.get(cs.getId());
-              if (ca != null && ca.getGrade() != null && ca.getGrade().getPassingGrade()) {
+          
+          for (CourseAssessment assessment : allStudentCourseAssessments) {
+            if (assessment.getCourseStudent().getCourse().getModule().getId().equals(studentProjectModule.getModule().getId())) {
+              if (assessment.getGrade() != null && assessment.getGrade().getPassingGrade()) {
+                projectCourseCourseStudentList.add(assessment.getCourseStudent());
                 hasPassingGrade = true; 
-                break;
               }
             }
-          } else
-            courseStudentList = new ArrayList<CourseStudent>();
+          }
           
           if ((studentProjectModule.getModule().getCourseNumber() != null) && (studentProjectModule.getModule().getCourseNumber() != -1) && (studentProjectModule.getModule().getSubject() != null)) {
-            for (TransferCredit tc : transferCreditsByStudent) {
+            for (TransferCredit tc : allStudentTransferCredits) {
               if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
                 if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
-                  transferCreditList.add(tc);
+                  projectCourseTransferCreditList.add(tc);
                   if (tc.getGrade() != null && tc.getGrade().getPassingGrade())
                     hasPassingGrade = true;
                 }
@@ -475,7 +479,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
               passedOptionalModuleCount++;
           }
           
-          StudentProjectModuleBean moduleBean = new StudentProjectModuleBean(studentProjectModule, hasCourse, hasPassingGrade, courseStudentList, transferCreditList);
+          StudentProjectModuleBean moduleBean = new StudentProjectModuleBean(studentProjectModule, hasPassingGrade, projectCourseCourseStudentList, projectCourseTransferCreditList);
           studentProjectModuleBeans.add(moduleBean);
         }
 
@@ -580,15 +584,13 @@ public class ViewStudentViewController extends PyramusViewController implements 
   
   public class StudentProjectModuleBean {
     private final StudentProjectModule studentProjectModule;
-    private final boolean hasCourse;
     private final boolean hasPassingGrade;
     private final List<CourseStudent> courseStudents;
     private final List<TransferCredit> transferCredits;
 
-    public StudentProjectModuleBean(StudentProjectModule studentProjectModule, boolean hasCourse, boolean hasPassingGrade, 
+    public StudentProjectModuleBean(StudentProjectModule studentProjectModule, boolean hasPassingGrade, 
         List<CourseStudent> courseStudents, List<TransferCredit> transferCredits) {
       this.studentProjectModule = studentProjectModule;
-      this.hasCourse = hasCourse;
       this.hasPassingGrade = hasPassingGrade;
       this.courseStudents = courseStudents;
       this.transferCredits = transferCredits;
@@ -596,10 +598,6 @@ public class ViewStudentViewController extends PyramusViewController implements 
 
     public StudentProjectModule getStudentProjectModule() {
       return studentProjectModule;
-    }
-
-    public boolean isHasCourse() {
-      return hasCourse;
     }
 
     public boolean isHasPassingGrade() {

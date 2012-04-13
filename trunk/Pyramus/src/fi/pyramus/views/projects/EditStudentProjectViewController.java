@@ -20,6 +20,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
@@ -29,8 +30,11 @@ import fi.pyramus.domainmodel.base.AcademicTerm;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CreditLink;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
+import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
 import fi.pyramus.domainmodel.students.Student;
@@ -58,12 +62,27 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
     AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
     EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
+    CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
 
     Long studentProjectId = pageRequestContext.getLong("studentproject");
     List<GradingScale> gradingScales = gradingScaleDAO.listUnarchived();
 
     StudentProject studentProject = studentProjectDAO.findById(studentProjectId);
     List<CourseStudent> courseStudents = courseStudentDAO.listByStudent(studentProject.getStudent());
+    
+    List<CreditLink> creditLinks = creditLinkDAO.listByStudent(studentProject.getStudent());
+
+    for (CreditLink creditLink : creditLinks) {
+      switch (creditLink.getCredit().getCreditType()) {
+        case CourseAssessment:
+          courseStudents.add(((CourseAssessment) creditLink.getCredit()).getCourseStudent());
+        break;
+
+        case TransferCredit:
+//          allStudentTransferCredits.add(((TransferCredit) creditLink.getCredit()));
+        break;
+      }
+    }
     
     StringBuilder tagsBuilder = new StringBuilder();
     Iterator<Tag> tagIterator = studentProject.getTags().iterator();
@@ -81,7 +100,8 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     
     List<StudentProjectModuleBean> studentProjectModules = new ArrayList<StudentProjectModuleBean>();
     for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
-      StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
+      StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(
+          studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
       studentProjectModules.add(studentProjectModuleBean);
     }
 

@@ -343,6 +343,15 @@ h1.genericPageHeader{
   margin-left: 8px;
 }
 
+.viewStudentLinkedCourseAssessmentsTotalContainer, .viewStudentLinkedTransferCreditsTotalContainer,
+.importStudentCreditsCourseAssessmentsTotalContainer, .importStudentCreditsTransferCreditsTotalContainer,
+.importStudentCreditsLinkedCourseAssessmentsTotalContainer, .importStudentCreditsLinkedTransferCreditsTotalContainer {
+  display: inline-block;   
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+
 /* Manage Course Assessments */
 
 #manageCourseAssessmentsStudentsTableContainer {
@@ -2315,4 +2324,10 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 .editStudentImage_hcontainer {
 	vertical-align: top;
 	display: table-cell;
+}
+
+.importStudentCreditsLeftPane, .importStudentCreditsRightPane {
+  display: inline-block;
+  width: 49%;
+  vertical-align: top;
 }

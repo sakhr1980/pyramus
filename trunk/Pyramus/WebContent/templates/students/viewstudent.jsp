@@ -65,6 +65,11 @@
           text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsManageTransferCreditsLabel"/>',
           link: GLOBAL_contextPath + '/grading/managetransfercredits.page?studentId=' + studentId  
         }));
+        gradesTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+          iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+          text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsImportStudentCreditsLabel"/>',
+          link: GLOBAL_contextPath + '/students/importstudentcredits.page?studentId=' + studentId  
+        }));
 
         var contactLogTabRelatedActionsHoverMenu = new IxHoverMenu($('contactLogTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.contactLogTabRelatedActionsLabel"/>'
@@ -771,9 +776,8 @@
                   tc.courseLengthUnitName,
                   tc.gradeName,
                   tc.gradingScaleName,
-                  tc.assessingUserName,
-                  tc.courseStudentId,
-                  '']);
+                  tc.assessingUserName
+              ]);
             }
             linkedTransferCreditsTable.addRows(rows);
           }
@@ -806,7 +810,6 @@
             <c:forEach var="spm" items="${studentProjectModules[sp.studentProject.id]}">
               <c:set var="moduleName" value="${spm.studentProjectModule.module.name}"/>
               <c:set var="moduleOptionality" value="${spm.studentProjectModule.optionality}"/>
-              <c:set var="moduleHasCourse" value="${spm.hasCourse}"/>
               <c:set var="moduleCourseGrades" value=""/>
               <c:set var="moduleTransferCreditGrades" value=""/>
   
