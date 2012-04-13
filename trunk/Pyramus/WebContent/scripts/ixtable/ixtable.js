@@ -136,6 +136,9 @@ IxTable = Class.create({
         });
       };
 
+      if (column.hidden == true)
+        headerCell.hide();
+      
       this._headerCells[i] = headerCell;
 
       this._headerRowContent.appendChild(headerCell);
