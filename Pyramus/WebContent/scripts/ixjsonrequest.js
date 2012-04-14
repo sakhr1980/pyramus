@@ -28,7 +28,16 @@ JSONRequest = {
             }
           }
           else {
-            JSONRequest._handleError(opts.onFailure, jsonResponse.errorMessage, jsonResponse.statusCode, false, jsonResponse);
+            var errorMessage = "";
+            
+            for (var i = 0, l = jsonResponse.messages.length; i < l; i++) {
+              if (errorMessage != "")
+                errorMessage += "\n";
+              
+              errorMessage += jsonResponse.messages[i].message;
+            }
+            
+            JSONRequest._handleError(opts.onFailure, errorMessage, jsonResponse.statusCode, false, jsonResponse);
           }
         }
         catch (e) {
