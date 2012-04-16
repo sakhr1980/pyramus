@@ -15,8 +15,6 @@ import fi.pyramus.framework.UserRole;
 
 /**
  * ViewController for viewing student information within popup dialog.
- * 
- * @author antti.leppa
  */
 public class StudyProgrammeCopyPopupViewController extends PyramusViewController implements Breadcrumbable {
 
@@ -31,18 +29,6 @@ public class StudyProgrammeCopyPopupViewController extends PyramusViewController
 
   /**
    * Processes the page request.
-   * 
-   * In parameters
-   * - student
-   * 
-   * Page parameters
-   * - student - Student object
-   * - studentImage - url to student's image
-   * - studentNationality - students nationality
-   * - studentLanguage - students native language
-   * - studentPhoneNumber - student phone number
-   * 
-   * @param pageRequestContext pageRequestContext
    */
   public void process(PageRequestContext pageRequestContext) {
     TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();

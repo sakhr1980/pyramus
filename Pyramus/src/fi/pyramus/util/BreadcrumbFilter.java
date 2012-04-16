@@ -55,7 +55,7 @@ public class BreadcrumbFilter implements Filter {
     }
   }
  
-  private BreadcrumbHandler getBreadcrumbHandler(HttpServletRequest request) {
+  private synchronized BreadcrumbHandler getBreadcrumbHandler(HttpServletRequest request) {
     HttpSession session = request.getSession(true);
     BreadcrumbHandler breadcrumbHandler = (BreadcrumbHandler) session.getAttribute("breadcrumbHandler");
     if (breadcrumbHandler == null) {
