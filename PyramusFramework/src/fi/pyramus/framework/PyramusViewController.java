@@ -1,5 +1,8 @@
 package fi.pyramus.framework;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import fi.internetix.smvc.AccessDeniedException;
 import fi.internetix.smvc.LoginRequiredException;
 import fi.internetix.smvc.controllers.PageController;
+import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.users.UserDAO;
@@ -64,4 +68,16 @@ public abstract class PyramusViewController implements PageController {
     }
     return false;
   }
+  
+  protected void setJsDataVariable(PageRequestContext pageRequestContext, String name, String value) {
+    @SuppressWarnings("unchecked")
+    Map<String, String> jsData = (Map<String, String>) pageRequestContext.getRequest().getAttribute("jsData");
+    if (jsData == null) {
+      jsData = new HashMap<String, String>();
+      pageRequestContext.getRequest().setAttribute("jsData", jsData);
+    }
+    
+    jsData.put(name, value);
+  }
+  
 }
