@@ -269,16 +269,16 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            sortAttributes: {
-              sortAscending: {
-                toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: IxTable_ROWNUMBERSORT 
-              },
-              sortDescending: {
-                toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: IxTable_ROWNUMBERSORT
-              }
-            },
+//             sortAttributes: {
+//               sortAscending: {
+//                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
+//                 sortAction: IxTable_ROWNUMBERSORT 
+//               },
+//               sortDescending: {
+//                 toolTip: '<fmt:message key="generic.sort.descending"/>',
+//                 sortAction: IxTable_ROWNUMBERSORT
+//               }
+//             },
             contextMenu: [
               {
                 text: '<fmt:message key="generic.filter.byValue"/>',
@@ -301,16 +301,16 @@
             dataType: 'text',
             editable: false,
             paramName: 'name',
-            sortAttributes: {
-              sortAscending: {
-                toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: IxTable_ROWNUMBERSORT 
-              },
-              sortDescending: {
-                toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: IxTable_ROWNUMBERSORT
-              }
-            },
+//             sortAttributes: {
+//               sortAscending: {
+//                 toolTip: '<fmt:message key="generic.sort.ascending"/>',
+//                 sortAction: IxTable_ROWNUMBERSORT 
+//               },
+//               sortDescending: {
+//                 toolTip: '<fmt:message key="generic.sort.descending"/>',
+//                 sortAction: IxTable_ROWNUMBERSORT
+//               }
+//             },
             contextMenu: [
               {
                 text: '<fmt:message key="generic.filter.byValue"/>',
@@ -354,8 +354,8 @@
             '${stuP.studentProject.optionality}',
             '${stuPDateText}',
             '${stuPGradeText}',
-            '${stuP.passedMandatoryModuleCount}',
-            '${stuP.passedOptionalModuleCount}'
+            '${stuP.passedMandatoryModuleCount}' + '/' + '${stuP.mandatoryModuleCount}',
+            '${stuP.passedOptionalModuleCount}' + '/' + '${stuP.optionalModuleCount}'
           ]);
         </c:forEach>
         studentProjectsTable.addRows(studentProjectsArr);
