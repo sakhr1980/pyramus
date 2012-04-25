@@ -77,9 +77,9 @@ public class ImportStudentCreditsJSONRequestController extends JSONRequestContro
         
         if (selected) {
           Long courseAssessmentId = requestContext.getLong("courseAssessmentsTable." + student.getId() + "." + i + ".courseAssessmentId");
-          CourseAssessment courseAssessment = courseAssessmentDAO.findById(courseAssessmentId);
           
-          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(student, courseAssessment);
+          CourseAssessment courseAssessment = courseAssessmentDAO.findById(courseAssessmentId);
+          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(baseStudent, courseAssessment);
           
           if (creditLink == null)
             creditLinkDAO.create(courseAssessment, baseStudent, loggedUser);
@@ -98,7 +98,7 @@ public class ImportStudentCreditsJSONRequestController extends JSONRequestContro
           Long transferCreditId = requestContext.getLong("transferCreditsTable." + student.getId() + "." + i + ".transferCreditId");
           
           TransferCredit transferCredit = transferCreditDAO.findById(transferCreditId);
-          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(student, transferCredit);
+          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(baseStudent, transferCredit);
           
           if (creditLink == null)
             creditLinkDAO.create(transferCredit, baseStudent, loggedUser);
@@ -117,7 +117,7 @@ public class ImportStudentCreditsJSONRequestController extends JSONRequestContro
           Long courseAssessmentId = requestContext.getLong("linkedCourseAssessmentsTable." + student.getId() + "." + i + ".courseAssessmentId");
           
           CourseAssessment courseAssessment = courseAssessmentDAO.findById(courseAssessmentId);
-          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(student, courseAssessment);
+          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(baseStudent, courseAssessment);
           
           if (creditLink == null)
             creditLinkDAO.create(courseAssessment, baseStudent, loggedUser);
@@ -136,7 +136,7 @@ public class ImportStudentCreditsJSONRequestController extends JSONRequestContro
           Long transferCreditId = requestContext.getLong("linkedTransferCreditsTable." + student.getId() + "." + i + ".transferCreditId");
           
           TransferCredit transferCredit = transferCreditDAO.findById(transferCreditId);
-          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(student, transferCredit);
+          CreditLink creditLink = creditLinkDAO.findByStudentAndCredit(baseStudent, transferCredit);
           
           if (creditLink == null)
             creditLinkDAO.create(transferCredit, baseStudent, loggedUser);

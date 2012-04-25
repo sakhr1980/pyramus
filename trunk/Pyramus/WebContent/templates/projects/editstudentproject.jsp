@@ -1103,10 +1103,10 @@
                 <c:forEach var="student" items="${students}">
                   <c:choose>
                     <c:when test="${student.studyProgramme.id == studentProject.student.studyProgramme.id}">
-                      <option value="${student.id}" selected="selected">${student.studyProgramme.name}</option> 
+                      <option value="${student.id}" selected="selected">${student.studyProgramme.name}<c:if test="${student.hasFinishedStudies}">*</c:if></option> 
                     </c:when>
                     <c:otherwise>
-                      <option value="${student.id}">${student.studyProgramme.name}</option> 
+                      <option value="${student.id}">${student.studyProgramme.name}<c:if test="${student.hasFinishedStudies}">*</c:if></option> 
                     </c:otherwise>
                   </c:choose>
                 </c:forEach>

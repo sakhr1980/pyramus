@@ -99,6 +99,20 @@
               </jsp:include>                  
               <span>${fn:escapeXml(courseStudent.student.fullName)}</span>
             </div>
+
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="grading.courseAssessment.studyProgrammeNameTitle"/>
+                <jsp:param name="helpLocale" value="grading.courseAssessment.studyProgrammeNameHelp"/>
+              </jsp:include>                  
+              <span>
+                <c:choose>
+                  <c:when test="${courseStudent.student.studyProgramme == null}"><fmt:message key="grading.courseAssessment.noStudyProgrammeTabLabel"/></c:when>
+                  <c:otherwise>${fn:escapeXml(courseStudent.student.studyProgramme.name)}</c:otherwise>
+                </c:choose>
+                <c:if test="${courseStudent.student.hasFinishedStudies}">*</c:if>
+              </span>
+            </div>
   
             <div class="genericFormSection">  
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">

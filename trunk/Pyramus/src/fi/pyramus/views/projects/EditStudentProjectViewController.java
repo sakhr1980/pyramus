@@ -106,6 +106,39 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     }
 
     List<Student> students = studentDAO.listByAbstractStudent(studentProject.getStudent().getAbstractStudent());
+    Collections.sort(students, new Comparator<Student>() {
+      @Override
+      public int compare(Student o1, Student o2) {
+        /**
+         * Ordering study programmes as follows
+         *  1. studies that have start date but no end date (ongoing)
+         *  2. studies that have no start nor end date
+         *  3. studies that have ended
+         *  4. studies that are archived
+         *  5. other
+         */
+        
+        int o1class =
+          (o1.getArchived()) ? 4:
+            (o1.getStudyStartDate() != null && o1.getStudyEndDate() == null) ? 1:
+              (o1.getStudyStartDate() == null && o1.getStudyEndDate() == null) ? 2:
+                (o1.getStudyEndDate() != null) ? 3:
+                  5;
+        int o2class =
+          (o2.getArchived()) ? 4:
+            (o2.getStudyStartDate() != null && o2.getStudyEndDate() == null) ? 1:
+              (o2.getStudyStartDate() == null && o2.getStudyEndDate() == null) ? 2:
+                (o2.getStudyEndDate() != null) ? 3:
+                  5;
+
+        if (o1class == o2class) {
+          // classes are the same, we try to do last comparison from the start dates
+          return ((o1.getStudyStartDate() != null) && (o2.getStudyStartDate() != null)) ? 
+              o2.getStudyStartDate().compareTo(o1.getStudyStartDate()) : 0; 
+        } else
+          return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
+      }
+    });
 
     List<EducationalTimeUnit> educationalTimeUnits = educationalTimeUnitDAO.listUnarchived();
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
