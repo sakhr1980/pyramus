@@ -2154,6 +2154,11 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   font-size: 16px;
 }
 
+.editStudentProjectCourseBasket {
+  background-color: #fff;
+  border-radius: 5px 15px 5px 15px;
+}
+
 /* Student Project Module Course Search Dialog */
 
 .studentProjectModuleCourseWithinTimeFrame {

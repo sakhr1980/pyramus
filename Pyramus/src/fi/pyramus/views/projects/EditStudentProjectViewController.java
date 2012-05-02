@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
@@ -20,9 +23,11 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.AcademicTermDAO;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentDAO;
 import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
+import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.users.UserDAO;
@@ -63,6 +68,8 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
     EducationalTimeUnitDAO educationalTimeUnitDAO = DAOFactory.getInstance().getEducationalTimeUnitDAO();
     CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
+    CourseAssessmentDAO courseAssessmentDAO = DAOFactory.getInstance().getCourseAssessmentDAO();
+    TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
 
     Long studentProjectId = pageRequestContext.getLong("studentproject");
     List<GradingScale> gradingScales = gradingScaleDAO.listUnarchived();
@@ -70,39 +77,82 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     StudentProject studentProject = studentProjectDAO.findById(studentProjectId);
     List<CourseStudent> courseStudents = courseStudentDAO.listByStudent(studentProject.getStudent());
     
-    List<CreditLink> creditLinks = creditLinkDAO.listByStudent(studentProject.getStudent());
+    List<CourseAssessment> allStudentCourseAssessments = courseAssessmentDAO.listByStudent(studentProject.getStudent());
+    List<TransferCredit> allStudentTransferCredits = transferCreditDAO.listByStudent(studentProject.getStudent());
+    List<CreditLink> allStudentCreditLinks = creditLinkDAO.listByStudent(studentProject.getStudent());
+    
+    JSONArray studentProjectModulesJSON = new JSONArray();
 
-    for (CreditLink creditLink : creditLinks) {
+    for (CreditLink creditLink : allStudentCreditLinks) {
       switch (creditLink.getCredit().getCreditType()) {
         case CourseAssessment:
-          courseStudents.add(((CourseAssessment) creditLink.getCredit()).getCourseStudent());
+          allStudentCourseAssessments.add(((CourseAssessment) creditLink.getCredit()));
         break;
 
         case TransferCredit:
-//          allStudentTransferCredits.add(((TransferCredit) creditLink.getCredit()));
+          allStudentTransferCredits.add(((TransferCredit) creditLink.getCredit()));
         break;
       }
     }
     
-    StringBuilder tagsBuilder = new StringBuilder();
-    Iterator<Tag> tagIterator = studentProject.getTags().iterator();
-    while (tagIterator.hasNext()) {
-      Tag tag = tagIterator.next();
-      tagsBuilder.append(tag.getText());
-      if (tagIterator.hasNext())
-        tagsBuilder.append(' ');
-    }
-    
-    Set<Long> studentProjectCourseModuleIds = new HashSet<Long>(); 
-    for (CourseStudent courseStudent : courseStudents) {
-      studentProjectCourseModuleIds.add(courseStudent.getCourse().getModule().getId());
-    }
-    
-    List<StudentProjectModuleBean> studentProjectModules = new ArrayList<StudentProjectModuleBean>();
     for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
-      StudentProjectModuleBean studentProjectModuleBean = new StudentProjectModuleBean(
-          studentProjectModule, studentProjectCourseModuleIds.contains(studentProjectModule.getModule().getId()));
-      studentProjectModules.add(studentProjectModuleBean);
+      JSONArray moduleCourseStudents = new JSONArray();
+      JSONArray moduleCredits = new JSONArray();
+
+      List<CourseStudent> projectCourseCourseStudents = courseStudentDAO.listByModuleAndStudent(studentProjectModule.getModule(), studentProject.getStudent());
+      
+      for (CourseStudent courseStudent : projectCourseCourseStudents) {
+        JSONObject courseStudentJson = new JSONObject();
+        courseStudentJson.put("courseStudentParticipationType", courseStudent.getParticipationType().getName());
+//        courseStudents.remove(courseStudent);
+        moduleCourseStudents.add(courseStudentJson);
+      }
+      
+      for (CourseAssessment assessment : allStudentCourseAssessments) {
+        if (assessment.getCourseStudent().getCourse().getModule().getId().equals(studentProjectModule.getModule().getId())) {
+          if (assessment.getGrade() != null && assessment.getGrade().getPassingGrade()) {
+            JSONObject courseAssessment = new JSONObject();
+
+            courseAssessment.put("creditType", assessment.getCreditType().toString());
+            courseAssessment.put("courseName", assessment.getCourseStudent().getCourse().getName());
+            courseAssessment.put("gradeName", assessment.getGrade().getName());
+
+            moduleCredits.add(courseAssessment);
+          }
+        }
+      }
+      
+      if ((studentProjectModule.getModule().getCourseNumber() != null) && (studentProjectModule.getModule().getCourseNumber() != -1) && (studentProjectModule.getModule().getSubject() != null)) {
+        for (TransferCredit tc : allStudentTransferCredits) {
+          if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
+            if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
+              if (tc.getGrade() != null && tc.getGrade().getPassingGrade()) {
+                JSONObject transferCredit = new JSONObject();
+                
+                transferCredit.put("creditType", tc.getCreditType().toString());
+                transferCredit.put("courseName", tc.getCourseName());
+                transferCredit.put("gradeName", tc.getGrade().getName());
+                
+                moduleCredits.add(transferCredit);
+              }
+            }
+          }
+        }
+      }
+      
+      
+      JSONObject obj = new JSONObject();
+      
+      obj.put("projectModuleId", studentProjectModule.getId().toString());
+      obj.put("projectModuleOptionality", studentProjectModule.getOptionality().toString());
+      obj.put("projectModuleAcademicTermId", studentProjectModule.getAcademicTerm() != null ? studentProjectModule.getAcademicTerm().getId().toString() : "");
+      obj.put("moduleId", studentProjectModule.getModule().getId());
+      obj.put("moduleName", studentProjectModule.getModule().getName());
+      
+      obj.put("moduleCourseStudents", moduleCourseStudents);
+      obj.put("moduleCredits", moduleCredits);
+      
+      studentProjectModulesJSON.add(obj);
     }
 
     List<Student> students = studentDAO.listByAbstractStudent(studentProject.getStudent().getAbstractStudent());
@@ -158,6 +208,13 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       }
     });
 
+    Collections.sort(courseStudents, new Comparator<CourseStudent>() {
+      @Override
+      public int compare(CourseStudent o1, CourseStudent o2) {
+        return o1.getCourse().getName().compareTo(o2.getCourse().getName());
+      }
+    });
+
     Map<Long, String> verbalAssessments = new HashMap<Long, String>();
 
     for (ProjectAssessment pAss : assessments) {
@@ -170,19 +227,31 @@ public class EditStudentProjectViewController extends PyramusViewController impl
         verbalAssessments.put(pAss.getId(), description);
       }
     }
+
+    /* Tags */
     
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = studentProject.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+
     pageRequestContext.getRequest().setAttribute("projectAssessments", assessments);
     pageRequestContext.getRequest().setAttribute("verbalAssessments", verbalAssessments);
-    pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
-    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("academicTerms", academicTerms);
     pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());
     pageRequestContext.getRequest().setAttribute("gradingScales", gradingScales);
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
 
+    setJsDataVariable(pageRequestContext, "studentProjectModules", studentProjectModulesJSON.toString());
+    
     pageRequestContext.setIncludeJSP("/templates/projects/editstudentproject.jsp");
   }
 

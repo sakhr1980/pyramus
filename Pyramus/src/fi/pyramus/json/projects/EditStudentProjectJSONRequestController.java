@@ -183,9 +183,9 @@ public class EditStudentProjectJSONRequestController extends JSONRequestControll
     
     // Student project courses
 
-    rowCount = jsonRequestContext.getInteger("coursesTable.rowCount").intValue();
+    rowCount = jsonRequestContext.getInteger("courseBasketTable.rowCount").intValue();
     for (int i = 0; i < rowCount; i++) {
-      String colPrefix = "coursesTable." + i;
+      String colPrefix = "courseBasketTable." + i;
       
       Long courseId = jsonRequestContext.getLong(colPrefix + ".courseId");
       CourseOptionality optionality = (CourseOptionality) jsonRequestContext.getEnum(colPrefix + ".optionality", CourseOptionality.class);
