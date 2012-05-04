@@ -499,7 +499,8 @@
           columns : [ {
             header : '<fmt:message key="projects.editStudentProject.coursesTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
+//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'name',
@@ -515,26 +516,30 @@
             }
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeHeader"/>',
-            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
+//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
+            right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
             width : 150,
             dataType : 'text',
             editable: false,
             paramName: 'name'
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableBeginDateHeader"/>',
-            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8,
+//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8,
+            right: 8 + 22 + 8 + 100 + 8 + 100 + 8,
             width : 100,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableEndDateHeader"/>',
             width: 100,
-            right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
+//             right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
+            right : 8 + 22 + 8 + 100 + 8,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableOptionalityHeader"/>',
-            right : 8 + 22 + 8 + 22 + 8,
+//             right : 8 + 22 + 8 + 22 + 8,
+            right : 8 + 22 + 8,
             width: 100,
             dataType : 'select',
             paramName: 'optionality',
@@ -546,7 +551,8 @@
             ]
           }, {
             width: 22,
-            right: 8 + 22 + 8,
+//             right: 8 + 22 + 8,
+            right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableEditCourseRowTooltip"/>',
@@ -555,26 +561,26 @@
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
             } 
-          }, {
-            width: 22,
-            right: 8,
-            dataType: 'button',
-            paramName: 'removeButton',
-            imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
-            onclick: function (event) {
-              var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
-              var moduleTables = getIxTableById('modulesTable');
-              var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
-              if (moduleTablesRow >= 0) { 
-                moduleTables.showRow(moduleTablesRow);
-              }
+//           }, {
+//             width: 22,
+//             right: 8,
+//             dataType: 'button',
+//             paramName: 'removeButton',
+//             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
+//             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
+//             onclick: function (event) {
+//               var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
+//               var moduleTables = getIxTableById('modulesTable');
+//               var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
+//               if (moduleTablesRow >= 0) { 
+//                 moduleTables.showRow(moduleTablesRow);
+//               }
               
-              event.tableComponent.deleteRow(event.row);
+//               event.tableComponent.deleteRow(event.row);
 
-              checkModulesMessage();
-              checkCoursesMessage();
-            } 
+//               checkModulesMessage();
+//               checkCoursesMessage();
+//             } 
           }, {
             dataType: 'hidden',
             paramName: 'moduleId'
@@ -749,12 +755,12 @@
             ${courseStudent.course.endDate.time},
             '${courseStudent.optionality}',
             '',
-            '',
+//             '',
             ${courseStudent.course.module.id},
             ${courseStudent.course.id},
             ${courseStudent.id}]);
           
-          coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
+//           coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
         </c:forEach>
         coursesTable.reattachToDom();
 
