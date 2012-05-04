@@ -90,7 +90,7 @@
               dialog.addDialogListener(function(event) {
                 switch (event.name) {
                   case 'okClick':
-                    JSONRequest.request("settings/archiveresourcecategory.json", {
+                    JSONRequest.request("resources/archiveresourcecategory.json", {
                       parameters: {
                         resourceCategoryId: resourceCategoryId
                       },
