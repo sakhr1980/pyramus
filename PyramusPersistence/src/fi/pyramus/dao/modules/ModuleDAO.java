@@ -27,6 +27,7 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 
+import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.dao.projects.ProjectDAO;
 import fi.pyramus.domainmodel.base.CourseBase;
@@ -221,7 +222,7 @@ public class ModuleDAO extends PyramusEntityDAO<Module> {
 
     Set<Long> moduleIds = new HashSet<Long>();
     if (!StringUtils.isBlank(projectName)) {
-      ProjectDAO projectDAO = new ProjectDAO();
+      ProjectDAO projectDAO = DAOFactory.getInstance().getProjectDAO();
       SearchResult<Project> searchResults = projectDAO.searchProjectsBasic(10, 0, projectName);
       List<Project> projects = searchResults.getResults();
       for (Project project : projects) {
