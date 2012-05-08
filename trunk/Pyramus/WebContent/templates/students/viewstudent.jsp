@@ -253,7 +253,7 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.transferCreditsTableNameHeader"/>',
             left: 8,
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
+            right: 8 + 180 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -268,7 +268,7 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableSubjectHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
+            right: 8 + 180 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
             width: 200,
             dataType: 'text',
             editable: false,
@@ -284,7 +284,7 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingDateHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 180 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 120,
             dataType: 'date',
             editable: false,
@@ -300,19 +300,19 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 180 + 8 + 120 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableCourseLengthUnitHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8 + 100 + 8, 
+            right: 8 + 180 + 8 + 120 + 8 + 100 + 8, 
             width: 100,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradeHeader"/>',
-            right: 8 + 230 + 8 + 200 + 8, 
+            right: 8 + 180 + 8 + 120 + 8, 
             width: 100,
             dataType: 'text',
             editable: false,
@@ -332,14 +332,14 @@
             ]            
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableGradingScaleHeader"/>',
-            right: 8 + 230 + 8, 
-            width: 200,
+            right: 8 + 180 + 8, 
+            width: 120,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.transferCreditsTableAssessingUserHeader"/>',
             right: 8,
-            width: 230,
+            width: 180,
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -365,7 +365,7 @@
           columns : [{
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8 + 200 + 8, 
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -380,7 +380,7 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableSubjectHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 120 + 8, 
             width: 200,
             dataType: 'text',
             editable: false,
@@ -396,7 +396,7 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingDateHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8 + 100 + 8 + 100 + 8 + 100 + 8, 
             width: 120,
             dataType: 'date',
             editable: false,
@@ -412,19 +412,19 @@
             }
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8 + 100 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8 + 100 + 8 + 100 + 8, 
             width: 100,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableCourseLengthUnitHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8 + 100 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8 + 100 + 8, 
             width: 100,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradeHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8 + 200 + 8, 
+            right: 8 + 22 + 8 + 150 + 8 + 120 + 8, 
             width: 100,
             dataType: 'text',
             editable: false,
@@ -444,14 +444,14 @@
             ]            
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableGradingScaleHeader"/>',
-            right: 8 + 22 + 8 + 200 + 8, 
-            width: 200,
+            right: 8 + 22 + 8 + 150 + 8, 
+            width: 120,
             dataType: 'text',
             editable: false
           }, {
             header : '<fmt:message key="students.viewStudent.courseAssessmentsTableAssessingUserHeader"/>',
             right: 8 + 22 + 8,
-            width: 200,
+            width: 150,
             dataType: 'text',
             editable: false,
             sortAttributes: {

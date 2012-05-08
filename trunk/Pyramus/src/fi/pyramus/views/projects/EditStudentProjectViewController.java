@@ -1,20 +1,18 @@
 package fi.pyramus.views.projects;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
@@ -29,6 +27,7 @@ import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
+import fi.pyramus.dao.projects.StudentProjectModuleDAO;
 import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.base.AcademicTerm;
@@ -37,6 +36,7 @@ import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.CreditLink;
+import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
@@ -63,6 +63,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
     StudentProjectDAO studentProjectDAO = DAOFactory.getInstance().getStudentProjectDAO();
+    StudentProjectModuleDAO studentProjectModuleDAO = DAOFactory.getInstance().getStudentProjectModuleDAO();
     GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
     ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
     AcademicTermDAO academicTermDAO = DAOFactory.getInstance().getAcademicTermDAO();
@@ -75,6 +76,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     List<GradingScale> gradingScales = gradingScaleDAO.listUnarchived();
 
     StudentProject studentProject = studentProjectDAO.findById(studentProjectId);
+    List<StudentProjectModule> studentProjectModules = studentProjectModuleDAO.listByStudentProject(studentProject);
     List<CourseStudent> courseStudents = courseStudentDAO.listByStudent(studentProject.getStudent());
     
     List<CourseAssessment> allStudentCourseAssessments = courseAssessmentDAO.listByStudent(studentProject.getStudent());
@@ -82,6 +84,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     List<CreditLink> allStudentCreditLinks = creditLinkDAO.listByStudent(studentProject.getStudent());
     
     JSONArray studentProjectModulesJSON = new JSONArray();
+    JSONArray courseStudentsJSON = new JSONArray();
 
     for (CreditLink creditLink : allStudentCreditLinks) {
       switch (creditLink.getCredit().getCreditType()) {
@@ -94,10 +97,18 @@ public class EditStudentProjectViewController extends PyramusViewController impl
         break;
       }
     }
+
+    Collections.sort(studentProjectModules, new Comparator<StudentProjectModule>() {
+      @Override
+      public int compare(StudentProjectModule o1, StudentProjectModule o2) {
+        return o1.getModule().getName().compareTo(o2.getModule().getName());
+      }
+    });
     
-    for (StudentProjectModule studentProjectModule : studentProject.getStudentProjectModules()) {
+    for (StudentProjectModule studentProjectModule : studentProjectModules) {
       JSONArray moduleCourseStudents = new JSONArray();
       JSONArray moduleCredits = new JSONArray();
+      boolean hasPassingGrade = false;
 
       List<CourseStudent> projectCourseCourseStudents = courseStudentDAO.listByModuleAndStudent(studentProjectModule.getModule(), studentProject.getStudent());
       
@@ -110,7 +121,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       
       for (CourseAssessment assessment : allStudentCourseAssessments) {
         if (assessment.getCourseStudent().getCourse().getModule().getId().equals(studentProjectModule.getModule().getId())) {
-          if (assessment.getGrade() != null && assessment.getGrade().getPassingGrade()) {
+          if (assessment.getGrade() != null) {
             JSONObject courseAssessment = new JSONObject();
 
             courseAssessment.put("creditType", assessment.getCreditType().toString());
@@ -118,6 +129,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
             courseAssessment.put("gradeName", assessment.getGrade().getName());
 
             moduleCredits.add(courseAssessment);
+            hasPassingGrade = hasPassingGrade || assessment.getGrade().getPassingGrade();
           }
         }
       }
@@ -126,7 +138,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
         for (TransferCredit tc : allStudentTransferCredits) {
           if ((tc.getCourseNumber() != null) && (tc.getCourseNumber() != -1) && (tc.getSubject() != null)) {
             if (tc.getCourseNumber().equals(studentProjectModule.getModule().getCourseNumber()) && tc.getSubject().equals(studentProjectModule.getModule().getSubject())) {
-              if (tc.getGrade() != null && tc.getGrade().getPassingGrade()) {
+              if (tc.getGrade() != null) {
                 JSONObject transferCredit = new JSONObject();
                 
                 transferCredit.put("creditType", tc.getCreditType().toString());
@@ -134,6 +146,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
                 transferCredit.put("gradeName", tc.getGrade().getName());
                 
                 moduleCredits.add(transferCredit);
+                hasPassingGrade = hasPassingGrade || tc.getGrade().getPassingGrade();
               }
             }
           }
@@ -146,6 +159,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       obj.put("projectModuleId", studentProjectModule.getId().toString());
       obj.put("projectModuleOptionality", studentProjectModule.getOptionality().toString());
       obj.put("projectModuleAcademicTermId", studentProjectModule.getAcademicTerm() != null ? studentProjectModule.getAcademicTerm().getId().toString() : "");
+      obj.put("projectModuleHasPassingGrade", hasPassingGrade ? "1" : "0");
       obj.put("moduleId", studentProjectModule.getModule().getId());
       obj.put("moduleName", studentProjectModule.getModule().getName());
       
@@ -215,6 +229,32 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       }
     });
 
+    for (CourseStudent courseStudent : courseStudents) {
+      CourseAssessment courseAssessment = courseAssessmentDAO.findByCourseStudent(courseStudent);
+      Grade grade = courseAssessment != null ? courseAssessment.getGrade() : null;
+      
+      JSONObject obj = new JSONObject();
+
+      String courseName = courseStudent.getCourse().getName();
+      if (!StringUtils.isEmpty(courseStudent.getCourse().getNameExtension()))
+        courseName = courseName + " (" + courseStudent.getCourse().getNameExtension() + ")";
+      
+      obj.put("courseName", courseName);
+      
+      obj.put("participationType", courseStudent.getParticipationType().getName());
+      obj.put("courseBeginDate", courseStudent.getCourse().getBeginDate() != null ? courseStudent.getCourse().getBeginDate().getTime() : "");
+      obj.put("courseEndDate", courseStudent.getCourse().getEndDate() != null ? courseStudent.getCourse().getEndDate().getTime() : "");
+
+      obj.put("gradeName", grade != null ? grade.getName() : "");
+      
+      obj.put("optionality", courseStudent.getOptionality() != null ? courseStudent.getOptionality().toString() : "");
+      obj.put("moduleId", courseStudent.getCourse().getModule().getId().toString());
+      obj.put("courseId", courseStudent.getCourse().getId().toString());
+      obj.put("courseStudentId", courseStudent.getId().toString());
+      
+      courseStudentsJSON.add(obj);
+    }
+    
     Map<Long, String> verbalAssessments = new HashMap<Long, String>();
 
     for (ProjectAssessment pAss : assessments) {
@@ -241,7 +281,6 @@ public class EditStudentProjectViewController extends PyramusViewController impl
 
     pageRequestContext.getRequest().setAttribute("projectAssessments", assessments);
     pageRequestContext.getRequest().setAttribute("verbalAssessments", verbalAssessments);
-    pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("studentProject", studentProject);
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
@@ -251,6 +290,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
 
     setJsDataVariable(pageRequestContext, "studentProjectModules", studentProjectModulesJSON.toString());
+    setJsDataVariable(pageRequestContext, "courseStudents", courseStudentsJSON.toString());
     
     pageRequestContext.setIncludeJSP("/templates/projects/editstudentproject.jsp");
   }
@@ -274,24 +314,5 @@ public class EditStudentProjectViewController extends PyramusViewController impl
    */
   public String getName(Locale locale) {
     return Messages.getInstance().getText(locale, "projects.editStudentProject.breadcrumb");
-  }
-
-  public class StudentProjectModuleBean {
-    
-    public StudentProjectModuleBean(StudentProjectModule studentProjectModule, Boolean hasCourseEquivalent) {
-      this.studentProjectModule = studentProjectModule;
-      this.hasCourseEquivalent = hasCourseEquivalent;
-    }
-    
-    public Boolean getHasCourseEquivalent() {
-      return hasCourseEquivalent;
-    }
-    
-    public StudentProjectModule getStudentProjectModule() {
-      return studentProjectModule;
-    }
-    
-    private StudentProjectModule studentProjectModule;
-    private Boolean hasCourseEquivalent;
   }
 }

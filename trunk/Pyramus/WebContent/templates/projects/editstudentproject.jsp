@@ -27,11 +27,9 @@
       function redoFilters() {
         var table1 = getIxTableById('modulesTable');
         var table2 = getIxTableById('coursesTable');
-        var table3 = getIxTableById('courseBasketTable');
         
         table1.applyFilters();
         table2.applyFilters();
-        table3.applyFilters();
       }
     
       function checkModulesMessage() {
@@ -70,14 +68,10 @@
 
       function checkCoursesMessage() {
         var coursesTable = getIxTableById('coursesTable');
-        var courseBasketTable = getIxTableById('courseBasketTable');
 
         $('noCoursesAddedMessageContainer').setStyle({
           display: (coursesTable.getVisibleRowCount() > 0) ? 'none' : ''
         });
-//         $('noCourseBasketAddedMessageContainer').setStyle({
-//           display: (courseBasketTable.getVisibleRowCount() > 0) ? 'none' : ''
-//         });
         
         if (coursesTable.getVisibleRowCount() > 0) {
           $('editStudentProjectCoursesTotalContainer').setStyle({
@@ -96,24 +90,36 @@
             display: 'none'
           });
         }
+      }
+      
+      function filterModules(showPassingGrade) {
+        var modulesTable = getIxTableById('modulesTable');
+        modulesTable.addFilter({
+          execute: function (event) {
+            var moduleIdColumnIndex = modulesTable.getNamedColumnIndex('studentProjectModuleId');
+            var passingGradeColumnIndex = modulesTable.getNamedColumnIndex('hasPassingGrade');
 
-        if (courseBasketTable.getVisibleRowCount() > 0) {
-          $('editStudentProjectCourseBasketTotalContainer').setStyle({
-            display: ''
-          });
-          $('editStudentProjectCourseBasketTotalValue').innerHTML = courseBasketTable.getVisibleRowCount();
-          $('courseBasketContainer').setStyle({
-            display: ''
-          });
-        }
-        else {
-          $('editStudentProjectCourseBasketTotalContainer').setStyle({
-            display: 'none'
-          });
-          $('courseBasketContainer').setStyle({
-            display: 'none'
-          });
-        }
+            var hideArray = new Array();
+            
+            for (var i = 0; i < modulesTable.getRowCount(); i++) {
+              var studentProjectModuleId = modulesTable.getCellValue(i, moduleIdColumnIndex);
+              var passingGrade = modulesTable.getCellValue(i, passingGradeColumnIndex);
+              
+              if ((showPassingGrade ? (passingGrade != "1") : (passingGrade == "1")) && (studentProjectModuleId != -1)) { 
+                hideArray.push(i);
+              }
+            }
+      
+            if (hideArray.size() > 0)
+              modulesTable.hideRows(hideArray.toArray());
+          },
+          getColumn: function() {
+            return -1;
+          }
+        });
+   
+//         checkModulesMessage();
+//         checkCoursesMessage();
       }
       
       function openSearchModulesDialog() {
@@ -151,13 +157,20 @@
                 var moduleId = event.results.modules[i].id;
                 var moduleName = event.results.modules[i].name;
                 var index = getModuleTableModuleRowIndex(modulesTable, moduleId);
+                var unsavedText = '<fmt:message key="projects.editStudentProject.unsavedModule"/>';
                 if (index == -1) {
-                  var rowNumber = modulesTable.addRow([moduleName, -1, 0, '', '', '', moduleId, -1]);
-                  
-//                   var courseRowIndex = getCourseTableModuleRowIndex(coursesTable, moduleId);
-//                   if (courseRowIndex >= 0) {
-//                     redoFilters();
-//                   }
+                  var rowNumber = modulesTable.addRow([
+                      moduleName, 
+                      unsavedText, 
+                      unsavedText, 
+                      -1, 
+                      0, 
+                      '', 
+                      '', 
+                      '', 
+                      moduleId, 
+                      -1,
+                      0]);
                 }
               }
               modulesTable.reattachToDom();              
@@ -187,8 +200,7 @@
           var dlg = event.dialog;
           switch (event.name) {
             case 'okClick':
-//               var moduleTables = getIxTableById('modulesTable');
-              var courseBasketTable = getIxTableById('courseBasketTable');
+              var coursesTable = getIxTableById('coursesTable');
               for (var i = 0, len = event.results.courses.length; i < len; i++) {
                 var courseId = event.results.courses[i].id;
                 var moduleId = event.results.courses[i].moduleId;
@@ -197,35 +209,21 @@
                 var beginDate = event.results.courses[i].beginDate;
                 var endDate = event.results.courses[i].endDate;
                 
-                var dateStr = "";
-                if (beginDate != "") {
-                  var bd = new Date();
-                  bd.setTime(beginDate);
-                  dateStr += getLocale().getDate(bd, false);
-                }
-                if (endDate != "") {
-                  var ed = new Date();
-                  ed.setTime(endDate);
-                  if (dateStr != "")
-                    dateStr += " - ";
-                  dateStr += getLocale().getDate(ed, false);
-                }
-                
-//                 var index = getCourseTableCourseRowIndex(coursesTable, courseId);
-//                 if (index == -1) {
-                  var c2row = courseBasketTable.addRow([
+                var index = getCourseTableCourseRowIndex(coursesTable, courseId);
+                if (index == -1) {
+                  var c2row = coursesTable.addRow([
                       courseName,
-//                      participationType,
-//                      beginDate||'',
-//                      endDate||'',
-                      dateStr,
+                      participationType,
+                      '',
+                      beginDate||'',
+                      endDate||'',
                       'OPTIONAL',
-//                       '',
+                      '',
                       '',
                       moduleId,
                       courseId,
                       -1]);
-//                 }
+                }
               }
               
               redoFilters();
@@ -238,8 +236,9 @@
       }
   
       function getCourseTableCourseRowIndex(table, courseId) {
+        var colIndex = table.getNamedColumnIndex('courseId');
         for (var i = 0; i < table.getRowCount(); i++) {
-          var tableCourseId = table.getCellValue(i, table.getNamedColumnIndex('courseId'));
+          var tableCourseId = table.getCellValue(i, colIndex);
           if (tableCourseId == courseId) {
             return i;
           }
@@ -248,8 +247,9 @@
       }
   
       function getModuleTableModuleRowIndex(table, moduleId) {
+        var colIndex = table.getNamedColumnIndex('moduleId');
         for (var i = 0; i < table.getRowCount(); i++) {
-          var tableModuleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
+          var tableModuleId = table.getCellValue(i, colIndex);
           if (tableModuleId == moduleId) {
             return i;
           }
@@ -258,8 +258,9 @@
       }
 
       function getCourseTableModuleRowIndex(table, moduleId) {
+        var colIndex = table.getNamedColumnIndex('moduleId');
         for (var i = 0; i < table.getRowCount(); i++) {
-          var tableModuleId = table.getCellValue(i, table.getNamedColumnIndex('moduleId'));
+          var tableModuleId = table.getCellValue(i, colIndex);
           if (tableModuleId == moduleId) {
             return i;
           }
@@ -438,24 +439,9 @@
                     var endDate = event.results.endDate;
                     var optionality = table.getCellValue(row, table.getNamedColumnIndex('optionality'));
                     var participationType = '<fmt:message key="projects.editStudentProject.unsavedStudentParticipationType"/>' ;
-
-                    var dateStr = "";
-                    if (event.results.beginDate != "") {
-                      var bd = new Date();
-                      bd.setTime(event.results.beginDate);
-                      dateStr += getLocale().getDate(bd, false);
-                    }
-                    if (event.results.endDate) {
-                      var ed = new Date();
-                      ed.setTime(event.results.endDate);
-                      if (dateStr != "")
-                        dateStr += " - ";
-                      dateStr += getLocale().getDate(ed, false);
-                    }
                     
-                    var courseBasketTable = getIxTableById('courseBasketTable'); 
-                    courseBasketTable.addRow([name, dateStr, optionality, '', moduleId, courseId, -1]);
-//                     courseBasketTable.addRow([name, participationType, beginDate, endDate, optionality, '', '', moduleId, courseId, -1]);
+                    var coursesTable = getIxTableById('coursesTable'); 
+                    coursesTable.addRow([name, participationType, '', beginDate, endDate, optionality, '', '', moduleId, courseId, -1]);
                   
                     redoFilters();
                     checkModulesMessage();
@@ -472,18 +458,8 @@
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
             tooltip: '<fmt:message key="projects.editStudentProject.moduleTableDeleteRowTooltip"/>',
             onclick: function (event) {
-//               var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
-//               var coursesTable = getIxTableById('coursesTable');
-//               var courseBasketTable = getIxTableById('courseBasketTable');
-//               var courseRow = getCourseTableModuleRowIndex(coursesTable, moduleId);
-              
-//               if (courseRow >= 0) { 
-//                 redoFilters();
-//               }
-              
               event.tableComponent.deleteRow(event.row);
-//               checkModulesMessage();
-//               checkCoursesMessage();
+              checkModulesMessage();
             } 
           }, {
             dataType: 'hidden',
@@ -491,6 +467,9 @@
           }, {
             dataType: 'hidden',
             paramName: 'studentProjectModuleId'
+          }, {
+            dataType: 'hidden',
+            paramName: 'hasPassingGrade'
           }]
         });
         
@@ -499,8 +478,8 @@
           columns : [ {
             header : '<fmt:message key="projects.editStudentProject.coursesTableNameHeader"/>',
             left: 8,
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
-            right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
+//             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 150 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'name',
@@ -516,30 +495,35 @@
             }
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableStudentsParticipationTypeHeader"/>',
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
-            right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
+//             right: 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
             width : 150,
             dataType : 'text',
             editable: false,
-            paramName: 'name'
+          }, {
+            header : '<fmt:message key="projects.editStudentProject.coursesTableGradeHeader"/>',
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
+            width : 100,
+            dataType : 'text',
+            editable: false,
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableBeginDateHeader"/>',
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8,
-            right: 8 + 22 + 8 + 100 + 8 + 100 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8,
+//             right: 8 + 22 + 8 + 100 + 8 + 100 + 8,
             width : 100,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableEndDateHeader"/>',
             width: 100,
-//             right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
-            right : 8 + 22 + 8 + 100 + 8,
+            right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
+//             right : 8 + 22 + 8 + 100 + 8,
             dataType : 'date',
             editable: false
           }, {
             header : '<fmt:message key="projects.editStudentProject.coursesTableOptionalityHeader"/>',
-//             right : 8 + 22 + 8 + 22 + 8,
-            right : 8 + 22 + 8,
+            right : 8 + 22 + 8 + 22 + 8,
+//             right : 8 + 22 + 8,
             width: 100,
             dataType : 'select',
             paramName: 'optionality',
@@ -551,8 +535,8 @@
             ]
           }, {
             width: 22,
-//             right: 8 + 22 + 8,
-            right: 8,
+            right: 8 + 22 + 8,
+//             right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableEditCourseRowTooltip"/>',
@@ -561,127 +545,15 @@
               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
             } 
-//           }, {
-//             width: 22,
-//             right: 8,
-//             dataType: 'button',
-//             paramName: 'removeButton',
-//             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-//             tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
-//             onclick: function (event) {
-//               var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
-//               var moduleTables = getIxTableById('modulesTable');
-//               var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
-//               if (moduleTablesRow >= 0) { 
-//                 moduleTables.showRow(moduleTablesRow);
-//               }
-              
-//               event.tableComponent.deleteRow(event.row);
-
-//               checkModulesMessage();
-//               checkCoursesMessage();
-//             } 
-          }, {
-            dataType: 'hidden',
-            paramName: 'moduleId'
-          }, {
-            dataType: 'hidden',
-            paramName: 'courseId'
-          }, {
-            dataType: 'hidden',
-            paramName: 'id'
-          }]
-        });
-
-        var courseBasketTable = new IxTable($('courseBasketTableContainer'), {
-          id: 'courseBasketTable',
-          columns : [ {
-            header : '<fmt:message key="projects.editStudentProject.courseBasketTableNameHeader"/>',
-            left: 8,
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 120 + 8,
-//             right: 8 + 22 + 8 + 100 + 8 + 120 + 8,
-            right: 8 + 22 + 8 + 130 + 8,
-            dataType : 'text',
-            editable: false,
-            paramName: 'name',
-            sortAttributes: {
-              sortAscending: {
-                toolTip: '<fmt:message key="generic.sort.ascending"/>',
-                sortAction: IxTable_ROWSTRINGSORT 
-              },
-              sortDescending: {
-                toolTip: '<fmt:message key="generic.sort.descending"/>',
-                sortAction: IxTable_ROWSTRINGSORT
-              }
-            }
-//           }, {
-//             header : '<fmt:message key="projects.editStudentProject.courseBasketTableStudentsParticipationTypeHeader"/>',
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8 + 150 + 8,
-//             width : 150,
-//             dataType : 'text',
-//             editable: false,
-//             paramName: 'name'
-//           }, {
-//             header : '<fmt:message key="projects.editStudentProject.courseBasketTableBeginDateHeader"/>',
-//             right: 8 + 22 + 8 + 22 + 8 + 100 + 8 + 22 + 8 + 150 + 8,
-//             width : 150,
-//             dataType : 'date',
-//             editable: false
-//           }, {
-//             header : '<fmt:message key="projects.editStudentProject.courseBasketTableEndDateHeader"/>',
-//             width: 150,
-//             right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
-//             dataType : 'date',
-//             editable: false
-          }, {
-            header : '<fmt:message key="projects.editStudentProject.courseBasketTableTimePeriodHeader"/>',
-            width: 130,
-//             right : 8 + 22 + 8 + 22 + 8 + 100 + 8,
-//             right : 8 + 22 + 8 + 100 + 8,
-            right : 8 + 22 + 8,
-            dataType : 'text',
-            editable: false
-          }, {
-//             header : '<fmt:message key="projects.editStudentProject.courseBasketTableOptionalityHeader"/>',
-//             right : 8 + 22 + 8 + 22 + 8,
-//             right : 8 + 22 + 8,
-//             width: 100,
-//             dataType : 'select',
-            dataType : 'hidden',
-            paramName: 'optionality',
-            editable: false,
-//             editable: true,
-            options: [
-              {text: '', value: ''},
-              {text: '<fmt:message key="projects.editStudentProject.optionalityMandatory"/>', value: 'MANDATORY'},
-              {text: '<fmt:message key="projects.editStudentProject.optionalityOptional"/>', value: 'OPTIONAL'}
-            ]
-//           }, {
-//             width: 22,
-//             right: 8 + 22 + 8,
-//             dataType: 'button',
-//             imgsrc: GLOBAL_contextPath + '/gfx/icons/16x16/actions/link-to-editor.png',
-//             tooltip: '<fmt:message key="projects.editStudentProject.courseBasketTableEditCourseRowTooltip"/>',
-//             onclick: function (event) {
-//               var table = event.tableComponent;
-//               var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
-//               redirectTo(GLOBAL_contextPath + '/courses/editcourse.page?course=' + courseId);
-//             } 
           }, {
             width: 22,
             right: 8,
             dataType: 'button',
             paramName: 'removeButton',
             imgsrc: GLOBAL_contextPath + '/gfx/list-remove.png',
-            tooltip: '<fmt:message key="projects.editStudentProject.courseBasketTableDeleteRowTooltip"/>',
+            tooltip: '<fmt:message key="projects.editStudentProject.coursesTableDeleteRowTooltip"/>',
             onclick: function (event) {
-              var moduleId = event.tableComponent.getCellValue(event.row, event.tableComponent.getNamedColumnIndex('moduleId'));
-              var moduleTables = getIxTableById('modulesTable');
-              var moduleTablesRow = getModuleTableModuleRowIndex(moduleTables, moduleId);
-
               event.tableComponent.deleteRow(event.row);
-              
-              checkModulesMessage();
               checkCoursesMessage();
             } 
           }, {
@@ -732,64 +604,35 @@
             '',
             '',
             studentProjectModules[i].moduleId,
-            studentProjectModules[i].projectModuleId]);
+            studentProjectModules[i].projectModuleId,
+            studentProjectModules[i].projectModuleHasPassingGrade]);
         }
         
         modulesTable.reattachToDom();
         
         coursesTable.detachFromDom();
-        <c:forEach var="courseStudent" items="${courseStudents}">
-          <c:choose>
-            <c:when test="${fn:length(courseStudent.course.nameExtension) gt 0}">
-              <c:set var="courseName">${courseStudent.course.name} (${courseStudent.course.nameExtension})</c:set>  
-            </c:when>
-            <c:otherwise>
-              <c:set var="courseName">${courseStudent.course.name}</c:set>  
-            </c:otherwise>
-          </c:choose>
+
+        var courses = JSDATA['courseStudents'].evalJSON();
         
+        for (var i = 0, l = courses.length; i < l; i++) {
           rowId = coursesTable.addRow([
-            '${fn:escapeXml(courseName)}',
-            '${courseStudent.participationType.name}',
-            ${courseStudent.course.beginDate.time},
-            ${courseStudent.course.endDate.time},
-            '${courseStudent.optionality}',
-            '',
-//             '',
-            ${courseStudent.course.module.id},
-            ${courseStudent.course.id},
-            ${courseStudent.id}]);
-          
-//           coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
-        </c:forEach>
+              courses[i].courseName,
+              courses[i].participationType,
+              courses[i].gradeName,
+              courses[i].courseBeginDate,
+              courses[i].courseEndDate,
+              courses[i].optionality,
+              '',
+              '',
+              courses[i].moduleId,
+              courses[i].courseId,
+              courses[i].courseStudentId]);
+
+          coursesTable.disableCellEditor(rowId, coursesTable.getNamedColumnIndex("removeButton"));
+        }
+        
         coursesTable.reattachToDom();
 
-//         modulesTable.addFilter({
-//           execute: function (event) {
-//             var table = event.tableComponent;
-//             var coursesTable = getIxTableById('coursesTable');
-//             if (coursesTable) {
-//               var colIndex = coursesTable.getNamedColumnIndex('moduleId');
-              
-//               var hideArray = new Array();
-              
-//               for (var i = 0; i < coursesTable.getRowCount(); i++) {
-//                 var moduleId = coursesTable.getCellValue(i, colIndex);
-//                 var moduleTableRow = getModuleTableModuleRowIndex(table, moduleId);
-//                 if (moduleTableRow >= 0) { 
-//                   hideArray.push(moduleTableRow);
-//                 }
-//               }
-  
-//               if (hideArray.size() > 0)
-//                 table.hideRows(hideArray.toArray());
-//             }
-//           },
-//           getColumn: function() {
-//             return -1;
-//           }
-//         });
-        
         checkModulesMessage();
         checkCoursesMessage();
 
@@ -959,8 +802,30 @@
           text: '<fmt:message key="projects.editStudentProject.basicTabRelatedActionsEditStudentLabel"/>',
           link: GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}'  
         }));
+        
+        
+        var moduleFilter = $('moduleFilter');
+        
+        Event.observe(moduleFilter, "change", onModuleFilterChange);
       }
 
+      function onModuleFilterChange(event) {
+        var modulesTable = getIxTableById('modulesTable');
+        var moduleFilter = $('moduleFilter');
+        
+        modulesTable.clearFilters();
+        
+        switch(moduleFilter.value) {
+          case "1":
+            filterModules(true);
+          break;
+          
+          case "2":
+            filterModules(false);
+          break;
+        }
+      }
+      
       function addAssessmentRow() {
         var table = getIxTableById('assessmentsTable');
         var rowIndex = table.addRow(['', new Date().getTime(), '', '', '', '', -1, 1, 0, '', 0]);
@@ -1076,6 +941,8 @@
               
               <div>${studentProject.student.studyProgramme.name}<c:if test="${student.hasFinishedStudies}">*</c:if></div>
               
+              <input type="hidden" name="student" value="${studentProject.student.id}"/>
+              
 <!--               <select name="student"> -->
 <%--                 <c:forEach var="student" items="${students}"> --%>
 <%--                   <c:choose> --%>
@@ -1170,86 +1037,63 @@
           <!--  Courses and Modules tab -->
   
           <div id="coursesmodules" class="tabContentixTableFormattedData">
-            <table style="width: 100%;">
-            <tr>
-            <td style="vertical-align: top;">
-              <div class="genericFormSection editStudentProjectModuleListTitle">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="projects.editStudentProject.moduleListTitle"/>
-                  <jsp:param name="helpLocale" value="projects.editStudentProject.moduleListHelp"/>
-                </jsp:include>
+            <div class="genericFormSection editStudentProjectModuleListTitle">
+              <div class="editStudentProjectModuleListFilter">
+                <select id="moduleFilter">
+                  <option value="0"><fmt:message key="projects.editStudentProject.moduleTableFilterNoFilter"/></option>
+                  <option value="1"><fmt:message key="projects.editStudentProject.moduleTableFilterShowPassed"/></option>
+                  <option value="2"><fmt:message key="projects.editStudentProject.moduleTableFilterShowNonPassed"/></option>
+                </select>
               </div>
-                
-              <div class="genericTableAddRowContainer">
-                <span class="genericTableAddRowLinkContainer" onclick="openSearchModulesDialog();"><fmt:message key="projects.editStudentProject.addModuleLink"/></span>
-              </div>
-            
-              <div id="noModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-                <span><fmt:message key="projects.editStudentProject.noModulesAddedPreFix"/> <span onclick="openSearchModulesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noModulesAddedClickHereLink"/></span>.</span>
-              </div>
-    
-              <div id="allModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-                <span><fmt:message key="projects.editStudentProject.allModulesAddedPreFix"/></span>
-              </div>
-              
-              <div id="modulesContainer">
-                <div id="modulesTableContainer"></div>
-              </div>
-    
-              <div id="editStudentProjectModulesTotalContainer">
-                <fmt:message key="projects.editStudentProject.modulesTotal"/> <span id="editStudentProjectModulesTotalValue"></span>
-              </div>
-    
-              <div class="genericFormSection editStudentProjectCourseListTitle">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="projects.editStudentProject.courseListTitle"/>
-                  <jsp:param name="helpLocale" value="projects.editStudentProject.courseListHelp"/>
-                </jsp:include>
-              </div> 
-              
-              <div class="genericTableAddRowContainer">
-                <span class="genericTableAddRowLinkContainer" onclick="openSearchCoursesDialog();"><fmt:message key="projects.editStudentProject.addCourseLink"/></span>
-              </div>
-    
-              <div id="noCoursesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
-                <span><fmt:message key="projects.editStudentProject.noCoursesAddedPreFix"/> <span onclick="openSearchCoursesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noCoursesAddedClickHereLink"/></span>.</span>
-              </div>
-    
-              <div id="coursesContainer">
-                <div id="coursesTableContainer"></div>
-              </div>
-  
-              <div id="editStudentProjectCoursesTotalContainer">
-                <fmt:message key="projects.editStudentProject.coursesTotal"/> <span id="editStudentProjectCoursesTotalValue"></span>
-              </div>
-            </td>
 
-            <td class="editStudentProjectCourseBasket" style="vertical-align: top; width: 450px;">
-              <div class="genericFormSection editStudentProjectCourseListTitle">
-                <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                  <jsp:param name="titleLocale" value="projects.editStudentProject.courseBasketListTitle"/>
-                  <jsp:param name="helpLocale" value="projects.editStudentProject.courseBasketListHelp"/>
-                </jsp:include>
-              </div> 
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.moduleListTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.moduleListHelp"/>
+              </jsp:include>
+            </div>
+              
+            <div class="genericTableAddRowContainer">
+              <span class="genericTableAddRowLinkContainer" onclick="openSearchModulesDialog();"><fmt:message key="projects.editStudentProject.addModuleLink"/></span>
+            </div>
+          
+            <div id="noModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+              <span><fmt:message key="projects.editStudentProject.noModulesAddedPreFix"/> <span onclick="openSearchModulesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noModulesAddedClickHereLink"/></span>.</span>
+            </div>
   
-              <div class="genericTableAddRowContainer">
-                <span class="genericTableAddRowLinkContainer" onclick="openSearchCoursesDialog();"><fmt:message key="projects.editStudentProject.addCourseLink"/></span>
-              </div>
+            <div id="allModulesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+              <span><fmt:message key="projects.editStudentProject.allModulesAddedPreFix"/></span>
+            </div>
+            
+            <div id="modulesContainer">
+              <div id="modulesTableContainer"></div>
+            </div>
   
-<!--               <div id="noCourseBasketAddedMessageContainer" class="genericTableNotAddedMessageContainer"> -->
-<%--                 <span><fmt:message key="projects.editStudentProject.noCoursesAddedPreFix"/> <span onclick="openSearchCoursesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noCoursesAddedClickHereLink"/></span>.</span> --%>
-<!--               </div> -->
+            <div id="editStudentProjectModulesTotalContainer">
+              <fmt:message key="projects.editStudentProject.modulesTotal"/> <span id="editStudentProjectModulesTotalValue"></span>
+            </div>
   
-              <div id="courseBasketContainer">
-                <div id="courseBasketTableContainer"></div>
-              </div>
+            <div class="genericFormSection editStudentProjectCourseListTitle">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.courseListTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.courseListHelp"/>
+              </jsp:include>
+            </div> 
+            
+            <div class="genericTableAddRowContainer">
+              <span class="genericTableAddRowLinkContainer" onclick="openSearchCoursesDialog();"><fmt:message key="projects.editStudentProject.addCourseLink"/></span>
+            </div>
   
-              <div id="editStudentProjectCourseBasketTotalContainer">
-                <fmt:message key="projects.editStudentProject.coursesTotal"/> <span id="editStudentProjectCourseBasketTotalValue"></span>
-              </div>
-            </td>
-            </tr>
-            </table>
+            <div id="noCoursesAddedMessageContainer" class="genericTableNotAddedMessageContainer">
+              <span><fmt:message key="projects.editStudentProject.noCoursesAddedPreFix"/> <span onclick="openSearchCoursesDialog();" class="genericTableAddRowLink"><fmt:message key="projects.editStudentProject.noCoursesAddedClickHereLink"/></span>.</span>
+            </div>
+  
+            <div id="coursesContainer">
+              <div id="coursesTableContainer"></div>
+            </div>
+
+            <div id="editStudentProjectCoursesTotalContainer">
+              <fmt:message key="projects.editStudentProject.coursesTotal"/> <span id="editStudentProjectCoursesTotalValue"></span>
+            </div>
           </div>
         </div>
       </div>
