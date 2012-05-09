@@ -16,6 +16,7 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.file.StudentFileDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
 import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
@@ -30,6 +31,7 @@ import fi.pyramus.dao.students.StudentImageDAO;
 import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.CourseStudent;
+import fi.pyramus.domainmodel.file.StudentFile;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.CreditLink;
 import fi.pyramus.domainmodel.grading.CreditType;
@@ -44,6 +46,7 @@ import fi.pyramus.domainmodel.students.StudentContactLogEntryComment;
 import fi.pyramus.domainmodel.students.StudentGroup;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 
 /**
  * ViewController for editing student information.
@@ -91,6 +94,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     TransferCreditDAO transferCreditDAO = DAOFactory.getInstance().getTransferCreditDAO();
     ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
     CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
+    StudentFileDAO studentFileDAO = DAOFactory.getInstance().getStudentFileDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
@@ -141,12 +145,14 @@ public class ViewStudentViewController extends PyramusViewController implements 
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
     Map<Long, List<StudentProjectBean>> studentProjects = new HashMap<Long, List<StudentProjectBean>>();
     Map<Long, CourseAssessment> courseAssessmentsByCourseStudent = new HashMap<Long, CourseAssessment>();
+//    Map<Long, List<StudentFile>> studentFiles = new HashMap<Long, List<StudentFile>>();
     // StudentProject.id -> List of module beans
     Map<Long, List<StudentProjectModuleBean>> studentProjectModules = new HashMap<Long, List<StudentProjectModuleBean>>();
     final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
     
     JSONObject linkedCourseAssessments = new JSONObject();
     JSONObject linkedTransferCredits = new JSONObject();
+    JSONObject studentFiles = new JSONObject();
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
@@ -497,6 +503,22 @@ public class ViewStudentViewController extends PyramusViewController implements 
         StudentProjectBean bean = new StudentProjectBean(studentProject, mandatoryModuleCount, optionalModuleCount, passedMandatoryModuleCount, passedOptionalModuleCount, projectAssessments);
         studentProjectBeans.add(bean);
       }
+
+      List<StudentFile> files = studentFileDAO.listByStudent(student);
+      Collections.sort(files, new StringAttributeComparator("getName"));
+
+      arr = new JSONArray();
+      for (StudentFile file : files) {
+        JSONObject obj = new JSONObject();
+        obj.put("id", file.getId());
+        obj.put("name", file.getName());
+        obj.put("fileTypeName", file.getFileType() != null ? file.getFileType().getName() : "");
+        obj.put("created", file.getCreated().getTime());
+        obj.put("lastModified", file.getLastModified().getTime());
+        arr.add(obj);
+      }
+      if (arr.size() > 0)
+        studentFiles.put(student.getId(), arr);
       
       // Student Image
       studentHasImage.put(student.getId(), imageDAO.findStudentHasImage(student));
@@ -511,6 +533,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
 
     setJsDataVariable(pageRequestContext, "linkedCourseAssessments", linkedCourseAssessments.toString());
     setJsDataVariable(pageRequestContext, "linkedTransferCredits", linkedTransferCredits.toString());
+    setJsDataVariable(pageRequestContext, "studentFiles", studentFiles.toString());
     
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("courses", courseStudents);
