@@ -244,6 +244,116 @@
         return coursesTable;
       }
 
+      function setupFilesTable(studentId) {
+//         var relatedContainer = $('tabRelatedActionsContainer.' + studentId);
+    
+        var filesTable = new IxTable($('filesTableContainer.' + studentId), {
+          id: 'filesTable.' + studentId,
+          rowHoverEffect: true,
+          columns : [{
+            header : '<fmt:message key="students.viewStudent.filesTableNameHeader"/>',
+            left: 8,
+            right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 200 + 8,
+            dataType: 'text',
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            }
+          }, {
+            header : '<fmt:message key="students.viewStudent.filesTableFileTypeHeader"/>',
+            width: 200,
+            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
+            dataType: 'text',
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.byValue"/>',
+                onclick: new IxTable_ROWSTRINGFILTER()
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
+          }, {
+            header : '<fmt:message key="students.viewStudent.filesTableFileDateHeader"/>',
+            width: 150,
+            right: 8 + 22 + 8 + 22 + 8,
+            dataType: 'date',
+            editable: false,
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            },
+            contextMenu: [
+              {
+                text: '<fmt:message key="generic.filter.earlier"/>',
+                onclick: new IxTable_ROWDATEFILTER(true)
+              },
+              {
+                text: '<fmt:message key="generic.filter.later"/>',
+                onclick: new IxTable_ROWDATEFILTER(false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
+          }, {
+            dataType: 'hidden',
+            paramName: 'fileId'
+          }, {
+            width: 22,
+            right: 8 + 22 + 8,
+            dataType: 'button',
+            paramName: 'evaluateButton',
+            imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
+            tooltip: '<fmt:message key="students.viewStudent.coursesTableEvaluateStudentTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+              redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
+            } 
+          }, {
+            width: 30,
+            right: 00,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
+            tooltip: '<fmt:message key="students.viewStudent.courseTableViewTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
+              redirectTo(GLOBAL_contextPath + '/courses/viewcourse.page?course=' + courseId);
+            }
+          }]
+        });
+
+        return filesTable;
+      }
+      
       function setupTransferCreditsTable(studentId, containerElement, tableId) {
         /* TODO: Oppilaitos */
         
@@ -536,9 +646,11 @@
 
       function onLoad(event) {
         var coursesTable;
+        var filesTable;
         var transferCreditsTable;
         var courseAssessmentsTable;
         
+        var studentFilesContainer = JSDATA["studentFiles"].evalJSON();
         var linkedCourseAssessmentsContainer = JSDATA["linkedCourseAssessments"].evalJSON();
         var linkedTransferCreditsContainer = JSDATA["linkedTransferCredits"].evalJSON();
 
@@ -844,6 +956,25 @@
             </c:forEach>
             projectTable.addRows(rows);
           </c:forEach>
+
+          // Setup course tabs
+          filesTable = setupFilesTable(${student.id});
+          
+          var files = studentFilesContainer['${student.id}'];
+          if (files) {
+            for (var i = 0, l = files.length; i < l; i++) {
+              var file = files[i];
+              rows.push([
+                  file.name,
+                  file.fileTypeName,
+                  file.lastModified,
+                  file.id,
+                  '',
+                  ''
+              ]);
+            }
+            linkedTransferCreditsTable.addRows(rows);
+          }
         </c:forEach>
         
         
@@ -856,6 +987,22 @@
         <c:if test="${!empty param.activeTab}">
           tabControl.setActiveTab("${param.activeTab}");  
         </c:if>
+        
+        $$('.viewStudentProjectHeader').each(function (node) {
+          Event.observe(node, 'click', onStudentProjectHeaderClick);
+        });
+      }
+      
+      function onStudentProjectHeaderClick(event) {
+        var element = Event.element(event);
+        
+        var projectElement = element.up(".viewStudentProject");
+        var projectTableElement = projectElement.down(".viewStudentStudentProjectTableContainer");
+        
+        if (projectTableElement.visible())
+          projectTableElement.hide();
+        else
+          projectTableElement.show();
       }
       
       function openEditStudentProject(studentProjectId) {
@@ -943,6 +1090,9 @@
                   </a>
                   <a class="tabLabel" href="#studentProject.${student.id}">
                     <fmt:message key="students.viewStudent.studentProjectTabLabel"/>
+                  </a>
+                  <a class="tabLabel" href="#studentFiles.${student.id}">
+                    <fmt:message key="students.viewStudent.studentFilesTabLabel"/>
                   </a>
                 </div>
 
@@ -1433,7 +1583,6 @@
                       <fmt:message key="students.viewStudent.linkedTransferCreditsTotal"/> <span id="viewStudentLinkedTransferCreditsTotalValue.${student.id}"></span>
                     </div>
                   </div>
-
                 </div> 
 
                 <div id="contactlog.${student.id}" class="tabContent">
@@ -1495,44 +1644,60 @@
                   <div id="projectsTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
 
                   <c:forEach var="sp" items="${studentProjects[student.id]}">
-                    <div class="viewStudentProjectHeader">
-                      <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
-                      <span class="viewStudentProjectHeaderOptionality">
-                        <c:choose>
-                          <c:when test="${sp.studentProject.optionality eq 'MANDATORY'}">
-                            <fmt:message key="students.viewStudent.projectOptionalityMandatory"/>
-                          </c:when>
-                          <c:when test="${sp.studentProject.optionality eq 'OPTIONAL'}">
-                            <fmt:message key="students.viewStudent.projectOptionalityOptional"/>
-                          </c:when>
-                        </c:choose>
-                      </span>
-
-                      <c:forEach var="assessment" items="${sp.assessments}">
-                        <span class="viewStudentProjectHeaderAssessment">
-                          <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${assessment.date}"/></span>
-                          <span class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
-                        </span>
-                      </c:forEach>
-                      
-                      <span class="viewStudentProjectHeaderEditButton">
-                        <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/>
-                      </span>
-                    </div>
-                    
-                    <div class="viewStudentProjectHeader">
-                      <span class="viewStudentProjectHeaderMandatory"><fmt:message key="students.viewStudent.projectHeaderMandatoryCourseCount"/> ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span> 
-                      <span class="viewStudentProjectHeaderOptional"><fmt:message key="students.viewStudent.projectHeaderOptionalCourseCount"/> ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
-                    </div>
-
-
-                    <div class="viewStudentStudentProjectTableContainer">                    
-                      <div id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>
+                    <div class="viewStudentProject">
+                      <div class="viewStudentProjectHeader">
+                        <div>
+                          <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
+                          <span class="viewStudentProjectHeaderOptionality">
+                            <c:choose>
+                              <c:when test="${sp.studentProject.optionality eq 'MANDATORY'}">
+                                <fmt:message key="students.viewStudent.projectOptionalityMandatory"/>
+                              </c:when>
+                              <c:when test="${sp.studentProject.optionality eq 'OPTIONAL'}">
+                                <fmt:message key="students.viewStudent.projectOptionalityOptional"/>
+                              </c:when>
+                            </c:choose>
+                          </span>
+    
+                          <c:forEach var="assessment" items="${sp.assessments}">
+                            <span class="viewStudentProjectHeaderAssessment">
+                              <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${assessment.date}"/></span>
+                              <span class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
+                            </span>
+                          </c:forEach>
+                          
+                          <span class="viewStudentProjectHeaderEditButton">
+                            <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/>
+                          </span>
+                        </div>
+                        <div>
+                          <span class="viewStudentProjectHeaderMandatory"><fmt:message key="students.viewStudent.projectHeaderMandatoryCourseCount"/> ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span> 
+                          <span class="viewStudentProjectHeaderOptional"><fmt:message key="students.viewStudent.projectHeaderOptionalCourseCount"/> ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
+                        </div>
+                      </div>
+  
+                      <div class="viewStudentStudentProjectTableContainer" style="display: none;">                    
+                        <div id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>
+                      </div>
                     </div>
                   </c:forEach>
-
-                
                 </div>
+
+                <div id="studentFiles.${student.id}" class="tabContent">
+                  <div id="filesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
+
+                  <div class="genericFormSection">                              
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="students.viewStudent.filesTitle"/>
+                      <jsp:param name="helpLocale" value="students.viewStudent.filesHelp"/>
+                    </jsp:include> 
+                    <div id="viewStudentStudentFilesTableContainer"><div id="filesTableContainer.${student.id}"></div></div>
+<%--                     <div id="viewStudentFilesTotalContainer.${student.id}" class="viewStudentFilesTotalContainer"> --%>
+<%--                       <fmt:message key="students.viewStudent.filesTotal"/> <span id="viewStudentFilesTotalValue.${student.id}"></span> --%>
+<!--                     </div> -->
+                  </div>
+                </div>
+                
               </div>
             </div>  
           </div>
