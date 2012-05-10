@@ -267,17 +267,28 @@ h1.genericPageHeader{
 
 }
 
+.viewStudentProject {
+  margin:10px 0px 0px 0px;
+}
+
 .viewStudentProjectHeader {
   margin: 4px 8px 4px 8px;
+  cursor:pointer;
+}
+
+.viewStudentProjectHeader > div{
+  margin: 2px 0px 2px 0px;
 }
 
 .viewStudentProjectHeaderName {
   font-weight: bold;
-  font-size: 13px;
 }
 
 .viewStudentStudentProjectTableContainer {
-  margin: 0px 8px 0px 8px;
+  padding: 8px;
+  background:#fff;
+  border-radius:5px;
+  border:1px solid #E5ECFC;
 }
 
 .viewStudentProjectHeaderAssessment {
