@@ -2292,8 +2292,12 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
 }
 
 .editStudentProjectModuleListFilter {
-  position: absolute;
-  left: 120px;
+  display:inline-block;
+  margin-left:20px;
+}
+
+.editStudentProjectModuleListTitle > .genericFormTitle {
+  display:inline-block;
 }
 
 /* Create Student Group - Students */
