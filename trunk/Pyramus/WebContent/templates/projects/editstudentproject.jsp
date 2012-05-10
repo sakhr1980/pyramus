@@ -303,7 +303,7 @@
           }, {
             header : '<fmt:message key="projects.editStudentProject.moduleTableCourseStatesHeader"/>',
             right : 8 + 22 + 8 + 22 + 8 + 22 + 8 + 100 + 8 + 100 + 8 + 100 + 8,
-            width: 150,
+            width: 165,
             dataType: 'text',
             editable: false,
 //             paramName: 'courseStates',
@@ -1038,6 +1038,11 @@
   
           <div id="coursesmodules" class="tabContentixTableFormattedData">
             <div class="genericFormSection editStudentProjectModuleListTitle">
+             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="projects.editStudentProject.moduleListTitle"/>
+                <jsp:param name="helpLocale" value="projects.editStudentProject.moduleListHelp"/>
+              </jsp:include>
+              
               <div class="editStudentProjectModuleListFilter">
                 <select id="moduleFilter">
                   <option value="0"><fmt:message key="projects.editStudentProject.moduleTableFilterNoFilter"/></option>
@@ -1045,11 +1050,6 @@
                   <option value="2"><fmt:message key="projects.editStudentProject.moduleTableFilterShowNonPassed"/></option>
                 </select>
               </div>
-
-              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="projects.editStudentProject.moduleListTitle"/>
-                <jsp:param name="helpLocale" value="projects.editStudentProject.moduleListHelp"/>
-              </jsp:include>
             </div>
               
             <div class="genericTableAddRowContainer">
