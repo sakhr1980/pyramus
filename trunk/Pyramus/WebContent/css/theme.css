@@ -325,11 +325,12 @@ h1.genericPageHeader{
 .viewStudent_studentImage {
   background-repeat: no-repeat;
   background-size: contain;
-  height: 180px;
+  height: 170px;
   width: 140px;
   position: absolute;
   right: 10px;
   top: 10px;
+  background-position:center right;
 }
 
 /* View Student - Courses */
@@ -1811,7 +1812,7 @@ div.autocomplete_choices ul li.selected.autocompleteGroupTitle{
 
 .studentContactEntryWrapper{
   width:50%;
-  min-height:480px;
+  min-height:530px;
 }
 
 .studentContactEntryItem{
