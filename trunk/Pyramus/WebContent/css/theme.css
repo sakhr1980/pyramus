@@ -245,6 +245,10 @@ h1.genericPageHeader{
   padding:0;
 }
 
+.studyProgrammeCopyPopupContainer div {
+  margin:5px 0px;
+}
+
 /* View Student - Basic Info */
 
 #studentViewBasicInfoWrapper .genericFormTitle, #studentViewContactInfoWrapper .genericFormTitle, #studentViewEducationInfoWrapper .genericFormTitle, #studentViewAdditionalInfoWrapper .genericFormTitle{
@@ -268,14 +272,18 @@ h1.genericPageHeader{
 }
 
 .viewStudentProject {
-  margin:10px 0px 0px 0px;
+  margin:0px 0px 0px 0px;
 }
 
 .viewStudentProjectHeader {
-  margin: 4px 8px 4px 8px;
+  padding:2px 8px;
   cursor:pointer;
 }
 
+.viewStudentProjectHeader:hover {
+  color:#2351B1;
+  background:#D7E3F9;
+}
 .viewStudentProjectHeader > div{
   margin: 2px 0px 2px 0px;
 }
