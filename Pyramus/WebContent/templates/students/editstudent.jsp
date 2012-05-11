@@ -487,6 +487,7 @@
                 cancelLabel : '<fmt:message key="students.copyStudyProgrammePopup.cancelLabel"/>'
               });
             
+              dialog.setSize("300px", "160px");
               dialog.addDialogListener( function(event) {
                 var dlg = event.dialog;
             

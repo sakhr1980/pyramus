@@ -1643,6 +1643,13 @@
                 <div id="studentProject.${student.id}" class="tabContent">
                   <div id="projectsTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
 
+                  <div class="genericFormSection">
+                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale" value="students.viewStudent.projectsTitle"/>
+                      <jsp:param name="helpLocale" value="students.viewStudent.coursesHelp"/>
+                    </jsp:include>
+                  </div> 
+
                   <c:forEach var="sp" items="${studentProjects[student.id]}">
                     <div class="viewStudentProject">
                       <div class="viewStudentProjectHeader">
