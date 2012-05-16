@@ -37,6 +37,14 @@
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="reports.editReport.nameTitle"/>
+                <jsp:param name="helpLocale" value="reports.editReport.nameHelp"/>
+              </jsp:include>          
+              <input type="text" name="name" class="required" size="60" value="${fn:escapeXml(report.name)}"/>
+            </div> 
+            
+            <div class="genericFormSection">
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="reports.editReport.categoryTitle"/>
                 <jsp:param name="helpLocale" value="reports.editReport.categoryHelp"/>
               </jsp:include>          
@@ -57,10 +65,21 @@
 
             <div class="genericFormSection">
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                <jsp:param name="titleLocale" value="reports.editReport.nameTitle"/>
-                <jsp:param name="helpLocale" value="reports.editReport.nameHelp"/>
-              </jsp:include>          
-              <input type="text" name="name" class="required" size="60" value="${fn:escapeXml(report.name)}"/>
+                <jsp:param name="titleLocale" value="reports.editReport.contextsTitle"/>
+                <jsp:param name="helpLocale" value="reports.editReport.contextsHelp"/>
+              </jsp:include>
+              
+              <c:forEach var="contextType" items="${contextTypes}">
+                <c:choose>
+                  <c:when test="${reportContexts[contextType]}">
+                    <input type="checkbox" name="context.${contextType}" value="true" checked="checked"/>
+                  </c:when>
+                  <c:otherwise>
+                    <input type="checkbox" name="context.${contextType}" value="true"/>
+                  </c:otherwise>
+                </c:choose>
+                <fmt:message key="generic.reportContextTypes.${contextType}"/><br/>                
+              </c:forEach>
             </div> 
             
             <div class="genericFormSubmitSection">

@@ -18,12 +18,13 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.Field;
 
+import fi.pyramus.dao.ModificationTrackedEntity;
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.users.User;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class File implements ArchivableEntity {
+public class File implements ArchivableEntity, ModificationTrackedEntity {
 
   /**
    * Returns internal unique id

@@ -11,6 +11,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 
@@ -27,7 +28,7 @@ public class ListReportsViewController extends PyramusViewController implements 
   public void process(PageRequestContext pageRequestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
 
-    List<Report> reports = reportDAO.listAll();
+    List<Report> reports = reportDAO.listByContextType(ReportContextType.Common);
     Collections.sort(reports, new Comparator<Report>() {
       @Override
       public int compare(Report o1, Report o2) {

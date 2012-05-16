@@ -90,3 +90,9 @@
   display: block;
   margin-left: 16px;
 }
+
+.IxHoverMenuSpacer {
+  background:#5b87d4;
+  height:1px;
+  margin:4px 8px 4px 8px;
+}

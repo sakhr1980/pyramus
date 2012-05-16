@@ -22,6 +22,7 @@ import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.dao.students.AbstractStudentDAO;
 import fi.pyramus.dao.students.StudentContactLogEntryCommentDAO;
 import fi.pyramus.dao.students.StudentContactLogEntryDAO;
@@ -39,6 +40,8 @@ import fi.pyramus.domainmodel.grading.ProjectAssessment;
 import fi.pyramus.domainmodel.grading.TransferCredit;
 import fi.pyramus.domainmodel.projects.StudentProject;
 import fi.pyramus.domainmodel.projects.StudentProjectModule;
+import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.domainmodel.students.AbstractStudent;
 import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.students.StudentContactLogEntry;
@@ -95,6 +98,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     ProjectAssessmentDAO projectAssessmentDAO = DAOFactory.getInstance().getProjectAssessmentDAO();
     CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
     StudentFileDAO studentFileDAO = DAOFactory.getInstance().getStudentFileDAO();
+    ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
@@ -136,7 +140,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
           return o1class < o2class ? -1 : o1class == o2class ? 0 : 1;
       }
     });
-
+    
     Map<Long, Boolean> studentHasImage = new HashMap<Long, Boolean>();
     Map<Long, List<CourseStudent>> courseStudents = new HashMap<Long, List<CourseStudent>>();
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
@@ -153,6 +157,17 @@ public class ViewStudentViewController extends PyramusViewController implements 
     JSONObject linkedCourseAssessments = new JSONObject();
     JSONObject linkedTransferCredits = new JSONObject();
     JSONObject studentFiles = new JSONObject();
+    JSONArray studentReportsJSON = new JSONArray();
+    
+    List<Report> studentReports = reportDAO.listByContextType(ReportContextType.Student);
+    Collections.sort(studentReports, new StringAttributeComparator("getName"));
+    
+    for (Report report : studentReports) {
+      JSONObject obj = new JSONObject();
+      obj.put("id", report.getId().toString());
+      obj.put("name", report.getName());
+      studentReportsJSON.add(obj);
+    }
     
     for (int i = 0; i < students.size(); i++) {
     	Student student = students.get(i);
@@ -534,6 +549,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     setJsDataVariable(pageRequestContext, "linkedCourseAssessments", linkedCourseAssessments.toString());
     setJsDataVariable(pageRequestContext, "linkedTransferCredits", linkedTransferCredits.toString());
     setJsDataVariable(pageRequestContext, "studentFiles", studentFiles.toString());
+    setJsDataVariable(pageRequestContext, "studentReports", studentReportsJSON.toString());
     
     pageRequestContext.getRequest().setAttribute("students", students);
     pageRequestContext.getRequest().setAttribute("courses", courseStudents);

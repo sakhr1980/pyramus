@@ -3,6 +3,7 @@ package fi.pyramus.views.system;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,6 +11,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +30,12 @@ import org.xml.sax.SAXException;
 import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.reports.ReportContextDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContext;
+import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.PyramusFormViewController;
 import fi.pyramus.framework.UserRole;
@@ -40,11 +47,41 @@ public class ImportReportViewController extends PyramusFormViewController {
   @Override
   public void processForm(PageRequestContext requestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
+    ReportContextDAO reportContextDAO = DAOFactory.getInstance().getReportContextDAO();
+
     List<Report> reports = reportDAO.listAll();
-    
     Collections.sort(reports, new StringAttributeComparator("getName"));
     
+    JSONArray contextTypesJSON = new JSONArray();
+    List<String> contextTypes = new ArrayList<String>();
+    for (ReportContextType contextType : ReportContextType.values()) {
+      contextTypes.add(contextType.toString());
+      contextTypesJSON.add(contextType.toString());
+    }
+
+    JSONArray reportsJSON = new JSONArray();
+    for (Report report : reports) {
+      JSONObject rObj = new JSONObject();
+      
+      List<ReportContext> contexts = reportContextDAO.listByReport(report);
+      
+      JSONArray rCtxs = new JSONArray();
+      for (ReportContext ctx : contexts) {
+        rCtxs.add(ctx.getContext().toString());
+      }
+
+      rObj.put("id", report.getId().toString());
+      rObj.put("name", report.getName());
+      rObj.put("contexts", rCtxs);
+      
+      reportsJSON.add(rObj);
+    }
+    
+    setJsDataVariable(requestContext, "reports", reportsJSON.toString());
+    setJsDataVariable(requestContext, "contextTypes", contextTypesJSON.toString());
+    
     requestContext.getRequest().setAttribute("reports", reports);
+    requestContext.getRequest().setAttribute("contextTypes", contextTypes);
     requestContext.setIncludeJSP("/templates/system/importreport.jsp");
   }
 
@@ -134,12 +171,14 @@ public class ImportReportViewController extends PyramusFormViewController {
           if (dataStream != null) {
             reportDAO.updateData(report, dataStream.toString("UTF-8"), loggedUser);
           }
+          handleContexts(requestContext, report);
           requestContext.setRedirectURL(requestContext.getRequest().getContextPath()
               + "/reports/viewreport.page?&reportId=" + report.getId());
         }
       }
       else {
         Report report = reportDAO.create(name, dataStream.toString("UTF-8"), loggedUser);
+        handleContexts(requestContext, report);
         requestContext.setRedirectURL(requestContext.getRequest().getContextPath()
             + "/reports/viewreport.page?&reportId=" + report.getId());
       }
@@ -158,6 +197,20 @@ public class ImportReportViewController extends PyramusFormViewController {
     }
   }
 
+  private void handleContexts(PageRequestContext requestContext, Report report) {
+    ReportContextDAO reportContextDAO = DAOFactory.getInstance().getReportContextDAO();
+    for (ReportContextType contextType : ReportContextType.values()) {
+      ReportContext context = reportContextDAO.findByReportAndContextType(report, contextType);
+      
+      boolean selected = requestContext.getBoolean("context." + contextType.toString());
+      
+      if ((selected) && (context == null))
+        reportContextDAO.create(report, contextType);
+      else if ((!selected) && (context != null))
+        reportContextDAO.delete(context);
+    }
+  }
+  
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.ADMINISTRATOR };
   }

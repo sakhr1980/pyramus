@@ -2366,3 +2366,11 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   width: 49%;
   vertical-align: top;
 }
+
+.studentAddFileChooseTypeLink {
+  background-color: #2E5EC5;
+  border: 1px solid #FFFFFF;
+  border-radius: 5px 5px 5px 5px;
+  color: #FFFFFF;
+  padding: 3px 8px;
+}

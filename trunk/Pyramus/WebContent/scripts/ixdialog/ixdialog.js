@@ -103,6 +103,9 @@ IxDialog = Class.create({
 
     _Dialogs.set(this._id, this);
   },
+  setContentUrl : function (contentURL) {
+    this._dialogContent.setAttribute("src", contentURL);
+  },
   open : function() {
     this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
     document.body.appendChild(this._glassPane);
