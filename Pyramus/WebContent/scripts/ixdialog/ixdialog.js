@@ -137,7 +137,7 @@ IxDialog = Class.create({
       this._dialogNode.show();
 	    this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
 	    document.body.appendChild(this._glassPane);
-	    this._parentNode.appendChild(this._dialogNode);
+//	    this._parentNode.appendChild(this._dialogNode); // Causes a reload of dialog contents
 	    this._isHidden = false;
 	    this._recalculateSize();
     }
