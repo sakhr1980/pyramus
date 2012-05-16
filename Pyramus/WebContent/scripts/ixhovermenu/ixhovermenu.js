@@ -20,6 +20,12 @@ IxHoverMenu = Class.create({
   }
 });
 
+IxHoverMenuSpacer = Class.create({
+  initialize : function() {
+    this.domNode = new Element("div", {className: "IxHoverMenuSpacer"});
+  }
+});
+
 IxHoverMenuItem = Class.create({
   initialize : function(options) {
     this._options = options;
@@ -57,3 +63,4 @@ IxHoverMenuClickableItem = Class.create(IxHoverMenuItem, {
     });
   }
 });
+

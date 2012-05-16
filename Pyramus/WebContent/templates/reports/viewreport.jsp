@@ -55,10 +55,15 @@
         _loaderGlassPane = new IxGlassPane(document.body, { });
         
         var tabControl = new IxProtoTabs($('tabs'));
+        var viewParametersUrl = '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}'; 
+        
+        <c:if test="${studentId ne null}">
+          viewParametersUrl = viewParametersUrl + "&studentId=${studentId}"; 
+        </c:if>
         
         var dialog = new IxDialog({
           id : 'parametersDialog',
-          contentURL : '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}',
+          contentURL : viewParametersUrl,
           centered : true,
           showOk : true,
           showCancel : true,

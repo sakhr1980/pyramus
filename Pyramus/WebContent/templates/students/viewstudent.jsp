@@ -55,6 +55,25 @@
             openEditStudentImageDialog(studentId);
           }
         }));
+
+        var studentReports = JSDATA["studentReports"].evalJSON();
+        
+        if (studentReports) {
+          if (studentReports.length > 0) {
+            basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuSpacer());
+
+            for (var i = 0, l = studentReports.length; i < l; i++) {
+              var reportId = studentReports[i].id;
+              var reportName = studentReports[i].name;
+              
+              basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+                iconURL: GLOBAL_contextPath + '/gfx/text-html.png',
+                text: reportName,
+                link: GLOBAL_contextPath + '/reports/viewreport.page?reportId=' + reportId + "&studentId=" + studentId
+              }));
+            }            
+          }
+        }
         
         var gradesTabRelatedActionsHoverMenu = new IxHoverMenu($('gradesTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.gradesTabRelatedActionsLabel"/>'
@@ -245,8 +264,26 @@
       }
 
       function setupFilesTable(studentId) {
-//         var relatedContainer = $('tabRelatedActionsContainer.' + studentId);
-    
+        var relatedActions = new IxHoverMenu($('filesTabRelatedActionsHoverMenuContainer.' + studentId), {
+          text: '<fmt:message key="students.viewStudent.filesTabRelatedActionsLabel"/>'
+        });
+        
+        relatedActions.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
+          text: '<fmt:message key="students.viewStudent.filesTabRelatedActionsAddFileLinkLabel"/>',
+          onclick: function (event) {
+            openAddNewFileDialog(studentId);
+          }
+        }));
+
+//         relatedActions.addItem(new IxHoverMenuClickableItem({
+//           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
+//           text: '<fmt:message key="students.viewStudent.filesTabRelatedActionsAddReportFileLinkLabel"/>',
+//           onclick: function (event) {
+//             openAddNewFileDialog(studentId);
+//           }
+//         }));
+        
         var filesTable = new IxTable($('filesTableContainer.' + studentId), {
           id: 'filesTable.' + studentId,
           rowHoverEffect: true,
@@ -338,15 +375,15 @@
               redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
             } 
           }, {
-            width: 30,
-            right: 00,
+            width: 22,
+            right: 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
-            tooltip: '<fmt:message key="students.viewStudent.courseTableViewTooltip"/>',
+            tooltip: '<fmt:message key="students.viewStudent.filesTableDownloadFile"/>',
             onclick: function (event) {
               var table = event.tableComponent;
-              var courseId = table.getCellValue(event.row, table.getNamedColumnIndex('courseId'));
-              redirectTo(GLOBAL_contextPath + '/courses/viewcourse.page?course=' + courseId);
+              var fileId = table.getCellValue(event.row, table.getNamedColumnIndex('fileId'));
+              redirectTo(GLOBAL_contextPath + '/studentfiles/downloadfile.binary?fileId=' + fileId);
             }
           }]
         });
@@ -962,6 +999,7 @@
           
           var files = studentFilesContainer['${student.id}'];
           if (files) {
+            rows.clear();
             for (var i = 0, l = files.length; i < l; i++) {
               var file = files[i];
               rows.push([
@@ -973,7 +1011,7 @@
                   ''
               ]);
             }
-            linkedTransferCreditsTable.addRows(rows);
+            filesTable.addRows(rows);
           }
         </c:forEach>
         
@@ -1030,7 +1068,7 @@
         
         dialog.open();
       }
-      
+
       function reloadStudentImage(studentId) {
         var imageContainer = $('studentImage.' + studentId);
         
@@ -1040,6 +1078,22 @@
           backgroundImage: 'url("' + imageUrl + '")'
         });
       }
+      
+      function openAddNewFileDialog(studentId) {
+        var dialog = new IxDialog({
+          id : 'newFileDialog',
+          contentURL : GLOBAL_contextPath + '/studentfiles/uploadfile.page?studentId=' + studentId,
+          centered : true,
+          showOk : true,
+          showCancel : false,
+          title : '<fmt:message key="studentFiles.uploadFileDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="studentFiles.uploadFileDialog.okLabel"/>' 
+        });
+        
+        dialog.setSize("350px", "300px");
+        dialog.open();
+      }
+      
     </script>
   </head>
 

@@ -1,13 +1,20 @@
 package fi.pyramus.dao.reports;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
+import fi.pyramus.domainmodel.reports.ReportContext;
+import fi.pyramus.domainmodel.reports.ReportContextType;
+import fi.pyramus.domainmodel.reports.ReportContext_;
 import fi.pyramus.domainmodel.users.User;
 
 @Stateless
@@ -59,6 +66,22 @@ public class ReportDAO extends PyramusEntityDAO<Report> {
     getEntityManager().persist(report);
   }
 
+  public List<Report> listByContextType(ReportContextType contextType) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Report> criteria = criteriaBuilder.createQuery(Report.class);
+    Root<ReportContext> root = criteria.from(ReportContext.class);
+    
+    criteria.select(root.get(ReportContext_.report));
+    criteria.where(
+        criteriaBuilder.equal(root.get(ReportContext_.context), contextType)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  
   @Override
   public void delete(Report report) {
     super.delete(report);

@@ -24,12 +24,20 @@ public class ViewReportViewController extends PyramusViewController implements B
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
     Long reportId = pageRequestContext.getLong("reportId");
     
+    handleContextParameters(pageRequestContext);
+    
     pageRequestContext.getRequest().setAttribute("report", reportDAO.findById(reportId));
     pageRequestContext.getRequest().setAttribute("reportsContextPath", System.getProperty("reports.contextPath"));
     
     pageRequestContext.setIncludeJSP("/templates/reports/viewreport.jsp");
   }
 
+  private void handleContextParameters(PageRequestContext pageRequestContext) {
+    Long studentId = pageRequestContext.getLong("studentId");
+    if (studentId != null)
+      pageRequestContext.getRequest().setAttribute("studentId", studentId); 
+  }
+  
   /**
    * Returns the roles allowed to access this page. Reports are available for users with
    * {@link Role#USER}, {@link Role#MANAGER} and {@link Role#ADMINISTRATOR} privileges.

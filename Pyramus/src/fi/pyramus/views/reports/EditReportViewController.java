@@ -1,17 +1,24 @@
 package fi.pyramus.views.reports;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.reports.ReportCategoryDAO;
+import fi.pyramus.dao.reports.ReportContextDAO;
 import fi.pyramus.dao.reports.ReportDAO;
+import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportCategory;
+import fi.pyramus.domainmodel.reports.ReportContext;
+import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 
@@ -28,9 +35,12 @@ public class EditReportViewController extends PyramusViewController implements B
   public void process(PageRequestContext pageRequestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
     ReportCategoryDAO categoryDAO = DAOFactory.getInstance().getReportCategoryDAO();
+    ReportContextDAO reportContextDAO = DAOFactory.getInstance().getReportContextDAO();
     Long reportId = pageRequestContext.getLong("reportId");
+    Report report = reportDAO.findById(reportId);
     
     List<ReportCategory> categories = categoryDAO.listAll();
+    List<ReportContext> reportContexts = reportContextDAO.listByReport(report);
     
     Collections.sort(categories, new Comparator<ReportCategory>() {
       public int compare(ReportCategory o1, ReportCategory o2) {
@@ -43,8 +53,18 @@ public class EditReportViewController extends PyramusViewController implements B
       }
     });
     
-    pageRequestContext.getRequest().setAttribute("report", reportDAO.findById(reportId));
+    Map<String, Boolean> selectedContexts = new HashMap<String, Boolean>();
+    for (ReportContext context : reportContexts)
+      selectedContexts.put(context.getContext().toString(), Boolean.TRUE);
+
+    List<String> contextTypes = new ArrayList<String>();
+    for (ReportContextType contextType : ReportContextType.values())
+      contextTypes.add(contextType.toString());
+    
+    pageRequestContext.getRequest().setAttribute("report", report);
     pageRequestContext.getRequest().setAttribute("reportCategories", categories);
+    pageRequestContext.getRequest().setAttribute("reportContexts", selectedContexts);
+    pageRequestContext.getRequest().setAttribute("contextTypes", contextTypes);
     
     pageRequestContext.setIncludeJSP("/templates/reports/editreport.jsp");
   }

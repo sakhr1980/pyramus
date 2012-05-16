@@ -3,6 +3,7 @@ package fi.pyramus.views.reports;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
+import fi.internetix.smvc.controllers.RequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
@@ -41,14 +42,20 @@ public class ViewReportParametersViewController extends PyramusViewController im
       .append(reportsContextPath)
       .append("/parameter?magicKey=")
       .append(magicKey.getName())
-      .append("&__report=reports/")
-      .append(reportId)
-      .append(".rptdesign")
+      .append("&__report=reports/").append(reportId).append(".rptdesign")
       .append("&__masterpage=true&__nocache");
+    
+    handleContextParameters(pageRequestContext, urlBuilder);
     
     pageRequestContext.setIncludeUrl(urlBuilder.toString());
   }
 
+  private void handleContextParameters(PageRequestContext pageRequestContext, StringBuilder urlBuilder) {
+    Long studentId = pageRequestContext.getLong("studentId");
+    if (studentId != null)
+      urlBuilder.append("&studentId=").append(studentId);
+  }
+  
   /**
    * Returns the roles allowed to access this page. Reports are available for users with
    * {@link Role#USER}, {@link Role#MANAGER} and {@link Role#ADMINISTRATOR} privileges.

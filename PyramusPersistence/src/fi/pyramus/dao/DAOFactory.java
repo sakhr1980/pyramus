@@ -85,6 +85,7 @@ import fi.pyramus.dao.projects.ProjectModuleDAO;
 import fi.pyramus.dao.projects.StudentProjectDAO;
 import fi.pyramus.dao.projects.StudentProjectModuleDAO;
 import fi.pyramus.dao.reports.ReportCategoryDAO;
+import fi.pyramus.dao.reports.ReportContextDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.dao.resources.MaterialResourceDAO;
 import fi.pyramus.dao.resources.ResourceCategoryDAO;
@@ -271,6 +272,10 @@ public class DAOFactory {
     return (ReportCategoryDAO) findByClass(ReportCategoryDAO.class);
   }
 
+  public ReportContextDAO getReportContextDAO() {
+    return (ReportContextDAO) findByClass(ReportContextDAO.class);
+  }
+  
   /* Users */
   
   public InternalAuthDAO getInternalAuthDAO() {
