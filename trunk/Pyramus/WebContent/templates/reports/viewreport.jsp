@@ -57,9 +57,20 @@
         var tabControl = new IxProtoTabs($('tabs'));
         var viewParametersUrl = '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}'; 
         
-        <c:if test="${studentId ne null}">
-          viewParametersUrl = viewParametersUrl + "&studentId=${studentId}"; 
-        </c:if>
+        <c:forEach var="context" items="${reportContexts}">
+          <c:choose>
+            <c:when test="${context eq 'Course'}">
+              <c:if test="${courseId ne null}">
+                viewParametersUrl = viewParametersUrl + "&courseId=${courseId}"; 
+              </c:if>
+            </c:when>
+            <c:when test="${context eq 'Student'}">
+              <c:if test="${studentId ne null}">
+                viewParametersUrl = viewParametersUrl + "&studentId=${studentId}"; 
+              </c:if>
+            </c:when>
+          </c:choose>
+        </c:forEach>
         
         var dialog = new IxDialog({
           id : 'parametersDialog',

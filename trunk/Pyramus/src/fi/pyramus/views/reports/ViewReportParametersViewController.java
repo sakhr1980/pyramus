@@ -1,5 +1,6 @@
 package fi.pyramus.views.reports;
 
+import java.util.List;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
@@ -8,7 +9,11 @@ import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
+import fi.pyramus.dao.reports.ReportContextDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContext;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
@@ -25,8 +30,10 @@ public class ViewReportParametersViewController extends PyramusViewController im
    */
   public void process(PageRequestContext pageRequestContext) {
     MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+    ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
 
     Long reportId = pageRequestContext.getLong("reportId");
+    Report report = reportDAO.findById(reportId);
     String reportsContextPath = System.getProperty("reports.contextPath");
     
     StringBuilder magicKeyBuilder = new StringBuilder()
@@ -45,15 +52,31 @@ public class ViewReportParametersViewController extends PyramusViewController im
       .append("&__report=reports/").append(reportId).append(".rptdesign")
       .append("&__masterpage=true&__nocache");
     
-    handleContextParameters(pageRequestContext, urlBuilder);
+    handleContextParameters(pageRequestContext, report, urlBuilder);
     
     pageRequestContext.setIncludeUrl(urlBuilder.toString());
   }
 
-  private void handleContextParameters(PageRequestContext pageRequestContext, StringBuilder urlBuilder) {
-    Long studentId = pageRequestContext.getLong("studentId");
-    if (studentId != null)
-      urlBuilder.append("&studentId=").append(studentId);
+  private void handleContextParameters(PageRequestContext pageRequestContext, Report report, StringBuilder urlBuilder) {
+    ReportContextDAO reportContextDAO = DAOFactory.getInstance().getReportContextDAO();
+    
+    List<ReportContext> contexts = reportContextDAO.listByReport(report);
+    
+    for (ReportContext ctx : contexts) {
+      switch (ctx.getContext()) {
+        case Student:
+          Long studentId = pageRequestContext.getLong("studentId");
+          if (studentId != null)
+            urlBuilder.append("&studentId=").append(studentId);
+        break;
+        
+        case Course:
+          Long courseId = pageRequestContext.getLong("courseId");
+          if (courseId != null)
+            urlBuilder.append("&courseId=").append(courseId);
+        break;
+      }
+    }
   }
   
   /**

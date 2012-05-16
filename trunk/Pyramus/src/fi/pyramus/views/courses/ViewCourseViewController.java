@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -13,12 +16,16 @@ import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.courses.CourseDescriptionDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.courses.CourseUserDAO;
+import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.courses.CourseUser;
+import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.StringAttributeComparator;
 
 /**
  * The controller responsible of the View Course view of the application.
@@ -36,7 +43,8 @@ public class ViewCourseViewController extends PyramusViewController implements B
     CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
     CourseComponentDAO courseComponentDAO = DAOFactory.getInstance().getCourseComponentDAO();
     CourseUserDAO courseUserDAO = DAOFactory.getInstance().getCourseUserDAO();
-
+    ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
+    
     // The course to be edited
     
     Course course = courseDAO.findById(pageRequestContext.getLong("course"));
@@ -64,6 +72,19 @@ public class ViewCourseViewController extends PyramusViewController implements B
       }
     });
 
+    JSONArray courseReportsJSON = new JSONArray();
+    List<Report> courseReports = reportDAO.listByContextType(ReportContextType.Course);
+    Collections.sort(courseReports, new StringAttributeComparator("getName"));
+    
+    for (Report report : courseReports) {
+      JSONObject obj = new JSONObject();
+      obj.put("id", report.getId().toString());
+      obj.put("name", report.getName());
+      courseReportsJSON.add(obj);
+    }
+    
+    setJsDataVariable(pageRequestContext, "courseReports", courseReportsJSON.toString());
+    
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("courseUsers", courseUsers);
     pageRequestContext.getRequest().setAttribute("courseComponents", courseComponentDAO.listByCourse(course));

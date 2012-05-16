@@ -1,12 +1,17 @@
 package fi.pyramus.views.reports;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.reports.ReportContextDAO;
 import fi.pyramus.dao.reports.ReportDAO;
+import fi.pyramus.domainmodel.reports.Report;
+import fi.pyramus.domainmodel.reports.ReportContext;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 
@@ -23,19 +28,41 @@ public class ViewReportViewController extends PyramusViewController implements B
   public void process(PageRequestContext pageRequestContext) {
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
     Long reportId = pageRequestContext.getLong("reportId");
+    Report report = reportDAO.findById(reportId);
     
-    handleContextParameters(pageRequestContext);
+    handleContextParameters(pageRequestContext, report);
     
-    pageRequestContext.getRequest().setAttribute("report", reportDAO.findById(reportId));
+    pageRequestContext.getRequest().setAttribute("report", report);
     pageRequestContext.getRequest().setAttribute("reportsContextPath", System.getProperty("reports.contextPath"));
     
     pageRequestContext.setIncludeJSP("/templates/reports/viewreport.jsp");
   }
 
-  private void handleContextParameters(PageRequestContext pageRequestContext) {
-    Long studentId = pageRequestContext.getLong("studentId");
-    if (studentId != null)
-      pageRequestContext.getRequest().setAttribute("studentId", studentId); 
+  private void handleContextParameters(PageRequestContext pageRequestContext, Report report) {
+    ReportContextDAO reportContextDAO = DAOFactory.getInstance().getReportContextDAO();
+    
+    List<ReportContext> contexts = reportContextDAO.listByReport(report);
+    List<String> contextStrs = new ArrayList<String>();
+    
+    for (ReportContext ctx : contexts) {
+      contextStrs.add(ctx.getContext().toString());
+      
+      switch (ctx.getContext()) {
+        case Student:
+          Long studentId = pageRequestContext.getLong("studentId");
+          if (studentId != null)
+            pageRequestContext.getRequest().setAttribute("studentId", studentId); 
+        break;
+        
+        case Course:
+          Long courseId = pageRequestContext.getLong("courseId");
+          if (courseId != null)
+            pageRequestContext.getRequest().setAttribute("courseId", courseId); 
+        break;
+      }
+    }
+
+    pageRequestContext.getRequest().setAttribute("reportContexts", contextStrs); 
   }
   
   /**

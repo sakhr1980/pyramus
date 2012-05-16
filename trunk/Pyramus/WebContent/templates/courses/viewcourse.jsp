@@ -260,7 +260,27 @@
           onclick: function (event) {
             redirectTo(GLOBAL_contextPath + '/courses/managecourseassessments.page?course=${course.id}');
           }
-        }));          
+        }));
+        
+        var courseReports = JSDATA["courseReports"].evalJSON();
+        
+        if (courseReports) {
+          if (courseReports.length > 0) {
+            basicRelatedActionsHoverMenu.addItem(new IxHoverMenuSpacer());
+
+            for (var i = 0, l = courseReports.length; i < l; i++) {
+              var reportId = courseReports[i].id;
+              var reportName = courseReports[i].name;
+              
+              basicRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+                iconURL: GLOBAL_contextPath + '/gfx/text-html.png',
+                text: reportName,
+                link: GLOBAL_contextPath + '/reports/viewreport.page?reportId=' + reportId + "&courseId=${course.id}"
+              }));
+            }            
+          }
+        }
+        
       }
       
       // onLoad
