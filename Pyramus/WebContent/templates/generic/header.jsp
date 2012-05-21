@@ -125,6 +125,7 @@
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/manageschoolfields.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageSchoolFields"/></a></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/managechangelog.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageChangeLog"/></a></li>
           <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/coursedescriptioncategories.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageCourseDescriptionCategories"/></a></li>
+          <li class="GUI_MENU_item"><a href="${pageContext.request.contextPath}/settings/managefiletypes.page?resetbreadcrumb=1" class="GUI_MENU_itemLink"><fmt:message key="generic.navigation.manageFileTypes"/></a></li>
           <ix:extensionHook name="generic.navigation.settingsMenu"/>
         </ul>
       </li>

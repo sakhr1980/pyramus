@@ -149,7 +149,6 @@ public class ViewStudentViewController extends PyramusViewController implements 
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
     Map<Long, List<StudentProjectBean>> studentProjects = new HashMap<Long, List<StudentProjectBean>>();
     Map<Long, CourseAssessment> courseAssessmentsByCourseStudent = new HashMap<Long, CourseAssessment>();
-//    Map<Long, List<StudentFile>> studentFiles = new HashMap<Long, List<StudentFile>>();
     // StudentProject.id -> List of module beans
     Map<Long, List<StudentProjectModuleBean>> studentProjectModules = new HashMap<Long, List<StudentProjectModuleBean>>();
     final Map<Long, List<StudentContactLogEntryComment>> contactEntryComments = new HashMap<Long, List<StudentContactLogEntryComment>>();
