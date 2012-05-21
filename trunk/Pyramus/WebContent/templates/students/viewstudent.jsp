@@ -276,21 +276,13 @@
           }
         }));
 
-//         relatedActions.addItem(new IxHoverMenuClickableItem({
-//           iconURL: GLOBAL_contextPath + '/gfx/list-add.png',
-//           text: '<fmt:message key="students.viewStudent.filesTabRelatedActionsAddReportFileLinkLabel"/>',
-//           onclick: function (event) {
-//             openAddNewFileDialog(studentId);
-//           }
-//         }));
-        
         var filesTable = new IxTable($('filesTableContainer.' + studentId), {
           id: 'filesTable.' + studentId,
           rowHoverEffect: true,
           columns : [{
             header : '<fmt:message key="students.viewStudent.filesTableNameHeader"/>',
             left: 8,
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8 + 200 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 22 + 8 + 150 + 8 + 200 + 8,
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -306,7 +298,7 @@
           }, {
             header : '<fmt:message key="students.viewStudent.filesTableFileTypeHeader"/>',
             width: 200,
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 22 + 8 + 150 + 8,
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -332,7 +324,7 @@
           }, {
             header : '<fmt:message key="students.viewStudent.filesTableFileDateHeader"/>',
             width: 150,
-            right: 8 + 22 + 8 + 22 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 22 + 8,
             dataType: 'date',
             editable: false,
             sortAttributes: {
@@ -364,27 +356,69 @@
             paramName: 'fileId'
           }, {
             width: 22,
-            right: 8 + 22 + 8,
-            dataType: 'button',
-            paramName: 'evaluateButton',
-            imgsrc: GLOBAL_contextPath + '/gfx/kdb_form.png',
-            tooltip: '<fmt:message key="students.viewStudent.coursesTableEvaluateStudentTooltip"/>',
-            onclick: function (event) {
-              var table = event.tableComponent;
-              var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
-              redirectTo(GLOBAL_contextPath + '/grading/courseassessment.page?courseStudentId=' + courseStudentId);
-            } 
-          }, {
-            width: 22,
-            right: 8,
+            right: 8 + 22 + 8 + 22 + 8,
             dataType: 'button',
             imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
-            tooltip: '<fmt:message key="students.viewStudent.filesTableDownloadFile"/>',
+            tooltip: '<fmt:message key="students.viewStudent.filesTableDownloadFileTooltip"/>',
             onclick: function (event) {
               var table = event.tableComponent;
               var fileId = table.getCellValue(event.row, table.getNamedColumnIndex('fileId'));
               redirectTo(GLOBAL_contextPath + '/studentfiles/downloadfile.binary?fileId=' + fileId);
             }
+          }, {
+            width: 22,
+            right: 8 + 22 + 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            tooltip: '<fmt:message key="students.viewStudent.filesTableEditFileTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var fileId = table.getCellValue(event.row, table.getNamedColumnIndex('fileId'));
+              openEditFileDialog(fileId);
+            } 
+          }, {
+            width: 22,
+            right: 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
+            tooltip: '<fmt:message key="students.viewStudent.filesTableDeleteFileTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var fileId = table.getCellValue(event.row, table.getNamedColumnIndex('fileId'));
+              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=students.viewStudent.filesTableDeleteFileArchiveConfirmDialogContent"
+
+              archivedRowIndex = event.row; 
+                 
+              var dialog = new IxDialog({
+                id : 'confirmRemoval',
+                contentURL : url,
+                centered : true,
+                showOk : true,  
+                showCancel : true,
+                autoEvaluateSize: true,
+                title : '<fmt:message key="students.viewStudent.filesTableDeleteFileArchiveConfirmDialogTitle"/>',
+                okLabel : '<fmt:message key="students.viewStudent.filesTableDeleteFileArchiveConfirmDialogOkLabel"/>',
+                cancelLabel : '<fmt:message key="students.viewStudent.filesTableDeleteFileArchiveConfirmDialogCancelLabel"/>'
+              });
+            
+              dialog.addDialogListener(function(event) {
+                switch (event.name) {
+                  case 'okClick':
+                    JSONRequest.request("studentfiles/archivestudentfile.json", {
+                      parameters: {
+                        fileId: fileId
+                      },
+                      onSuccess: function (jsonResponse) {
+                        table.deleteRow(archivedRowIndex);
+                      }
+                    });   
+                  break;
+                }
+              });
+            
+              dialog.open();
+
+            } 
           }]
         });
 
@@ -1008,6 +1042,7 @@
                   file.lastModified,
                   file.id,
                   '',
+                  '',
                   ''
               ]);
             }
@@ -1029,6 +1064,10 @@
         $$('.viewStudentProjectHeader').each(function (node) {
           Event.observe(node, 'click', onStudentProjectHeaderClick);
         });
+        
+        $$('.viewStudentProjectHeaderEditButton').each(function (node) {
+          Event.observe(node, 'click', onStudentProjectEditClick);
+        });
       }
       
       function onStudentProjectHeaderClick(event) {
@@ -1043,7 +1082,15 @@
           projectTableElement.show();
       }
       
-      function openEditStudentProject(studentProjectId) {
+      function onStudentProjectEditClick(event) {
+        Event.stop(event);
+        var element = Event.element(event);
+        
+        if (!element.hasClassName("viewStudentProjectHeaderEditButton"))
+          element = element.up(".viewStudentProjectHeaderEditButton");
+        
+        var studentProjectId = element.down(".viewStudentProjectHeaderEditButtonProjectId").value;
+        
         redirectTo(GLOBAL_contextPath + "/projects/editstudentproject.page?studentproject=" + studentProjectId);        
       }
       
@@ -1083,6 +1130,21 @@
         var dialog = new IxDialog({
           id : 'newFileDialog',
           contentURL : GLOBAL_contextPath + '/studentfiles/uploadfile.page?studentId=' + studentId,
+          centered : true,
+          showOk : true,
+          showCancel : false,
+          title : '<fmt:message key="studentFiles.uploadFileDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="studentFiles.uploadFileDialog.okLabel"/>' 
+        });
+        
+        dialog.setSize("350px", "300px");
+        dialog.open();
+      }
+
+      function openEditFileDialog(fileId) {
+        var dialog = new IxDialog({
+          id : 'editFileDialog',
+          contentURL : GLOBAL_contextPath + '/studentfiles/editfile.page?fileId=' + fileId,
           centered : true,
           showOk : true,
           showCancel : false,
@@ -1728,7 +1790,9 @@
                           </c:forEach>
                           
                           <span class="viewStudentProjectHeaderEditButton">
-                            <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/>
+<%--                             <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/> --%>
+                            <img src="../gfx/accessories-text-editor.png" class="iconButton"/>
+                            <input type="hidden" name="viewStudentProjectHeaderEditButtonProjectId" class="viewStudentProjectHeaderEditButtonProjectId" value="${sp.studentProject.id}"/>
                           </span>
                         </div>
                         <div>
