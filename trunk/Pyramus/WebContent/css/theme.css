@@ -254,7 +254,7 @@ h1.genericPageHeader{
 #studentViewBasicInfoWrapper .genericFormTitle, #studentViewContactInfoWrapper .genericFormTitle, #studentViewEducationInfoWrapper .genericFormTitle, #studentViewAdditionalInfoWrapper .genericFormTitle{
   float:left;
   margin-right:10px;
-  background:#f2f2f2;
+  background-color:#f2f2f2;
   border-radius:5px;
   -moz-border-radius:5px;
   -webkit-border-radius:5px;
@@ -2373,4 +2373,10 @@ img.studentContactEntryEditButton, img.studentContactEntryArchiveButton{
   border-radius: 5px 5px 5px 5px;
   color: #FFFFFF;
   padding: 3px 8px;
+}
+
+.studentSecureInfo .genericFormTitle {
+  background-image: url('../gfx/icons/16x16/apps/attention.png');
+  background-repeat: no-repeat;
+  background-position: right center;
 }

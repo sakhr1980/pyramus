@@ -658,6 +658,18 @@
               </select>
             </div>
 
+            <div class="genericFormSection">       
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="students.editStudent.secureInfoTitle"/>
+                <jsp:param name="helpLocale" value="students.editStudent.secureInfoHelp"/>
+              </jsp:include>
+              <c:choose>
+                <c:when test="${abstractStudent.secureInfo}"><input type="checkbox" name="secureInfo" value="true" checked="checked"/></c:when>
+                <c:otherwise><input type="checkbox" name="secureInfo" value="true"/></c:otherwise>              
+              </c:choose>
+              <fmt:message key="students.editStudent.secureInfoCheckboxLabel"/>
+            </div>
+
             <div class="genericFormSection">         
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="students.editStudent.abstractStudentBasicInfoTitle"/>

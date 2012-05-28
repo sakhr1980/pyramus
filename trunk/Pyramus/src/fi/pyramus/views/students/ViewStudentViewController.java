@@ -18,6 +18,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.file.StudentFileDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
 import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
@@ -34,6 +35,7 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.file.StudentFile;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
 import fi.pyramus.domainmodel.grading.CreditLink;
 import fi.pyramus.domainmodel.grading.CreditType;
 import fi.pyramus.domainmodel.grading.ProjectAssessment;
@@ -99,6 +101,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     CreditLinkDAO creditLinkDAO = DAOFactory.getInstance().getCreditLinkDAO();
     StudentFileDAO studentFileDAO = DAOFactory.getInstance().getStudentFileDAO();
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
 
     Long abstractStudentId = pageRequestContext.getLong("abstractStudent");
     
@@ -146,6 +149,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     Map<Long, List<StudentContactLogEntry>> contactEntries = new HashMap<Long, List<StudentContactLogEntry>>();
     Map<Long, List<TransferCredit>> transferCredits = new HashMap<Long, List<TransferCredit>>();
     Map<Long, List<CourseAssessment>> courseAssessments = new HashMap<Long, List<CourseAssessment>>();
+    Map<Long, CourseAssessmentRequest> courseAssessmentRequests = new HashMap<Long, CourseAssessmentRequest>();
     Map<Long, List<StudentGroup>> studentGroups = new HashMap<Long, List<StudentGroup>>();
     Map<Long, List<StudentProjectBean>> studentProjects = new HashMap<Long, List<StudentProjectBean>>();
     Map<Long, CourseAssessment> courseAssessmentsByCourseStudent = new HashMap<Long, CourseAssessment>();
@@ -196,6 +200,25 @@ public class ViewStudentViewController extends PyramusViewController implements 
         }
       });
 
+      /**
+       * Course Assessment Requests by Course Student
+       */
+
+    	for (CourseStudent courseStudent : courseStudentsByStudent) {
+    	  List<CourseAssessmentRequest> courseAssessmentRequestsByCourseStudent = courseAssessmentRequestDAO.listByCourseStudent(courseStudent);
+
+        Collections.sort(courseAssessmentRequestsByCourseStudent, new Comparator<CourseAssessmentRequest>() {
+          @Override
+          public int compare(CourseAssessmentRequest o1, CourseAssessmentRequest o2) {
+            return o2.getCreated().compareTo(o1.getCreated());
+          }
+        });
+
+        if (courseAssessmentRequestsByCourseStudent.size() > 0) {
+          courseAssessmentRequests.put(courseStudent.getId(), courseAssessmentRequestsByCourseStudent.get(0));
+        }
+    	}
+    	
     	/**
     	 * Contact log entries
     	 */
@@ -561,6 +584,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
     pageRequestContext.getRequest().setAttribute("studentProjectModules", studentProjectModules);
     pageRequestContext.getRequest().setAttribute("courseAssessmentsByCourseStudent", courseAssessmentsByCourseStudent);
     pageRequestContext.getRequest().setAttribute("studentHasImage", studentHasImage);
+    pageRequestContext.getRequest().setAttribute("courseAssessmentRequests", courseAssessmentRequests);
 
     pageRequestContext.setIncludeJSP("/templates/students/viewstudent.jsp");
   }

@@ -2,8 +2,10 @@ package fi.pyramus.views.courses;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -16,11 +18,13 @@ import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.courses.CourseDescriptionDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.courses.CourseUserDAO;
+import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.courses.CourseUser;
+import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportContextType;
 import fi.pyramus.framework.PyramusViewController;
@@ -44,11 +48,14 @@ public class ViewCourseViewController extends PyramusViewController implements B
     CourseComponentDAO courseComponentDAO = DAOFactory.getInstance().getCourseComponentDAO();
     CourseUserDAO courseUserDAO = DAOFactory.getInstance().getCourseUserDAO();
     ReportDAO reportDAO = DAOFactory.getInstance().getReportDAO();
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
     
     // The course to be edited
     
     Course course = courseDAO.findById(pageRequestContext.getLong("course"));
     pageRequestContext.getRequest().setAttribute("course", course);
+
+    Map<Long, CourseAssessmentRequest> courseAssessmentRequests = new HashMap<Long, CourseAssessmentRequest>();
     
     List<CourseStudent> courseStudents = courseStudentDAO.listByCourse(course);
     Collections.sort(courseStudents, new Comparator<CourseStudent>() {
@@ -83,12 +90,33 @@ public class ViewCourseViewController extends PyramusViewController implements B
       courseReportsJSON.add(obj);
     }
     
+
+    /**
+     * Course Assessment Requests by Course Student
+     */
+
+    for (CourseStudent courseStudent : courseStudents) {
+      List<CourseAssessmentRequest> courseAssessmentRequestsByCourseStudent = courseAssessmentRequestDAO.listByCourseStudent(courseStudent);
+
+      Collections.sort(courseAssessmentRequestsByCourseStudent, new Comparator<CourseAssessmentRequest>() {
+        @Override
+        public int compare(CourseAssessmentRequest o1, CourseAssessmentRequest o2) {
+          return o2.getCreated().compareTo(o1.getCreated());
+        }
+      });
+
+      if (courseAssessmentRequestsByCourseStudent.size() > 0) {
+        courseAssessmentRequests.put(courseStudent.getId(), courseAssessmentRequestsByCourseStudent.get(0));
+      }
+    }
+    
     setJsDataVariable(pageRequestContext, "courseReports", courseReportsJSON.toString());
     
     pageRequestContext.getRequest().setAttribute("courseStudents", courseStudents);
     pageRequestContext.getRequest().setAttribute("courseUsers", courseUsers);
     pageRequestContext.getRequest().setAttribute("courseComponents", courseComponentDAO.listByCourse(course));
     pageRequestContext.getRequest().setAttribute("courseDescriptions", descriptionDAO.listByCourseBase(course));
+    pageRequestContext.getRequest().setAttribute("courseAssessmentRequests", courseAssessmentRequests);
     
     pageRequestContext.setIncludeJSP("/templates/courses/viewcourse.jsp");
   }

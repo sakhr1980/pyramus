@@ -16,6 +16,8 @@
     
     <script type="text/javascript">
       var _loaderGlassPane;
+      var _urlParams;
+      var reportLoaded = false;
 
       function viewStudent(studentId) {
         var url = '${pageContext.request.contextPath}/students/viewstudent.page?student=' + studentId;
@@ -32,6 +34,8 @@
       
       function onReportContentsFrameLoad(event) {
         stopContentsLoading();
+        // TODO: More sophisticated handling of this?
+        reportLoaded = true;
       }
 
       function loadReportContentsFrame(url) {
@@ -47,8 +51,27 @@
       }
     
       function showReportContent(reportId, urlParams) {
+        _urlParams = urlParams;
         updateDownloadLinks('${pageContext.request.contextPath}/reports/downloadreport.binary?reportId=' + reportId + urlParams);
         loadReportContentsFrame('${pageContext.request.contextPath}/reports/viewreportcontents.page?reportId=' + reportId + urlParams);
+      }
+      
+      function openUploadReportDialog(studentId, reportId) {
+        if (!reportLoaded)
+          return;
+        
+        var dialog = new IxDialog({
+          id : 'uploadReportDialog',
+          contentURL : GLOBAL_contextPath + '/studentfiles/uploadreport.page?studentId=' + studentId + '&reportId=' + reportId + _urlParams,
+          centered : true,
+          showOk : true,
+          showCancel : false,
+          title : '<fmt:message key="studentFiles.uploadReportDialog.dialogTitle"/>',
+          okLabel : '<fmt:message key="studentFiles.uploadReportDialog.okLabel"/>'
+        });
+        
+        dialog.setSize("350px", "300px");
+        dialog.open();
       }
       
       function onLoad(event) {
@@ -56,7 +79,7 @@
         
         var tabControl = new IxProtoTabs($('tabs'));
         var viewParametersUrl = '${pageContext.request.contextPath}/reports/viewreportparameters.page?reportId=${report.id}'; 
-        
+
         <c:forEach var="context" items="${reportContexts}">
           <c:choose>
             <c:when test="${context eq 'Course'}">
@@ -66,7 +89,7 @@
             </c:when>
             <c:when test="${context eq 'Student'}">
               <c:if test="${studentId ne null}">
-                viewParametersUrl = viewParametersUrl + "&studentId=${studentId}"; 
+                viewParametersUrl = viewParametersUrl + "&studentId=${studentId}";
               </c:if>
             </c:when>
           </c:choose>
@@ -174,35 +197,43 @@
   
     <div id="viewReportContainer">
       <div class="genericFormContainer"> 
-      <div class="tabLabelsContainer" id="tabs">
-        <a class="tabLabel" href="#viewReport">
-          <span class="tabLabelLeftTopCorner">
-            <span class="tabLabelRightTopCorner">
-              <fmt:message key="reports.viewReport.tabLabelViewReport"/>
+        <div class="tabLabelsContainer" id="tabs">
+          <a class="tabLabel" href="#viewReport">
+            <span class="tabLabelLeftTopCorner">
+              <span class="tabLabelRightTopCorner">
+                <fmt:message key="reports.viewReport.tabLabelViewReport"/>
+              </span>
             </span>
-          </span>
-        </a>
-      </div>
+          </a>
+        </div>
       
-      <div id="viewReport" class="tabContent fixedSizedTabContent">
-        <div id="viewReportControlsContainer">
-          <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
-          <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
-          <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadDOCLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
-          <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
-        </div>
-        <div id="reportParametersCancelled" style="display: none; text-align: center;">
-          <fmt:message key="reports.viewReport.viewReportCancelled"/>
-          <a href="javascript:showParameterDialog()"><fmt:message key="reports.viewReport.viewReportCancelledLink"/></a>
-        </div>
-        <div id="viewReportViewerContainer">
-          <iframe id="viewReportViewerFrame" src="about:blank" frameborder="0" style="border: 0px; width: 100%; height: 100%;">
-            
-          </iframe>
+        <div id="viewReport" class="tabContent fixedSizedTabContent">
+          <div id="viewReportControlsContainer">
+            <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
+            <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
+            <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadDOCLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
+            <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
+  
+            <c:forEach var="context" items="${reportContexts}">
+              <c:if test="${context eq 'Student'}">
+                <c:if test="${studentId ne null}">
+                  <a title="<fmt:message key="reports.listReports.saveReportTooltip"/>" id="saveReportToStudentLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/icons/16x16/apps/save.png);" href="javascript:openUploadReportDialog(${studentId}, ${report.id})"></a>
+                </c:if>
+              </c:if>
+            </c:forEach>
+          </div>
+          <div id="reportParametersCancelled" style="display: none; text-align: center;">
+            <fmt:message key="reports.viewReport.viewReportCancelled"/>
+            <a href="javascript:showParameterDialog()"><fmt:message key="reports.viewReport.viewReportCancelledLink"/></a>
+          </div>
+          <div id="viewReportViewerContainer">
+            <iframe id="viewReportViewerFrame" src="about:blank" frameborder="0" style="border: 0px; width: 100%; height: 100%;">
+              
+            </iframe>
+          </div>
         </div>
       </div>
     </div>
-  </div>
     
     <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
   </body>

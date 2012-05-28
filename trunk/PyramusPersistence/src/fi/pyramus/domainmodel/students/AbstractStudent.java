@@ -24,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.DocumentId;
@@ -797,6 +798,14 @@ public class AbstractStudent {
     return version;
   }
 
+  public Boolean getSecureInfo() {
+    return secureInfo;
+  }
+
+  public void setSecureInfo(Boolean secureInfo) {
+    this.secureInfo = secureInfo;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.TABLE, generator = "AbstractStudent")
   @TableGenerator(name = "AbstractStudent", allocationSize=1, table = "hibernate_sequences", pkColumnName = "sequence_name", valueColumnName = "sequence_next_hi_value")
@@ -816,6 +825,11 @@ public class AbstractStudent {
   @Field(store = Store.NO)
   private Sex sex;
 
+  @NotNull
+  @Column (nullable = false)
+  @Field
+  private Boolean secureInfo = Boolean.FALSE;
+
   @Basic(fetch = FetchType.LAZY)
   @Column(length = 1073741824)
   private String basicInfo;
@@ -827,5 +841,5 @@ public class AbstractStudent {
 
   @Version
   @Column(nullable = false)
-  private Long version;  
+  private Long version;
 }

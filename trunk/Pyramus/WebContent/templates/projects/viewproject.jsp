@@ -345,7 +345,7 @@
                 <c:set var="stuPGradeText">${stuPGradeText}-</c:set>
               </c:otherwise>
             </c:choose>
-            <c:set var="stuPDateText">${stuPDateText}<fmt:formatDate pattern="dd.MM.yyyy" value="${stuPAss.date}"/></c:set>
+            <c:set var="stuPDateText">${stuPDateText}<fmt:formatDate value="${stuPAss.date}"/></c:set>
           </c:forEach>
           
           studentProjectsArr.push([
@@ -400,7 +400,7 @@
               <jsp:param name="titleLocale" value="projects.viewProject.createdTitle"/>
               <jsp:param name="helpLocale" value="projects.viewProject.createdHelp"/>
             </jsp:include>
-            <span><i>${project.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.created}"/></i></span>    
+            <span><i>${project.creator.fullName} <fmt:formatDate type="both" value="${project.created}"/></i></span>    
           </div>
 
           <div class="genericFormSection">  
@@ -408,7 +408,7 @@
               <jsp:param name="titleLocale" value="projects.viewProject.modifiedTitle"/>
               <jsp:param name="helpLocale" value="projects.viewProject.modifiedHelp"/>
             </jsp:include>
-            <span><i>${project.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.lastModified}"/></i></span>    
+            <span><i>${project.lastModifier.fullName} <fmt:formatDate type="both" value="${project.lastModified}"/></i></span>    
           </div>
 
           <div class="genericFormSection">

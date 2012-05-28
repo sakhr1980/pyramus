@@ -27,6 +27,14 @@
 
     <script type="text/javascript">
       // Course components
+
+      function openStudentCourseAssessmentRequestsPopupOnElement(element, courseStudentId) {
+        var hoverPanel = new IxHoverPanel({
+          contentURL: GLOBAL_contextPath + '/students/studentcourseassessmentrequestspopup.page?courseStudent=' + courseStudentId
+        });
+
+        hoverPanel.showOverElement(element);
+      }
       
       function setupStudentsTable() {
         var studentsTable = new IxTable($('viewCourseStudentsTableContainer'), {
@@ -47,7 +55,7 @@
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableNameHeader"/>',
             left : 38,
-            right : 900,
+            right : 68 + 100 + 8 + 150 + 8 + 200 + 8 + 200 + 8 + 140 + 8,
             dataType : 'text',
             paramName: 'studentName',
             editable: false,
@@ -64,7 +72,7 @@
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableStudyProgrammeHeader"/>',
             width: 140,
-            right : 752,
+            right : 68 + 100 + 8 + 150 + 8 + 200 + 8 + 200 + 8,
             dataType : 'text', 
             paramName: 'studyProgramme',
             editable: false,
@@ -81,7 +89,7 @@
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableParticipationTypeHeader"/>',
             width: 200,
-            right : 546,
+            right : 68 + 100 + 8 + 150 + 8 + 200 + 8,
             dataType : 'text',
             editable: false,
             paramName: 'participationType',
@@ -108,7 +116,7 @@
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentDateHeader"/>',
             width: 200,
-            right : 338,
+            right : 68 + 100 + 8 + 150 + 8,
             dataType: 'date',
             editable: false,
             paramName: 'enrolmentDate',
@@ -137,12 +145,27 @@
               }
             }
           }, {
-            header : '<fmt:message key="courses.viewCourse.studentsTableEnrolmentTypeHeader"/>',
-            width: 174,
-            right : 146,
-            dataType: 'text', 
+            header : '<fmt:message key="courses.viewCourse.studentsTableAssessmentRequestsHeader"/>',
+            width: 150,
+            right : 68 + 100 + 8,
+            dataType: 'date', 
+            paramName: 'courseAssessmentRequest',
             editable: false,
-            paramName: 'enrolmentType'
+            contextMenu: [
+              {
+                text: '<fmt:message key="students.viewStudent.viewStudentCourseAssessmentRequestsTitle"/>',
+                onclick: { 
+                  execute: function (event) {
+                    var table = event.tableComponent;
+                    var row = event.row;
+                    var cell = table.getCellEditor(row, table.getNamedColumnIndex('courseAssessmentRequest'));
+                    var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+                    
+                    openStudentCourseAssessmentRequestsPopupOnElement(cell, courseStudentId);
+                  }
+                }
+              }
+            ]            
           }, {
             header : '<fmt:message key="courses.viewCourse.studentsTableLodgingHeader"/>',
             width: 100,
@@ -173,6 +196,9 @@
           }, {
             dataType: 'hidden', 
             paramName: 'abstractStudentId'
+          }, {
+            dataType: 'hidden', 
+            paramName: 'courseStudentId'
           }, {
             width: 30,
             right: 30,
@@ -222,15 +248,21 @@
             <c:set var="studyProgrammeName">${studyProgrammeName} *</c:set>
           </c:if>
           
+          var assessmentRequest = "";
+          <c:if test="${courseAssessmentRequests[courseStudent.id] ne null}">
+          assessmentRequest = "${courseAssessmentRequests[courseStudent.id].created.time}";
+          </c:if>
+          
           rows.push([
             "", 
             "${fn:escapeXml(courseStudent.student.lastName)}, ${fn:escapeXml(courseStudent.student.firstName)}", 
             "${studyProgrammeName}",
             "${fn:escapeXml(courseStudent.participationType.name)}",
             ${courseStudent.enrolmentTime.time}, 
-            "${fn:escapeXml(courseStudent.courseEnrolmentType.name)}",
+            assessmentRequest,
             "${lodgingText}",
             ${courseStudent.student.abstractStudent.id},
+            ${courseStudent.id},
             '',
             ''
           ]);
@@ -319,7 +351,7 @@
                 <jsp:param name="titleLocale" value="courses.viewCourse.createdTitle" />
                 <jsp:param name="helpLocale" value="courses.viewCourse.createdHelp" />
               </jsp:include>
-              <div class="genericViewFormDataText"><i>${course.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.created}"/></i></div>
+              <div class="genericViewFormDataText"><i>${course.creator.fullName} <fmt:formatDate type="both" value="${course.created}"/></i></div>
             </div>
 
             <div class="genericFormSection">
@@ -327,7 +359,7 @@
                 <jsp:param name="titleLocale" value="courses.viewCourse.modifiedTitle" />
                 <jsp:param name="helpLocale" value="courses.viewCourse.modifiedHelp" />
               </jsp:include>
-              <div class="genericViewFormDataText"><i>${course.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.lastModified}"/></i></div>
+              <div class="genericViewFormDataText"><i>${course.lastModifier.fullName} <fmt:formatDate type="both" value="${course.lastModified}"/></i></div>
             </div>
 
             <div class="genericFormSection">
@@ -373,7 +405,7 @@
                   <jsp:param name="helpLocale" value="courses.viewCourse.enrolmentTimeEndHelp"/>
                 </jsp:include>    
               
-                <div class="genericViewFormDataText"><fmt:formatDate pattern="dd.MM.yyyy" value="${course.enrolmentTimeEnd}"/></div>
+                <div class="genericViewFormDataText"><fmt:formatDate value="${course.enrolmentTimeEnd}"/></div>
               </div>
             </c:if>
 

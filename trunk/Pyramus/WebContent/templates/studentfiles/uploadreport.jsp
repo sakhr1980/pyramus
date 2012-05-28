@@ -20,21 +20,31 @@
   </head>
   <body onload="onLoad();">
     <div>
-      <form action="uploadstudentfile.json" target="_uploadFrame" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="studentId" value="${studentId}"/>
+      <form action="uploadstudentreport.json" target="_uploadFrame" method="post">
+        <input type="hidden" name="studentId" value="${student.id}"/>
+        <input type="hidden" name="reportId" value="${report.id}"/>
+        <input type="hidden" name="reportParameters" value="${reportParameters}"/>
 
         <div class="genericFormSection">                                  
           <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="studentFiles.uploadFileDialog.fileNameTitle"/>
-            <jsp:param name="helpLocale" value="studentFiles.uploadFileDialog.fileNameHelp"/>
+            <jsp:param name="titleLocale" value="studentFiles.uploadReportDialog.studentNameTitle"/>
+            <jsp:param name="helpLocale" value="studentFiles.uploadReportDialog.studentNameHelp"/>
           </jsp:include>
-          <input type="text" name="fileName" class="required" size="40"/>
+          <div>${student.fullName}</div>
         </div>
-  
+
         <div class="genericFormSection">                                  
           <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="studentFiles.uploadFileDialog.fileTypeTitle"/>
-            <jsp:param name="helpLocale" value="studentFiles.uploadFileDialog.fileTypeHelp"/>
+            <jsp:param name="titleLocale" value="studentFiles.uploadReportDialog.fileNameTitle"/>
+            <jsp:param name="helpLocale" value="studentFiles.uploadReportDialog.fileNameHelp"/>
+          </jsp:include>
+          <input type="text" name="fileName" class="required" value="${report.name}" size="40"/>
+        </div>
+
+        <div class="genericFormSection">                                  
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="studentFiles.uploadReportDialog.fileTypeTitle"/>
+            <jsp:param name="helpLocale" value="studentFiles.uploadReportDialog.fileTypeHelp"/>
           </jsp:include>
           <select name="fileType">
             <option value=""></option>
@@ -43,18 +53,10 @@
             </c:forEach>
           </select>
         </div>
-  
-        <div class="genericFormSection">                                  
-          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-            <jsp:param name="titleLocale" value="studentFiles.uploadFileDialog.fileTitle"/>
-            <jsp:param name="helpLocale" value="studentFiles.uploadFileDialog.fileHelp"/>
-          </jsp:include>
-          <input type="file" name="file" class="required"/>
-        </div>
 
-        <input type="submit" class="formvalid" value="<fmt:message key="studentFiles.uploadFileDialog.uploadButton"/>">
+        <input type="submit" class="formvalid" value="<fmt:message key="studentFiles.uploadReportDialog.uploadButton"/>">
       </form>
-      
+
       <iframe id="_uploadFrame" name="_uploadFrame" style="display:none" onLoad=""> </iframe>
     </div>
   </body>

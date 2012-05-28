@@ -49,9 +49,10 @@ public class AbstractStudentDAO extends PyramusEntityDAO<AbstractStudent> {
    *          student's social security number
    * @param sex
    *          student's sex
+   * @param secureInfo 
    * @return new instance of AbstractStudent
    */
-  public AbstractStudent create(Date birthday, String socialSecurityNumber, Sex sex, String basicInfo) {
+  public AbstractStudent create(Date birthday, String socialSecurityNumber, Sex sex, String basicInfo, Boolean secureInfo) {
     EntityManager entityManager = getEntityManager();
 
     AbstractStudent abstractStudent = new AbstractStudent();
@@ -59,17 +60,19 @@ public class AbstractStudentDAO extends PyramusEntityDAO<AbstractStudent> {
     abstractStudent.setSocialSecurityNumber(socialSecurityNumber);
     abstractStudent.setSex(sex);
     abstractStudent.setBasicInfo(basicInfo);
+    abstractStudent.setSecureInfo(secureInfo);
     entityManager.persist(abstractStudent);
 
     return abstractStudent;
   }
  
-  public void update(AbstractStudent abstractStudent, Date birthday, String socialSecurityNumber, Sex sex, String basicInfo) {
+  public void update(AbstractStudent abstractStudent, Date birthday, String socialSecurityNumber, Sex sex, String basicInfo, Boolean secureInfo) {
     EntityManager entityManager = getEntityManager();
     abstractStudent.setBirthday(birthday);
     abstractStudent.setSocialSecurityNumber(socialSecurityNumber);
     abstractStudent.setSex(sex);
     abstractStudent.setBasicInfo(basicInfo);
+    abstractStudent.setSecureInfo(secureInfo);
     entityManager.persist(abstractStudent);
   }
 

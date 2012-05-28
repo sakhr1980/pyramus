@@ -133,8 +133,11 @@ public class StudentsService extends PyramusService {
   public AbstractStudentEntity createAbstractStudent(@WebParam (name="birthday") Date birthday, @WebParam (name="socialSecurityNumber") String socialSecurityNumber, @WebParam (name="sex") String sex) {
     AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
 
+    // TODO: Parameterize?
+    Boolean secureInfo = Boolean.FALSE;
+
     Sex studentSex = EnumType.valueOf(Sex.class, sex);
-    AbstractStudent abstractStudent = abstractStudentDAO.create(birthday, socialSecurityNumber, studentSex, null);
+    AbstractStudent abstractStudent = abstractStudentDAO.create(birthday, socialSecurityNumber, studentSex, null, secureInfo);
     validateEntity(abstractStudent);
     return EntityFactoryVault.buildFromDomainObject(abstractStudent);
   }

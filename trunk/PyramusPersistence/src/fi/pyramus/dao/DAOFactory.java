@@ -63,6 +63,7 @@ import fi.pyramus.dao.file.FileDAO;
 import fi.pyramus.dao.file.FileTypeDAO;
 import fi.pyramus.dao.file.StudentFileDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
 import fi.pyramus.dao.grading.CreditDAO;
 import fi.pyramus.dao.grading.CreditLinkDAO;
 import fi.pyramus.dao.grading.GradeDAO;
@@ -390,6 +391,10 @@ public class DAOFactory {
     return (CourseAssessmentDAO) findByClass(CourseAssessmentDAO.class);
   }
   
+  public CourseAssessmentRequestDAO getCourseAssessmentRequestDAO() {
+    return (CourseAssessmentRequestDAO) findByClass(CourseAssessmentRequestDAO.class);
+  }
+
   public CreditDAO getCreditDAO() {
     return (CreditDAO) findByClass(CreditDAO.class);
   }
