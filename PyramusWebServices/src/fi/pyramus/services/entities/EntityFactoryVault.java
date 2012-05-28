@@ -30,6 +30,7 @@ import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.courses.CourseUser;
 import fi.pyramus.domainmodel.courses.CourseUserRole;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
 import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
@@ -87,6 +88,8 @@ import fi.pyramus.services.entities.courses.CourseUserRoleEntity;
 import fi.pyramus.services.entities.courses.CourseUserRoleEntityFactory;
 import fi.pyramus.services.entities.grading.CourseAssessmentEntity;
 import fi.pyramus.services.entities.grading.CourseAssessmentEntityFactory;
+import fi.pyramus.services.entities.grading.CourseAssessmentRequestEntity;
+import fi.pyramus.services.entities.grading.CourseAssessmentRequestEntityFactory;
 import fi.pyramus.services.entities.grading.CreditEntity;
 import fi.pyramus.services.entities.grading.CreditEntityFactory;
 import fi.pyramus.services.entities.grading.GradeEntity;
@@ -240,6 +243,10 @@ public class EntityFactoryVault {
     return (StudyProgrammeCategoryEntity) EntityFactoryVault.getEntityFactory(StudyProgrammeCategoryEntity.class).buildFromDomainObject(studyProgrammeCategory);
   }
 
+  public static CourseAssessmentRequestEntity buildFromDomainObject(CourseAssessmentRequest courseAssessmentRequest) {
+    return (CourseAssessmentRequestEntity) EntityFactoryVault.getEntityFactory(CourseAssessmentRequest.class).buildFromDomainObject(courseAssessmentRequest);
+  }
+  
   public static Object[] buildFromDomainObjects(Collection<?> entities) {
     Class<?> listClass = null;
     if (!entities.isEmpty()) {
@@ -329,6 +336,7 @@ public class EntityFactoryVault {
     registerEntityFactory(Grade.class, GradeEntity.class, new GradeEntityFactory());
     registerEntityFactory(GradingScale.class, GradingScaleEntity.class, new GradingScaleEntityFactory());
     registerEntityFactory(TransferCredit.class, TransferCreditEntity.class, new TransferCreditEntityFactory());
+    registerEntityFactory(CourseAssessmentRequest.class, CourseAssessmentRequestEntity.class, new CourseAssessmentRequestEntityFactory());
     
     /* Modules */
   

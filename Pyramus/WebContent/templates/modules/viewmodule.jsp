@@ -144,7 +144,7 @@
                 <jsp:param name="titleLocale" value="modules.viewModule.createdTitle" />
                 <jsp:param name="helpLocale" value="modules.viewModule.createdHelp" />
               </jsp:include>
-              <div class="genericViewFormDataText"><i>${module.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${module.created}"/></i></div>
+              <div class="genericViewFormDataText"><i>${module.creator.fullName} <fmt:formatDate type="both" value="${module.created}"/></i></div>
             </div>
 
             <div class="genericFormSection">
@@ -152,7 +152,7 @@
                 <jsp:param name="titleLocale" value="modules.viewModule.modifiedTitle" />
                 <jsp:param name="helpLocale" value="modules.viewModule.modifiedHelp" />
               </jsp:include>
-              <div class="genericViewFormDataText"><i>${module.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${module.lastModified}"/></i></div>
+              <div class="genericViewFormDataText"><i>${module.lastModifier.fullName} <fmt:formatDate type="both" value="${module.lastModified}"/></i></div>
             </div>
 
             <div class="genericFormSection">

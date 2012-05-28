@@ -14,6 +14,7 @@ import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.dao.base.SubjectDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
+import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
 import fi.pyramus.dao.grading.GradeDAO;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
@@ -25,6 +26,7 @@ import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
+import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
@@ -32,6 +34,7 @@ import fi.pyramus.domainmodel.students.Student;
 import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.grading.CourseAssessmentEntity;
+import fi.pyramus.services.entities.grading.CourseAssessmentRequestEntity;
 import fi.pyramus.services.entities.grading.GradeEntity;
 import fi.pyramus.services.entities.grading.GradingScaleEntity;
 import fi.pyramus.services.entities.grading.TransferCreditEntity;
@@ -166,4 +169,20 @@ public class GradingService extends PyramusService {
     return EntityFactoryVault.buildFromDomainObject(transferCredit);
   }
 
+  public CourseAssessmentRequestEntity createCourseAssessmentRequest(
+      @WebParam (name = "courseStudentId") Long courseStudentId, 
+      @WebParam (name = "created") Date created, 
+      @WebParam (name = "requestText") String requestText) {
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+
+    CourseAssessmentRequest courseAssessmentRequest = courseAssessmentRequestDAO.create(courseStudent, created, requestText);
+    
+    validateEntity(courseAssessmentRequest);
+    
+    return EntityFactoryVault.buildFromDomainObject(courseAssessmentRequest);
+  }
+  
 }

@@ -201,7 +201,7 @@
             <jsp:param name="titleLocale" value="students.viewStudentGroup.beginsTitle" />
             <jsp:param name="helpLocale" value="students.viewStudentGroup.beginsHelp" />
           </jsp:include>
-          <div><fmt:formatDate pattern="dd.MM.yyyy" value="${studentGroup.beginDate}" /></div>
+          <div><fmt:formatDate value="${studentGroup.beginDate}" /></div>
         </div>
 
         <div class="genericFormSection">

@@ -308,7 +308,7 @@
                 <jsp:param name="titleLocale" value="projects.editProject.createdTitle"/>
                 <jsp:param name="helpLocale" value="projects.editProject.createdHelp"/>
               </jsp:include>
-              <span><i>${project.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.created}"/></i></span>    
+              <span><i>${project.creator.fullName} <fmt:formatDate type="both" value="${project.created}"/></i></span>    
             </div>
 
             <div class="genericFormSection">  
@@ -316,7 +316,7 @@
                 <jsp:param name="titleLocale" value="projects.editProject.modifiedTitle"/>
                 <jsp:param name="helpLocale" value="projects.editProject.modifiedHelp"/>
               </jsp:include>
-              <span><i>${project.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${project.lastModified}"/></i></span>    
+              <span><i>${project.lastModifier.fullName} <fmt:formatDate type="both" value="${project.lastModified}"/></i></span>    
             </div>
 
             <div class="genericFormSection">

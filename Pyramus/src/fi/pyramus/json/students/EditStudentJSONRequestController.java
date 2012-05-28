@@ -80,12 +80,13 @@ public class EditStudentJSONRequestController extends JSONRequestController {
     Sex sex = "male".equals(requestContext.getRequest().getParameter("gender")) ? Sex.MALE : Sex.FEMALE;
     String basicInfo = requestContext.getString("basicInfo");
     Long version = requestContext.getLong("version"); 
+    Boolean secureInfo = requestContext.getBoolean("secureInfo");
     
     if (!abstractStudent.getVersion().equals(version))
       throw new StaleObjectStateException(AbstractStudent.class.getName(), abstractStudent.getId());
 
     // Abstract student
-    abstractStudentDAO.update(abstractStudent, birthday, ssecId, sex, basicInfo);
+    abstractStudentDAO.update(abstractStudent, birthday, ssecId, sex, basicInfo, secureInfo);
 
     List<Student> students = studentDAO.listByAbstractStudent(abstractStudent);
 

@@ -71,6 +71,7 @@ public class CreateStudentJSONRequestController extends JSONRequestController {
     String ssecId = requestContext.getString("ssecId");
     Sex sex = "male".equals(requestContext.getRequest().getParameter("gender")) ? Sex.MALE : Sex.FEMALE;
     String basicInfo = requestContext.getString("basicInfo");
+    Boolean secureInfo = requestContext.getBoolean("secureInfo");
     String firstName = requestContext.getString("firstName");
     String lastName = requestContext.getString("lastName");
     String nickname = requestContext.getString("nickname");
@@ -127,10 +128,10 @@ public class CreateStudentJSONRequestController extends JSONRequestController {
 
     AbstractStudent abstractStudent = abstractStudentDAO.findBySSN(ssecId);
     if (abstractStudent == null) {
-      abstractStudent = abstractStudentDAO.create(birthday, ssecId, sex, basicInfo);
+      abstractStudent = abstractStudentDAO.create(birthday, ssecId, sex, basicInfo, secureInfo);
     }
     else {
-      abstractStudentDAO.update(abstractStudent, birthday, ssecId, sex, basicInfo);
+      abstractStudentDAO.update(abstractStudent, birthday, ssecId, sex, basicInfo, secureInfo);
     }
     
     Student student = studentDAO.create(abstractStudent, firstName, lastName, nickname, additionalInfo,

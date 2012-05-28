@@ -370,6 +370,15 @@
               </select>
             </div>
 
+            <div class="genericFormSection">       
+              <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+                <jsp:param name="titleLocale" value="students.createStudent.secureInfoTitle"/>
+                <jsp:param name="helpLocale" value="students.createStudent.secureInfoHelp"/>
+              </jsp:include>
+              <input type="checkbox" name="secureInfo" value="true"/>              
+              <fmt:message key="students.createStudent.secureInfoCheckboxLabel"/>
+            </div>
+
             <div class="genericFormSection">         
               <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                 <jsp:param name="titleLocale" value="students.createStudent.abstractStudentBasicInfoTitle"/>

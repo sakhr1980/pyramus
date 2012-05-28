@@ -20,6 +20,7 @@
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/hoverpanel_support.jsp"></jsp:include>
 
     <!-- Used to render memo values with line breaks; for some reason this is the only approach that works -->
     <% pageContext.setAttribute("newLineChar", "\n"); %>
@@ -67,7 +68,7 @@
               var reportName = studentReports[i].name;
               
               basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
-                iconURL: GLOBAL_contextPath + '/gfx/text-html.png',
+                iconURL: GLOBAL_contextPath + '/gfx/icons/16x16/apps/report.png',
                 text: reportName,
                 link: GLOBAL_contextPath + '/reports/viewreport.page?reportId=' + reportId + "&studentId=" + studentId
               }));
@@ -113,6 +114,14 @@
         }));
       }
 
+      function openStudentCourseAssessmentRequestsPopupOnElement(element, courseStudentId) {
+        var hoverPanel = new IxHoverPanel({
+          contentURL: GLOBAL_contextPath + '/students/studentcourseassessmentrequestspopup.page?courseStudent=' + courseStudentId
+        });
+
+        hoverPanel.showOverElement(element);
+      }
+      
       function openAddNewProjectDialog(studentId) {
         var dialog = new IxDialog({
           id : 'selectProjectDialog',
@@ -175,7 +184,7 @@
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseStateHeader"/>',
             width: 200,
-            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 150 + 8 + 8 + 150 + 8,
             dataType: 'text',
             editable: false,
             sortAttributes: {
@@ -201,7 +210,7 @@
           }, {
             header : '<fmt:message key="students.viewStudent.coursesTableCourseEnrolmentTimeHeader"/>',
             width: 150,
-            right: 8 + 22 + 8 + 22 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 150 + 8,
             dataType: 'date',
             editable: false,
             sortAttributes: {
@@ -226,6 +235,28 @@
               {
                 text: '<fmt:message key="generic.filter.clear"/>',
                 onclick: new IxTable_ROWCLEARFILTER()
+              }
+            ]            
+          }, {
+            header : '<fmt:message key="students.viewStudent.coursesTableAssessmentRequestsHeader"/>',
+            width: 150,
+            right: 8 + 22 + 8 + 22 + 8,
+            dataType: 'date',
+            editable: false,
+            paramName: 'courseAssessmentRequest',
+            contextMenu: [
+              {
+                text: '<fmt:message key="students.viewStudent.viewStudentCourseAssessmentRequestsTitle"/>',
+                onclick: { 
+                  execute: function (event) {
+                    var table = event.tableComponent;
+                    var row = event.row;
+                    var cell = table.getCellEditor(row, table.getNamedColumnIndex('courseAssessmentRequest'));
+                    var courseStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('courseStudentId'));
+                    
+                    openStudentCourseAssessmentRequestsPopupOnElement(cell, courseStudentId);
+                  }
+                }
               }
             ]            
           }, {
@@ -740,7 +771,20 @@
               <c:set var="courseName">${studentCourse.course.name} (${studentCourse.course.nameExtension})</c:set>
             </c:if>
           
-            rows.push(['${courseName}', '${studentCourse.participationType.name}', '${studentCourse.enrolmentTime.time}', ${studentCourse.id}, ${studentCourse.course.id}, '', '']);
+            var assessmentRequest = "";
+            <c:if test="${courseAssessmentRequests[studentCourse.id] ne null}">
+            assessmentRequest = "${courseAssessmentRequests[studentCourse.id].created.time}";
+            </c:if>
+            
+            rows.push([
+                       '${courseName}', 
+                       '${studentCourse.participationType.name}', 
+                       '${studentCourse.enrolmentTime.time}',
+                       assessmentRequest,
+                       ${studentCourse.id}, 
+                       ${studentCourse.course.id}, 
+                       '', 
+                       '']);
           </c:forEach>
           coursesTable.addRows(rows);
           if (coursesTable.getRowCount() > 0) {
@@ -1185,6 +1229,17 @@
             </a>
           </c:forEach>
         </div>
+
+        <c:choose>
+          <c:when test="${abstractStudent.secureInfo}">
+            <c:set var="secureInfoTitle"><fmt:message key="students.viewStudent.secureInfoTooltip"/></c:set>
+            <c:set var="secureInfoClass" value="studentSecureInfo"/>
+          </c:when>
+          <c:otherwise>
+            <c:set var="secureInfoTitle" value=""/>
+            <c:set var="secureInfoClass" value=""/>
+          </c:otherwise>
+        </c:choose>
     
         <c:forEach var="student" items="${students}">
           <div id="student.${student.id}" class="tabContent tabContentNestedTabs">    
@@ -1216,9 +1271,9 @@
                   <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
                   
                     <!--  Student Basic Info Starts -->
-                    <div class="genericViewInfoWapper" id="studentViewBasicInfoWrapper">
+                    <div class="genericViewInfoWapper ${secureInfoClass}" id="studentViewBasicInfoWrapper">
                     
-                      <div class="genericFormSection">
+                      <div class="genericFormSection" title="${secureInfoTitle}">
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                           <jsp:param name="titleLocale" value="students.viewStudent.firstNameTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.firstNameHelp"/>
@@ -1235,7 +1290,7 @@
                         </c:otherwise>
                       </c:choose>
                       
-                      <div class="genericFormSection">  
+                      <div class="genericFormSection" title="${secureInfoTitle}">
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                           <jsp:param name="titleLocale" value="students.viewStudent.lastNameTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.lastNameHelp"/>
@@ -1245,19 +1300,19 @@
                     
                       <c:choose>
                         <c:when test="${!empty abstractStudent.birthday}">
-                          <div class="genericFormSection">  
+                          <div class="genericFormSection" title="${secureInfoTitle}">  
                             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                               <jsp:param name="titleLocale" value="students.viewStudent.birthdayTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.birthdayHelp"/>
                             </jsp:include>                     
-                            <div class="genericViewFormDataText"><fmt:formatDate pattern="dd.MM.yyyy" value="${abstractStudent.birthday}" /></div>
+                            <div class="genericViewFormDataText"><fmt:formatDate value="${abstractStudent.birthday}" /></div>
                           </div>
                         </c:when>
                       </c:choose>
                       
                       <c:choose>
                         <c:when test="${!empty abstractStudent.socialSecurityNumber}">
-                          <div class="genericFormSection"> 
+                          <div class="genericFormSection" title="${secureInfoTitle}"> 
                             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                               <jsp:param name="titleLocale" value="students.viewStudent.ssecIdTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.ssecIdHelp"/>
@@ -1267,12 +1322,12 @@
                         </c:when>
                       </c:choose>
                     
-                      <div class="genericFormSection">  
+                      <div class="genericFormSection" title="${secureInfoTitle}">
                         <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                           <jsp:param name="titleLocale" value="students.viewStudent.genderTitle"/>
                           <jsp:param name="helpLocale" value="students.viewStudent.genderHelp"/>
                         </jsp:include> 
-                        <div class="genericViewFormDataText">                                       
+                        <div class="genericViewFormDataText">
                         <c:choose>
                           <c:when test="${abstractStudent.sex != 'FEMALE'}">
                             <fmt:message key="students.viewStudent.genderMaleTitle"/>
@@ -1286,7 +1341,7 @@
                     
                       <c:choose>
                         <c:when test="${!empty student.nickname}">
-                          <div class="genericFormSection">  
+                          <div class="genericFormSection" title="${secureInfoTitle}">
                             <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                               <jsp:param name="titleLocale" value="students.viewStudent.nicknameTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.nicknameHelp"/>
@@ -1478,7 +1533,7 @@
                               <jsp:param name="titleLocale" value="students.viewStudent.studyTimeEndTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.studyTimeEndHelp"/>
                             </jsp:include>
-                            <div class="genericViewFormDataText">${student.studyTimeEnd}</div>
+                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyTimeEnd}"/></div>
                           </div>
                         </c:when>
                       </c:choose>
@@ -1490,7 +1545,7 @@
                               <jsp:param name="titleLocale" value="students.viewStudent.studyStartDateTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.studyStartDateHelp"/>
                             </jsp:include>
-                            <div class="genericViewFormDataText">${student.studyStartDate}</div>
+                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyStartDate}"/></div>
                           </div>
                         </c:when>
                       </c:choose>
@@ -1502,7 +1557,7 @@
                               <jsp:param name="titleLocale" value="students.viewStudent.studyEndDateTitle"/>
                               <jsp:param name="helpLocale" value="students.viewStudent.studyEndDateHelp"/>
                             </jsp:include> 
-                            <div class="genericViewFormDataText">${student.studyEndDate}</div>
+                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyEndDate}"/></div>
                           </div>
                         </c:when>
                       </c:choose>
@@ -1708,7 +1763,7 @@
                     <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
                       <div id="studentContactEntryItem" class="studentContactEntryItem">
                         <div>
-                          <span class="studentContactEntryDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${contactEntry.entryDate}" /></span>
+                          <span class="studentContactEntryDate"><fmt:formatDate value="${contactEntry.entryDate}" /></span>
                           <span class="studentContactEntryType">
                           <c:choose>
                             <c:when test="${contactEntry.type eq 'OTHER'}">
@@ -1744,7 +1799,7 @@
                         <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
                           <div class="studentContactCommentEntryItem">
                             <div class="studentContactCommentEntryCaption">
-                              <span class="studentContactCommentEntryDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${comment.commentDate}"/></span>
+                              <span class="studentContactCommentEntryDate"><fmt:formatDate value="${comment.commentDate}"/></span>
                               <span class="studentContactCommentEntryCreator">${comment.creatorName}</span>
                             </div>
                             <div>${comment.text}</div>
@@ -1784,7 +1839,7 @@
     
                           <c:forEach var="assessment" items="${sp.assessments}">
                             <span class="viewStudentProjectHeaderAssessment">
-                              <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate pattern="dd.MM.yyyy" value="${assessment.date}"/></span>
+                              <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate value="${assessment.date}"/></span>
                               <span class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
                             </span>
                           </c:forEach>

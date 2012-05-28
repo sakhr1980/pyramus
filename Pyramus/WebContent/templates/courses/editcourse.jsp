@@ -1434,7 +1434,7 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.createdTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.createdHelp"/>
               </jsp:include>
-              <span><i>${course.creator.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.created}"/></i></span>    
+              <span><i>${course.creator.fullName} <fmt:formatDate type="both" value="${course.created}"/></i></span>    
             </div>
 
             <div class="genericFormSection">  
@@ -1442,7 +1442,7 @@
                 <jsp:param name="titleLocale" value="courses.editCourse.modifiedTitle"/>
                 <jsp:param name="helpLocale" value="courses.editCourse.modifiedHelp"/>
               </jsp:include>
-              <span><i>${course.lastModifier.fullName} <fmt:formatDate pattern="dd.MM.yyyy hh:mm" value="${course.lastModified}"/></i></span>    
+              <span><i>${course.lastModifier.fullName} <fmt:formatDate type="both" value="${course.lastModified}"/></i></span>    
             </div>
 
             <div class="genericFormSection">
