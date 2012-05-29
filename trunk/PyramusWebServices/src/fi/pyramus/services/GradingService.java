@@ -1,6 +1,7 @@
 package fi.pyramus.services;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
@@ -12,6 +13,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.dao.base.SubjectDAO;
+import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
@@ -24,6 +26,7 @@ import fi.pyramus.domainmodel.base.CourseOptionality;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
+import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
@@ -183,6 +186,36 @@ public class GradingService extends PyramusService {
     validateEntity(courseAssessmentRequest);
     
     return EntityFactoryVault.buildFromDomainObject(courseAssessmentRequest);
+  }
+  
+  public CourseAssessmentRequestEntity[] listCourseAssessmentRequestsByCourse(
+      @WebParam (name = "courseId") Long courseId) {
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
+    CourseDAO courseDAO = DAOFactory.getInstance().getCourseDAO();
+    
+    Course course = courseDAO.findById(courseId);
+    
+    return (CourseAssessmentRequestEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentRequestDAO.listByCourse(course));
+  }
+
+  public CourseAssessmentRequestEntity[] listCourseAssessmentRequestsByStudent(
+      @WebParam (name = "studentId") Long studentId) {
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
+    
+    Student student = studentDAO.findById(studentId);
+    
+    return (CourseAssessmentRequestEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentRequestDAO.listByStudent(student));
+  }
+
+  public CourseAssessmentRequestEntity[] listCourseAssessmentRequestsByCourseStudent(
+      @WebParam (name = "courseStudentId") Long courseStudentId) {
+    CourseAssessmentRequestDAO courseAssessmentRequestDAO = DAOFactory.getInstance().getCourseAssessmentRequestDAO();
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+    
+    return (CourseAssessmentRequestEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentRequestDAO.listByCourseStudent(courseStudent));
   }
   
 }

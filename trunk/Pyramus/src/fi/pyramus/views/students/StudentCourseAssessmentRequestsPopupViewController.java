@@ -63,4 +63,3 @@ public class StudentCourseAssessmentRequestsPopupViewController extends PyramusV
   }
 
 }
-
