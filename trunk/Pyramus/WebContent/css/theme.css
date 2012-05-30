@@ -349,6 +349,27 @@ h1.genericPageHeader{
   margin-left: 8px;
 }
 
+.studentCourseAssessmentRequestsPopupContainer {
+  padding:5px 10px;
+}
+
+.studentCourseAssessmentRequest {
+  margin:0px 0px 5px 0px;
+  padding:0px 0px 5px 0px;
+  border-bottom:1px solid #eee;
+}
+
+.studentCourseAssessmentRequest:last-child {
+  margin:0px;
+  padding:0px;
+  border-bottom:0px;
+}
+
+.studentCourseAssessmentRequest > div:first-child {
+  font-style:italic;
+  margin:4px 0xp 4px 0px;
+}
+
 /* View Student - Grades */
 
 .viewStudentCourseAssessmentsTotalContainer {
