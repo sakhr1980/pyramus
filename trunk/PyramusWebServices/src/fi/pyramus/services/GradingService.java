@@ -1,7 +1,6 @@
 package fi.pyramus.services;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;

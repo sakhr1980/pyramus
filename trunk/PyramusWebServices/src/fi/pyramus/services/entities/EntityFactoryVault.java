@@ -244,7 +244,7 @@ public class EntityFactoryVault {
   }
 
   public static CourseAssessmentRequestEntity buildFromDomainObject(CourseAssessmentRequest courseAssessmentRequest) {
-    return (CourseAssessmentRequestEntity) EntityFactoryVault.getEntityFactory(CourseAssessmentRequest.class).buildFromDomainObject(courseAssessmentRequest);
+    return (CourseAssessmentRequestEntity) EntityFactoryVault.getEntityFactory(CourseAssessmentRequestEntity.class).buildFromDomainObject(courseAssessmentRequest);
   }
   
   public static Object[] buildFromDomainObjects(Collection<?> entities) {
