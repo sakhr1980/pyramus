@@ -542,7 +542,7 @@ public class ViewStudentViewController extends PyramusViewController implements 
       }
 
       List<StudentFile> files = studentFileDAO.listByStudent(student);
-      Collections.sort(files, new StringAttributeComparator("getName"));
+      Collections.sort(files, new StringAttributeComparator("getName", true));
 
       arr = new JSONArray();
       for (StudentFile file : files) {

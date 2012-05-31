@@ -18,6 +18,7 @@
       var _loaderGlassPane;
       var _urlParams;
       var reportLoaded = false;
+      var studentId;
 
       function viewStudent(studentId) {
         var url = '${pageContext.request.contextPath}/students/viewstudent.page?student=' + studentId;
@@ -36,6 +37,12 @@
         stopContentsLoading();
         // TODO: More sophisticated handling of this?
         reportLoaded = true;
+
+        if (studentId) {
+          var saveReportButton = $('saveReportToStudentLink');
+          if (saveReportButton)
+            saveReportButton.removeClassName('viewReportControlButtonDisabled');
+        }
       }
 
       function loadReportContentsFrame(url) {
@@ -46,8 +53,13 @@
 
       function updateDownloadLinks(baseURL) {
         $('downloadPDFLink').href = baseURL + '&format=PDF';
+        $('downloadPDFLink').removeClassName('viewReportControlButtonDisabled');
+        
         $('downloadXLSLink').href = baseURL + '&format=XLS';
+        $('downloadXLSLink').removeClassName('viewReportControlButtonDisabled');
+        
         $('downloadDOCLink').href = baseURL + '&format=DOC';
+        $('downloadDOCLink').removeClassName('viewReportControlButtonDisabled');
       }
     
       function showReportContent(reportId, urlParams) {
@@ -55,9 +67,9 @@
         updateDownloadLinks('${pageContext.request.contextPath}/reports/downloadreport.binary?reportId=' + reportId + urlParams);
         loadReportContentsFrame('${pageContext.request.contextPath}/reports/viewreportcontents.page?reportId=' + reportId + urlParams);
       }
-      
-      function openUploadReportDialog(studentId, reportId) {
-        if (!reportLoaded)
+
+      function openUploadReportDialog(reportId) {
+        if ((!reportLoaded) || (!studentId))
           return;
         
         var dialog = new IxDialog({
@@ -65,9 +77,45 @@
           contentURL : GLOBAL_contextPath + '/studentfiles/uploadreport.page?studentId=' + studentId + '&reportId=' + reportId + _urlParams,
           centered : true,
           showOk : true,
-          showCancel : false,
-          title : '<fmt:message key="studentFiles.uploadReportDialog.dialogTitle"/>',
-          okLabel : '<fmt:message key="studentFiles.uploadReportDialog.okLabel"/>'
+          showCancel : true,
+          title: '<fmt:message key="studentFiles.uploadReportDialog.dialogTitle"/>',
+          okLabel: '<fmt:message key="studentFiles.uploadReportDialog.uploadButton"/>',
+          cancelLabel: '<fmt:message key="studentFiles.uploadReportDialog.closeLabel"/>'
+        });
+
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'onLoad':
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentReportForm");
+              
+              var listener = function (event) {
+                var field = Event.element(event);
+                if (field.hasClassName("invalid"))
+                  dlg.disableOkButton();
+                else
+                  dlg.enableOkButton();
+              };
+              Event.observe(uploadForm.fileName, "change", listener);
+              Event.observe(uploadForm.fileName, "keyup", listener);
+            break;
+            case 'okClick':
+              event.preventDefault(true);
+              
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentReportForm");
+              var uploadFrame = contentDoc.getElementById("_uploadFrame");
+
+              Event.observe(uploadFrame, "load", function (event) {
+                dlg.close();
+              });
+              
+              dlg.disableOkButton();
+              dlg.disableCancelButton();
+              uploadForm.submit();
+            break;
+          }
         });
         
         dialog.setSize("350px", "300px");
@@ -156,7 +204,10 @@
                   for (var i = 0, l = parameters.length; i < l; i++) {
                     var parameter = parameters[i];
                     if ((parameter.name) && (parameter.name[0] != '_')) {
-                      urlParams += '&' + parameter.name + '=' + parameter.value;    
+                      urlParams += '&' + parameter.name + '=' + parameter.value;
+                      
+                      if (parameter.name == "studentId")
+                        studentId = parameter.value;
                     }
                   }
                 }
@@ -181,6 +232,15 @@
         dialog.open();
 
         Event.observe($('viewReportViewerFrame'), "load", onReportContentsFrameLoad);
+        
+        <c:forEach var="context" items="${reportContexts}">
+          <c:if test="${context eq 'Student'}">
+            Event.observe($('saveReportToStudentLink'), "click", function (event) {
+              Event.stop(event);
+              openUploadReportDialog(${report.id});
+            });
+          </c:if>
+        </c:forEach>
       };
 
       function showParameterDialog() {
@@ -209,18 +269,17 @@
       
         <div id="viewReport" class="tabContent fixedSizedTabContent">
           <div id="viewReportControlsContainer">
-            <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
-            <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
-            <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadDOCLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
-            <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
+            <a title="<fmt:message key="reports.listReports.reportsTableXLSTooltip"/>" id="downloadXLSLink" class="viewReportControlButton viewReportControlButtonDisabled" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-spreadsheet.png);"></a>
+            <a title="<fmt:message key="reports.listReports.reportsTablePDFTooltip"/>" id="downloadPDFLink" class="viewReportControlButton viewReportControlButtonDisabled" style="background-image: url(${pageContext.request.contextPath}/gfx/pdficon_small.gif);"></a>
+            <a title="<fmt:message key="reports.listReports.reportsTableDOCTooltip"/>" id="downloadDOCLink" class="viewReportControlButton viewReportControlButtonDisabled" style="background-image: url(${pageContext.request.contextPath}/gfx/x-office-document.png);"></a>
   
             <c:forEach var="context" items="${reportContexts}">
               <c:if test="${context eq 'Student'}">
-                <c:if test="${studentId ne null}">
-                  <a title="<fmt:message key="reports.listReports.saveReportTooltip"/>" id="saveReportToStudentLink" class="viewReportControlButton" style="background-image: url(${pageContext.request.contextPath}/gfx/icons/16x16/apps/save.png);" href="javascript:openUploadReportDialog(${studentId}, ${report.id})"></a>
-                </c:if>
+                <a title="<fmt:message key="reports.listReports.saveReportTooltip"/>" id="saveReportToStudentLink" class="viewReportControlButton viewReportControlButtonDisabled" style="background-image: url(${pageContext.request.contextPath}/gfx/icons/16x16/apps/save.png);" href="#"></a>
               </c:if>
             </c:forEach>
+
+            <a title="<fmt:message key="reports.viewReport.viewReportParameters"/>" id="reportParameters" class="viewReportControlButton" style="margin-left: 8px; background-image: url(${pageContext.request.contextPath}/gfx/kdb_form.png);" href="javascript:showParameterDialog()"></a>
           </div>
           <div id="reportParametersCancelled" style="display: none; text-align: center;">
             <fmt:message key="reports.viewReport.viewReportCancelled"/>

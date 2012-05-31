@@ -58,6 +58,16 @@ public class UploadStudentReportJSONRequestController extends JSONRequestControl
     User loggedUser = userDAO.findById(userId);
     String name = requestContext.getString("fileName");
     Long fileTypeId = requestContext.getLong("fileType");
+
+    String contentType;
+    String format = requestContext.getString("reportFormat");
+    if ("doc".equals(format)) {
+      contentType = "application/msword";
+    } else {
+      format = "pdf";
+      contentType = "application/pdf";
+    }  
+
     
     Student student = studentDAO.findById(studentId);
     FileType fileType = fileTypeId != null ? fileTypeDAO.findById(fileTypeId) : null;
@@ -71,7 +81,6 @@ public class UploadStudentReportJSONRequestController extends JSONRequestControl
     String reportsPort = System.getProperty("reports.port");
 
     String outputMethod = "preview"; // output or preview
-    String format = "pdf";
     
     StringBuilder magicKeyBuilder = new StringBuilder()
       .append(Long.toHexString(reportId))
@@ -111,7 +120,7 @@ public class UploadStudentReportJSONRequestController extends JSONRequestControl
       byte[] data = IOUtils.toByteArray(inputStream);
   
       String reportName = report.getName().toLowerCase().replaceAll("[^a-z0-9\\.]", "_");
-      studentFileDAO.create(student, name, reportName + ".pdf", fileType, "", data, loggedUser);
+      studentFileDAO.create(student, name, reportName + "." + format, fileType, contentType, data, loggedUser);
     } catch (MalformedURLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

@@ -664,6 +664,9 @@ IxTable = Class.create({
       this.fire("afterFiltering", { tableComponent: this });
     }
   },
+  sort: function () {
+    this._redoSort();
+  },
   _clearColumnFilter: function (column) {
     if (this.fire("beforeFiltering", { tableComponent: this })) {
       for (var i = this._filters.size() - 1; i >= 0; i--) {

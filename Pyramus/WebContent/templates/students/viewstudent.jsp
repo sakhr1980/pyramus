@@ -405,7 +405,7 @@
             onclick: function (event) {
               var table = event.tableComponent;
               var fileId = table.getCellValue(event.row, table.getNamedColumnIndex('fileId'));
-              openEditFileDialog(fileId);
+              openEditFileDialog(fileId, studentId);
             } 
           }, {
             width: 22,
@@ -1115,6 +1115,7 @@
       }
       
       function onStudentProjectHeaderClick(event) {
+        Event.stop(event);
         var element = Event.element(event);
         
         var projectElement = element.up(".viewStudentProject");
@@ -1176,28 +1177,138 @@
           contentURL : GLOBAL_contextPath + '/studentfiles/uploadfile.page?studentId=' + studentId,
           centered : true,
           showOk : true,
-          showCancel : false,
+          showCancel : true,
           title : '<fmt:message key="studentFiles.uploadFileDialog.dialogTitle"/>',
-          okLabel : '<fmt:message key="studentFiles.uploadFileDialog.okLabel"/>' 
+          okLabel: '<fmt:message key="studentFiles.uploadFileDialog.uploadButton"/>',
+          cancelLabel: '<fmt:message key="studentFiles.uploadFileDialog.closeLabel"/>' 
+        });
+        
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'onLoad':
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
+              
+              var listener = function (event) {
+                var field = Event.element(event);
+                if (field.hasClassName("invalid"))
+                  dlg.disableOkButton();
+                else
+                  dlg.enableOkButton();
+              };
+              Event.observe(uploadForm.fileName, "change", listener);
+              Event.observe(uploadForm.fileName, "keyup", listener);
+              Event.observe(uploadForm.file, "change", listener);
+            break;
+            case 'okClick':
+              event.preventDefault(true);
+              
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
+              var uploadFrame = contentDoc.getElementById("_uploadFrame");
+
+              Event.observe(uploadFrame, "load", function (event) {
+                dlg.close();
+                updateFilesTable(studentId);
+              });
+              
+              dlg.disableOkButton();
+              dlg.disableCancelButton();
+              uploadForm.submit();
+            break;
+          }
+        });
+        
+        dialog.disableOkButton();
+        dialog.setSize("350px", "300px");
+        dialog.open();
+      }
+
+      function openEditFileDialog(fileId, studentId) {
+        var dialog = new IxDialog({
+          id : 'editFileDialog',
+          contentURL : GLOBAL_contextPath + '/studentfiles/editfile.page?fileId=' + fileId,
+          centered : true,
+          showOk : true,
+          showCancel : true,
+          title : '<fmt:message key="studentFiles.uploadFileDialog.dialogTitle"/>',
+          okLabel: '<fmt:message key="studentFiles.uploadFileDialog.updateButton"/>',
+          cancelLabel : '<fmt:message key="studentFiles.uploadFileDialog.closeLabel"/>' 
+        });
+
+        dialog.addDialogListener(function(event) {
+          var dlg = event.dialog;
+          switch (event.name) {
+            case 'onLoad':
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
+              
+              var listener = function (event) {
+                var field = Event.element(event);
+                if (field.hasClassName("invalid"))
+                  dlg.disableOkButton();
+                else
+                  dlg.enableOkButton();
+              };
+              Event.observe(uploadForm.fileName, "change", listener);
+              Event.observe(uploadForm.fileName, "keyup", listener);
+            break;
+            case 'okClick':
+              event.preventDefault(true);
+              
+              var contentDoc = dlg.getContentDocument();
+              var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
+              var uploadFrame = contentDoc.getElementById("_uploadFrame");
+
+              Event.observe(uploadFrame, "load", function (event) {
+                dlg.close();
+                updateFilesTable(studentId);
+              });
+              
+              dlg.disableOkButton();
+              dlg.disableCancelButton();
+              uploadForm.submit();
+            break;
+          }
         });
         
         dialog.setSize("350px", "300px");
         dialog.open();
       }
 
-      function openEditFileDialog(fileId) {
-        var dialog = new IxDialog({
-          id : 'editFileDialog',
-          contentURL : GLOBAL_contextPath + '/studentfiles/editfile.page?fileId=' + fileId,
-          centered : true,
-          showOk : true,
-          showCancel : false,
-          title : '<fmt:message key="studentFiles.uploadFileDialog.dialogTitle"/>',
-          okLabel : '<fmt:message key="studentFiles.uploadFileDialog.okLabel"/>' 
-        });
+      function updateFilesTable(studentId) {
         
-        dialog.setSize("350px", "300px");
-        dialog.open();
+        JSONRequest.request("studentfiles/liststudentfiles.json", {
+          parameters: {
+            studentId: studentId
+          },
+          onSuccess: function (jsonResponse) {
+            var filesTable = getIxTableById('filesTable.' + studentId);
+            filesTable.detachFromDom();
+            filesTable.deleteAllRows();
+            var files = jsonResponse.files;
+
+            var rows = new Array();
+            
+            for (var i = 0, l = files.length; i < l; i++) {
+              var file = files[i];
+              rows.push([
+                  file.name,
+                  file.fileTypeName,
+                  file.lastModified,
+                  file.id,
+                  '',
+                  '',
+                  ''
+              ]);
+            }
+            filesTable.addRows(rows);
+            filesTable.sort();
+            
+            filesTable.reattachToDom();
+          }
+        });
       }
       
     </script>
