@@ -37,12 +37,14 @@ fni.events.FNIEventSupport = {
    * @param {String} eventName event name which is been listened
    * @param {Object} invoking Object
    * @param {Function} function to be launched on event
+   * @param {Number} priority, defaults to 100
    */
   addListener : function(eventName) {
     var args = $A(arguments);
 
     var object = null;
     var method = null;
+    var priority = 100;
 
     if (args.length == 2) {
       object = this;
@@ -50,17 +52,26 @@ fni.events.FNIEventSupport = {
     } else if (args.length == 3) {
       object = args[1];
       method = args[2];
+    } else if (args.length == 4) {
+      object = args[1];
+      method = args[2];
+      priority = args[3];
     }
 
     var l = new Object();
     l.eventName = eventName;
     l.method = method;
     l.object = object;
+    l.priority = priority;
     
     if (!this._listeners)
       this._listeners = new Array();
     
     this._listeners.push(l);
+
+    this._listeners = this._listeners.sortBy(function(l) {
+      return -l.priority;
+    });
   },
   /**
    * Removes event listener<br/><br/>
@@ -77,6 +88,12 @@ fni.events.FNIEventSupport = {
           this._listeners.splice(i, 1);
       }
     }
+  },
+  /**
+   * Removes all listeners
+   */
+  removeAllListeners : function() {
+    this._listeners.clear();
   },
   /**
    * Fires an event<br/><br/>
@@ -102,10 +119,16 @@ fni.events.FNIEventSupport = {
           var listener = this._listeners[i];
           if (listener && (listener != null)) {
             if (listener.eventName == eventName) {
-              listener.method.call(listener.object, e);
-              if (e.stopped == true) {
-                result = false;
-              } 
+              if (Object.isFunction(listener.method)) {
+                listener.method.call(listener.object, e);
+                if (e.stopped == true) {
+                  result = false;
+                } 
+              } else {
+                if ((typeof console) != 'undefined') {
+                  console.log("Warning: listener method does not exist for event '" + eventName + "'");
+                }
+              }
             }
           }
         }

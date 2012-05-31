@@ -197,19 +197,21 @@ IxDialog = Class.create({
     var results;
     if (resultsFunc)
       results = resultsFunc();
-    this._fire("okClick", { results: results });
-    if (this._isHideOnly) {
-      this.hide();
-    } else {
-      this.close();
+    if (this._fire("okClick", { results: results })) {
+      if (this._isHideOnly) {
+        this.hide();
+      } else {
+        this.close();
+      }
     }
   },
   clickCancel: function () {
-    this._fire("cancelClick", { });
-    if (this._isHideOnly) {
-      this.hide();
-    } else {
-      this.close();
+    if (this._fire("cancelClick", { })) {
+      if (this._isHideOnly) {
+        this.hide();
+      } else {
+        this.close();
+      }
     }
   },
   getOkButtonElement: function () {
@@ -325,12 +327,20 @@ IxDialog = Class.create({
     this._recalculateSize();
   },
   _fire : function(eventName, extraInfo) {
+    var eventObj = Object.extend( {
+      name: eventName,
+      dialog: this,
+      _preventDefault: false,
+      preventDefault: function (b) {
+        this._preventDefault = b || true;
+      }
+    }, extraInfo);
+    
     for ( var i = 0; i < this._listeners.length; i++) {
-      this._listeners[i].call(this, Object.extend( {
-        name: eventName,
-        dialog: this 
-      }, extraInfo));
+      this._listeners[i].call(this, eventObj);
     }
+    
+    return !eventObj._preventDefault;
   },
   _recalculateSize : function() {
     if (this._isOpen == true) {
