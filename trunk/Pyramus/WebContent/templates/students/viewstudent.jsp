@@ -1191,11 +1191,13 @@
               var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
               
               var listener = function (event) {
-                var field = Event.element(event);
-                if (field.hasClassName("invalid"))
-                  dlg.disableOkButton();
-                else
+                var contentDoc = dlg.getContentDocument();
+                var uploadForm = contentDoc.getElementById("uploadStudentFileForm");
+
+                if ((uploadForm.fileName.hasClassName("valid")) && (uploadForm.file.hasClassName("valid")))
                   dlg.enableOkButton();
+                else
+                  dlg.disableOkButton();
               };
               Event.observe(uploadForm.fileName, "change", listener);
               Event.observe(uploadForm.fileName, "keyup", listener);
