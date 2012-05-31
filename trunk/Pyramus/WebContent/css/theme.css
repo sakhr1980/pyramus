@@ -1331,6 +1331,11 @@ h1.genericPageHeader{
   background-position: center;
 }
 
+.viewReportControlButtonDisabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 #viewReportControlsContainer {
   margin-bottom: 4px;
 }

@@ -11,16 +11,10 @@
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
-    
-    <script type="text/javascript">
-      function onLoad() {
-      }
-    </script>
-
   </head>
-  <body onload="onLoad();">
+  <body>
     <div>
-      <form action="editstudentfile.json" target="_uploadFrame" method="post" enctype="multipart/form-data">
+      <form action="editstudentfile.json" target="_uploadFrame" method="post" enctype="multipart/form-data" id="uploadStudentFileForm">
         <input type="hidden" name="fileId" value="${file.id}"/>
 
         <div class="genericFormSection">                                  
@@ -58,8 +52,6 @@
           </jsp:include>
           <input type="file" name="file"/>
         </div>
-
-        <input type="submit" class="formvalid" value="<fmt:message key="studentFiles.uploadFileDialog.uploadButton"/>">
       </form>
       
       <iframe id="_uploadFrame" name="_uploadFrame" style="display:none" onLoad=""> </iframe>

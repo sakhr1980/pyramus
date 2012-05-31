@@ -11,16 +11,10 @@
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
-    
-    <script type="text/javascript">
-      function onLoad() {
-      }
-    </script>
-
   </head>
-  <body onload="onLoad();">
+  <body>
     <div>
-      <form action="uploadstudentreport.json" target="_uploadFrame" method="post">
+      <form action="uploadstudentreport.json" target="_uploadFrame" method="post" id="uploadStudentReportForm">
         <input type="hidden" name="studentId" value="${student.id}"/>
         <input type="hidden" name="reportId" value="${report.id}"/>
         <input type="hidden" name="reportParameters" value="${reportParameters}"/>
@@ -54,7 +48,16 @@
           </select>
         </div>
 
-        <input type="submit" class="formvalid" value="<fmt:message key="studentFiles.uploadReportDialog.uploadButton"/>">
+        <div class="genericFormSection">                                  
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="studentFiles.uploadReportDialog.reportFormatTitle"/>
+            <jsp:param name="helpLocale" value="studentFiles.uploadReportDialog.reportFormatHelp"/>
+          </jsp:include>
+          <select name="reportFormat">
+            <option value="PDF">pdf</option>
+            <option value="DOC">doc</option>
+          </select>
+        </div>
       </form>
 
       <iframe id="_uploadFrame" name="_uploadFrame" style="display:none" onLoad=""> </iframe>
