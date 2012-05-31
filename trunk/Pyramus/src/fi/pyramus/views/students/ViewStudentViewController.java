@@ -493,10 +493,9 @@ public class ViewStudentViewController extends PyramusViewController implements 
           
           for (CourseAssessment assessment : allStudentCourseAssessments) {
             if (assessment.getCourseStudent().getCourse().getModule().getId().equals(studentProjectModule.getModule().getId())) {
-              if (assessment.getGrade() != null && assessment.getGrade().getPassingGrade()) {
-                projectCourseCourseStudentList.add(assessment.getCourseStudent());
+              projectCourseCourseStudentList.add(assessment.getCourseStudent());
+              if (assessment.getGrade() != null && assessment.getGrade().getPassingGrade())
                 hasPassingGrade = true; 
-              }
             }
           }
           
