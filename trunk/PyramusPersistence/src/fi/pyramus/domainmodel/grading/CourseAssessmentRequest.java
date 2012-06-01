@@ -75,7 +75,7 @@ public class CourseAssessmentRequest implements ArchivableEntity {
   private Long id;
   
   @ManyToOne
-  @JoinColumn(unique=true, name="courseStudent")
+  @JoinColumn(name="courseStudent")
   private CourseStudent courseStudent;
 
   @Column (nullable=false)
