@@ -8,8 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.search.annotations.Field;
-
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 
 @Entity
@@ -49,6 +47,5 @@ public class FileType implements ArchivableEntity {
   
   @NotNull
   @Column(nullable = false)
-  @Field
   private Boolean archived = Boolean.FALSE;
 }
