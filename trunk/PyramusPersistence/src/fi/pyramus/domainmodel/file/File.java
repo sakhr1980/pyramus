@@ -16,8 +16,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.search.annotations.Field;
-
 import fi.pyramus.dao.ModificationTrackedEntity;
 import fi.pyramus.domainmodel.base.ArchivableEntity;
 import fi.pyramus.domainmodel.users.User;
@@ -135,7 +133,6 @@ public class File implements ArchivableEntity, ModificationTrackedEntity {
   
   @NotNull
   @Column(nullable = false)
-  @Field
   private Boolean archived = Boolean.FALSE;
 
   @ManyToOne 
