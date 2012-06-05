@@ -78,7 +78,7 @@
         <configuration>
           <includes>
             <include>**/fi/pyramus/plugin/openid/*</include>
-            <include>**/services/*</include>
+            <include>**/META-INF/services/*</include>
           </includes>
         </configuration>
       </plugin>
@@ -86,14 +86,12 @@
   </build>
   
   <distributionManagement>
-    <!-- 
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>
       <id>otavanopisto-snapshots</id>
       <name>Otavan Opisto Snapshots</name>
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
     </snapshotRepository>
-     -->
     <repository>
       <uniqueVersion>false</uniqueVersion>
       <id>otavanopisto-releases</id>
