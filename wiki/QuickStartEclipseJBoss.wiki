@@ -71,7 +71,7 @@
   * Navigate to http://localhost:8080 with web browser
   * Add new datasource from Profile > Connector > Datasources > Add, with name jdbc/pyramus and JNDI name java:/jdbc/pyramus
   * Enable new datasource and test that it works (Connection / Test Connection)
-  * Edit JBoss/standalone/configuration/standalone.xml file and ensure that in the afore-mentioned datasource, the jta attribute is set to true
+  * Go to the datasource's Connection tab and set "Use JTA?" to true (alternatively, edit JBoss/standalone/configuration/standalone.xml file and ensure that in the afore-mentioned datasource, the jta attribute is set to true)
 
 ==Setup==
 
