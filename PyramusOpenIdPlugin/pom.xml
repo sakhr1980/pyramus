@@ -69,6 +69,10 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+          <includes>
+            <include>**/fi/pyramus/plugin/openid/*</include>
+            <include>**/META-INF/services/*</include>
+          </includes>
         </configuration>
       </plugin>
       <plugin>
