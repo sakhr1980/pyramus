@@ -84,18 +84,27 @@ public class AuthenticationProviderVault {
     if ((strategiesConf == null)||("".equals(strategiesConf)))
       strategiesConf = "internal";
     
+    int authSourceCount = 0;
     String[] strategies = strategiesConf.split(",");
-    for (String strategyName : strategies) {
+    try {
       AuthenticationProvider provider;
-      try {
+      for (String strategyName : strategies) {
         Class<AuthenticationProvider> authProviderClass = authenticationProviderClasses.get(strategyName.trim());
+        if (authProviderClass != null) {
+          provider = authProviderClass.newInstance();
+          registerAuthenticationProvider(provider);
+          authSourceCount++;
+        }
+      }
+      if (authSourceCount == 0) {
+        Class<AuthenticationProvider> authProviderClass = authenticationProviderClasses.get("internal");
         provider = authProviderClass.newInstance();
         registerAuthenticationProvider(provider);
-      } catch (InstantiationException e) {
-        throw new SmvcRuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new SmvcRuntimeException(e);
       }
+    } catch (InstantiationException e) {
+      throw new SmvcRuntimeException(e);
+    } catch (IllegalAccessException e) {
+      throw new SmvcRuntimeException(e);
     }
   }
   
