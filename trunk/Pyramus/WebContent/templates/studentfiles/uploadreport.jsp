@@ -54,8 +54,12 @@
             <jsp:param name="helpLocale" value="studentFiles.uploadReportDialog.reportFormatHelp"/>
           </jsp:include>
           <select name="reportFormat">
-            <option value="PDF">pdf</option>
-            <option value="DOC">doc</option>
+            <option value="PDF">
+              <fmt:message key="studentFiles.uploadReportDialog.reportFormatPDF"/>
+            </option>
+            <option value="DOC">
+              <fmt:message key="studentFiles.uploadReportDialog.reportFormatDOC"/>
+            </option>
           </select>
         </div>
       </form>
