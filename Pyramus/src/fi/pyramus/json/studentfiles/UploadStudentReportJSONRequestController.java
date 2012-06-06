@@ -2,18 +2,12 @@ package fi.pyramus.json.studentfiles;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 
-import fi.internetix.smvc.SmvcRuntimeException;
 import fi.internetix.smvc.controllers.JSONRequestContext;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
@@ -81,16 +75,7 @@ public class UploadStudentReportJSONRequestController extends JSONRequestControl
     String reportsPort = System.getProperty("reports.port");
 
     String outputMethod = "preview"; // output or preview
-    
-    StringBuilder magicKeyBuilder = new StringBuilder()
-      .append(Long.toHexString(reportId))
-      .append('-')
-      .append(Long.toHexString(System.currentTimeMillis()))
-      .append('-')
-      .append(Long.toHexString(Thread.currentThread().getId()));
-    
-    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString());
-    magicKeyDAO.flush();
+    MagicKey magicKey = magicKeyDAO.findByApplicationScope();
     
     StringBuilder urlBuilder = new StringBuilder()
       .append(reportsProtocol)
@@ -108,8 +93,6 @@ public class UploadStudentReportJSONRequestController extends JSONRequestControl
       .append(".rptdesign");
     urlBuilder.append("&__format=").append(format);
     urlBuilder.append(reportParameters);
-    
-    System.out.println("UploadStudentReportJSONRequestController: " + urlBuilder);
 
     try {
       URL url = new URL(urlBuilder.toString());

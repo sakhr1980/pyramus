@@ -12,12 +12,13 @@ import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.base.MagicKey_;
 
 @Stateless
 public class MagicKeyDAO extends PyramusEntityDAO<MagicKey> {
 
-  public MagicKey create(String name) {
+  public MagicKey create(String name, MagicKeyScope scope) {
     EntityManager entityManager = getEntityManager();
 
     Date now = new Date(System.currentTimeMillis());
@@ -25,6 +26,7 @@ public class MagicKeyDAO extends PyramusEntityDAO<MagicKey> {
     MagicKey magicKey = new MagicKey();
     magicKey.setCreated(now);
     magicKey.setName(name);
+    magicKey.setScope(scope);
 
     entityManager.persist(magicKey);
 
@@ -44,13 +46,36 @@ public class MagicKeyDAO extends PyramusEntityDAO<MagicKey> {
     
     return getSingleResult(entityManager.createQuery(criteria));
   }
+  
+  public MagicKey findByApplicationScope() {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<MagicKey> criteria = criteriaBuilder.createQuery(MagicKey.class);
+    Root<MagicKey> root = criteria.from(MagicKey.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(MagicKey_.scope), MagicKeyScope.APPLICATION)
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
 
+  public MagicKey updateName(MagicKey magicKey, String name) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    magicKey.setName(name);
+    
+    entityManager.persist(magicKey);
+    
+    return magicKey;
+  }
+  
   public void deleteDeprecatedMagicKeys() {
+    // TODO: Not a DAO method
     Calendar c = Calendar.getInstance();
     c.setTime(new Date());
     c.roll(Calendar.DATE, -1);
-
-//    List<MagicKey> deprecatedMagicKeys = s.createCriteria(MagicKey.class).add(Restrictions.lt("created", c.getTime())).list();
 
     EntityManager entityManager = getEntityManager(); 
     
@@ -59,7 +84,10 @@ public class MagicKeyDAO extends PyramusEntityDAO<MagicKey> {
     Root<MagicKey> root = criteria.from(MagicKey.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.lessThan(root.get(MagicKey_.created), c.getTime())
+        criteriaBuilder.and(
+          criteriaBuilder.lessThan(root.get(MagicKey_.created), c.getTime()),
+          criteriaBuilder.equal(root.get(MagicKey_.scope), MagicKeyScope.REQUEST)
+        )
     );
     
     List<MagicKey> deprecatedMagicKeys = entityManager.createQuery(criteria).getResultList();

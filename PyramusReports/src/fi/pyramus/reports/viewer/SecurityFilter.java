@@ -17,6 +17,7 @@ import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.system.SettingDAO;
 import fi.pyramus.dao.system.SettingKeyDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.system.Setting;
 import fi.pyramus.domainmodel.system.SettingKey;
 
@@ -48,13 +49,15 @@ public class SecurityFilter implements Filter {
     MagicKey magicKey = magicKeyDAO.findByName(magicKeyName);
     if (magicKey != null) {
       try {
-        if (magicKey.getCreated().after(expireThreshold)) {
-          chain.doFilter(request, response);
-        } else {
-          throw new ServletException("Session expired");
+        if (magicKey.getScope() != MagicKeyScope.APPLICATION) {
+          if (magicKey.getCreated().before(expireThreshold))
+            throw new ServletException("Session expired");
         }
+
+        chain.doFilter(request, response);
       } finally {
-        magicKeyDAO.delete(magicKey);
+        if (magicKey.getScope() == MagicKeyScope.REQUEST)
+          magicKeyDAO.delete(magicKey);
       }
     } else {
       throw new ServletException("Permission denied");

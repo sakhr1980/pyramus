@@ -12,6 +12,7 @@ import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.reports.ReportContextDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.domainmodel.reports.ReportContext;
 import fi.pyramus.domainmodel.users.Role;
@@ -43,7 +44,7 @@ public class ViewReportParametersViewController extends PyramusViewController im
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
     
-    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString(), MagicKeyScope.REQUEST); 
     
     StringBuilder urlBuilder = new StringBuilder()
       .append(reportsContextPath)

@@ -12,6 +12,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.reports.ReportDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.reports.Report;
 import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
@@ -33,7 +34,7 @@ public class DownloadReportBinaryRequestController extends BinaryRequestControll
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
   
-    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString(), MagicKeyScope.REQUEST); 
     
     Report report = reportDAO.findById(reportId);
     
