@@ -54,7 +54,7 @@
         </div>
       </form>
       
-      <iframe id="_uploadFrame" name="_uploadFrame" style="display:none" onLoad=""> </iframe>
+      <iframe id="_uploadFrame" name="_uploadFrame" style="display:none"> </iframe>
     </div>
   </body>
 </html>
