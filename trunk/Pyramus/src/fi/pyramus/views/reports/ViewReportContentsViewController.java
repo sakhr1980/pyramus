@@ -14,6 +14,7 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
@@ -42,7 +43,7 @@ public class ViewReportContentsViewController extends PyramusViewController impl
       .append('-')
       .append(Long.toHexString(Thread.currentThread().getId()));
     
-    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString()); 
+    MagicKey magicKey = magicKeyDAO.create(magicKeyBuilder.toString(), MagicKeyScope.REQUEST); 
     
     StringBuilder urlBuilder = new StringBuilder()
       .append(reportsContextPath)
@@ -69,8 +70,6 @@ public class ViewReportContentsViewController extends PyramusViewController impl
         }
       }
     }
-    
-    System.out.println("ViewReportContentsViewController: " + urlBuilder);
     
     pageRequestContext.setIncludeUrl(urlBuilder.toString());
   }

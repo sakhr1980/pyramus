@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -16,15 +18,21 @@ import javax.net.ssl.X509TrustManager;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import fi.internetix.smvc.controllers.RequestController;
 import fi.internetix.smvc.controllers.RequestControllerMapper;
 import fi.internetix.smvc.logging.Logging;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.base.MagicKeyDAO;
 import fi.pyramus.dao.plugins.PluginDAO;
 import fi.pyramus.dao.plugins.PluginRepositoryDAO;
 import fi.pyramus.dao.system.SettingDAO;
 import fi.pyramus.dao.system.SettingKeyDAO;
+import fi.pyramus.domainmodel.base.MagicKey;
+import fi.pyramus.domainmodel.base.MagicKeyScope;
 import fi.pyramus.domainmodel.plugins.Plugin;
 import fi.pyramus.domainmodel.plugins.PluginRepository;
 import fi.pyramus.domainmodel.system.Setting;
@@ -46,6 +54,23 @@ public class PyramusServletContextListener implements ServletContextListener {
    * @param ctx The servlet context event
    */
   public void contextDestroyed(ServletContextEvent ctx) {
+    try {
+      userTransaction.begin();
+      
+      MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+      MagicKey magicKey = magicKeyDAO.findByApplicationScope();
+      if (magicKey != null) {
+        magicKeyDAO.delete(magicKey);
+      }
+      
+      userTransaction.commit();
+    } catch (Exception e) {
+      try {
+        userTransaction.rollback();
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -56,6 +81,18 @@ public class PyramusServletContextListener implements ServletContextListener {
    */
   public void contextInitialized(ServletContextEvent servletContextEvent) {
     try {
+      userTransaction.begin();
+      
+      MagicKeyDAO magicKeyDAO = DAOFactory.getInstance().getMagicKeyDAO();
+      String applicationMagicKey = UUID.randomUUID().toString();
+      
+      MagicKey magicKey = magicKeyDAO.findByApplicationScope();
+      if (magicKey != null) {
+        magicKeyDAO.updateName(magicKey, applicationMagicKey);
+      } else {
+        magicKeyDAO.create(applicationMagicKey, MagicKeyScope.APPLICATION);
+      }
+      
       Properties pageControllers = new Properties();
       Properties jsonControllers = new Properties();
       Properties binaryControllers = new Properties();
@@ -97,8 +134,15 @@ public class PyramusServletContextListener implements ServletContextListener {
       if ("development".equals(System.getProperties().getProperty("system.environment"))) {
         trustSelfSignedCerts();
       }
-    }
-    catch (Exception e) {
+      
+      userTransaction.commit();
+    } catch (Exception e) {
+      try {
+        userTransaction.rollback();
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+      
       e.printStackTrace();
       throw new ExceptionInInitializerError(e);
     }
@@ -201,4 +245,6 @@ public class PyramusServletContextListener implements ServletContextListener {
     }
   }
   
+  @Resource
+  private UserTransaction userTransaction;
 }

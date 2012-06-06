@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,6 +38,14 @@ public class MagicKey {
     this.created = created;
   }
   
+  public MagicKeyScope getScope() {
+    return scope;
+  }
+  
+  public void setScope(MagicKeyScope scope) {
+    this.scope = scope;
+  }
+  
   @SuppressWarnings("unused")
   private void setVersion(Long version) {
     this.version = version;
@@ -58,6 +68,10 @@ public class MagicKey {
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date created;
 
+  @Column (nullable = false)
+  @Enumerated (EnumType.STRING)
+  private MagicKeyScope scope;
+  
   @Version
   @Column(nullable = false)
   private Long version;
