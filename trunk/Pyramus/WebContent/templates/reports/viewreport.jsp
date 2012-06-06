@@ -108,6 +108,7 @@
               var uploadFrame = contentDoc.getElementById("_uploadFrame");
 
               Event.observe(uploadFrame, "load", function (event) {
+                uploadFrame.src = 'about:blank';
                 dlg.close();
               });
               
