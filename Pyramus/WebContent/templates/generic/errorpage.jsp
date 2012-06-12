@@ -19,21 +19,7 @@
   
   <div class="errorPageTitleContainer">
     <div class="errorPageTitleIconContainer">
-      <c:choose>
-        <c:when test="${errorLevel == 'INFORMATION'}">
-          <img src="${pageContext.request.contextPath}gfx/icons/32x32/status/dialog-information.png"/>
-        </c:when>
-        <c:when test="${errorLevel == 'WARNING'}">
-          <img src="${pageContext.request.contextPath}/gfx/icons/32x32/status/dialog-warning.png"/>
-        </c:when>
-        <c:when test="${errorLevel == 'ERROR'}">
-          <img src="${pageContext.request.contextPath}/gfx/icons/32x32/status/dialog-error.png"/>
-        </c:when>
-        <c:when test="${errorLevel == 'CRITICAL'}">
-          <img src="${pageContext.request.contextPath}/gfx/icons/32x32/status/dialog-error.png"/>
-        </c:when>
-      </c:choose>
-      
+      <img src="${pageContext.request.contextPath}/gfx/icons/32x32/status/dialog-error.png"/>
     </div>
     <div class="errorPageTitle">
       <fmt:message key="generic.errorPage.errorPageTitle">
