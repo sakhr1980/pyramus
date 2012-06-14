@@ -83,7 +83,7 @@ public class CreateStudentViewController extends PyramusViewController implement
     pageRequestContext.getRequest().setAttribute("languages", languages);
     pageRequestContext.getRequest().setAttribute("studyProgrammes", studyProgrammes);
     pageRequestContext.getRequest().setAttribute("variableKeys", studentVariableKeys);
-    pageRequestContext.getRequest().setAttribute("studyEndReasons", studyEndReasonDAO.listTopLevelStudentStudyEndReasons());
+    pageRequestContext.getRequest().setAttribute("studyEndReasons", studyEndReasonDAO.listByParentReason(null));
     
     pageRequestContext.setIncludeJSP("/templates/students/createstudent.jsp");
   }
