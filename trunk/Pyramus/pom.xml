@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>pyramus</artifactId>
-  <version>0.5.2</version>
+  <version>0.6.0</version>
 
   <repositories>
     <repository>
@@ -105,12 +105,12 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.5.2</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>plugin-core</artifactId>
-      <version>0.5.2</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -135,7 +135,7 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>framework</artifactId>
-      <version>0.5.2</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>webservices</artifactId>
-  <version>0.5.2</version>
+  <version>0.6.0</version>
   <packaging>war</packaging>
 
   <url>http://pyramus.googlecode.com/</url>
@@ -25,7 +25,7 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.5.2</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
