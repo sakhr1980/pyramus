@@ -4,13 +4,13 @@
         <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/WebContent/WEB-INF/web.xml"/>
         <wb-resource deploy-path="/WEB-INF/jboss-web.xml" source-path="/WebContent/WEB-INF/jboss-web.xml"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <dependent-module archiveName="persistence-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPersistence/PyramusPersistence">
+        <dependent-module archiveName="persistence-0.5.2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusPersistence/PyramusPersistence">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="common-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusCommon/PyramusCommon">
+        <dependent-module archiveName="common-0.5.2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusCommon/PyramusCommon">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="domainmodelextension-0.5.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusDomainModelExtension/PyramusDomainModelExtension">
+        <dependent-module archiveName="domainmodelextension-0.5.2.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/PyramusDomainModelExtension/PyramusDomainModelExtension">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="java-output-path" value="/PyramusWebServices/build/classes"/>
