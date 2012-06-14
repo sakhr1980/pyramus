@@ -267,11 +267,7 @@
   <packaging>war</packaging>
   
   <build>
-    <directory>target</directory>
-    <outputDirectory>target/classes</outputDirectory>
     <finalName>${project.artifactId}-${project.version}</finalName>
-    <sourceDirectory>src</sourceDirectory>
-    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
