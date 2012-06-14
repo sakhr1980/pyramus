@@ -7,6 +7,7 @@ import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth;
+import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth_;
 
 public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
 
