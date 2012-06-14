@@ -2,16 +2,11 @@
 
 = Pyramus version =
 
-Pyramus' version is compound of date number and build number separated by dots (DATE.BUILD).
+Pyramus versions follow Mavens version numbering system: MajorVersion.MinorVersio.IncrementalVersion
 
-This is a real version number of Pyramus but there is also a "human readable" version of version number. This number does not have any real meaning but it exists because it's easier to remember than the real version number.   
-
-For example Pyramus' version could be 1.2 (100920.28), which means that it was build at 10th of September and was 28th build of Pyramus. 
-
-Besides normal Pyramus version there is a database version. Database version consists from build number and sequence number that is reset after every build.    
+Besides normal Pyramus version Pyramus database uses different versioning system. Database version consists from build number and sequence number that is reset after every build.    
 
 = Summary =
 
-Version number: MINOR.MAJOR (DATE.BUILD) e.g. 1.2 (100920.28)<br/>
-Human readable version: MINOR.MAJOR e.g. 1.2 <br/>
+Version number: MAJOR.MINOR.INCREMENTAL e.g. 0.6.0<br/>
 Database version number: BUILD.SEQ e.g. 28.007
