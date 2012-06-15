@@ -20,6 +20,24 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+  <repositories>
+    <repository>
+    <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+    <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+  </repository>
+    <repository>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snaphosts</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </repository>
+    <repository>
+      <id>repository.jboss.org-public</id>
+      <name>JBoss repository</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -37,6 +55,12 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>4.0.1.Final</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
