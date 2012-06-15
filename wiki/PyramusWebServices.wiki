@@ -16,8 +16,8 @@
   * Go to JBoss bin folder and run add-user
     * Type of user = ***Application User***
     * Realm = ***WebServices***
-    * Username = ***webservices***
-    * Password =
+    * Username = (user)
+    * Password = (password)
     * Roles = ***WebServices***
   * Edit JBoss standalone/configuration/standalone.xml
     * Locate subsystem urn:jboss:domain:webservices:1.1 and change wsdl-host to ***jbossws.undefined.host***
