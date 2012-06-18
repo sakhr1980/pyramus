@@ -199,6 +199,20 @@ public class StudentDAO extends PyramusEntityDAO<Student> {
     student.setStudyEndText(endReasonText);
     entityManager.persist(student);
   }
+  
+  public Long countByStudyEndReason(StudentStudyEndReason studyEndReason) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<Student> root = criteria.from(Student.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.equal(root.get(Student_.studyEndReason), studyEndReason)
+    );
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
 
   public List<Student> listActiveStudents() {
     EntityManager entityManager = getEntityManager(); 
