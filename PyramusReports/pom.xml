@@ -63,6 +63,12 @@
       <version>4.1.0.Final</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>4.0.1.Final</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
   <scm>
