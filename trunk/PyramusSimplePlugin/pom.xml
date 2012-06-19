@@ -3,6 +3,20 @@
   <groupId>fi.pyramus</groupId>
   <artifactId>simple-plugin</artifactId>
   <version>0.6.0</version>
+  
+  <repositories>
+    <repository>
+      <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+    <repository>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snaphosts</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </repository>
+  </repositories>
+  
   <dependencies>
     <dependency>
       <groupId>fi.internetix.smvcj</groupId>
