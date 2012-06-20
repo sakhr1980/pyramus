@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>persistence</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
+  <version>0.6.1</version>
   <name>Pyramus Persistence</name>
   
   <repositories>
@@ -64,12 +64,12 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>common</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>domainmodelextension</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
       <groupId>javax</groupId>
