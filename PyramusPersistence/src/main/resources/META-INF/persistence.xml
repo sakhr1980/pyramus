@@ -18,9 +18,8 @@
 
       <!-- Search -->
 
-      <property name="hibernate.search.default.optimizer.operation_limit.max" value="1000" />
-      <property name="hibernate.search.default.optimizer.transaction_limit.max" value="100" />
-      <property name="hibernate.search.default.exclusive_index_use" value="true"/>
+      <property name="hibernate.search.default.directory_provider" value="infinispan"/>
+      <property name="hibernate.search.infinispan.configuration_resourcename" value="infinispan-configs-lucene.xml"/>
 
     </properties>
   </persistence-unit>
