@@ -2,7 +2,19 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>plugin-core</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
+  <version>0.6.1</version>
+	<repositories>
+		<repository>
+			<id>otavanopisto-releases</id>
+			<name>Otavan Opisto Releases</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>otavanopisto-snapshots</id>
+			<name>Otavan Opisto Snaphosts</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
   <dependencies>
     <dependency>
       <groupId>fi.internetix.smvcj</groupId>
@@ -12,12 +24,12 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>framework</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>

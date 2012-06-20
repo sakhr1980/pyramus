@@ -10,6 +10,7 @@ import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
+import fi.pyramus.dao.students.StudentDAO;
 import fi.pyramus.dao.students.StudentStudyEndReasonDAO;
 import fi.pyramus.domainmodel.students.StudentStudyEndReason;
 import fi.pyramus.framework.PyramusViewController;
@@ -25,12 +26,12 @@ public class StudyEndReasonsViewController extends PyramusViewController impleme
   @Override
   public void process(PageRequestContext pageRequestContext) {
     StudentStudyEndReasonDAO studentStudyEndReasonDAO = DAOFactory.getInstance().getStudentStudyEndReasonDAO();
+    StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     
     List<StudentStudyEndReason> studyEndReasons = studentStudyEndReasonDAO.listAll();
-    List<StudentStudyEndReason> topLevelReasons = studentStudyEndReasonDAO.listByParentReason(null);
     
     JSONArray jaStudyEndReasons = new JSONArray();
-    JSONArray jaTopLevelReasons = new JSONArray();
+    JSONArray jaReasonsInUse = new JSONArray();
    
     for (StudentStudyEndReason reason : studyEndReasons) {
       JSONObject jsonReason = new JSONObject();
@@ -39,31 +40,22 @@ public class StudyEndReasonsViewController extends PyramusViewController impleme
       jsonReason.put("name", reason.getName());
       if (reason.getParentReason() != null) {
         jsonReason.put("parentId", reason.getParentReason().getId());
-      } else {
-        jsonReason.put("parentId", "");
       }
       jaStudyEndReasons.add(jsonReason);
     }
-
-    JSONObject noParent = new JSONObject();
-    noParent.put("text", "-");
-    noParent.put("value", "");
-    jaTopLevelReasons.add(noParent);
-    for (StudentStudyEndReason reason : topLevelReasons) {
-      JSONObject jsonReason = new JSONObject();
-      
-      jsonReason.put("text", reason.getName());
-      jsonReason.put("value", reason.getId());
-      
-      jaTopLevelReasons.add(jsonReason);
+    
+    for (StudentStudyEndReason reason : studyEndReasons) {
+      if (studentDAO.countByStudyEndReason(reason) > 0) {
+        JSONObject jsonReason = new JSONObject();
+        jsonReason.put("id", reason.getId());
+        
+        jaReasonsInUse.add(jsonReason);
+      }
     }
     
-    
     this.setJsDataVariable(pageRequestContext, "studyEndReasons", jaStudyEndReasons.toString());
-    this.setJsDataVariable(pageRequestContext, "topLevelReasons", jaTopLevelReasons.toString());
+    this.setJsDataVariable(pageRequestContext, "reasonsInUse", jaReasonsInUse.toString());
     
-    pageRequestContext.getRequest().setAttribute("studyEndReasons", studentStudyEndReasonDAO.listAll());
-    pageRequestContext.getRequest().setAttribute("topLevelReasons", topLevelReasons);
     pageRequestContext.setIncludeJSP("/templates/settings/studyendreasons.jsp");
   }
 

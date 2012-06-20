@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>pyramus</artifactId>
-  <version>0.6.1-SNAPSHOT</version>
+  <version>0.6.1</version>
 
   <repositories>
     <repository>
@@ -232,19 +232,19 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>framework</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>plugin-core</artifactId>
-      <version>0.6.1-SNAPSHOT</version>
+      <version>0.6.1</version>
     </dependency>
     <dependency>
     	<groupId>org.apache.xalan</groupId>
