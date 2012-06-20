@@ -208,10 +208,30 @@ public class StudentsService extends PyramusService {
     return (StudentEntity[]) EntityFactoryVault.buildFromDomainObjects(studentDAO.listActiveStudentsByStudyProgramme(studyProgramme));
   }
   
-  public StudentEntity createStudent(@WebParam (name="abstractStudentId") Long abstractStudentId, @WebParam (name="firstName") String firstName, @WebParam (name="lastName") String lastName, @WebParam (name="nickname") String nickname, @WebParam (name="phone") String phone, @WebParam (name="additionalInfo") String additionalInfo,
-      @WebParam (name="parentalInfo") String parentalInfo, @WebParam (name="studyTimeEnd") Date studyTimeEnd, @WebParam (name="activityTypeId") Long activityTypeId, @WebParam (name="examinationTypeId") Long examinationTypeId, @WebParam (name="educationalLevelId") Long educationalLevelId, @WebParam (name="education") String education, @WebParam (name="nationalityId") Long nationalityId,
-      @WebParam (name="municipalityId") Long municipalityId, @WebParam (name="languageId") Long languageId, @WebParam (name="schoolId") Long schoolId, @WebParam (name="studyProgrammeId") Long studyProgrammeId, @WebParam (name="previousStudies") Double previousStudies, @WebParam (name="studyStartDate") Date studyStartDate, @WebParam (name="studyEndDate") Date studyEndDate,
-      @WebParam (name="studyEndReasonId") Long studyEndReasonId, @WebParam (name="studyEndText") String studyEndText, @WebParam (name="lodging") Boolean lodging) {
+  public StudentEntity createStudent(
+      @WebParam (name="abstractStudentId") Long abstractStudentId, 
+      @WebParam (name="firstName") String firstName, 
+      @WebParam (name="lastName") String lastName, 
+      @WebParam (name="nickname") String nickname, 
+      @WebParam (name="phone") String phone, 
+      @WebParam (name="additionalInfo") String additionalInfo,
+      @WebParam (name="parentalInfo") String parentalInfo, 
+      @WebParam (name="studyTimeEnd") Date studyTimeEnd, 
+      @WebParam (name="activityTypeId") Long activityTypeId, 
+      @WebParam (name="examinationTypeId") Long examinationTypeId, 
+      @WebParam (name="educationalLevelId") Long educationalLevelId, 
+      @WebParam (name="education") String education, 
+      @WebParam (name="nationalityId") Long nationalityId,
+      @WebParam (name="municipalityId") Long municipalityId, 
+      @WebParam (name="languageId") Long languageId, 
+      @WebParam (name="schoolId") Long schoolId, 
+      @WebParam (name="studyProgrammeId") Long studyProgrammeId, 
+      @WebParam (name="previousStudies") Double previousStudies, 
+      @WebParam (name="studyStartDate") Date studyStartDate, 
+      @WebParam (name="studyEndDate") Date studyEndDate,
+      @WebParam (name="studyEndReasonId") Long studyEndReasonId, 
+      @WebParam (name="studyEndText") String studyEndText, 
+      @WebParam (name="lodging") Boolean lodging) {
 
     StudentDAO studentDAO = DAOFactory.getInstance().getStudentDAO();
     AbstractStudentDAO abstractStudentDAO = DAOFactory.getInstance().getAbstractStudentDAO();
@@ -244,8 +264,12 @@ public class StudentsService extends PyramusService {
         studyEndDate, studyEndReason, studyEndText, lodging);
     
     // TODO Proper handling for phone and parental info
-    ContactType contactType = contactTypeDAO.findById(new Long(1));
-    phoneNumberDAO.create(student.getContactInfo(), contactType, Boolean.TRUE, phone);
+    
+    if (phone != null) {
+      ContactType contactType = contactTypeDAO.findById(new Long(1));
+      phoneNumberDAO.create(student.getContactInfo(), contactType, Boolean.TRUE, phone);
+    }
+    
     contactInfoDAO.update(student.getContactInfo(), parentalInfo);
 
     validateEntity(student);
