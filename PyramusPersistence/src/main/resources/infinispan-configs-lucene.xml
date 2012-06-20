@@ -4,12 +4,6 @@
   xsi:schemaLocation="urn:infinispan:config:5.1 http://www.infinispan.org/schemas/infinispan-config-5.1.xsd"
   xmlns="urn:infinispan:config:5.1">
  
- <!-- 
-  <global>
-    <transport clusterName="lucenePyramusCluster" />
-    <globalJmxStatistics enabled="true" allowDuplicateDomains="true"/>
-  </global>
- 
   <global>
     <globalJmxStatistics enabled="true" allowDuplicateDomains="true"/>
     <transport clusterName="${jboss.partition.name:DefaultPartition}-HAPartition" distributedSyncTimeout="17500">
@@ -18,11 +12,6 @@
       </properties> 
     </transport>
     <shutdown hookBehavior="DONT_REGISTER" />
-  </global>
-    -->
-   
-  <global>
-    <globalJmxStatistics enabled="true" allowDuplicateDomains="true"/>
   </global>
   <!-- *************************** -->
   <!-- Default "template" settings -->
@@ -36,12 +25,10 @@
       Lucene indexes (as with Hibernate Search DirectoryProvider). Replication is recommended for best performance of Lucene indexes, but make sure you have enough memory 
       to store the index in your heap. Also distribution scales much better than replication on high number of nodes in the cluster. 
     -->
-<!-- 
     <clustering mode="distribution">
       <stateTransfer timeout="20000" fetchInMemoryState="false"/>
       <sync replTimeout="20000" />
     </clustering>
--->
     <jmxStatistics enabled="true" />
     <eviction maxEntries="-1" strategy="NONE" />
     <expiration maxIdle="-1" />
@@ -59,12 +46,10 @@
         </properties>
       </loader>
     </loaders>
-    <!-- 
     <clustering mode="distribution">
       <stateTransfer fetchInMemoryState="false"/>
       <sync replTimeout="25000" />
     </clustering>
-     -->
   </namedCache>
 
   <!-- **************************** -->
@@ -80,12 +65,10 @@
       </loader>
     </loaders>
     
-    <!-- 
     <clustering mode="distribution">
       <stateTransfer fetchInMemoryState="false"/>
       <sync replTimeout="25000" />
     </clustering>
-     -->
   </namedCache>
 
   <!-- ***************************** -->
@@ -100,12 +83,10 @@
         </properties>
       </loader>
     </loaders>
-<!-- 
     <clustering mode="distribution">
       <stateTransfer fetchInMemoryState="false"/>
       <sync replTimeout="25000" />
     </clustering>
- -->
   </namedCache>
 
 </infinispan>
