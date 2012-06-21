@@ -1,6 +1,7 @@
 package fi.pyramus.plugin.maven;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,11 @@ import org.sonatype.aether.impl.internal.DefaultRepositorySystem;
 import org.sonatype.aether.impl.internal.DefaultSyncContextFactory;
 import org.sonatype.aether.impl.internal.DefaultUpdateCheckManager;
 import org.sonatype.aether.impl.internal.SimpleLocalRepositoryManagerFactory;
+import org.sonatype.aether.repository.ArtifactRepository;
+import org.sonatype.aether.repository.LocalArtifactRequest;
+import org.sonatype.aether.repository.LocalArtifactResult;
 import org.sonatype.aether.repository.LocalRepository;
+import org.sonatype.aether.repository.LocalRepositoryManager;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.resolution.ArtifactDescriptorException;
 import org.sonatype.aether.resolution.ArtifactDescriptorRequest;
@@ -71,19 +76,50 @@ public class MavenClient {
 
   public List<Version> listVersions(String groupId, String artifactId) throws VersionRangeResolutionException {
     Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", "[0.0.0,999.999.999]");
-    VersionRangeRequest request = new VersionRangeRequest(artifact, repositories, null);
+    VersionRangeRequest request = new VersionRangeRequest(artifact, getRemoteRepositories(), null);
     VersionRangeResult rangeResult = versionRangeResolver.resolveVersionRange(systemSession, request);
     return rangeResult.getVersions();
   }
+  
+  public ArtifactDescriptorResult describeLocalArtifact(String groupId, String artifactId, String version) throws ArtifactDescriptorException, ArtifactResolutionException {
+    Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", version);
+    LocalArtifactRequest localArtifactRequest = new LocalArtifactRequest(artifact, null, null);
+    
+    for (LocalRepository localRepository : localRepositories) {
+      LocalRepositoryManager repositoryManager = getRepositorySystem().newLocalRepositoryManager(localRepository);
+      LocalArtifactResult artifactResult = repositoryManager.find(systemSession, localArtifactRequest);
+      if (artifactResult.getFile() != null) {
+        ArtifactDescriptorRequest request = new ArtifactDescriptorRequest(artifactResult.getRequest().getArtifact(), null, null);
+        ArtifactDescriptorResult descriptorResult = artifactDescriptorReader.readArtifactDescriptor(systemSession, request);
+        
+        for (Dependency dependency : descriptorResult.getDependencies()) {
+          if ("compile".equals(dependency.getScope())) {
+            artifactResolver.resolveArtifact(systemSession, new ArtifactRequest(dependency.getArtifact(), remoteRepositories, null));
+          }
+        }
+        
+        // descriptorResult does not contain resolved file so we need to it manually
+        Artifact descriptorResultArtifact = descriptorResult.getArtifact();
+        descriptorResult.setArtifact(descriptorResultArtifact.setFile(artifactResult.getFile()));
+        
+        return descriptorResult;
+      }
+    }
+    
+    return null;
+  }
 
   public ArtifactDescriptorResult describeArtifact(String groupId, String artifactId, String version) throws ArtifactResolutionException, ArtifactDescriptorException {
-    ArtifactResult artifactResult = artifactResolver.resolveArtifact(systemSession, new ArtifactRequest(new DefaultArtifact(groupId, artifactId, "jar", version), repositories, null));
-    ArtifactDescriptorRequest request = new ArtifactDescriptorRequest(artifactResult.getArtifact(), repositories, null);
+    Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", version);
+    
+    List<RemoteRepository> remoteRepositories = getRemoteRepositories();
+    ArtifactResult artifactResult = artifactResolver.resolveArtifact(systemSession, new ArtifactRequest(artifact, remoteRepositories, null));
+    ArtifactDescriptorRequest request = new ArtifactDescriptorRequest(artifactResult.getArtifact(), remoteRepositories, null);
     ArtifactDescriptorResult descriptorResult = artifactDescriptorReader.readArtifactDescriptor(systemSession, request);
     
     for (Dependency dependency : descriptorResult.getDependencies()) {
       if ("compile".equals(dependency.getScope())) {
-        artifactResolver.resolveArtifact(systemSession, new ArtifactRequest(dependency.getArtifact(), repositories, null));
+        artifactResolver.resolveArtifact(systemSession, new ArtifactRequest(dependency.getArtifact(), remoteRepositories, null));
       }
     }
     
@@ -91,21 +127,50 @@ public class MavenClient {
   }
 
   public File getArtifactJarFile(Artifact artifact) {
-    String pathForLocalArtifact = systemSession.getLocalRepositoryManager().getPathForLocalArtifact(artifact);
-    return new File(systemSession.getLocalRepository().getBasedir(), pathForLocalArtifact);
+    if (artifact.getFile() == null) {
+      String pathForLocalArtifact = systemSession.getLocalRepositoryManager().getPathForLocalArtifact(artifact);
+      return new File(systemSession.getLocalRepository().getBasedir(), pathForLocalArtifact);
+    } else {
+      return artifact.getFile();
+    }
+  }
+  
+  public List<RemoteRepository> getRemoteRepositories() {
+    return remoteRepositories;
+  }
+  
+  public List<LocalRepository> getLocalRepositories() {
+    return localRepositories;
   }
   
   public void addRepository(String url) {
-    repositories.add(new RemoteRepository(null, "default", url));
+    if (url.startsWith("/")) {
+      localRepositories.add(new LocalRepository(url));
+    } else {
+      remoteRepositories.add(new RemoteRepository(null, "default", url));
+    } 
   }
   
   public void removeRepository(String url) {
-    for (RemoteRepository remoteRepository : repositories) {
-      if (remoteRepository.getUrl().equals(url)) {
-        repositories.remove(remoteRepository);
-        return;
+    if (url.startsWith("/")) {
+      for (LocalRepository localRepository : localRepositories) {
+        try {
+          if (url.equals(localRepository.getBasedir().toURI().toURL())) {
+            localRepositories.remove(localRepository);
+            return;
+          }
+        } catch (MalformedURLException e) {
+        }
       }
-    }
+      localRepositories.add(new LocalRepository(url));
+    } else {
+      for (RemoteRepository remoteRepository : remoteRepositories) {
+        if ((remoteRepository.getUrl().equals(url))) {
+          remoteRepositories.remove(remoteRepository);
+          return;
+        }
+      }
+    } 
   }
 
   private ArtifactDescriptorReader createArtifactDescriptionReader(RepositoryEventDispatcher repositoryEventDispatcher, VersionResolver versionResolver,
@@ -184,21 +249,31 @@ public class MavenClient {
   }
 
   private RepositorySystemSession createSystemSession() {
-    LocalRepositoryManagerFactory factory = new SimpleLocalRepositoryManagerFactory();
-    DefaultLocalRepositoryProvider repositoryProvider = new DefaultLocalRepositoryProvider();
-    repositoryProvider.addLocalRepositoryManagerFactory(factory);
-
-    DefaultRepositorySystem repositorySystem = new DefaultRepositorySystem();
-    repositorySystem.setLocalRepositoryProvider(repositoryProvider);
-
+    repositorySystem.setLocalRepositoryProvider(getLocalRepositoryProvider());
     MavenRepositorySystemSession session = new MavenRepositorySystemSession();
-    LocalRepository localRepo = new LocalRepository(localRepositoryPath);
-    session.setLocalRepositoryManager(repositorySystem.newLocalRepositoryManager(localRepo));
-    
+    LocalRepository localRepository = new LocalRepository(localRepositoryPath);
+    session.setLocalRepositoryManager(repositorySystem.newLocalRepositoryManager(localRepository));
     return session;
   }
-
-  private List<RemoteRepository> repositories = new ArrayList<RemoteRepository>();
+ 
+  public DefaultRepositorySystem getRepositorySystem() {
+    return repositorySystem;
+  }
+ 
+  private DefaultLocalRepositoryProvider getLocalRepositoryProvider() {
+    if (localRepositoryProvider == null) {
+      localRepositoryProvider = new DefaultLocalRepositoryProvider();
+      localRepositoryProvider.addLocalRepositoryManagerFactory(localRepositoryManagerFactory);
+    }
+    
+    return localRepositoryProvider;
+  }
+  
+  private DefaultRepositorySystem repositorySystem = new DefaultRepositorySystem();
+  private DefaultLocalRepositoryProvider localRepositoryProvider;
+  private LocalRepositoryManagerFactory localRepositoryManagerFactory = new SimpleLocalRepositoryManagerFactory();
+  private List<RemoteRepository> remoteRepositories = new ArrayList<RemoteRepository>();
+  private List<LocalRepository> localRepositories = new ArrayList<LocalRepository>();
   private String localRepositoryPath;
   private ArtifactResolver artifactResolver;
   private ArtifactDescriptorReader artifactDescriptorReader;
