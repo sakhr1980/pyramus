@@ -79,7 +79,11 @@ public class PluginManager {
 
   public void loadPlugin(String groupId, String artifactId, String version) {
     try {
-      ArtifactDescriptorResult descriptorResult = mavenClient.describeArtifact(groupId, artifactId, version);
+      ArtifactDescriptorResult descriptorResult = mavenClient.describeLocalArtifact(groupId, artifactId, version);
+      if (descriptorResult == null) {
+        descriptorResult = mavenClient.describeArtifact(groupId, artifactId, version);
+      }
+      
       for (Dependency dependency : descriptorResult.getDependencies()) {
         if ("compile".equals(dependency.getScope())) {
           File file = mavenClient.getArtifactJarFile(dependency.getArtifact());
