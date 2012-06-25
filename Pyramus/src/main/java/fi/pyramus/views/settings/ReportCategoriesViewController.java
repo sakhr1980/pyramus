@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -42,7 +45,15 @@ public class ReportCategoriesViewController extends PyramusViewController implem
       }
     });
     
-    pageRequestContext.getRequest().setAttribute("categories", categories);
+    JSONArray jaCategories = new JSONArray();
+    for (ReportCategory category : categories) {
+      JSONObject joCategory = new JSONObject();
+      joCategory.put("name", category.getName());
+      joCategory.put("id", category.getId());
+      jaCategories.add(joCategory);
+    }
+    
+    this.setJsDataVariable(pageRequestContext, "reportCategories", jaCategories.toString());
     pageRequestContext.setIncludeJSP("/templates/settings/reportcategories.jsp");
   }
 
