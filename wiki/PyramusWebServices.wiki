@@ -23,5 +23,4 @@
     * Locate subsystem urn:jboss:domain:webservices:1.1 and change wsdl-host to ***jbossws.undefined.host***
     * Locate interfaces and change the contents of public interface to ***`<any-address/>`***
     * Locate interfaces and change the contents of unsecure interfacde to ***`<any-address/>`***
-    * Update the JGroups configuration; see ConfiguringMultipleApplications
   * Restart JBoss
