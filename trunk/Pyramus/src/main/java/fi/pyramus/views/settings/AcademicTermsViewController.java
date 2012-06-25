@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -35,8 +38,18 @@ public class AcademicTermsViewController extends PyramusViewController implement
         return o1.getStartDate() == null ? -1 : o2.getStartDate() == null ? 1 : o1.getStartDate().compareTo(o2.getStartDate());
       }
     });
+    
+    JSONArray jaAcademicTerms = new JSONArray();
+    for (AcademicTerm academicTerm : academicTerms) {
+      JSONObject joAcademicTerm = new JSONObject();
+      joAcademicTerm.put("name", academicTerm.getName());
+      joAcademicTerm.put("startDate", academicTerm.getStartDate().getTime());
+      joAcademicTerm.put("endDate", academicTerm.getEndDate().getTime());
+      joAcademicTerm.put("id", academicTerm.getId());
+      jaAcademicTerms.add(joAcademicTerm);
+    }
 
-    pageRequestContext.getRequest().setAttribute("academicTerms", academicTerms);
+    this.setJsDataVariable(pageRequestContext, "academicTerms", jaAcademicTerms.toString());
     pageRequestContext.setIncludeJSP("/templates/settings/academicterms.jsp");
   }
 

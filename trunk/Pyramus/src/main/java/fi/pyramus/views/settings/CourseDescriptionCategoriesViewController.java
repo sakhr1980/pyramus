@@ -1,12 +1,17 @@
 package fi.pyramus.views.settings;
 
+import java.util.List;
 import java.util.Locale;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.courses.CourseDescriptionCategoryDAO;
+import fi.pyramus.domainmodel.courses.CourseDescriptionCategory;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 
@@ -24,8 +29,17 @@ public class CourseDescriptionCategoriesViewController extends PyramusViewContro
    */
   public void process(PageRequestContext pageRequestContext) {
     CourseDescriptionCategoryDAO descCatDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
+    List<CourseDescriptionCategory> descCats = descCatDAO.listUnarchived();
     
-    pageRequestContext.getRequest().setAttribute("courseDescriptionCategories", descCatDAO.listUnarchived());
+    JSONArray jaDescCats = new JSONArray();
+    for (CourseDescriptionCategory descCat : descCats) {
+      JSONObject joDescCat = new JSONObject();
+      joDescCat.put("name", descCat.getName());
+      joDescCat.put("id", descCat.getId());
+      jaDescCats.add(joDescCat);
+    }
+    
+    this.setJsDataVariable(pageRequestContext, "descriptionCategories", jaDescCats.toString());
     
     pageRequestContext.setIncludeJSP("/templates/settings/coursedescriptioncategories.jsp");
   }
