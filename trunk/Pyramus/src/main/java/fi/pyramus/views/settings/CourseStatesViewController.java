@@ -3,6 +3,8 @@ package fi.pyramus.views.settings;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -12,6 +14,7 @@ import fi.pyramus.dao.courses.CourseStateDAO;
 import fi.pyramus.domainmodel.courses.CourseState;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Manage Time Units view of the application.
@@ -29,11 +32,21 @@ public class CourseStatesViewController extends PyramusViewController implements
     CourseStateDAO courseStateDAO = DAOFactory.getInstance().getCourseStateDAO();
     DefaultsDAO defaultsDAO = DAOFactory.getInstance().getDefaultsDAO();
 
-    CourseState initalCourseState = defaultsDAO.getDefaults().getInitialCourseState();
+    CourseState initialCourseState = defaultsDAO.getDefaults().getInitialCourseState();
     List<CourseState> courseStates = courseStateDAO.listUnarchived();
     
-    pageRequestContext.getRequest().setAttribute("courseStates", courseStates);
-    pageRequestContext.getRequest().setAttribute("initalCourseState", initalCourseState);
+    String jsonCourseStates = new JSONArrayExtractor("name", "id").extractString(courseStates);
+    JSONObject joInitialCourseState = new JSONObject();
+    try {
+      joInitialCourseState.put("name", initialCourseState.getName());
+      joInitialCourseState.put("id", initialCourseState.getId());
+    } catch (NullPointerException e) {
+      joInitialCourseState.put("name", "");
+      joInitialCourseState.put("id", -1);
+    }
+    
+    this.setJsDataVariable(pageRequestContext, "courseStates", jsonCourseStates);
+    this.setJsDataVariable(pageRequestContext, "initialCourseState", joInitialCourseState.toString());
     
     pageRequestContext.setIncludeJSP("/templates/settings/coursestates.jsp");
   }
