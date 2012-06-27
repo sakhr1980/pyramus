@@ -6,6 +6,7 @@ import java.util.Locale;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -31,15 +32,9 @@ public class CourseDescriptionCategoriesViewController extends PyramusViewContro
     CourseDescriptionCategoryDAO descCatDAO = DAOFactory.getInstance().getCourseDescriptionCategoryDAO();
     List<CourseDescriptionCategory> descCats = descCatDAO.listUnarchived();
     
-    JSONArray jaDescCats = new JSONArray();
-    for (CourseDescriptionCategory descCat : descCats) {
-      JSONObject joDescCat = new JSONObject();
-      joDescCat.put("name", descCat.getName());
-      joDescCat.put("id", descCat.getId());
-      jaDescCats.add(joDescCat);
-    }
+    String jsonCategories = new JSONArrayExtractor("name", "id").extractString(descCats);
     
-    this.setJsDataVariable(pageRequestContext, "descriptionCategories", jaDescCats.toString());
+    this.setJsDataVariable(pageRequestContext, "descriptionCategories", jsonCategories);
     
     pageRequestContext.setIncludeJSP("/templates/settings/coursedescriptioncategories.jsp");
   }

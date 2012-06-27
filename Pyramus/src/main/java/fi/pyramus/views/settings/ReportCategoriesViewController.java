@@ -16,6 +16,7 @@ import fi.pyramus.dao.reports.ReportCategoryDAO;
 import fi.pyramus.domainmodel.reports.ReportCategory;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Report Categories view of the application.
@@ -45,15 +46,10 @@ public class ReportCategoriesViewController extends PyramusViewController implem
       }
     });
     
-    JSONArray jaCategories = new JSONArray();
-    for (ReportCategory category : categories) {
-      JSONObject joCategory = new JSONObject();
-      joCategory.put("name", category.getName());
-      joCategory.put("id", category.getId());
-      jaCategories.add(joCategory);
-    }
     
-    this.setJsDataVariable(pageRequestContext, "reportCategories", jaCategories.toString());
+    String jsonCategories = new JSONArrayExtractor("name", "id").extractString(categories);
+    
+    this.setJsDataVariable(pageRequestContext, "reportCategories", jsonCategories);
     pageRequestContext.setIncludeJSP("/templates/settings/reportcategories.jsp");
   }
 

@@ -33,17 +33,20 @@ public class JSONArrayExtractor {
         String methodName = "get" + attributeName.substring(0,1).toUpperCase() + attributeName.substring(1);
         Method attributeMethod = getMethod(sourceObject, methodName, null);
         String attributeValue;
+        // Nulls are deliberately skipped so that they are undefined in JS
         try {
           attributeValue = attributeMethod.invoke(sourceObject, params).toString();
+        } catch (NullPointerException e) {
+          continue;
         } catch (IllegalAccessException e) {
-          attributeValue = "";
           e.printStackTrace();
+          continue;
         } catch (IllegalArgumentException e) {
-          attributeValue = "";
           e.printStackTrace();
+          continue;
         } catch (InvocationTargetException e) {
-          attributeValue = "";
           e.printStackTrace();
+          continue;
         }
         destObject.put(attributeName, attributeValue);
       }
