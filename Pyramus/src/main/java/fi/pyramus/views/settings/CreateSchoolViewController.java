@@ -17,6 +17,7 @@ import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -44,10 +45,12 @@ public class CreateSchoolViewController extends PyramusViewController implements
 
     List<ContactType> contactTypes = contactTypeDAO.listUnarchived();
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
+    
+    String jsonContactTypes = new JSONArrayExtractor("name", "id").extractString(contactTypes);
+    String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(schoolUserEditableVariableKeys);
 
-    pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
-    pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys);
+    this.setJsDataVariable(pageRequestContext, "contactTypes", jsonContactTypes);
+    this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys);
     pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived());
     pageRequestContext.setIncludeJSP("/templates/settings/createschool.jsp");
   }
