@@ -22,32 +22,24 @@ IxTable = Class.create({
     this._rowElements = new Hash();
     this._filters = new Array();
   
-    this._headerRowContent = Builder.node("div", {
-      className : "ixTableRowContent"
-    }, []);
+    this._headerRowContent = new Element("div", { className : "ixTableRowContent" });
     
-    this._headerRow = Builder.node("div", {
-      className : "ixTableHeaderRow"
-    }, [ this._headerRowContent ]);
+    this._headerRow = new Element("div", { className : "ixTableHeaderRow" });
+    this._headerRow.appendChild(this._headerRowContent);
 
-    this._content = Builder.node("div", {
-      className : "ixTableContent"
-    });
+    this._content = new Element("div", { className : "ixTableContent" });
     
-    this._rowCount = Builder.node("input", {
-      type: 'hidden',
-      name: options.id + '.rowCount',
-      value: 0
-    });
+    this._rowCount = new Element("input", { type: 'hidden', name: options.id + '.rowCount', value: 0 });
     
     var classNames = "ixTable";
     
     if (options.rowHoverEffect === true)
       classNames += " ixTableRowHoverEffect";
     
-    this.domNode = Builder.node("div", {
-      className : classNames
-    }, [ this._headerRow, this._content, this._rowCount]);
+    this.domNode = new Element("div", { className : classNames });
+    this.domNode.appendChild(this._headerRow);
+    this.domNode.appendChild(this._content);
+    this.domNode.appendChild(this._rowCount);
 
     this._headerCells = new Object();
     this._cellEditors = new Hash();
@@ -80,16 +72,12 @@ IxTable = Class.create({
           Event.observe(headerContent, "click", this._headerClickListener);
         }
       } else {
-        headerContent = Builder.node("div", {
-          className : "ixTableHeaderCellText"
-        }, [ column.header ]);
+        headerContent = new Element("div", { className : "ixTableHeaderCellText" });
+        headerContent.update(column.header);
       }
       
-      var headerCell = Builder.node("div", {
-        className : "ixTableHeaderCell",
-        title: column.headerTooltip ? column.headerTooltip : ''
-      }, [ headerContent ]);
-      
+      var headerCell = new Element("div", { className : "ixTableHeaderCell", title: column.headerTooltip ? column.headerTooltip : '' });
+      headerCell.update(headerContent);
 
       this._clearColumnFiltersClickListener = this._onClearColumnFiltersClickListener.bindAsEventListener(this);
       var clearFilterButton = new Element("span", { className : "ixTableClearFilterButton" });

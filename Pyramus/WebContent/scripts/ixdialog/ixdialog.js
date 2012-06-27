@@ -12,21 +12,21 @@ IxDialog = Class.create({
     
     this._listeners = new Array();
 
-    this._dialogNode = $(document.createElement("div"));
+    this._dialogNode = new Element("div");
     this._dialogNode.addClassName('IxDialog');
     this._dialogNode.writeAttribute('id',this._id);
 
     // Create a div representing the title bar of the dialog. Make its text
     // unselectable since it will be used to drag the dialog around.
     
-    this._titleBar = $(document.createElement("div"));
+    this._titleBar = new Element("div");
     this._titleBar.addClassName('IxDialogTitleBar');
     this._titleBar.onselectstart = function(){
       return false;
     };
     this._titleBar.unselectable = "on";
     
-    this._title = $(document.createElement("div"));
+    this._title = new Element("div");
     if (options.title)
       this.setTitle(options.title);
 
@@ -34,7 +34,7 @@ IxDialog = Class.create({
     
     // TODO _titleBarButtonsContainer does nothing at all? Future in the making?
     
-    this._titleBarButtonsContainer = $(document.createElement("div"));
+    this._titleBarButtonsContainer = new Element("div");
     this._titleBarButtonsContainer.addClassName('IxDialogTitleBarButtons');
 
     this._titleBar.appendChild(this._titleBarButtonsContainer);
@@ -47,7 +47,7 @@ IxDialog = Class.create({
     
     var contentURL = options.contentURL ? options.contentURL : 'about:blank';
     
-    this._dialogContent = Builder.node("iframe", {frameborder: 0, border: 0, className: "IxDialogContent", src: contentURL});
+    this._dialogContent = new Element("iframe", { frameborder: 0, border: 0, className: "IxDialogContent", src: contentURL });
     
     if (this._autoEvaluateSize != true) {
       this._dialogContent.setStyle({
@@ -64,10 +64,11 @@ IxDialog = Class.create({
     Event.observe(this._dialogContent, "load", this._dialogContentLoadListener);
     this._dialogNode.appendChild(this._dialogContent);
     
-    this._buttonsContainer = Builder.node("div", {className: "IxDialogButtonsContainer"});
+    this._buttonsContainer = new Element("div", {className: "IxDialogButtonsContainer"});
     
     if (options.showOk) {
-      this._okButton = Builder.node("button", {className: "IxDialogButton IxDialogOkButton"}, options.okLabel);
+      this._okButton = new Element("button", { className: "IxDialogButton IxDialogOkButton" });
+      this._okButton.update(options.okLabel);
       this._buttonsContainer.appendChild(this._okButton);
       this._okButtonClickListener = this._onOkButtonClick.bindAsEventListener(this);
       Event.observe(this._okButton, "click", this._okButtonClickListener);
@@ -78,7 +79,8 @@ IxDialog = Class.create({
     }
     
     if (options.showCancel) {
-      this._cancelButton = Builder.node("button", {className: "IxDialogButton IxDialogCancelButton"}, options.cancelLabel);
+      this._cancelButton = new Element("button", {className: "IxDialogButton IxDialogCancelButton"});
+      this._cancelButton.update(options.cancelLabel);
       this._buttonsContainer.appendChild(this._cancelButton);
       this._cancelButtonClickListener = this._onCancelButtonClick.bindAsEventListener(this);
       Event.observe(this._cancelButton, "click", this._cancelButtonClickListener);
@@ -107,7 +109,7 @@ IxDialog = Class.create({
     this._dialogContent.setAttribute("src", contentURL);
   },
   open : function() {
-    this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
+    this._glassPane = new Element("div", {className: "dialogGlassPane"});
     document.body.appendChild(this._glassPane);
     this._parentNode.appendChild(this._dialogNode);
     this._isOpen = true;
@@ -135,7 +137,7 @@ IxDialog = Class.create({
   show: function() {
     if (this._isHidden) {
       this._dialogNode.show();
-	    this._glassPane = Builder.node("div", {className: "dialogGlassPane"});
+	    this._glassPane = new Element("div", {className: "dialogGlassPane"});
 	    document.body.appendChild(this._glassPane);
 //	    this._parentNode.appendChild(this._dialogNode); // Causes a reload of dialog contents
 	    this._isHidden = false;
@@ -180,7 +182,7 @@ IxDialog = Class.create({
     this._listeners.push(listener);
   },
   setTitle : function(title) {
-    this._title.innerHTML = title;
+    this._title.update(title);
     this._recalculateSize();
   },
   getContentDocument: function () {
@@ -384,7 +386,7 @@ IxDialog = Class.create({
       // easily stops dragging when the dialog is dragged downwards quickly enough for the
       // cursor to get on top of the iframe.
       
-      var glassPane = Builder.node("div");
+      var glassPane = new Element("div");
       glassPane.setStyle({
         position: 'absolute',
         top: '0px',
