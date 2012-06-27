@@ -192,30 +192,45 @@
 
         var entryTypeName = getEntryTypeName(entryType);
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryItem." + entryId, className: "studentContactEntryItem"}));
-        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", className: "studentContactEntryCaption"}));
+        var newEntryDiv = listDiv.appendChild(new Element("div", {id: "studentContactEntryItem." + entryId, className: "studentContactEntryItem"}));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(new Element("div", {id: "entry." + entryId + ".caption", className: "studentContactEntryCaption"}));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryDate." + entryId + ".caption", className: "studentContactEntryDate"}, [dateStr])); 
-        var newEntryCaptionTypeSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryType." + entryId + ".caption", className: "studentContactEntryType"}, [entryTypeName])); 
-        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "entryCreator." + entryId + ".caption", className: "studentContactEntryCreator"}, [entryCreatorName])); 
+        var newEntryCaptionDateSpan = new Element("span", { id: "entryDate." + entryId + ".caption", className: "studentContactEntryDate" });
+        newEntryCaptionDateSpan.update(dateStr); 
+        var newEntryCaptionTypeSpan = new Element("span", { id: "entryType." + entryId + ".caption", className: "studentContactEntryType" });
+        newEntryCaptionTypeSpan.update(entryTypeName); 
+        var newEntryCaptionCreatorSpan = new Element("span", { id: "entryCreator." + entryId + ".caption", className: "studentContactEntryCreator" });
+        newEntryCaptionCreatorSpan.update(entryCreatorName); 
+
+        newEntryCaptionDiv.appendChild(newEntryCaptionDateSpan); 
+        newEntryCaptionDiv.appendChild(newEntryCaptionTypeSpan); 
+        newEntryCaptionDiv.appendChild(newEntryCaptionCreatorSpan); 
         
-        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {className: "studentContactEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".commentbtn", className: "studentContactEntryEditButton iconButton", 
+        var buttonsDiv = newEntryDiv.appendChild(new Element("div", { className: "studentContactEntryButtons" }));
+        buttonsDiv.appendChild(new Element("img", {
+          id: "entry." + entryId + ".commentbtn", 
+          className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/list-add.png", 
-          onClick: "addComment(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".editbtn", className: "studentContactEntryEditButton iconButton", 
+          onClick: "addComment(" + entryId + ", " + studentId + ")"
+        }));
+        buttonsDiv.appendChild(new Element("img", {
+          id: "entry." + entryId + ".editbtn", 
+          className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
-          onClick: "editEntry(" + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "entry." + entryId + ".archivebnt", className: "studentContactEntryArchiveButton iconButton", 
+          onClick: "editEntry(" + entryId + ", " + studentId + ")"
+        }));
+        buttonsDiv.appendChild(new Element("img", {
+          id: "entry." + entryId + ".archivebnt", 
+          className: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
-          onClick: "archiveEntry(" + entryId + ", " + studentId + ")"}, []));
+          onClick: "archiveEntry(" + entryId + ", " + studentId + ")"
+        }));
 
-        var node = Builder.node("div", {id: "entry." + entryId + ".text"}, []);
-        node.innerHTML = entryText;
+        var node = new Element("div", { id: "entry." + entryId + ".text" });
+        node.update(entryText);
         newEntryDiv.appendChild(node);
-
        
-        node = Builder.node("div", {id: "contactEntryComments." + entryId, className: "contactEntryCommentsWrapper"}, []);
+        node = new Element("div", { id: "contactEntryComments." + entryId, className: "contactEntryCommentsWrapper" });
         newEntryDiv.appendChild(node);
       }
       
@@ -276,22 +291,33 @@
         var listDiv = $('contactEntryComments.' + entryId);
         var dateStr = getLocale().getDate(commentDate, false);
 
-        var newEntryDiv = listDiv.appendChild(Builder.node("div", {id: "studentContactEntryCommentItem." + commentId, className: "studentContactCommentEntryItem"}));
-        var newEntryCaptionDiv = newEntryDiv.appendChild(Builder.node("div", {id: "entry." + entryId + ".caption", className: "studentContactCommentEntryCaption"}));
+        var newEntryDiv = listDiv.appendChild(new Element("div", { id: "studentContactEntryCommentItem." + commentId, className: "studentContactCommentEntryItem" }));
+        var newEntryCaptionDiv = newEntryDiv.appendChild(new Element("div", { id: "entry." + entryId + ".caption", className: "studentContactCommentEntryCaption" }));
         
-        var newEntryCaptionDateSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentDate." + commentId + ".caption", className: "studentContactCommentEntryDate"}, [dateStr])); 
-        var newEntryCaptionCreatorSpan = newEntryCaptionDiv.appendChild(Builder.node("span", {id: "commentCreator." + commentId + ".caption", className: "studentContactCommentEntryCreator"}, [commentCreatorName])); 
+        var newEntryCaptionDateSpan = new Element("span", { id: "commentDate." + commentId + ".caption", className: "studentContactCommentEntryDate" });
+        newEntryCaptionDateSpan.update(dateStr); 
+        var newEntryCaptionCreatorSpan = new Element("span", { id: "commentCreator." + commentId + ".caption", className: "studentContactCommentEntryCreator" });
+        newEntryCaptionCreatorSpan.update(commentCreatorName);
         
-        var buttonsDiv = newEntryDiv.appendChild(Builder.node("div", {className: "studentContactCommentEntryButtons"}));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".editbtn", className: "studentContactEntryEditButton iconButton", 
+        newEntryCaptionDiv.appendChild(newEntryCaptionDateSpan); 
+        newEntryCaptionDiv.appendChild(newEntryCaptionCreatorSpan); 
+        
+        var buttonsDiv = newEntryDiv.appendChild(new Element("div", { className: "studentContactCommentEntryButtons" }));
+        buttonsDiv.appendChild(new Element("img", { 
+          id: "comment." + entryId + ".editbtn", 
+          className: "studentContactEntryEditButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/accessories-text-editor.png", 
-          onClick: "editComment(" + commentId + ", " + entryId + ", " + studentId + ")"}, []));
-        buttonsDiv.appendChild(Builder.node("img", {id: "comment." + entryId + ".archivebnt", className: "studentContactEntryArchiveButton iconButton", 
+          onClick: "editComment(" + commentId + ", " + entryId + ", " + studentId + ")"
+        }));
+        buttonsDiv.appendChild(new Element("img", { 
+          id: "comment." + entryId + ".archivebnt", 
+          className: "studentContactEntryArchiveButton iconButton", 
           src: "${pageContext.request.contextPath}/gfx/edit-delete.png", 
-          onClick: "archiveComment(" + commentId + ", " + entryId + ")"}, []));
+          onClick: "archiveComment(" + commentId + ", " + entryId + ")"
+        }));
 
-        var node = Builder.node("div", {id: "comment." + commentId + ".text"}, []);
-        node.innerHTML = commentText;
+        var node = new Element("div", { id: "comment." + commentId + ".text" });
+        node.update(commentText);
         newEntryDiv.appendChild(node);
       }
 
