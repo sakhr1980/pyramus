@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.*;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -14,6 +16,7 @@ import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
 import fi.pyramus.domainmodel.courses.CourseParticipationType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Manage Course Participation Types view of the application.
@@ -40,8 +43,19 @@ public class CourseParticipationTypesViewController extends PyramusViewControlle
       }
     });
     
-    pageRequestContext.getRequest().setAttribute("courseParticipationTypes", courseParticipationTypes);
-    pageRequestContext.getRequest().setAttribute("initialCourseParticipationType", initialCourseParticipationType);
+    String jsonCourseParticipationTypes = new JSONArrayExtractor("name", "id").extractString(courseParticipationTypes);
+    
+    JSONObject joInitialCourseParticipationType = new JSONObject();
+    try {
+      joInitialCourseParticipationType.put("name", initialCourseParticipationType.getName());
+      joInitialCourseParticipationType.put("id", initialCourseParticipationType.getId());
+    } catch (NullPointerException e) {
+      joInitialCourseParticipationType.put("name", "");
+      joInitialCourseParticipationType.put("id", -1);
+    }
+      
+    this.setJsDataVariable(pageRequestContext, "courseParticipationTypes", jsonCourseParticipationTypes);
+    this.setJsDataVariable(pageRequestContext, "initialCourseParticipationType", joInitialCourseParticipationType.toString());
     
     pageRequestContext.setIncludeJSP("/templates/settings/courseparticipationtypes.jsp");
   }
