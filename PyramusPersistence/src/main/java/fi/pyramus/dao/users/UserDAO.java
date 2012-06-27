@@ -170,6 +170,7 @@ public class UserDAO extends PyramusEntityDAO<User> {
     boolean hasLastName = !StringUtils.isBlank(lastName);
     boolean hasTags = !StringUtils.isBlank(tags);
     boolean hasEmail = !StringUtils.isBlank(email);
+    boolean hasRole = role != null;
 
     StringBuilder queryBuilder = new StringBuilder();
     if (hasFirstName || hasLastName || hasEmail) {
@@ -183,12 +184,16 @@ public class UserDAO extends PyramusEntityDAO<User> {
         addTokenizedSearchCriteria(queryBuilder, "tags.text", tags, false);
       if (hasEmail)
         addTokenizedSearchCriteria(queryBuilder, "contactInfo.emails.address", email, false);
+
       queryBuilder.append(")");
     }
-  
-    if (role != null) 
-      addTokenizedSearchCriteria(queryBuilder, "role", role.toString(), false);
 
+    if (hasRole) {
+      queryBuilder.append("+(");
+      addTokenizedSearchCriteria(queryBuilder, "role", role.toString(), false);
+      queryBuilder.append(")");
+    }
+    
     EntityManager entityManager = getEntityManager();
     FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
 
