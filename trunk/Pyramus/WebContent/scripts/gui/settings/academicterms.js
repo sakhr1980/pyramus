@@ -134,7 +134,7 @@ function onLoad(event) {
 
   var rows = new Array();
   for ( var i = 0; i < academicTerms.length; i++) {
-    rows.push([ '', academicTerms[i].name, academicTerms[i].startDate, academicTerms[i].endDate, '', '', academicTerms[i].id, 0 ]);
+    rows.push([ '', academicTerms[i].name.escapeHTML(), academicTerms[i].startDate, academicTerms[i].endDate, '', '', academicTerms[i].id, 0 ]);
   }
 
   termsTable.addRows(rows);
