@@ -32,10 +32,10 @@ public class JSONArrayExtractor {
         Object[] params = new Object[] {};
         String methodName = "get" + attributeName.substring(0,1).toUpperCase() + attributeName.substring(1);
         Method attributeMethod = getMethod(sourceObject, methodName, null);
-        String attributeValue;
+        Object attributeValue;
         // Nulls are deliberately skipped so that they are undefined in JS
         try {
-          attributeValue = attributeMethod.invoke(sourceObject, params).toString();
+          attributeValue = attributeMethod.invoke(sourceObject, params);
         } catch (NullPointerException e) {
           continue;
         } catch (IllegalAccessException e) {
