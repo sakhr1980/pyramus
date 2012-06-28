@@ -16,6 +16,7 @@ import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -41,10 +42,12 @@ public class CreateTransferCreditTemplateViewController extends PyramusViewContr
 
     List<School> schools = schoolDAO.listUnarchived();
     Collections.sort(schools, new StringAttributeComparator("getName"));
+    
+    String jsonSubjects = new JSONArrayExtractor("name", "id").extractString(subjects);
+    String jsonTimeUnits = new JSONArrayExtractor("name", "id").extractString(timeUnits);
 
-    pageRequestContext.getRequest().setAttribute("subjects", subjects);
-    pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);
-    pageRequestContext.getRequest().setAttribute("schools", schools);
+    this.setJsDataVariable(pageRequestContext, "subjects", jsonSubjects);
+    this.setJsDataVariable(pageRequestContext, "timeUnits", jsonTimeUnits);
     
     pageRequestContext.setIncludeJSP("/templates/settings/createtransfercredittemplate.jsp");
   }

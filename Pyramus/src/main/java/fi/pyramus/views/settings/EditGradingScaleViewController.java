@@ -12,6 +12,7 @@ import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Edit Grading Scale view of the application. 
@@ -33,6 +34,14 @@ public class EditGradingScaleViewController extends PyramusViewController implem
     Long gradingScaleId = NumberUtils.createLong(pageRequestContext.getRequest().getParameter("gradingScaleId"));
     GradingScale gradingScale = gradingScaleDAO.findById(gradingScaleId);
     pageRequestContext.getRequest().setAttribute("gradingScale", gradingScale);
+    
+    String jsonGrades = new JSONArrayExtractor("passingGrade",
+                                               "name",
+                                               "qualification",
+                                               "GPA",
+                                               "description",
+                                               "id").extractString(gradingScale.getGrades());
+    this.setJsDataVariable(pageRequestContext, "grades", jsonGrades);
     
     pageRequestContext.setIncludeJSP("/templates/settings/editgradingscale.jsp");
   }

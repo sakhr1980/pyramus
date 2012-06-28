@@ -60,6 +60,8 @@ public class EditGradingScaleJSONRequestController extends JSONRequestController
       if (!existingGrades.contains(grade.getId()))
         gradingScale.removeGrade(grade);
     }
+    
+    jsonRequestContext.setRedirectURL(jsonRequestContext.getReferer(true));
   }
 
   public UserRole[] getAllowedRoles() {
