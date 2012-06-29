@@ -9,6 +9,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the List Grading Scales view of the application. 
@@ -25,7 +26,9 @@ public class ListGradingScalesViewController extends PyramusViewController imple
   public void process(PageRequestContext pageRequestContext) {
     GradingScaleDAO gradingScaleDAO = DAOFactory.getInstance().getGradingScaleDAO();
     
-    pageRequestContext.getRequest().setAttribute("gradingScales", gradingScaleDAO.listUnarchived());
+    String jsonGradingScales = new JSONArrayExtractor("name", "id").extractString(gradingScaleDAO.listUnarchived());
+    
+    this.setJsDataVariable(pageRequestContext, "gradingScales", jsonGradingScales);
     pageRequestContext.setIncludeJSP("/templates/settings/listgradingscales.jsp");
   }
 
