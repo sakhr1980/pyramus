@@ -12,6 +12,7 @@ import fi.pyramus.dao.base.MunicipalityDAO;
 import fi.pyramus.domainmodel.base.Municipality;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -31,7 +32,8 @@ public class MunicipalitiesViewController extends PyramusViewController implemen
     
     List<Municipality> municipalities = municipalityDAO.listUnarchived();
     Collections.sort(municipalities, new StringAttributeComparator("getName"));
-    pageRequestContext.getRequest().setAttribute("municipalities", municipalities);
+    String jsonMunicipalities = new JSONArrayExtractor("name", "code", "id").extractString(municipalities);
+    this.setJsDataVariable(pageRequestContext, "municipalities", jsonMunicipalities);
     pageRequestContext.setIncludeJSP("/templates/settings/municipalities.jsp");
   }
 
