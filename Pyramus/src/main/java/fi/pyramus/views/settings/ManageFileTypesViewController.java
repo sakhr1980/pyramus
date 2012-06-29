@@ -12,6 +12,7 @@ import fi.pyramus.dao.file.FileTypeDAO;
 import fi.pyramus.domainmodel.file.FileType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -31,7 +32,8 @@ public class ManageFileTypesViewController extends PyramusViewController impleme
     
     List<FileType> fileTypes = fileTypeDAO.listUnarchived();
     Collections.sort(fileTypes, new StringAttributeComparator("getName"));
-    pageRequestContext.getRequest().setAttribute("fileTypes", fileTypes);
+    String jsonFileTypes = new JSONArrayExtractor("id", "name").extractString(fileTypes);
+    this.setJsDataVariable(pageRequestContext, "fileTypes", jsonFileTypes);
     pageRequestContext.setIncludeJSP("/templates/settings/filetypes.jsp");
   }
 
