@@ -12,6 +12,7 @@ import fi.pyramus.dao.base.EducationTypeDAO;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -31,8 +32,10 @@ public class EducationTypesViewController extends PyramusViewController implemen
 
     List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+    
+    String jsonEducationTypes = new JSONArrayExtractor("name", "code", "id").extractString(educationTypes);
 
-    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    this.setJsDataVariable(pageRequestContext, "educationTypes", jsonEducationTypes);
     pageRequestContext.setIncludeJSP("/templates/settings/educationtypes.jsp");
   }
 

@@ -4,14 +4,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.*;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.EducationTypeDAO;
+import fi.pyramus.domainmodel.base.EducationSubtype;
 import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -30,8 +34,15 @@ public class EducationSubtypesViewController extends PyramusViewController imple
     EducationTypeDAO educationTypeDAO = DAOFactory.getInstance().getEducationTypeDAO();    
     List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+    
+    JSONArray jaEducationTypes = new JSONArrayExtractor("name", "id").extract(educationTypes);
+    for (int i=0; i<educationTypes.size(); i++) {
+      List<EducationSubtype> subtypes = educationTypes.get(i).getUnarchivedSubtypes();
+      JSONArray jaSubtypes = new JSONArrayExtractor("id", "name", "code").extract(subtypes);
+      jaEducationTypes.getJSONObject(i).put("subtypes", jaSubtypes);
+    }
 
-    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    this.setJsDataVariable(pageRequestContext, "educationTypes", jaEducationTypes.toString());
     pageRequestContext.setIncludeJSP("/templates/settings/educationsubtypes.jsp");
   }
 
