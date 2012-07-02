@@ -115,7 +115,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < reportCategories.length; i++) {
+  for ( var i = 0, l = reportCategories.length; i < l; i++) {
     rows.push([ '', reportCategories[i].name.escapeHTML(), '', '', reportCategories[i].id, 0]);
   }
   reportCategoriesTable.addRows(rows);

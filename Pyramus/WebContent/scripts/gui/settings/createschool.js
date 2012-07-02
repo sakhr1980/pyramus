@@ -46,7 +46,7 @@ function onLoad(event) {
       paramName : 'contactTypeId',
       options : (function() {
         var result = [];
-        for ( var i = 0; i < contactTypes.length; i++) {
+        for ( var i = 0, l = contactTypes.length; i < l; i++) {
           result.push({
             text : contactTypes[i].name.escapeHTML(),
             value : contactTypes[i].id
@@ -114,7 +114,7 @@ function onLoad(event) {
       paramName : 'contactTypeId',
       options : (function() {
         var result = [];
-        for ( var i = 0; i < contactTypes.length; i++) {
+        for ( var i = 0, l = contactTypes.length; i < l; i++) {
           result.push({
             text : contactTypes[i].name.escapeHTML(),
             value : contactTypes[i].id
@@ -209,7 +209,7 @@ function onLoad(event) {
       paramName : 'contactTypeId',
       options : (function() {
         var result = [];
-        for ( var i = 0; i < contactTypes.length; i++) {
+        for ( var i = 0, l = contactTypes.length; i < l; i++) {
           result.push({
             text : contactTypes[i].name.escapeHTML(),
             value : contactTypes[i].id
@@ -291,7 +291,7 @@ function onLoad(event) {
   });
 
   variablesTable.detachFromDom();
-  for ( var i = 0; i < variableKeys.length; i++) {
+  for ( var i = 0, l = variableKeys.length; i < l; i++) {
     var rowNumber = variablesTable.addRow([ '', variableKeys[i].key.escapeHTML(), variableKeys[i].name.escapeHTML(), '' ]);
     var dataType;
     switch (variableKeys[i].variableType) {

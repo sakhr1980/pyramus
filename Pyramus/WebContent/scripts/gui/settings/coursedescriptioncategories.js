@@ -114,7 +114,7 @@ function onLoad(event) {
 
   var rowIndex;
   courseDescriptionCategoriesTable.detachFromDom();
-  for ( var i = 0; i < descriptionCategories.length; i++) {
+  for ( var i = 0, l = descriptionCategories.length; i < l; i++) {
     rowIndex = courseDescriptionCategoriesTable.addRow([ '', descriptionCategories[i].name.escapeHTML(), '', '', descriptionCategories[i].id ]);
   }
   courseDescriptionCategoriesTable.reattachToDom();

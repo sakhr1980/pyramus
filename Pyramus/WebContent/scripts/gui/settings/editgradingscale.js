@@ -90,7 +90,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < grades.length; i++) {
+  for ( var i = 0, l = grades.length; i < l; i++) {
     rows.push([ '',
                 grades[i].passingGrade,
                 grades[i].name.escapeHTML(),
