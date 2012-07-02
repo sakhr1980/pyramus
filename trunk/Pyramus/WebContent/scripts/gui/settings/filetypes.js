@@ -114,7 +114,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < fileTypes.length; i++) {
+  for ( var i = 0, l = fileTypes.length; i < l; i++) {
     rows.push([ '', fileTypes[i].name.escapeHTML(), '', '', fileTypes[i].id, 0 ]);
   }
   fileTypesTable.addRows(rows);

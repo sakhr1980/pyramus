@@ -124,7 +124,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < municipalities.length; i++) {
+  for ( var i = 0, l = municipalities.length; i < l; i++) {
     rows.push([ '', municipalities[i].name, municipalities[i].code, '', '', municipalities[i].id, 0 ]);
   }
   municipalitiesTable.addRows(rows);

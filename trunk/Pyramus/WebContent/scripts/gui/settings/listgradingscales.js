@@ -77,7 +77,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < gradingScales.length; i++) {
+  for ( var i = 0, l = gradingScales.length; i < l; i++) {
     rows.push([ gradingScales[i].name, null, null, gradingScales[i].id ]);
   }
   gradingScalesTable.addRows(rows);

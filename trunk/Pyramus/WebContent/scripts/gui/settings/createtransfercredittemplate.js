@@ -72,7 +72,7 @@ function onLoad(event) {
       paramName : 'subject',
       options : (function() {
         var result = [];
-        for ( var i = 0; i < subjects.length; i++) {
+        for ( var i = 0, l = subjects.length; i < l; i++) {
           result.push({
             text : subjects[i].name,
             value : subjects[i].id
@@ -104,7 +104,7 @@ function onLoad(event) {
       paramName : 'courseLengthUnit',
       options : (function() {
         var result = [];
-        for ( var i = 0; i < timeUnits.length; i++) {
+        for ( var i = 0, l = timeUnits.length; i < l; i++) {
           result.push({
             text : timeUnits[i].name,
             value : timeUnits[i].id

@@ -148,7 +148,7 @@ function onLoad(event) {
   });
 
   var rows = new Array();
-  for ( var i = 0; i < courseParticipationTypes.length; i++) {
+  for ( var i = 0, l = courseParticipationTypes.length; i < l; i++) {
     rows.push([ '',
                 courseParticipationTypes[i].id == initialCourseParticipationType.id, 
                 courseParticipationTypes[i].name.escapeHTML(), 
