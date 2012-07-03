@@ -14,6 +14,9 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
@@ -27,6 +30,7 @@ import fi.pyramus.domainmodel.changelog.ChangeLogEntryProperty;
 import fi.pyramus.domainmodel.changelog.TrackedEntityProperty;
 import fi.pyramus.framework.PyramusFormViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the system settings view of the application.
@@ -45,7 +49,7 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
 
         List<ManageChangeLogViewEntityPropertyBean> properties = new ArrayList<ManageChangeLogViewEntityPropertyBean>();
 
-        String entityName = entity.getName();
+        String entityName = entity.getJavaType().getCanonicalName();
         Class<?> entityClass = entity.getJavaType();
         SingularAttribute<?, ?> idAttribute = systemDAO.getEntityIdAttribute(entityClass);
 
@@ -84,8 +88,18 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
         return o1.getName().compareToIgnoreCase(o2.getName());
       }
     });
-
-    requestContext.getRequest().setAttribute("entities", entityBeans);
+    
+    JSONArray jaEntities = new JSONArray();
+    for (ManageChangeLogViewEntityBean entityBean : entityBeans) {
+      JSONObject joEntity = new JSONObject();
+      joEntity.put("name", entityBean.getName());
+      joEntity.put("displayName", entityBean.getDisplayName());
+      joEntity.put("properties",
+          new JSONArrayExtractor("name", "displayName", "track").extract(entityBean.getProperties()));
+      jaEntities.add(joEntity);
+    }
+    
+    this.setJsDataVariable(requestContext, "entities", jaEntities.toString());
 
     requestContext.setIncludeJSP("/templates/settings/managechangelog.jsp");
   }
