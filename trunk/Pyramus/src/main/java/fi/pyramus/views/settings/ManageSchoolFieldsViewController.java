@@ -9,6 +9,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.SchoolFieldDAO;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the School Field Management view of the application.
@@ -24,7 +25,8 @@ public class ManageSchoolFieldsViewController extends PyramusViewController impl
    */
   public void process(PageRequestContext pageRequestContext) {
     SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
-    pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived());
+    String jsonSchoolFields = new JSONArrayExtractor("name", "id").extractString(schoolFieldDAO.listUnarchived());
+    this.setJsDataVariable(pageRequestContext, "schoolFields", jsonSchoolFields);
     pageRequestContext.setIncludeJSP("/templates/settings/manageschoolfields.jsp");
   }
 
