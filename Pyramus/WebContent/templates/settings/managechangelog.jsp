@@ -17,54 +17,9 @@
     <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/jsonform_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
 
-    <script type="text/javascript">
-
-      function onLoad(event) {
-        tabControl = new IxProtoTabs($('tabs'));
-        
-        var settingsTable = new IxTable($('settingsTableContainer'), {
-          id : "settingsTable",
-          rowHoverEffect: true,
-          columns : [{
-            header : '',
-            width: 22,
-            left: 8,
-            dataType: 'checkbox',
-            editable: true,
-            paramName: 'track'
-          }, {
-            header : '<fmt:message key="settings.manageChangeLog.settingsTableName"/>',
-            left : 8 + 22 + 8,
-            rigth: 8,
-            dataType: 'text',
-            editable: false,
-            paramName: 'name'
-          }, {
-            dataType: 'hidden',
-            paramName: 'entity'
-          }, {
-            dataType: 'hidden',
-            paramName: 'property'
-          }]
-        });
-
-        var rowIndex;
-        var trackColumnIndex = settingsTable.getNamedColumnIndex('track');
-        settingsTable.detachFromDom();
-        
-        <c:forEach var="entity" items="${entities}">
-          rowIndex = settingsTable.addRow([false, '${fn:escapeXml(entity.displayName)}', '', '']);
-          settingsTable.hideCell(rowIndex, trackColumnIndex);
-          
-          <c:forEach var="property" items="${entity.properties}">
-            settingsTable.addRow([${property.track}, '&nbsp;&nbsp;&nbsp;&nbsp;${fn:escapeXml(property.displayName)}', '${fn:escapeXml(entity.name)}', '${fn:escapeXml(property.name)}']);
-          </c:forEach>
-        </c:forEach>
-        
-        settingsTable.reattachToDom();
-      }
-        
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/settings/managechangelog.js">
     </script>
   </head>
   
