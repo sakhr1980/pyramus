@@ -12,96 +12,9 @@
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
-    
-    <script type="text/javascript">
-      function onLoad(event) {
-        var tabControl = new IxProtoTabs($('tabs'));
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
 
-        var transferCreditTemplatesTable = new IxTable($('transferCreditTemplatesTableContainer'), {
-          id : "transferCreditTemplatesTable",
-          columns : [{
-            header : '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplatesTableNameHeader"/>',
-            left : 8,
-            right : 76,
-            dataType: 'text',
-            editable: false,
-            paramName: 'name'
-          }, {
-            right : 30,
-            width : 30,
-            dataType : 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-            tooltip: '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplatesTableEditButtonHeader"/>',
-            onclick: function (event) {
-              var table = event.tableComponent;
-              var transferCreditTemplateId = table.getCellValue(event.row, table.getNamedColumnIndex('transferCreditTemplateId'));
-              redirectTo(GLOBAL_contextPath + '/settings/edittransfercredittemplate.page?transferCreditTemplate=' + transferCreditTemplateId);
-            }
-          }, {
-            right : 4,
-            width : 26,
-            dataType : 'button',
-            imgsrc: GLOBAL_contextPath + '/gfx/edit-delete.png',
-            tooltip: '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplatesTableDeleteButtonHeader"/>',
-            onclick: function (event) {
-              var table = event.tableComponent;
-              var transferCreditTemplateName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
-              var transferCreditTemplateId = table.getCellValue(event.row, table.getNamedColumnIndex('transferCreditTemplateId'));
-              var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.manageTransferCreditTemplates.transferCreditTemplateDeleteConfirmDialogContent&localeParams=" + encodeURIComponent(transferCreditTemplateName);
-              
-              var dialog = new IxDialog({
-                id : 'confirmRemoval',
-                contentURL : url,
-                centered : true,
-                showOk : true,  
-                showCancel : true,
-                autoEvaluateSize: true,
-                title : '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplateDeleteConfirmDialogTitle"/>',
-                okLabel : '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplateDeleteConfirmDialogOkLabel"/>',
-                cancelLabel : '<fmt:message key="settings.manageTransferCreditTemplates.transferCreditTemplateDeleteConfirmDialogCancelLabel"/>'
-              });
-            
-              dialog.addDialogListener( function(event) {
-                var dlg = event.dialog;
-            
-                switch (event.name) {
-                  case 'okClick':
-                    JSONRequest.request("settings/deletetransfercredittemplate.json", {
-                      parameters: {
-                        transferCreditTemplateId: transferCreditTemplateId
-                      },
-                      onSuccess: function (jsonResponse) {
-                        window.location.reload();
-                      }
-                    });   
-                  break;
-                }
-              });
-            
-              dialog.open(); 
-            }
-          }, {
-            dataType: 'hidden',
-            paramName: 'transferCreditTemplateId'
-          }]
-        });
-
-        var rows = new Array();
-        <c:forEach var="transferCreditTemplate" items="${transferCreditTemplates}">
-          rows.push([
-            '${fn:escapeXml(transferCreditTemplate.name)}', 
-            null, 
-            null, 
-            '${transferCreditTemplate.id}']);
-        </c:forEach>
-        transferCreditTemplatesTable.addRows(rows);        
-        
-        <c:if test="${fn:length(transferCreditTemplates) > 0}">
-          $('noTransferCreditTemapltesAddedMessageContainer').setStyle({
-            display: 'none'
-          });
-        </c:if>
-      };
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/settings/managetransfercredittemplates.js">
     </script>
     
   </head>

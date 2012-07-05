@@ -9,6 +9,7 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.grading.TransferCreditTemplateDAO;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the List Grading Scales view of the application. 
@@ -25,7 +26,8 @@ public class ManageTransferCreditTemplatesViewController extends PyramusViewCont
   public void process(PageRequestContext pageRequestContext) {
     TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
     
-    pageRequestContext.getRequest().setAttribute("transferCreditTemplates", transferCreditTemplateDAO.listAll());
+    String jsonTransferCreditTemplates = new JSONArrayExtractor("name", "id").extractString(transferCreditTemplateDAO.listAll());
+    this.setJsDataVariable(pageRequestContext, "transferCreditTemplates", jsonTransferCreditTemplates);
     pageRequestContext.setIncludeJSP("/templates/settings/managetransfercredittemplates.jsp");
   }
 
