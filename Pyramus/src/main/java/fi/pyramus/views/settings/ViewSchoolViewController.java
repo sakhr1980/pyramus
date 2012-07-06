@@ -3,6 +3,10 @@ package fi.pyramus.views.settings;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -16,6 +20,7 @@ import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -39,9 +44,17 @@ public class ViewSchoolViewController extends PyramusViewController implements B
 
     List<SchoolVariableKey> schoolUserEditableVariableKeys = schoolVariableKeyDAO.listUserEditableVariableKeys();
     Collections.sort(schoolUserEditableVariableKeys, new StringAttributeComparator("getVariableName"));
+    
+    JSONArray jaVariableKeys = new JSONArrayExtractor("variableName", "variableKey", "variableType").extract(schoolUserEditableVariableKeys);
+    for (int i=0; i<schoolUserEditableVariableKeys.size(); i++) {
+      JSONObject joVariableKey = jaVariableKeys.getJSONObject(i);
+      Map<String,String> variables = school.getVariablesAsStringMap();
+      joVariableKey.put("variableValue", variables.get(joVariableKey.getString("variableKey")));
+    }
 
+
+    this.setJsDataVariable(pageRequestContext, "variableKeys", jaVariableKeys.toString());
     pageRequestContext.getRequest().setAttribute("school", school);
-    pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys);
 
     pageRequestContext.setIncludeJSP("/templates/settings/viewschool.jsp");
   }

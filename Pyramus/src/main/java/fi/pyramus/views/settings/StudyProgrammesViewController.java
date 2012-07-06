@@ -1,6 +1,10 @@
 package fi.pyramus.views.settings;
 
+import java.util.List;
 import java.util.Locale;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
@@ -8,8 +12,10 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.StudyProgrammeCategoryDAO;
 import fi.pyramus.dao.base.StudyProgrammeDAO;
+import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Manage Fields of Education view of the application.
@@ -26,8 +32,18 @@ public class StudyProgrammesViewController extends PyramusViewController impleme
   public void process(PageRequestContext pageRequestContext) {
     StudyProgrammeDAO studyProgrammeDAO = DAOFactory.getInstance().getStudyProgrammeDAO();
     StudyProgrammeCategoryDAO studyProgrammeCategoryDAO = DAOFactory.getInstance().getStudyProgrammeCategoryDAO();
-    pageRequestContext.getRequest().setAttribute("studyProgrammes", studyProgrammeDAO.listUnarchived());
-    pageRequestContext.getRequest().setAttribute("categories", studyProgrammeCategoryDAO.listUnarchived());
+    
+    List<StudyProgramme> studyProgrammes = studyProgrammeDAO.listUnarchived();
+    JSONArray jaStudyProgrammes = new JSONArrayExtractor("name", "code", "id").extract(studyProgrammes);
+    for (int i=0; i<jaStudyProgrammes.size(); i++) {
+      JSONObject joStudyProgrammeCategory = jaStudyProgrammes.getJSONObject(i);
+      joStudyProgrammeCategory.put("categoryId", studyProgrammes.get(i).getCategory().getId());
+    }
+    
+    String jsonCategories = new JSONArrayExtractor("name", "id").extractString(studyProgrammeCategoryDAO.listUnarchived());
+    
+    this.setJsDataVariable(pageRequestContext, "studyProgrammes", jaStudyProgrammes.toString());
+    this.setJsDataVariable(pageRequestContext, "categories", jsonCategories);
     pageRequestContext.setIncludeJSP("/templates/settings/studyprogrammes.jsp");
   }
 

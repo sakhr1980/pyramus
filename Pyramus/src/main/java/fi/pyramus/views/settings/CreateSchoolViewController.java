@@ -47,7 +47,7 @@ public class CreateSchoolViewController extends PyramusViewController implements
     Collections.sort(contactTypes, new StringAttributeComparator("getName"));
     
     String jsonContactTypes = new JSONArrayExtractor("name", "id").extractString(contactTypes);
-    String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(schoolUserEditableVariableKeys);
+    String jsonVariableKeys = new JSONArrayExtractor("variableKey", "variableName", "variableType").extractString(schoolUserEditableVariableKeys);
 
     this.setJsDataVariable(pageRequestContext, "contactTypes", jsonContactTypes);
     this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys);

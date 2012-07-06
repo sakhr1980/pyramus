@@ -14,60 +14,9 @@
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
 
-	  <script type="text/javascript">
-	    function onLoad(event) {
-	      var tabControl = new IxProtoTabs($('tabs'));
-        var variablesTable = new IxTable($('variablesTable'), {
-          id : "variablesTable",
-          columns : [{
-            dataType : 'hidden',
-            editable: false,
-            paramName: 'key'
-          },{
-            left : 0,
-            width: 150,
-            dataType : 'text',
-            editable: false,
-            paramName: 'name'
-          }, {
-            left : 150,
-            width : 750,
-            dataType: 'text',
-            editable: false,
-            paramName: 'value'
-          }]
-        });
-        var value;
-        variablesTable.detachFromDom();
-        <c:forEach var="variableKey" items="${variableKeys}">
-          value = '${fn:escapeXml(school.variablesAsStringMap[variableKey.variableKey])}';
-          var rowNumber = variablesTable.addRow([
-            '${fn:escapeXml(variableKey.variableKey)}',
-            '${fn:escapeXml(variableKey.variableName)}',
-            value
-          ]);
-
-          var dataType;
-          <c:choose>
-			<c:when test="${variableKey.variableType == 'NUMBER'}">
-			  dataType = 'number';
-			</c:when>
-			<c:when test="${variableKey.variableType == 'DATE'}">
-			  dataType = 'date';
-			</c:when>
-			<c:when test="${variableKey.variableType == 'BOOLEAN'}">
-			  dataType = 'checkbox';
-			</c:when>
-			<c:otherwise>
-			  dataType = 'text';
-			</c:otherwise>
-          </c:choose>
-          
-          variablesTable.setCellDataType(rowNumber, 3, dataType);
-        </c:forEach>
-        variablesTable.reattachToDom();
-      };
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/settings/viewschool.js">
     </script>
     
   </head>

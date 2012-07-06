@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -15,6 +17,7 @@ import fi.pyramus.dao.base.EducationalTimeUnitDAO;
 import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 
 /**
  * The controller responsible of the Manage Time Units view of the application.
@@ -54,8 +57,12 @@ public class TimeUnitsViewController extends PyramusViewController implements Br
       }
     });
     
-    pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);
-    pageRequestContext.getRequest().setAttribute("baseTimeUnit", baseTimeUnit);
+    String jsonTimeUnits = new JSONArrayExtractor("id", "baseUnits", "name").extractString(timeUnits);
+    JSONObject joBaseTimeUnit = new JSONObject();
+    joBaseTimeUnit.put("id", baseTimeUnit.getId());
+    
+    this.setJsDataVariable(pageRequestContext, "timeUnits", jsonTimeUnits);
+    this.setJsDataVariable(pageRequestContext, "baseTimeUnit", joBaseTimeUnit.toString());
     
     pageRequestContext.setIncludeJSP("/templates/settings/timeunits.jsp");
   }

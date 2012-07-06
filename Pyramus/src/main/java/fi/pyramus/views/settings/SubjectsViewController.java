@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -14,6 +17,7 @@ import fi.pyramus.domainmodel.base.EducationType;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -37,9 +41,16 @@ public class SubjectsViewController extends PyramusViewController implements Bre
 
     List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
+    
+    JSONArray jaSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
+    for (int i=0; i<jaSubjects.size(); i++) {
+      JSONObject joStudyProgrammeCategory = jaSubjects.getJSONObject(i);
+      joStudyProgrammeCategory.put("educationTypeId", subjects.get(i).getEducationType().getId());
+    }
+    String jsonEducationTypes = new JSONArrayExtractor("name", "id").extractString(educationTypes);
 
-    pageRequestContext.getRequest().setAttribute("subjects", subjects);
-    pageRequestContext.getRequest().setAttribute("educationTypes", educationTypes);
+    this.setJsDataVariable(pageRequestContext, "subjects", jaSubjects.toString());
+    this.setJsDataVariable(pageRequestContext, "educationTypes", jsonEducationTypes);
     pageRequestContext.setIncludeJSP("/templates/settings/subjects.jsp");
   }
 
