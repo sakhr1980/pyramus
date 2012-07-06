@@ -71,7 +71,7 @@ function onLoad(event) {
           right : 30,
           dataType : 'button',
           imgsrc : GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-          tooltip : '<fmt:message key="settings.searchSchools.schoolsTableEditSchoolTooltip"/>',
+          tooltip : getLocale().getText("settings.searchSchools.schoolsTableEditSchoolTooltip"),
           onclick : function(event) {
             var table = event.tableComponent;
             var schoolId = table.getCellValue(event.row, table.getNamedColumnIndex('schoolId'));
@@ -83,7 +83,7 @@ function onLoad(event) {
           right : 0,
           dataType : 'button',
           imgsrc : GLOBAL_contextPath + '/gfx/edit-delete.png',
-          tooltip : '<fmt:message key="settings.searchSchools.schoolsTableArchiveSchoolTooltip"/>',
+          tooltip : getLocale().getText("settings.searchSchools.schoolsTableArchiveSchoolTooltip"),
           onclick : function(event) {
             var table = event.tableComponent;
             var schoolId = table.getCellValue(event.row, table.getNamedColumnIndex('schoolId'));
@@ -98,9 +98,9 @@ function onLoad(event) {
               showOk : true,
               showCancel : true,
               autoEvaluateSize : true,
-              title : '<fmt:message key="settings.searchSchools.schoolArchiveConfirmDialogTitle"/>',
-              okLabel : '<fmt:message key="settings.searchSchools.schoolArchiveConfirmDialogOkLabel"/>',
-              cancelLabel : '<fmt:message key="settings.searchSchools.schoolArchiveConfirmDialogCancelLabel"/>'
+              title : getLocale().getText("settings.searchSchools.schoolArchiveConfirmDialogTitle"),
+              okLabel : getLocale().getText("settings.searchSchools.schoolArchiveConfirmDialogOkLabel"),
+              cancelLabel : getLocale().getText("settings.searchSchools.schoolArchiveConfirmDialogCancelLabel")
             });
 
             dialog.addDialogListener(function(event) {
