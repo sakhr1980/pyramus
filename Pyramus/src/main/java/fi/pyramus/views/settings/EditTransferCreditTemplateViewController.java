@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -16,8 +19,10 @@ import fi.pyramus.domainmodel.base.EducationalTimeUnit;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.domainmodel.grading.TransferCreditTemplate;
+import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -47,11 +52,33 @@ public class EditTransferCreditTemplateViewController extends PyramusViewControl
 
     List<School> schools = schoolDAO.listUnarchived();
     Collections.sort(schools, new StringAttributeComparator("getName"));
+    
+    String jsonTimeUnits = new JSONArrayExtractor("name", "id").extractString(timeUnits);
+    JSONArray jaSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
+    for (int i=0; i<jaSubjects.size(); i++) {
+      JSONObject joSubject = jaSubjects.getJSONObject(i);
+      if (subjects.get(i).getEducationType() != null) {
+        joSubject.put("educationTypeName", subjects.get(i).getEducationType().getName());
+      }
+    }
+    
+    List<TransferCreditTemplateCourse> courses = transferCreditTemplate.getCourses();
+    JSONArray jaCourses = new JSONArrayExtractor("courseName", "optionality", "courseNumber", "id").extract(courses);
+    for (int i=0; i<jaCourses.size(); i++) {
+      JSONObject course = jaCourses.getJSONObject(i);
+      long courseLengthUnitId = courses.get(i).getCourseLength().getUnit().getId();
+      double courseLengthUnits = courses.get(i).getCourseLength().getUnits();
+      long subjectId = courses.get(i).getSubject().getId();
+      course.put("courseLengthUnitId", courseLengthUnitId);
+      course.put("courseLengthUnits", courseLengthUnits);
+      course.put("subjectId", subjectId);
+    }
+    
+    this.setJsDataVariable(pageRequestContext, "timeUnits", jsonTimeUnits);
+    this.setJsDataVariable(pageRequestContext, "subjects", jaSubjects.toString());
+    this.setJsDataVariable(pageRequestContext, "courses", jaCourses.toString());
 
     pageRequestContext.getRequest().setAttribute("transferCreditTemplate", transferCreditTemplate);
-    pageRequestContext.getRequest().setAttribute("subjects", subjects);
-    pageRequestContext.getRequest().setAttribute("timeUnits", timeUnits);
-    pageRequestContext.getRequest().setAttribute("schools", schools);
     
     pageRequestContext.setIncludeJSP("/templates/settings/edittransfercredittemplate.jsp");
   }
