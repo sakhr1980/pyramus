@@ -1,1 +1,1 @@
-<#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
+<div id="simple" class="tabContent">Hello World</div>
