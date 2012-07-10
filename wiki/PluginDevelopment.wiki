@@ -45,9 +45,9 @@ fi.pyramus.plugin.simple.SimplePluginDescriptor # plugin descriptor class for Si
 
 ==Deployment==
 
-Plugin deployment is quite easy because only thing deployer needs to do is to copy the plugin's jar file into applications WEB-INF/lib directory.
-
-  * TODO: How to automatize deployment in development time
+Plugin deployment is handled by Maven. Install the plugin into a
+Maven repository, and reference it from Pyramus
+(Settings->Plugins->Repositories).
 
 ==Extending database==
 
@@ -55,7 +55,10 @@ Plugin deployment is quite easy because only thing deployer needs to do is to co
 
 ==Plugin Localization==
 
-  * TODO: Plugin Localization
+Plugins are localized using Freemarker localization: if a Freemarker
+template is named `template.ftl`, its localized variants are called
+`template_en_US.ftl` and `template_fi_FI.ftl`, for example. No other
+setup is required for localization.
 
 ==View controllers==
 
