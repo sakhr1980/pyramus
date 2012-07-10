@@ -26,6 +26,6 @@ public class LoggedUserInfoViewController implements PageController {
 
   public void authorize(RequestContext requestContext) throws LoginRequiredException, AccessDeniedException {
     // TODO Auto-generated method stub
-    throw new RuntimeException("Not implemented");
+    // throw new RuntimeException("Not implemented");
   }
 }
