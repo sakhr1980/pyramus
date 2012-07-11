@@ -82,10 +82,15 @@
                 }
                 
                 try { 
+                  // Some browsers encode URL:s as UTF-8; some as Latin-1. Make sure the encoding is consistent.
+                  // Also, escape the /, :, & etc characters in error messages.
+                  errorMessage = escape(errorMessage);
                   var contentURL = GLOBAL_contextPath + '/jsonerror.page?errorCode=' + errorCode + "&isHttpError=" + (isHttpError ? 1 : 0) + "&errorMessage=" + errorMessage;
       
                   if (!isHttpError)
                     contentURL += "&errorLevel=" + jsonResponse.errorLevel;
+                  else
+                    contentURL += "&errorLevel=4";
       
                   var dialog = new IxDialog({
                     id: 'jsonErrorDialog',
