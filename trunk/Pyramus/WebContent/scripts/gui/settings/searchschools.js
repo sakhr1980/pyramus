@@ -17,7 +17,7 @@ function doSearch(page) {
       resultsTable.deleteAllRows();
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
-        resultsTable.addRow([ results[i].name.escapeHTML(), results[i].fieldName.escapeHTML(), '', '', results[i].id ]);
+        resultsTable.addRow([ results[i].name.escapeHTML(), results[i].fieldName.escapeHTML(), '', '', '', results[i].id ]);
       }
       resultsTable.reattachToDom();
       getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -61,10 +61,22 @@ function onLoad(event) {
         },
         {
           paramName : 'schoolFieldName',
-          right : 38,
+          right : 68,
           width : 180,
           dataType : 'text',
           editable : false
+        },
+        {
+          width : 30,
+          right : 60,
+          dataType : 'button',
+          imgsrc : GLOBAL_contextPath + '/gfx/eye.png',
+          tooltip : getLocale().getText("settings.searchSchools.schoolsTableViewSchoolTooltip"),
+          onclick : function(event) {
+            var table = event.tableComponent;
+            var schoolId = table.getCellValue(event.row, table.getNamedColumnIndex('schoolId'));
+            redirectTo(GLOBAL_contextPath + '/settings/viewschool.page?school=' + schoolId);
+          }
         },
         {
           width : 30,

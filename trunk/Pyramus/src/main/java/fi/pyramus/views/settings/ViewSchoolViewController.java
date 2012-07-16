@@ -1,6 +1,7 @@
 package fi.pyramus.views.settings;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,8 +17,12 @@ import fi.pyramus.breadcrumbs.Breadcrumbable;
 import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.dao.base.SchoolVariableKeyDAO;
+import fi.pyramus.domainmodel.base.Address;
+import fi.pyramus.domainmodel.base.Email;
+import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
+import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
 import fi.pyramus.util.JSONArrayExtractor;
@@ -45,6 +50,41 @@ public class ViewSchoolViewController extends PyramusViewController implements B
     List<SchoolVariableKey> schoolUserEditableVariableKeys = schoolVariableKeyDAO.listUserEditableVariableKeys();
     Collections.sort(schoolUserEditableVariableKeys, new StringAttributeComparator("getVariableName"));
     
+    StringBuilder tagsBuilder = new StringBuilder();
+    Iterator<Tag> tagIterator = school.getTags().iterator();
+    while (tagIterator.hasNext()) {
+      Tag tag = tagIterator.next();
+      tagsBuilder.append(tag.getText());
+      if (tagIterator.hasNext())
+        tagsBuilder.append(' ');
+    }
+    
+    List<Address> addresses = school.getContactInfo().getAddresses();
+    JSONArray jaAddresses = new JSONArrayExtractor("id",
+                                                   "name",
+                                                   "streetAddress",
+                                                   "postalCode",
+                                                   "city",
+                                                   "country").extract(addresses);
+    for (int i=0; i<jaAddresses.size(); i++) {
+      JSONObject joAddress = jaAddresses.getJSONObject(i);
+      joAddress.put("contactTypeName", addresses.get(i).getContactType().getName());
+    }
+    
+    List<Email> emails = school.getContactInfo().getEmails();
+    JSONArray jaEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
+    for (int i=0; i<jaEmails.size(); i++) {
+      JSONObject joEmail = jaEmails.getJSONObject(i);
+      joEmail.put("contactTypeName", emails.get(i).getContactType().getName());
+    }
+    
+    List<PhoneNumber> phoneNumbers = school.getContactInfo().getPhoneNumbers();
+    JSONArray jaPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
+    for (int i=0; i<jaPhoneNumbers.size(); i++) {
+      JSONObject joPhoneNumber = jaPhoneNumbers.getJSONObject(i);
+      joPhoneNumber.put("contactTypeName", emails.get(i).getContactType().getName());
+    }
+    
     JSONArray jaVariableKeys = new JSONArrayExtractor("variableName", "variableKey", "variableType").extract(schoolUserEditableVariableKeys);
     for (int i=0; i<schoolUserEditableVariableKeys.size(); i++) {
       JSONObject joVariableKey = jaVariableKeys.getJSONObject(i);
@@ -53,7 +93,11 @@ public class ViewSchoolViewController extends PyramusViewController implements B
     }
 
 
+    this.setJsDataVariable(pageRequestContext, "addresses", jaAddresses.toString());
+    this.setJsDataVariable(pageRequestContext, "emails", jaEmails.toString());
+    this.setJsDataVariable(pageRequestContext, "phoneNumbers", jaPhoneNumbers.toString());
     this.setJsDataVariable(pageRequestContext, "variableKeys", jaVariableKeys.toString());
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString()); // used by jsp
     pageRequestContext.getRequest().setAttribute("school", school);
 
     pageRequestContext.setIncludeJSP("/templates/settings/viewschool.jsp");
