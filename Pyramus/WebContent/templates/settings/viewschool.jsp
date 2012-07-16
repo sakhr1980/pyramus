@@ -49,12 +49,47 @@
           </jsp:include>
           ${fn:escapeXml(school.name)}
         </div>
+        <div class="genericFormSection">
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="settings.viewSchool.fieldTitle"/>
+            <jsp:param name="helpLocale" value="settings.viewSchool.fieldHelp"/>
+          </jsp:include>
+          ${fn:escapeXml(school.field.name)}
+        </div>
+        <div class="genericFormSection">
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="settings.viewSchool.tagsTitle"/>
+            <jsp:param name="helpLocale" value="settings.viewSchool.tagsHelp"/>
+          </jsp:include>
+          ${fn:escapeXml(tags)}
+        </div>
         <div class="genericFormSection">  
           <jsp:include page="/templates/generic/fragments/formtitle.jsp">
             <jsp:param name="titleLocale" value="settings.viewSchool.variablesTitle"/>
             <jsp:param name="helpLocale" value="settings.viewSchool.variablesHelp"/>
           </jsp:include>
           <div id="variablesTable"></div>
+        </div>
+        <div class="genericFormSection">  
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="settings.viewSchool.addressesTitle"/>
+            <jsp:param name="helpLocale" value="settings.viewSchool.addressesHelp"/>
+          </jsp:include>
+          <div id="addressTable"></div>
+        </div>
+        <div class="genericFormSection">  
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="settings.viewSchool.emailsTitle"/>
+            <jsp:param name="helpLocale" value="settings.viewSchool.emailsHelp"/>
+          </jsp:include>
+          <div id="emailTable"></div>
+        </div>
+        <div class="genericFormSection">  
+          <jsp:include page="/templates/generic/fragments/formtitle.jsp">
+            <jsp:param name="titleLocale" value="settings.viewSchool.phoneNumbersTitle"/>
+            <jsp:param name="helpLocale" value="settings.viewSchool.phoneNumbersHelp"/>
+          </jsp:include>
+          <div id="phoneNumbersTable"></div>
         </div>
       </div>
     </div>
