@@ -83,21 +83,27 @@ public class EditSchoolViewController extends PyramusViewController implements B
                                                    "country").extract(addresses);
     for (int i=0; i<jaAddresses.size(); i++) {
       JSONObject joAddress = jaAddresses.getJSONObject(i);
-      joAddress.put("contactTypeId", addresses.get(i).getContactType().getId());
+      if (addresses.get(i).getContactType() != null) {
+        joAddress.put("contactTypeId", addresses.get(i).getContactType().getId());
+      }
     }
     
     List<Email> emails = school.getContactInfo().getEmails();
     JSONArray jaEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
     for (int i=0; i<jaEmails.size(); i++) {
       JSONObject joEmail = jaEmails.getJSONObject(i);
-      joEmail.put("contactTypeId", emails.get(i).getContactType().getId());
+      if (emails.get(i).getContactType() != null) {
+        joEmail.put("contactTypeId", emails.get(i).getContactType().getId());
+      }
     }
     
     List<PhoneNumber> phoneNumbers = school.getContactInfo().getPhoneNumbers();
     JSONArray jaPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
     for (int i=0; i<jaPhoneNumbers.size(); i++) {
       JSONObject joPhoneNumber = jaPhoneNumbers.getJSONObject(i);
-      joPhoneNumber.put("contactTypeId", emails.get(i).getContactType().getId());
+      if (phoneNumbers.get(i).getContactType() != null) {
+        joPhoneNumber.put("contactTypeId", emails.get(i).getContactType().getId());
+      }
     }
     
     String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(schoolUserEditableVariableKeys);
