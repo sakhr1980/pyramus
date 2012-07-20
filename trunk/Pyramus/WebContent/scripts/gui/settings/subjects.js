@@ -78,10 +78,10 @@ function onLoad(event) {
               value : ''
             } ];
             for ( var i = 0, l = educationTypes.length; i < l; i++) {
-              result.push([ {
+              result.push({
                 text : educationTypes[i].name,
                 value : educationTypes[i].id
-              } ]);
+              });
             }
             return result;
           })(),
