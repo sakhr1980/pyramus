@@ -1,6 +1,6 @@
 var archivedRowIndex;
 var timeUnits = JSDATA["timeUnits"].evalJSON();
-var baseTimeUnit = JSDATA["timeUnits"].evalJSON();
+var baseTimeUnit = JSDATA["baseTimeUnit"].evalJSON();
 
 function addTimeUnitsTableRow() {
   var table = getIxTableById('timeUnitsTable');
