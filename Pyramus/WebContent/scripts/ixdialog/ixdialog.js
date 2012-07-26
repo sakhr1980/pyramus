@@ -1,6 +1,35 @@
 _Dialogs = new Hash();
 
-IxDialog = Class.create({
+IxDialog = Class.create(
+  /** @lends IxDialog.prototype */
+  {
+  /** Creates a new modal dialog box (in the DOM).
+   * @class A modal dialog box, displayed on the page (not on a separate window),
+   * that shows the contents of a Web page.
+   * @constructs
+   * 
+   * @param options The options that describe the dialog, as an object containing the following properties:
+   * <dl>
+   *   <dt><code>id</code></dt>
+   *   <dd>The unique identifier for the dialog.</dd>
+   *   <dt><code>contentURL</code></dt>
+   *   <dd>The URL of the Web page to be shown in the dialog.</dd>
+   *   <dt><code>centered</code></dt>
+   *   <dd>Set this to <code>true</code> to center the dialog.</dd>
+   *   <dt><code>showOk</code></dt>
+   *   <dd>Set this to <code>true</code> to show the OK button in the dialog.</dd>
+   *   <dt><code>showCancel</code></dt>
+   *   <dd>Set this to <code>true</code> to show the Cancel button in the dialog.</dd>
+   *   <dt><code>autoEvaluateSize</code></dt>
+   *   <dd>Set this to <code>true</code> to calculate the size of the dialog automagically.</dd>
+   *   <dt><code>title</code></dt>
+   *   <dd>The title of the dialog box.</dd>
+   *   <dt><code>okLabel</code></dt>
+   *   <dd>The label of the OK button.</dd>
+   *   <dt><code>cancelLabel</code></dt>
+   *   <dd>The label of the Cancel button.</dd>
+   * </dl>
+   */
   initialize : function(options) {
     this._id = options.id;
     this._isOpen = false;
@@ -105,9 +134,16 @@ IxDialog = Class.create({
 
     _Dialogs.set(this._id, this);
   },
+  /** Changes the content URL of the dialog box.
+   * 
+   * @param contentURL The new URL to point the dialog into.
+   */
   setContentUrl : function (contentURL) {
     this._dialogContent.setAttribute("src", contentURL);
   },
+  /** Opens the dialog box.
+   * 
+   */
   open : function() {
     this._glassPane = new Element("div", {className: "dialogGlassPane"});
     document.body.appendChild(this._glassPane);
@@ -115,6 +151,9 @@ IxDialog = Class.create({
     this._isOpen = true;
     this._recalculateSize();
   },
+  /** Closes the dialog box.
+   * 
+   */
   close : function() {
     this._glassPane.remove();
     this._parentNode.removeChild(this._dialogNode);
@@ -134,6 +173,9 @@ IxDialog = Class.create({
     while (this._listeners.length > 0)
       this._listeners.pop();
   },
+  /** Shows the dialog box.
+   * 
+   */
   show: function() {
     if (this._isHidden) {
       this._dialogNode.show();
@@ -144,6 +186,9 @@ IxDialog = Class.create({
 	    this._recalculateSize();
     }
   },
+  /** Hides the dialog box.
+   * 
+   */
   hide : function() {
     if (!this._isHidden) {
       this._glassPane.remove();
@@ -152,6 +197,9 @@ IxDialog = Class.create({
       this._dialogNode.hide();
     }
   },
+  /** Centers the dialog box.
+   * 
+   */
   center : function() {
     var dialogDims = this._dialogNode.getDimensions();
     var viewportDims = document.viewport.getDimensions();
@@ -164,12 +212,25 @@ IxDialog = Class.create({
       left :left + 'px'
     });
   },
+  /** Returns the DOM element representing the content of this dialog box.
+   * 
+   * @returns {Element} The DOM element representing the content of this dialog box.
+   */
   getContentElement : function() {
     return this._dialogContent;
   },
+  /** Returns the DOM element representing this dialog box.
+   * 
+   * @returns {Element} The DOM element representing this dialog box.
+   */
   getDialogElement: function () {
     return this._dialogNode;
   },
+  /** Sets the size of the dialog box.
+   * 
+   * @param width The new width of the dialog box, in CSS markup.
+   * @param height The new height of the dialog box, in CSS markup.
+   */
   setSize : function(width, height) {
     this._dialogNode.setStyle( {
       width :width,
@@ -178,22 +239,45 @@ IxDialog = Class.create({
 
     this._recalculateSize();
   },
+  /** Adds a new event listener for the dialog box.
+   * 
+   * @param listener The event listener to add.
+   */
   addDialogListener : function(listener) {
     this._listeners.push(listener);
   },
+  /** Sets the title of the dialog box.
+   * 
+   * @param title The new title for the dialog box.
+   */
   setTitle : function(title) {
     this._title.update(title);
     this._recalculateSize();
   },
+  /** Returns the <code>document</code> element for the dialog box content.
+   * 
+   * @returns the <code>document</code> element for the dialog box content.
+   */
   getContentDocument: function () {
     return this._frameDocument;  
   },
+  /** Returns the <code>window</code> element for the dialog box content.
+   * 
+   * @returns the <code>window</code> element for the dialog box content.
+   */
   getContentWindow: function () {
     return this._frameWindow;  
   },
+  /** Sets the hide-only attribute of the dialog box.
+   * 
+   * @param value Set this to <code>true</code> to hide the dialog when
+   * one of the buttons is clicked, and <code>false</code> to close the dialog when
+   * one of the buttons is clicked.
+   */
   setHideOnly: function(value) {
     this._isHideOnly = value;
   },
+  /** Invoke a click on the OK button. */
   clickOk: function () {
     var resultsFunc = this._frameWindow.getResults;
     var results;
@@ -207,6 +291,7 @@ IxDialog = Class.create({
       }
     }
   },
+  /** Invoke a click on the Cancel button */
   clickCancel: function () {
     if (this._fire("cancelClick", { })) {
       if (this._isHideOnly) {
@@ -216,21 +301,41 @@ IxDialog = Class.create({
       }
     }
   },
+  /** Returns the DOM element for the OK button.
+   * 
+   * @returns {Element} The DOM element for the OK button.
+   */
   getOkButtonElement: function () {
     return this._okButton;
   },
+  /** Returns the DOM element for the Cancel button.
+   * 
+   * @returns {Element} The DOM element for the Cancel button.
+   */
   getCancelButtonElement: function () {
     return this._cancelButton;
   },
+  /** Enable the OK button.
+   * 
+   */
   enableOkButton: function () {
     this._okButton.removeAttribute("disabled");
   },
+  /** Disable the OK button.
+   * 
+   */
   disableOkButton: function () {
     this._okButton.setAttribute("disabled", "disabled");
   },
+  /** Enable the Cancel button.
+   * 
+   */
   enableCancelButton: function () {
     this._cancelButton.removeAttribute("disabled");
   },
+  /** Disable the Cancel button.
+   * 
+   */
   disableCancelButton: function () {
     this._cancelButton.setAttribute("disabled", "disabled");
   },
@@ -410,6 +515,11 @@ IxDialog = Class.create({
   }
 });
 
+/** Return the dialog with the given ID.
+ * 
+ * @param id The ID of the dialog.
+ * @returns The dialog whose ID is <code>id</code>
+ */
 function getDialog(id) {
   return _Dialogs.get(id);
 }

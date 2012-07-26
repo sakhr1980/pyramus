@@ -1,4 +1,13 @@
-IxHoverMenu = Class.create({
+IxHoverMenu = Class.create(
+  /** @lends IxHoverMenu.prototype */
+  {
+  /** Creates a new hover menu.
+   * @class A hover dropdown menu.
+   * @constructs
+   * 
+   * @param parentNode The DOM node to attach this menu to.
+   * @param options Additional options for the hover menu.
+   */
   initialize : function(parentNode, options) {
     this.domNode = new Element("div", {className: "IxHoverMenu"});
     this._items = new Array();
@@ -14,19 +23,42 @@ IxHoverMenu = Class.create({
     this.domNode.appendChild(this._textContainer);
     this.domNode.appendChild(this._itemsContainer);
   },
+  /** Adds an item to this hover menu. The item is
+   * an instance of one of the <code>IxHoverMenu*</code>
+   * classes.
+   * @see IxHoverMenuSpacer
+   * @see IxHoverMenuItem
+   * @see IxHoverMenuLinkItem
+   * @param item The item to add to this hover menu.
+   */
   addItem: function (item) {
     this._itemsContainer.appendChild(item.domNode);
     this._items.push(item);
   }
 });
 
-IxHoverMenuSpacer = Class.create({
+IxHoverMenuSpacer = Class.create(
+  /** @lends IxHoverMenuSpacer.prototype */
+  {
+  /** Creates a new spacer for <code>IxHoverMenu</code>.
+   * @class A spacer for <code>IxHoverMenu</code>
+   * @constructs
+   * @see IxHoverMenu
+   */
   initialize : function() {
     this.domNode = new Element("div", {className: "IxHoverMenuSpacer"});
   }
 });
 
-IxHoverMenuItem = Class.create({
+IxHoverMenuItem = Class.create(
+  /** @lends IxHoverMenuItem.prototype */
+  {
+  /** Base constructor for hover menu items. Do not call this directly.
+   * @class Base class for hover menu items.
+   * @constructs
+   * @see IxHoverMenuLinkItem
+   * @see IxHoverMenuClickableItem
+   */
   initialize : function(options) {
     this._options = options;
     this.domNode = new Element("div", {className: "IxHoverMenuItem"});
@@ -40,7 +72,20 @@ IxHoverMenuItem = Class.create({
   }
 });
 
-IxHoverMenuLinkItem = Class.create(IxHoverMenuItem, {
+IxHoverMenuLinkItem = Class.create(IxHoverMenuItem,
+  /** @lends IxHoverMenuLinkItem.prototype */
+  {
+  /** Creates a new hover menu item containing a link.
+   * @class A hover menu item containing a link.
+   * @constructs
+   * 
+   * @param $super The super object of the new object.
+   * @param options An object containing the following property:
+   * <dl>
+   *   <dt><code>link</code></dt>
+   *   <dd>The URL of the link's target</dd>
+   * </dl>
+   */
   initialize : function($super, options) {
     $super(options);
     this._itemClickListener = this._onItemClick.bindAsEventListener(this);
@@ -51,7 +96,21 @@ IxHoverMenuLinkItem = Class.create(IxHoverMenuItem, {
   }
 });
 
-IxHoverMenuClickableItem = Class.create(IxHoverMenuItem, {
+IxHoverMenuClickableItem = Class.create(IxHoverMenuItem, 
+  /** @lends IxHoverMenuClickableItem.prototype */
+  {
+  /** Creates a new hover menu item that can be clicked.
+   * @class A hover menu item that can be clicked.
+   * @constructs
+   * 
+   * @param $super The super object of the new object.
+   * @param options An object containing the following property:
+   * <dl>
+   *   <dt><code>click</code></dt>
+   *   <dd>An event handler (<code>function(event) {}</code>) that is
+   *   called whenever the menu item is clicked.</dd>
+   * </dl>
+   */
   initialize : function($super, options) {
     $super(options);
     this._itemClickListener = this._onItemClick.bindAsEventListener(this);
