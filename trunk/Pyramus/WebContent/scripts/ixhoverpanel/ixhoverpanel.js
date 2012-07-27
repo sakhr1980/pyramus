@@ -1,4 +1,15 @@
-IxHoverPanel = Class.create({
+IxHoverPanel = Class.create(
+  /** @lends IxHoverPanel.prototype */
+  {
+  /** Creates a new hover panel.
+   * @class A hover panel UI element.
+   * @constructs
+   * @param options An object containing the following properties:
+   * <dl>
+   *   <dt><code>contentURL</code></dt>
+   *   <dd>The URL pointing to the content of the hover panel.</dd>
+   * </dl>
+   */
   initialize : function(options) {
     this.domNode = new Element("div", {className: "IxHoverPanel"});
     this._content = new Element("div", {className: "IxHoverPanelContent"}); 
@@ -22,6 +33,10 @@ IxHoverPanel = Class.create({
     
     this._windowMouseDownListener = this._onWindowMouseDown.bindAsEventListener(this);
   },
+  /** Shows the hover panel over a DOM element.
+   * 
+   * @param element The DOM element to show this hover panel on.
+   */
   showOverElement: function (element) {
     if (this._options.contentURL) {
       var _this = this;
@@ -69,6 +84,9 @@ IxHoverPanel = Class.create({
     else
       Event.observe(window, "mousedown", this._windowMouseDownListener);
   },
+  /** Hides the hover panel.
+   * 
+   */
   hide: function () {
     if (this.domNode.parentNode) {
       if (Prototype.Browser.IE)

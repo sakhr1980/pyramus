@@ -1,6 +1,28 @@
 var _ixSearchNavigations = new Hash();
 
-IxSearchNavigation = Class.create({
+IxSearchNavigation = Class.create(
+  /** @lends IxSearchNavigation.prototype */
+  {
+  /** Creates a new search results navigation bar.
+   * @class A search results navigator. Search can provide a large number
+   * of results, that are broken down to pages. This element provides buttons to
+   * navigate those pages.
+   * @constructs
+   * 
+   * @param containerNode The DOM node to place the navigation bar into.
+   * @param options The options that describe the navigation element, as an object containing the following properties:
+   * <dl>
+   *   <dt><code>maxNavigationPages</code></dt>
+   *   <dd>The maximum number of numbered buttons visible.</dd>
+   *   <dt><code>onClick</code></dt>
+   *   <dd>An event handler (<code>function(event) {}</code>) that's invoked
+   *   whenever the page is changed.</dd>
+   *   <dt><code>firstText</code></dt>
+   *   <dd>The text for the button that leads to the first page,
+   *   defaults to <code>"<<"</code>.</dd>
+   * </dl>
+   * 
+   */
   initialize : function(containerNode, options) {
     this._containerNode = containerNode;
     this._options = options;
@@ -39,6 +61,10 @@ IxSearchNavigation = Class.create({
     this._lastPage.setText(options.lastText ? options.lastText : "&gt;&gt;");
     this._lastPage.addListener("linkClick", this, this._onPageClick);
   },
+  /** Returns the first page number whose button is visible.
+   * 
+   * @returns {Number} the first page number whose button is visible.
+   */
   getFirstVisiblePage: function() {
     if (this.getTotalPages() <= this.getMaxNavigationPages() || this.getCurrentPage() < this.getCenterNavigationPage()) {
       return 0;
@@ -50,9 +76,17 @@ IxSearchNavigation = Class.create({
       return this.getCurrentPage() - this.getCenterNavigationPage();
     }
   },
+  /** Returns the number of the page whose button is in the middle of the nav bar.
+   * 
+   * @returns {Number} the number of the page whose button 
+   */
   getCenterNavigationPage: function() {
     return this._centerNavigationPage;
   },
+  /** Returns the last page number whose button is visible.
+   * 
+   * @returns {Number} The last page number whose button is visible.
+   */
   getLastVisiblePage: function() {
     if (this.getTotalPages() <= this.getMaxNavigationPages() || this.getCurrentPage() >= this.getTotalPages() - this.getCenterNavigationPage()) {
       return this.getTotalPages() - 1;
@@ -64,6 +98,10 @@ IxSearchNavigation = Class.create({
       return this.getCurrentPage() + this.getCenterNavigationPage();
     }
   },
+  /** Navigates to <code>currentPage</code>
+   * 
+   * @param {Number} currentPage The number of the page to navigate to.
+   */
   setCurrentPage: function(currentPage) {
     if (this._currentPage != currentPage) {
       this._currentPage = currentPage;
@@ -72,9 +110,17 @@ IxSearchNavigation = Class.create({
       this._updateNavigation();
     }
   },
+  /** Returns the currently visible page number.
+   * 
+   * @returns {Number} The currently visible page number.
+   */
   getCurrentPage: function() {
     return this._currentPage;
   },
+  /** Sets the total number of pages.
+   * 
+   * @param {Number} totalPages The total number of pages. 
+   */
   setTotalPages: function(totalPages) {
     if (this._totalPages != totalPages) {
       this._totalPages = totalPages;
@@ -82,9 +128,17 @@ IxSearchNavigation = Class.create({
       this._currentPage = null;
     }
   },
+  /** Returns the total number of pages.
+   * 
+   * @returns {Number} The total number of pages.
+   */
   getTotalPages: function() {
     return this._totalPages;
   },
+  /** Returns the maximum number of numbered buttons visible.
+   * 
+   * @returns {Number} The maximum number of numbered buttons visible.
+   */
   getMaxNavigationPages: function() {
     return this._options.maxNavigationPages;
   },
@@ -124,7 +178,15 @@ IxSearchNavigation = Class.create({
   }
 });
 
-IxSearchNavigationPage = Class.create({
+IxSearchNavigationPage = Class.create(
+  /** @lends IxSearchNavigationPage.prototype */
+  {
+  /** Creates a new page button for search navigation.
+   * @class A page button for search navigation.
+   * @constructs
+   * 
+   * @param containerNode The DOM node to place the page button into.
+   */
   initialize : function(containerNode) {
     this._containerNode = containerNode;
     this.domNode = new Element("div", {className: "IxSearchNavigationPageContainer"});
@@ -135,12 +197,25 @@ IxSearchNavigationPage = Class.create({
     this.setVisible(false);
     containerNode.appendChild(this.domNode);
   },
+  /** Sets the page number of this button.
+   * 
+   * @param {Number} page The page number of this page.
+   */
   setPage: function(page) {
     this._page = page;
   },
+  /** Sets the text of this button.
+   *
+   * @param {String} text The text of this page.
+   */
   setText: function(text) {
     this._pageLink.innerHTML = text;
   },
+  /** Sets the active state of this button.
+   * 
+   * @param {Boolean} active Set this to <code>true</code> to activate this
+   * button, and <code>false</code> to deactivate this button.
+   */
   setActive: function(active) {
     if (active == true) {
       this._pageLink.addClassName('IxSearchNavigationPageLinkActive');
@@ -149,6 +224,11 @@ IxSearchNavigationPage = Class.create({
       this._pageLink.removeClassName('IxSearchNavigationPageLinkActive');
     }
   },
+  /** Sets the enabled state of this button.
+   * 
+   * @param {Boolean} enabled Set this to <code>true</code> to enable this
+   * button, and <code>false</code> to disable this button.
+   */
   setEnabled: function(enabled) {
     this._enabled = enabled;
     if (enabled == true) {
@@ -158,6 +238,10 @@ IxSearchNavigationPage = Class.create({
       this.domNode.addClassName("IxSearchNavigationPageContainerDisabled");
     }
   },
+  /** Sets the visibility state of this button.
+   * 
+   * @param {Boolean} visible The new visibility state of this button. 
+   */
   setVisible: function(visible) {
     this._visible = visible;
     if (visible == true) {
