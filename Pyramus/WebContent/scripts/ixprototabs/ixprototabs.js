@@ -1,4 +1,14 @@
-IxProtoTabs = Class.create({
+IxProtoTabs = Class.create(
+  /** @lends IxProtoTabs.prototype */
+  {
+  /** Create a new tab bar.
+   * @class A tab bar that groups the a web page visually into tabs that
+   * are displayed one at a time.
+   * @constructs
+   * 
+   * @param tabId The DOM ID of the tab bar's placeholder.
+   * @param options Additional options for this tab bar.
+   */
   initialize: function (tabId, options) {
     this._tabContainer = $(tabId);
     this._listeners = null;
@@ -62,6 +72,12 @@ IxProtoTabs = Class.create({
       }
     }
   },
+  /** Add a new tab to this tab bar.
+   * 
+   * @param name The name of the UI element containing the tab's content.
+   * @param caption The caption for the new tab.
+   * @returns {Element} The newly-created tab content UI element.
+   */
   addTab: function (name, caption) {
     var newTabLabel = new Element("a", {className: "tabLabel", href: "#" + name} );
     newTabLabel.update(caption);
@@ -91,6 +107,10 @@ IxProtoTabs = Class.create({
     
     return newTabContent;
   },
+  /** Sets the tab named <code>name</code> active.
+   * 
+   * @param name The name of the tab to set active.
+   */
   setActiveTab: function (name) {
     var tab = this._tabs.get(name);
     var label = this._labels.get(name);
@@ -130,12 +150,20 @@ IxProtoTabs = Class.create({
     
     location.hash = 'at-' + name;
   },
+  /** Returns the name of the active tab, or null if no tab is active.
+   * 
+   * @returns the name of the active tab, or null if no tab is active.
+   */
   getActiveTab: function () {
     return this._activeTab ? this._activeTab.id : null;
   },
   _hasTab: function (name) {
     return this._tabs.get(name);
   },
+  /** Add an event listener to this tab bar.
+   * 
+   * @param listener The listener (<code>function(event) {}</code>) to add.
+   */
 	addListener: function (listener) {
 		if (this._listeners == null)
 		  this._listeners = new Array();

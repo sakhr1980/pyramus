@@ -1,4 +1,26 @@
+/** @class A JSON request object. Usage:
+ * <pre>
+ * JSONRequest.request("json/handler.json", 
+ *     {onComplete: function (transport) {
+ *         alert("Request Completed!");
+ *     }
+ * });
+ * </pre>
+ */
 JSONRequest = {
+  /** Create and send a new JSON request.
+   * 
+   * @param requestHandler The URL of the request handler.
+   * @param options An object containing the following properties:
+   * <dl>
+   *   <dt><code>parameters</code></dt>
+   *   <dd>Parameters hash passed to Ajax.Request.</dd>
+   *   <dt><code>method</code></dt>
+   *   <dd>HTTP verb used in request, defaults to "post"</dd>
+   *   <dt><code>onComplete</code></dt>
+   *   <dd>An event handler (<code>function (transport) {}</code>)
+   *   invoked when the request completes.</dd>
+   */
   request: function (requestHandler, options) {
   
     var opts = options ? options : {};

@@ -1,6 +1,7 @@
 var __ixDateFields = new Array(); 
 
-IxDateField = Class.create({
+IxDateField = Class.create(
+  {
   initialize : function(options) {
     var element = options.element;
     this._paramName = element.name;
