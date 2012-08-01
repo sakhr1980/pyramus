@@ -6,16 +6,29 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+/** A breadcrumb trail handler. */
 public class BreadcrumbHandler {
   
+  /** Clears the breadcrumb trail. */
   public void clear() {
     breadcrumbs.clear();
   }
   
+  /** Returns <code>true</code> if the breadcrumb
+   * trail contains <code>request</code>
+   *  
+   * @param request The request to look for.
+   * @return <code>true</code> if the request was found.
+   */
   public boolean contains(HttpServletRequest request) {
     return indexOf(getBreadcrumbUrl(request, true)) >= 0;
   }
   
+  /** Process the given request and update the breadcrumb accordingly.
+   * 
+   * @param request The request to process.
+   * @param breadcrumbable The target page of the request.
+   */
   public void process(HttpServletRequest request, Breadcrumbable breadcrumbable) {
     String shortUrl = getBreadcrumbUrl(request, false);
     String completeUrl = getBreadcrumbUrl(request, true);
@@ -50,6 +63,7 @@ public class BreadcrumbHandler {
     return "resetbreadcrumb".equals(s);
   }
   
+  /** Remove the last breadcrumb from the trail. */
   public void pop() {
     if (getSize() > 0) {
       breadcrumbs.remove(breadcrumbs.size() - 1);
@@ -62,14 +76,29 @@ public class BreadcrumbHandler {
     }
   }
   
+  /** Returns the number of breadcrumbs in the trail.
+   * 
+   * @return the number of breadcrumbs in the trail.
+   */
   public int getSize() {
     return breadcrumbs.size();
   }
   
+  /** Returns all the breadcrumbs in the trail.
+   * 
+   * @return all the breadcrumbs in the trail.
+   */
   public List<Breadcrumb> getBreadcrumbs() {
     return breadcrumbs;
   }
   
+  /** Returns the URL of <code>request</code>, sanitized for breadcrumb use.
+   * 
+   * @param request The request to process.
+   * @param includeRequestParams Set to <code>true</code> to include (non-breadcrumb)
+   * parameters, <code>false</code> to include no parameters.
+   * @return The sanitized URL.
+   */
   public String getBreadcrumbUrl(HttpServletRequest request, boolean includeRequestParams) {
     StringBuilder sb = new StringBuilder();
     sb.append(request.getRequestURL());

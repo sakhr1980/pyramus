@@ -56,8 +56,16 @@ import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.version.Version;
 
+/** A class responsible for downloading plugins 
+ * and their dependencies using Maven.
+ *
+ */
 public class MavenClient {
 
+  /** Create a new Maven client.
+   * 
+   * @param localRepositoryDirectory The directory containing the local Maven repository.
+   */
   public MavenClient(File localRepositoryDirectory) {
     RepositoryEventDispatcher repositoryEventDispatcher = new DefaultRepositoryEventDispatcher();
     SyncContextFactory syncContextFactory = new DefaultSyncContextFactory();
@@ -74,6 +82,13 @@ public class MavenClient {
     this.systemSession = createSystemSession();
   }
 
+  /** List the versions of a specified artifact.
+   * 
+   * @param groupId The Maven group ID of the artifact.
+   * @param artifactId The Maven artifact ID of the artifact.
+   * @return The versions of the specified artifact available to Maven.
+   * @throws VersionRangeResolutionException
+   */
   public List<Version> listVersions(String groupId, String artifactId) throws VersionRangeResolutionException {
     Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", "[0.0.0,999.999.999]");
     VersionRangeRequest request = new VersionRangeRequest(artifact, getRemoteRepositories(), null);
@@ -81,6 +96,15 @@ public class MavenClient {
     return rangeResult.getVersions();
   }
   
+  /** Describe an artifact residing in a local repository.
+   * 
+   * @param groupId The Maven group ID of the artifact.
+   * @param artifactId The Maven artifact ID of the artifact.
+   * @param version The version number of the artifact.
+   * @return A descriptor result describing the artifact, or <code>null</code> if the artifact doesn't exist.
+   * @throws ArtifactDescriptorException
+   * @throws ArtifactResolutionException
+   */
   public ArtifactDescriptorResult describeLocalArtifact(String groupId, String artifactId, String version) throws ArtifactDescriptorException, ArtifactResolutionException {
     Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", version);
     LocalArtifactRequest localArtifactRequest = new LocalArtifactRequest(artifact, null, null);
@@ -109,6 +133,15 @@ public class MavenClient {
     return null;
   }
 
+ /** Describe an artifact residing in a remote repository.
+   * 
+   * @param groupId The Maven group ID of the artifact.
+   * @param artifactId The Maven artifact ID of the artifact.
+   * @param version The version number of the artifact.
+   * @return A descriptor result describing the artifact, or <code>null</code> if the artifact doesn't exist.
+   * @throws ArtifactDescriptorException
+   * @throws ArtifactResolutionException
+   */
   public ArtifactDescriptorResult describeArtifact(String groupId, String artifactId, String version) throws ArtifactResolutionException, ArtifactDescriptorException {
     Artifact artifact = new DefaultArtifact(groupId, artifactId, "jar", version);
     
@@ -126,6 +159,11 @@ public class MavenClient {
     return descriptorResult;
   }
 
+  /** Returns the JAR fire corresponding to the specified artifact.
+   * 
+   * @param artifact The artifact whose JAR file is returned.
+   * @return The JAR fire corresponding to the specified artifact.
+   */
   public File getArtifactJarFile(Artifact artifact) {
     if (artifact.getFile() == null) {
       String pathForLocalArtifact = systemSession.getLocalRepositoryManager().getPathForLocalArtifact(artifact);
@@ -135,14 +173,28 @@ public class MavenClient {
     }
   }
   
+  /** Returns the list of remote repositories.
+   * 
+   * @return The list of remote repositories.
+   */
   public List<RemoteRepository> getRemoteRepositories() {
     return remoteRepositories;
   }
   
+  /** Returns the list of local repositories.
+   * 
+   * @return The list of local repositories.
+   */
   public List<LocalRepository> getLocalRepositories() {
     return localRepositories;
   }
   
+  /** Add a repository (local or remote) for locating the artifacts.
+   * 
+   * @param url The URL of the repository. If it starts with '/', the
+   * repository is assumed to be local, otherwise it's assumed to be 
+   * remote.
+   */
   public void addRepository(String url) {
     if (url.startsWith("/")) {
       localRepositories.add(new LocalRepository(url));
@@ -151,6 +203,12 @@ public class MavenClient {
     } 
   }
   
+  /** Remove a repository (local or remote) for locating the artifacts.
+   * 
+   * @param url The URL of the repository. If it starts with '/', the
+   * repository is assumed to be local, otherwise it's assumed to be 
+   * remote.
+   */
   public void removeRepository(String url) {
     if (url.startsWith("/")) {
       for (LocalRepository localRepository : localRepositories) {
@@ -256,6 +314,10 @@ public class MavenClient {
     return session;
   }
  
+  /** Returns the repository system used by Maven.
+   * 
+   * @return the repository system used by Maven.
+   */
   public DefaultRepositorySystem getRepositorySystem() {
     return repositorySystem;
   }

@@ -1,10 +1,25 @@
-IxAbstractDraftTask = Class.create({
+
+IxAbstractDraftTask = Class.create(
+  /** @lends IxAbstractDraftTask.prototype */
+  {
+  /** The base constructor for draft tasks. Do not call this directly!
+   * @class The base class for draft tasks.
+   * @constructs
+   */
   initialize : function() {
     
   },
+  /** Creates the draft data for this task.
+   * 
+   * @returns The draft data for this task.
+   */
   createDraftData: function () {
     throw new Error("Not implemented"); 
   },
+  /** Restores the draft data for this task.
+   * 
+   * @param elementDraft The draft data to be restored.
+   */
   restoreDraftData: function () { 
     throw new Error("Not implemented");
   },
@@ -16,7 +31,13 @@ IxAbstractDraftTask = Class.create({
   }
 });
 
-IxInputFieldDraftTask = Class.create(IxAbstractDraftTask, {
+/** The draft task for input fields.
+ *  @class IxInputFieldDraftTask
+ *  @extends IxAbstractDraftTask
+ */
+IxInputFieldDraftTask = Class.create(IxAbstractDraftTask,
+  /** @lends IxInputFieldDraftTask.prototype */
+  {
   initialize : function($super) {
     $super();
   },
@@ -50,6 +71,10 @@ Object.extend(IxInputFieldDraftTask, {
   supports: ['input[type="checkbox"]','input[type="hidden"]','input[type="password"]','input[type="radio"]','input[type="text"]']
 });
 
+/** The draft task for select fields.
+ *  @class IxSelectFieldDraftTask
+ *  @extends IxAbstractDraftTask
+ */
 IxSelectFieldDraftTask = Class.create(IxAbstractDraftTask, {
   initialize : function($super) {
     $super();
@@ -107,6 +132,10 @@ Object.extend(IxTextAreaFieldDraftTask, {
   supports: ['textarea']
 });
 
+/** The draft task for table components.
+ *  @class IxTableComponentDraftTask
+ *  @extends IxAbstractDraftTask
+ */
 IxTableComponentDraftTask = Class.create(IxAbstractDraftTask, {
   initialize : function($super) {
     $super();
@@ -243,6 +272,10 @@ Object.extend(IxTableComponentDraftTask, {
   supports: ['div.ixTable']
 });
 
+/** The draft task for CKEditor.
+ *  @class IxCKEditorFieldDraftTask
+ *  @extends IxAbstractDraftTask
+ */
 IxCKEditorFieldDraftTask = Class.create(IxAbstractDraftTask, {
   initialize : function($super) {
     $super();
@@ -274,7 +307,15 @@ Object.extend(IxCKEditorFieldDraftTask, {
   supports: ['textarea[ix:ckeditor="true"]']
 });
 
+/** An object containing the methods for accessing draft tasks.
+ * 
+ */
 IxDraftTaskVault = {
+  /** Returns the draft task that handles the given DOM element.
+   * 
+   * @param element The DOM element to be handled.
+   * @returns The draft task that handles <code>element</code>.
+   */
   getTaskClassFor: function (element) {
     for (var i = this._taskTypes.length - 1; i >= 0; i--) {
       for (var j = 0; j < this._taskTypes[i].supports.length; j++) {
@@ -284,6 +325,11 @@ IxDraftTaskVault = {
       }
     }
   },
+  /** Returns the draft task with the given task ID.
+   * 
+   * @param taskId The task ID of the resulting task.
+   * @returns The draft task whose task ID is <code>taskId</code>.
+   */
   getTaskClassById: function (taskId) {
     return this._tasksById.get(taskId);
   },
@@ -295,21 +341,48 @@ IxDraftTaskVault = {
   _tasksById: new Hash()
 };
 
-IxElementDraft = Class.create({
+
+IxElementDraft = Class.create(
+  /** @lends IxElementDraft.prototype */
+  {
+  /** Creates a new element draft.
+   * @class An element draft.
+   * @constructs
+   * 
+   * @param draftTaskId The ID of the draft task
+   * @param name The name of the draft
+   * @param data The data of the draft
+   */
   initialize : function(draftTaskId, name, data) {
     this._data = data;
     this._name = name;
     this._draftTaskId = draftTaskId;
   },
+  /** Returns the data of the draft.
+   * 
+   * @returns the data of the draft.
+   */
   getData: function () {
     return this._data;
   },
+  /** Returns the name of the draft.
+   * 
+   * @returns the name of the draft.
+   */
   getName: function () {
     return this._name;
   },
+  /** Returns the index of the draft.
+   * 
+   * @returns {Number} 0
+   */
   getIndex: function () {
     return 0;
   },
+  /** Returns the task ID of the draft.
+   * 
+   * @returns the task ID of the draft
+   */
   getDraftTaskId: function () {
     return this._draftTaskId;
   }
@@ -321,7 +394,15 @@ IxDraftTaskVault._registerTaskType(IxTextAreaFieldDraftTask, 'textareaField');
 IxDraftTaskVault._registerTaskType(IxTableComponentDraftTask, 'tableComponent');
 IxDraftTaskVault._registerTaskType(IxCKEditorFieldDraftTask, 'ckeditorField');
 
-IxDraftAPI = Class.create({
+/** 
+ *  @class An API for manipulating form drafts.
+ */
+IxDraftAPI = Class.create(
+  /** @lends IxDraftAPI.prototype */
+  {
+  /** Creates a new form draft.
+   *  @returns {String} The draft data in JSON form.
+   */
   createFormDraft: function () {
     var elementDrafts = new Array();
     this._draftChildElements(document.documentElement, elementDrafts);
@@ -329,6 +410,10 @@ IxDraftAPI = Class.create({
     draftData.set("elements", elementDrafts);
     return draftData.toJSON();
   },
+  /** Restores a former form draft.
+   * 
+   * @param {String} restoreData The former draft data, in JSON form.
+   */
   restoreFormDraft: function (restoreData) {
     var draftData = Object.isString(restoreData) ? restoreData.evalJSON() : restoreData;
     var elementDrafts = draftData.elements;

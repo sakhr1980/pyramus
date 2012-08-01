@@ -1,10 +1,18 @@
-/**
+/*
  * TODO: 
  * 
  * T�m� luokka pit�� saada lokalisoitua!!!
  */
 
-IxDraftUI = Class.create({ 
+IxDraftUI = Class.create(
+  /** @lends IxDraftUI.prototype */
+  { 
+  /** Creates a new user interface for drafting.
+   * @class An user interface for saving and restoring drafts.
+   * @constructs 
+   * 
+   * @param options Additional options for drafting.
+   */
   initialize : function(options) {
     this._saveInfoContainer = new Element("div", {className: "draftSavedContainer"});
     this._saveInfoText = new Element("span");
@@ -22,22 +30,40 @@ IxDraftUI = Class.create({
     this._saveInfoContainer.hide();
     this._draftSavingContainer.hide();
   },
+  /** This method is called whenever draft updating is started.
+   * 
+   */
   updateDraftStart: function () {
     this._showSavingInfo();
   },
+  /** This method is called whenever draft updating is finished.
+   * 
+   */
   updateDraftEnd: function (draftSaved) {
     this._hideSavingInfo();
     this._changeInfoText('<div style="font-size:110%">Draft saved at ' + this._getDate(draftSaved) + "</div>");
   },
+  /** This method is called whenever draft restoring is started.
+   * 
+   */
   restoreDraftStart: function () {
     
   },
+  /** This method is called whenever draft restoring is finished.
+   * 
+   */
   restoreDraftEnd: function (draftSaved) {
     this._changeInfoText('<div style="font-size:14px">View data was restored from draft succesfully</div>');
   },
+  /** This method is called whenever draft deleting is started.
+   * 
+   */
   deleteDraftStart: function () {
     
   },
+  /** This method is called whenever draft deleting is finished.
+   * 
+   */
   deleteDraftEnd: function () {
     this._changeInfoText("");
   },
