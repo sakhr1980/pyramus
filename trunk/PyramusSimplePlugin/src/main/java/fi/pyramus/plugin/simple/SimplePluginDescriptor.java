@@ -9,20 +9,39 @@ import fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabHook;
 import fi.pyramus.plugin.simple.hooks.EditCourseSimpleTabLabelHook;
 import fi.pyramus.plugin.simple.views.LoggedUserInfoViewController;
 
+/** The descriptor that exposes the plugin's functionality to host program.
+ *
+ */
 public class SimplePluginDescriptor implements PluginDescriptor {
   
+  /** Returns the binary request controllers provided by this plugin.
+   * 
+   * @return The binary request controllers provided by this plugin.
+   */
   public Map<String, Class<?>> getBinaryRequestControllers() {
     return null;
   }
   
+  /** Returns the JSON request controllers provided by this plugin.
+   * 
+   * @return The JSON request controllers provided by this plugin.
+   */
   public Map<String, Class<?>> getJSONRequestControllers() {
     return null;
   }
   
+  /** Returns the name of this plugin.
+   * 
+   */
   public String getName() {
     return "simple";
   }
   
+  
+  /** Returns the page hook controllers provided by this plugin.
+   * 
+   * @return The page hook controllers provided by this plugin.
+   */
   public Map<String, Class<?>> getPageHookControllers() {
     Map<String, Class<?>> hookControllers = new HashMap<String, Class<?>>();
     
@@ -32,6 +51,10 @@ public class SimplePluginDescriptor implements PluginDescriptor {
     return hookControllers;
   }
   
+  /** Returns the page request controllers provided by this plugin.
+   * 
+   * @return The page request controllers provided by this plugin.
+   */
   public Map<String, Class<?>> getPageRequestControllers() {
     Map<String, Class<?>> viewControllers = new HashMap<String, Class<?>>();
     
@@ -40,6 +63,10 @@ public class SimplePluginDescriptor implements PluginDescriptor {
     return viewControllers;
   }
   
+  /** Returns the authentication providers implemented by this plugin.
+   * 
+   * @return The authentication providers implemented by this plugin
+   */
   public Map<String, Class<?>> getAuthenticationProviders() {
     Map<String, Class<?>> authenticationProviders = new HashMap<String, Class<?>>();
     
@@ -48,6 +75,10 @@ public class SimplePluginDescriptor implements PluginDescriptor {
     return authenticationProviders;
   }
   
+  /** Returns the base path for the localization strings for this plugin.
+   * 
+   * @return The base path for the localization strings for this plugin.
+   */
   public String getMessagesBundlePath() {
     return "fi.pyramus.plugin.simple.messages";
   }

@@ -9,8 +9,17 @@ import fi.pyramus.dao.PyramusEntityDAO;
 import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth;
 import fi.pyramus.plugin.simple.domainmodel.users.SimpleAuth_;
 
+/** A data access object for the SimplePlugin authorization provider.
+ * 
+ */
 public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
 
+  /** Create a new persistent <code>SimpleAuth</code> object.
+   * 
+   * @param username The username of the new user.
+   * @param password The password of the new user.
+   * @return The new <code>SimpleAuth</code> object.
+   */
   public SimpleAuth create(String username, String password) {
     EntityManager entityManager = getEntityManager();
     
@@ -23,6 +32,13 @@ public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
     return simpleAuth;
   }
 
+  /** Find a SimpleAuth object with specific username and password.
+   * 
+   * @param username The username of the user to find.
+   * @param password The password of the user to find.
+   * @return The <code>SimpleAuth</code> object with the specified username and password,
+   * or <code>null</code> if such object was not found. 
+   */
   public SimpleAuth findByUserNameAndPassword(String username, String password) {
     EntityManager entityManager = getEntityManager();
     
@@ -39,6 +55,11 @@ public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  /** Update the username of a <code>SimpleAuth</code> object.
+   * 
+   * @param simpleAuth The object to update.
+   * @param username The new username.
+   */
   public void updateUsername(SimpleAuth simpleAuth, String username) {
     EntityManager entityManager = getEntityManager();
     
@@ -47,6 +68,11 @@ public class SimpleAuthDAO extends PyramusEntityDAO<SimpleAuth> {
     entityManager.persist(simpleAuth);
   }
   
+  /** Update the password of a <code>SimpleAuth</code> object.
+   * 
+   * @param simpleAuth The object to update.
+   * @param password The new password.
+   */
   public void updatePassword(SimpleAuth simpleAuth, String password) {
     EntityManager entityManager = getEntityManager();
     

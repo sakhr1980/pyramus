@@ -11,24 +11,45 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+/** Entity object for SimplePlugin authorization provider. */
 public class SimpleAuth {
 
+  /** Returns the ID of the entity.
+   * 
+   * @return The ID of the entity.
+   */
   public Long getId() {
     return id;
   }
   
+  /** Returns the username of the entity.
+   * 
+   * @return the username of the entity.
+   */
   public String getUsername() {
     return username;
   }
   
+  /** Sets the username of the entity.
+   * 
+   * @param username The new username.
+   */
   public void setUsername(String username) {
     this.username = username;
   }
   
+  /** Returns the password of the entity.
+   * 
+   * @return the password of the entity.
+   */
   public String getPassword() {
     return password;
   }
   
+  /** Sets the password of the entity.
+   * 
+   * @param password The new password.
+   */
   public void setPassword(String password) {
     this.password = password;
   }

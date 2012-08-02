@@ -9,8 +9,17 @@ import fi.pyramus.dao.DAOFactory;
 import fi.pyramus.dao.users.UserDAO;
 import fi.pyramus.domainmodel.users.User;
 
+/**
+ * The controller responsible of the Logged User Info view of the application.
+ * 
+ */
 public class LoggedUserInfoViewController implements PageController {
 
+  /**
+   * Processes the page request.
+   * 
+   * @param pageRequestContext Page request context
+   */
   public void process(PageRequestContext pageRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
     User loggedUser = userDAO.findById(pageRequestContext.getLoggedUserId());
