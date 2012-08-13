@@ -29,7 +29,7 @@ import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.persistence.search.SearchTimeFilterMode;
 
 /**
- * The controller responsible of searching course.
+ * The controller responsible of searching courses.
  * 
  * @see fi.pyramus.views.modules.SearchCoursesViewController
  */
@@ -37,6 +37,38 @@ public class SearchCoursesJSONRequestController extends JSONRequestController {
 
   /**
    * Processes the request to search courses.
+   * The request should contain the either following parameters (for simple search):
+   * <dl>
+   *   <dt><code>text</code></dt>
+   *   <dd>The text to search for</dd>
+   * </dl>
+   * or the following parameters (for advanced search):
+   * <dl>
+   *   <dt><code>name</code></dt>
+   *   <dd>Course name to find.</dd>
+   *   <dt><code>tags</code></dt>
+   *   <dd>Tags to find.</dd>
+   *   <dt><code>nameExtension</code></dt>
+   *   <dd>The name extension to find.</dd>
+   *   <dt><code>description</code></dt>
+   *   <dd>The description to find.</dd>
+   *   <dt><code>state</code></dt>
+   *   <dd>The ID of the course state to find.</dd>
+   *   <dt><code>subject</code></dt>
+   *   <dd>The ID of the subject to find.</dd>
+   *   <dt><code>timeframeStart</code></dt>
+   *   <dd>The start of the timeframe to find.</dd>
+   *   <dt><code>timeframeEnd</code></dt>
+   *   <dd>The end of the timeframe to find.</dd>
+   *   <dt><code>educationType</code></dt>
+   *   <dd>The education type to find.</dd>
+   *   <dt><code>educationSubtype</code></dt>
+   *   <dd>The education subtype to find.</dd>
+   *   <dt><code>timeframeMode</code></dt>
+   *   <dd>The mode of the timeframe. Can be <code>INCLUSIVE</code>
+   *   or <code>EXCLUSIVE</code>.</dd>
+   * </dl>
+   * 
    * 
    * @param jsonRequestContext The JSON request context
    */
@@ -153,6 +185,10 @@ public class SearchCoursesJSONRequestController extends JSONRequestController {
     requestContext.addResponseParameter("page", searchResult.getPage());
   }
 
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.EVERYONE };
   }

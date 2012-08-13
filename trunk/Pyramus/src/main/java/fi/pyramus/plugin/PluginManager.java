@@ -14,6 +14,9 @@ import sun.misc.Service;
 import fi.internetix.smvc.logging.Logging;
 import fi.pyramus.plugin.maven.MavenClient;
 
+/** The class responsible for managing plugins.
+ * 
+ */
 @SuppressWarnings("restriction")
 public class PluginManager {
   

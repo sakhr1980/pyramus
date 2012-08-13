@@ -7,8 +7,21 @@ import fi.pyramus.domainmodel.file.StudentFile;
 import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
 
+/** A binary request controller responsible for serving files
+ * attached to students.
+ *
+ */
 public class DownloadStudentFile extends BinaryRequestController {
 
+  /** Processes a binary request.
+   * The request should contain the following parameters:
+   * <dl>
+   *   <dt><code>fileId</code></dt>
+   *   <dd>The ID of the student file.</dd>
+   * </dl>
+   * 
+   * @param binaryRequestContext The context of the binary request.
+   */
   public void process(BinaryRequestContext binaryRequestContext) {
     StudentFileDAO studentFileDAO = DAOFactory.getInstance().getStudentFileDAO();
     
@@ -22,6 +35,10 @@ public class DownloadStudentFile extends BinaryRequestController {
     }
   }
   
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }

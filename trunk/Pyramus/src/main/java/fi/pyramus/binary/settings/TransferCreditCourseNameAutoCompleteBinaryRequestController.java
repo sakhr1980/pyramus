@@ -18,8 +18,16 @@ import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
 
+/** A binary request controller responsible for providing autocomplete
+ * for transfer credit course names.
+ *
+ */
 public class TransferCreditCourseNameAutoCompleteBinaryRequestController extends BinaryRequestController {
 
+  /** Processes a binary request.
+   * 
+   * @param binaryRequestContext The context of the binary request.
+   */
   public void process(BinaryRequestContext binaryRequestContext) {
     TransferCreditTemplateCourseDAO transferCreditTemplateCourseDAO = DAOFactory.getInstance().getTransferCreditTemplateCourseDAO();
     
@@ -49,6 +57,10 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController extends
     }
   }
   
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }

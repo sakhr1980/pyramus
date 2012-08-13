@@ -15,8 +15,21 @@ import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
 
+/** A binary request controller responsible for providing server-side autocomplete
+ * for users search.
+ *
+ */
 public class UsersAutoCompleteBinaryRequestController extends BinaryRequestController {
 
+  /** Processes a binary request.
+   * The request should contain the following parameters:
+   * <dl>
+   *   <dt><code>text</code></dt>
+   *   <dd>Already typed characters.</dd>
+   * </dl>
+   * 
+   * @param binaryRequestContext The context of the binary request.
+   */
   public void process(BinaryRequestContext binaryRequestContext) {
     UserDAO userDAO = DAOFactory.getInstance().getUserDAO();
 
@@ -44,6 +57,10 @@ public class UsersAutoCompleteBinaryRequestController extends BinaryRequestContr
     }
   }
   
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }

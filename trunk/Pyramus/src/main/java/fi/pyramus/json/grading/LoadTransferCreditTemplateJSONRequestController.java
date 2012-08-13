@@ -14,8 +14,22 @@ import fi.pyramus.domainmodel.grading.TransferCreditTemplateCourse;
 import fi.pyramus.framework.JSONRequestController;
 import fi.pyramus.framework.UserRole;
 
+/**
+ * The controller responsible of loading transfer credit templates.
+ */
 public class LoadTransferCreditTemplateJSONRequestController extends JSONRequestController {
 
+  
+  /**
+   * Processes the request to load a transfer credit template.
+   * The request should contain the either following parameters:
+   * <dl>
+   *   <dt><code>transferCreditTemplateId</code></dt>
+   *   <dd>The ID of the transfer credit to archive.</dd>
+   * </dl>
+   * 
+   * @param jsonRequestContext The JSON request context
+   */
   public void process(JSONRequestContext jsonRequestContext) {
     TransferCreditTemplateDAO transferCreditTemplateDAO = DAOFactory.getInstance().getTransferCreditTemplateDAO();
 

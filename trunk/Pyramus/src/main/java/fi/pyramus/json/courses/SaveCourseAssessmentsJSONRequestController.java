@@ -20,7 +20,7 @@ import fi.pyramus.framework.PyramusStatusCode;
 import fi.pyramus.framework.UserRole;
 
 /**
- * The controller responsible of modifying an existing course. 
+ * The controller responsible of saving course assessments.
  * 
  * @see fi.pyramus.views.modules.EditCourseViewController
  */
@@ -28,6 +28,27 @@ public class SaveCourseAssessmentsJSONRequestController extends JSONRequestContr
 
   /**
    * Processes the request to edit a course.
+   * The request should contain the following parameters:
+   * <dl>
+   *   <dt><code>studentsTable.rowCount</code>
+   *   <dd>The number of students in this course assessment.</dd>
+   *   <dt><code>studentsTable.*.modified</code></dt>
+   *   <dd><code>true</code> if the student was modified.</dd>
+   *   <dt><code>studentsTable.*.courseStudentId</code></dt>
+   *   <dd>The ID of the student in the course.</dd>
+   *   <dt><code>studentsTable.*.assessingUserId</code></dt>
+   *   <dd>The User ID of the assesser.</dd>
+   *   <dt><code>studentsTable.*.gradeId</code></dt>
+   *   <dd>The ID of the student's grade.</dd>
+   *   <dt><code>studentsTable.*.assessmentDate</code></dt>
+   *   <dd>The date the student was assessed, as a timestamp in ms.</dd>
+   *   <dt><code>studentsTable.*.participationType</code></dt>
+   *   <dd>The student's participation type.</dd>
+   *   <dt><code>studentsTable.*.verbalModified</code></dt>
+   *   <dd><code>true</code> if the verbal assessment is modified.
+   *   <dt><code>studentsTable.*.verbalAssessment</code></dt>
+   *   <dd>The verbal assessment of the student.</dd>
+   * </dl>
    * 
    * @param requestContext The JSON request context
    */
@@ -86,6 +107,10 @@ public class SaveCourseAssessmentsJSONRequestController extends JSONRequestContr
     requestContext.setRedirectURL(requestContext.getReferer(true));
   }
 
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
