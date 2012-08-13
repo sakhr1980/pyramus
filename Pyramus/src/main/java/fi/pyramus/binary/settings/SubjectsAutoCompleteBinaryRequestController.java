@@ -17,8 +17,16 @@ import fi.pyramus.domainmodel.base.Subject;
 import fi.pyramus.framework.BinaryRequestController;
 import fi.pyramus.framework.UserRole;
 
+/** A binary request controller responsible for providing autocomplete
+ * for subject search.
+ *
+ */
 public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestController {
 
+  /** Processes a binary request.
+   * 
+   * @param binaryRequestContext The context of the binary request.
+   */
   public void process(BinaryRequestContext binaryRequestContext) {
     SubjectDAO subjectDAO = DAOFactory.getInstance().getSubjectDAO();
 
@@ -46,6 +54,10 @@ public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestCo
     }
   }
   
+  /** Returns the user roles allowed to access this controller.
+   * 
+   * @return The user roles allowed to access this controller.
+   */
   public UserRole[] getAllowedRoles() {
     return new UserRole[] { UserRole.USER, UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }

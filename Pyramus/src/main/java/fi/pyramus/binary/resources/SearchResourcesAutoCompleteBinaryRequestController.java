@@ -18,8 +18,21 @@ import fi.pyramus.framework.UserRole;
 import fi.pyramus.persistence.search.SearchResult;
 import fi.pyramus.util.StringAttributeComparator;
 
+/** A binary request controller responsible for providing server-side autocomplete
+ * for resources search.
+ *
+ */
 public class SearchResourcesAutoCompleteBinaryRequestController extends BinaryRequestController {
 
+  /** Processes a binary request.
+   * The request should contain the following parameters:
+   * <dl>
+   *   <dt><code>query</code></dt>
+   *   <dd>Already typed characters.</dd>
+   * </dl>
+   * 
+   * @param binaryRequestContext The context of the binary request.
+   */
   public void process(BinaryRequestContext binaryRequestContext) {
     ResourceDAO resourceDAO = DAOFactory.getInstance().getResourceDAO();
     ResourceCategoryDAO resourceCategoryDAO = DAOFactory.getInstance().getResourceCategoryDAO();
