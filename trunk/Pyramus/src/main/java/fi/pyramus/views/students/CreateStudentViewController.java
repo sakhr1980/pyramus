@@ -30,6 +30,7 @@ import fi.pyramus.domainmodel.base.StudyProgramme;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 public class CreateStudentViewController extends PyramusViewController implements Breadcrumbable {
@@ -72,17 +73,19 @@ public class CreateStudentViewController extends PyramusViewController implement
     List<StudentVariableKey> studentVariableKeys = variableKeyDAO.listUserEditableStudentVariableKeys();
     Collections.sort(studentVariableKeys, new StringAttributeComparator("getVariableName"));
     
+    String jsonContactTypes = new JSONArrayExtractor("name", "id").extractString(contactTypes);
+    String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(studentVariableKeys);
+    
+    
     pageRequestContext.getRequest().setAttribute("schools", schools);
     pageRequestContext.getRequest().setAttribute("activityTypes", studentActivityTypeDAO.listUnarchived());
     pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes);
-    pageRequestContext.getRequest().setAttribute("contactTypes", contactTypes);
     pageRequestContext.getRequest().setAttribute("examinationTypes", studentExaminationTypeDAO.listUnarchived());
     pageRequestContext.getRequest().setAttribute("educationalLevels", studentEducationalLevelDAO.listUnarchived());
     pageRequestContext.getRequest().setAttribute("nationalities", nationalities);
     pageRequestContext.getRequest().setAttribute("municipalities", municipalities);
     pageRequestContext.getRequest().setAttribute("languages", languages);
     pageRequestContext.getRequest().setAttribute("studyProgrammes", studyProgrammes);
-    pageRequestContext.getRequest().setAttribute("variableKeys", studentVariableKeys);
     pageRequestContext.getRequest().setAttribute("studyEndReasons", studyEndReasonDAO.listByParentReason(null));
     
     pageRequestContext.setIncludeJSP("/templates/students/createstudent.jsp");

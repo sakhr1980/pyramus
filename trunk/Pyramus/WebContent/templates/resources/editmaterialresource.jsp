@@ -16,23 +16,8 @@
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     
-    <script type="text/javascript">
-	    function setupTags() {
-	      JSONRequest.request("tags/getalltags.json", {
-	        onSuccess: function (jsonResponse) {
-	          new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
-	            tokens: [',', '\n', ' ']
-	          });
-	        }
-	      });   
-	    }
-    
-      function onLoad(event) {
-        var tabControl = new IxProtoTabs($('tabs'));
-        setupTags();   
-      }
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/setuptags.js">
     </script>
-    
   </head>
   <body onload="onLoad(event)" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>

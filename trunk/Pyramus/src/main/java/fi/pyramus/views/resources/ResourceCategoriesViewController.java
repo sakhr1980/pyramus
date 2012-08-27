@@ -13,6 +13,7 @@ import fi.pyramus.domainmodel.resources.ResourceCategory;
 import fi.pyramus.domainmodel.users.Role;
 import fi.pyramus.framework.PyramusViewController;
 import fi.pyramus.framework.UserRole;
+import fi.pyramus.util.JSONArrayExtractor;
 import fi.pyramus.util.StringAttributeComparator;
 
 /**
@@ -32,8 +33,9 @@ public class ResourceCategoriesViewController extends PyramusViewController impl
 
     List<ResourceCategory> resourceCategories = resourceCategoryDAO.listUnarchived();
     Collections.sort(resourceCategories, new StringAttributeComparator("getName"));
+    String jsonResourceCategories = new JSONArrayExtractor("name", "id").extractString(resourceCategories);
 
-    pageRequestContext.getRequest().setAttribute("resourceCategories", resourceCategories);
+    this.setJsDataVariable(pageRequestContext, "resourceCategories", jsonResourceCategories);
     pageRequestContext.setIncludeJSP("/templates/resources/resourcecategories.jsp");
   }
 
