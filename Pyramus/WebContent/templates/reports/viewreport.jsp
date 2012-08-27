@@ -63,6 +63,9 @@
       }
     
       function showReportContent(reportId, urlParams) {
+        // Some browsers encode URL:s as UTF-8; some as Latin-1. Make sure the encoding is consistent.
+        // Also, escape the /, :, & etc characters in error messages. 
+        urlParams = escape(urlParams);
         _urlParams = urlParams;
         updateDownloadLinks('${pageContext.request.contextPath}/reports/downloadreport.binary?reportId=' + reportId + urlParams);
         loadReportContentsFrame('${pageContext.request.contextPath}/reports/viewreportcontents.page?reportId=' + reportId + urlParams);
