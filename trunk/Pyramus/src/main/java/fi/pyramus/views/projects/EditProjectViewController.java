@@ -53,6 +53,7 @@ public class EditProjectViewController extends PyramusViewController implements 
     Collections.sort(educationalTimeUnits, new StringAttributeComparator("getName"));
 
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString());
+    this.setJsDataVariable(pageRequestContext, "projectId", project.getId().toString());
     pageRequestContext.getRequest().setAttribute("project", project);
     pageRequestContext.getRequest().setAttribute("optionalStudiesLengthTimeUnits", educationalTimeUnits);
     pageRequestContext.getRequest().setAttribute("users", userDAO.listAll());

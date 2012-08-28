@@ -14,6 +14,7 @@
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/setuptags.js">
     </script>

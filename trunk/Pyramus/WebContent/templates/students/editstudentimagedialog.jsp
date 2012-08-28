@@ -12,6 +12,7 @@
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/searchnavigation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/studentinfopopup_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
     
     <script type="text/javascript">
       /**

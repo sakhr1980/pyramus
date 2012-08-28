@@ -19,6 +19,7 @@
     <jsp:include page="/templates/generic/jsonform_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
 
     <script type="text/javascript">
 
