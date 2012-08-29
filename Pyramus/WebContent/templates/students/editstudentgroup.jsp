@@ -24,9 +24,23 @@
     <jsp:include page="/templates/generic/draftapi_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/validation_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/locale_support.jsp"></jsp:include>
+    <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
 
     <script type="text/javascript">
-
+      function setupRelatedCommands() {
+        var basicRelatedActionsHoverMenu = new IxHoverMenu($('basicRelatedActionsHoverMenuContainer'), {
+          text: '<fmt:message key="students.editStudentGroup.basicTabRelatedActionsLabel"/>'
+        });
+    
+        basicRelatedActionsHoverMenu.addItem(new IxHoverMenuClickableItem({
+          iconURL: GLOBAL_contextPath + '/gfx/eye.png',
+          text: '<fmt:message key="students.editStudentGroup.viewStudentGroupRelatedActionLabel"/>',
+          onclick: function (event) {
+            redirectTo(GLOBAL_contextPath + '/students/viewstudentgroup.page?studentgroup=${studentGroup.id}');
+          }
+        }));          
+      }
+      
       function addNewStudent(studentsTable, abstractStudentId, studentId, studentName) {
         JSONRequest.request("students/getstudentstudyprogrammes.json", {
           parameters: {
@@ -352,6 +366,7 @@
 
       function onLoad(event) {
         var tabControl = new IxProtoTabs($('tabs'));
+        setupRelatedCommands();
         initializeDraftListener();
         setupTags();
         setupUsersTable();
@@ -381,6 +396,8 @@
           </div>
   
           <div id="basic" class="tabContent">
+            <div id="basicRelatedActionsHoverMenuContainer" class="tabRelatedActionsContainer"></div>
+            
             <div class="genericFormSection">
                 <jsp:include page="/templates/generic/fragments/formtitle.jsp">
                   <jsp:param name="titleLocale" value="students.editStudentGroup.nameTitle"/>
