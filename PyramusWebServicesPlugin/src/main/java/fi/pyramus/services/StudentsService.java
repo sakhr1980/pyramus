@@ -3,6 +3,8 @@ package fi.pyramus.services;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.persistence.EnumType;
@@ -47,8 +49,10 @@ import fi.pyramus.services.entities.base.AddressEntity;
 import fi.pyramus.services.entities.students.AbstractStudentEntity;
 import fi.pyramus.services.entities.students.StudentEntity;
 
+@Stateless
 @WebService
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
+@RolesAllowed("WebServices")
 public class StudentsService extends PyramusService {
 
   public AbstractStudentEntity getAbstractStudentById(@WebParam (name="abstractStudentId") Long abstractStudentId) {

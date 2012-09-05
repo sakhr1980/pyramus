@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
@@ -71,8 +73,10 @@ import fi.pyramus.services.entities.courses.CourseParticipationTypeEntity;
 import fi.pyramus.services.entities.courses.CourseStudentEntity;
 import fi.pyramus.services.entities.courses.CourseUserEntity;
 
+@Stateless
 @WebService
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
+@RolesAllowed("WebServices")
 public class CoursesService extends PyramusService {
 
   public CourseEntity createCourse(@WebParam (name = "moduleId") Long moduleId, @WebParam (name = "name") String name, @WebParam (name = "nameExtension") String nameExtension, @WebParam (name = "subjectId") Long subjectId,

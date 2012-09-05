@@ -5,6 +5,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
@@ -47,8 +49,10 @@ import fi.pyramus.services.entities.base.StudyProgrammeEntity;
 import fi.pyramus.services.entities.base.SubjectEntity;
 import fi.pyramus.util.StringAttributeComparator;
 
+@Stateless
 @WebService
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
+@RolesAllowed("WebServices")
 public class BaseService extends PyramusService {
 
   public NationalityEntity getNationalityByCode(@WebParam (name = "code") String code) {
