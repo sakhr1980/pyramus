@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 public class IpFilter implements Filter {
   
   public void init(FilterConfig fc) throws ServletException {
-    String ipConfStr = fc.getInitParameter("allowedIPs");
+    String ipConfStr = System.getProperty("PyramusWSAllowedIPs");
+    
     if (ipConfStr != null) {
       String[] ipConfArr = ipConfStr.split(",");
       for (int i = 0; i < ipConfArr.length; i++) {
