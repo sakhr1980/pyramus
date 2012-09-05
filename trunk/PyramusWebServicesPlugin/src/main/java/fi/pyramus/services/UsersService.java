@@ -1,5 +1,7 @@
 package fi.pyramus.services;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.persistence.EnumType;
@@ -17,8 +19,10 @@ import fi.pyramus.domainmodel.users.User;
 import fi.pyramus.services.entities.EntityFactoryVault;
 import fi.pyramus.services.entities.users.UserEntity;
 
+@Stateless
 @WebService
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
+@RolesAllowed("WebServices")
 public class UsersService extends PyramusService {
 
   public UserEntity[] listUsers() {

@@ -2,6 +2,8 @@ package fi.pyramus.services;
 
 import java.util.Date;
 
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.BindingType;
@@ -41,8 +43,10 @@ import fi.pyramus.services.entities.grading.GradeEntity;
 import fi.pyramus.services.entities.grading.GradingScaleEntity;
 import fi.pyramus.services.entities.grading.TransferCreditEntity;
 
+@Stateless
 @WebService
 @BindingType(javax.xml.ws.soap.SOAPBinding.SOAP12HTTP_BINDING)
+@RolesAllowed("WebServices")
 public class GradingService extends PyramusService {
   
   public TransferCreditEntity[] listStudentsTransferCredits(@WebParam (name = "studentId") Long studentId) {
