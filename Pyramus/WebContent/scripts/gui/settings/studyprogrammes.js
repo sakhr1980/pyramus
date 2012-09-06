@@ -144,7 +144,7 @@ function onLoad(event) {
   var rows = new Array();
   for ( var i = 0, l = studyProgrammes.length; i < l; i++) {
     var studyProgramme = studyProgrammes[i];
-    rows.push([ '', studyProgramme.name, studyProgramme.categoryId, studyProgramme.code, '', '', studyProgramme.id, 0 ]);
+    rows.push([ '', studyProgramme.name.escapeHTML(), studyProgramme.categoryId, studyProgramme.code, '', '', studyProgramme.id, 0 ]);
   }
   studyProgrammeTable.addRows(rows);
 
