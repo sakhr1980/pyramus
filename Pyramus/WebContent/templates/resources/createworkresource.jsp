@@ -19,6 +19,8 @@
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/setuptags.js">
     </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/createworkresource.js">
+    </script>
   </head>
   <body onload="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
