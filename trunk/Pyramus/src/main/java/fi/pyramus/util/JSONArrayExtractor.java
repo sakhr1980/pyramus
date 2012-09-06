@@ -6,6 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.StringUtils;
+
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.StatusCode;
+
 
 import net.sf.json.*;
 
@@ -30,7 +35,6 @@ import net.sf.json.*;
  */
 public class JSONArrayExtractor {
   
-  private List<String> attributeNames;
   
   /** Creates a new Java collection to <code>JSONArray</code> converter
    * that converts no properties, just emits empty <code>JSONObject</code>s.
@@ -68,8 +72,8 @@ public class JSONArrayExtractor {
       JSONObject destObject = new JSONObject();
       for (String attributeName : attributeNames) {
         Object[] params = new Object[] {};
-        String methodName = "get" + attributeName.substring(0,1).toUpperCase() + attributeName.substring(1);
-        Method attributeMethod = getMethod(sourceObject, methodName, null);
+        String methodName = "get" + StringUtils.capitalize(attributeName);
+        Method attributeMethod = ReflectionApiUtils.getMethod(sourceObject.getClass(), methodName);
         Object attributeValue;
         // Nulls are deliberately skipped so that they are undefined in JS
         try {
@@ -77,14 +81,11 @@ public class JSONArrayExtractor {
         } catch (NullPointerException e) {
           continue;
         } catch (IllegalAccessException e) {
-          e.printStackTrace();
-          continue;
+          throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         } catch (IllegalArgumentException e) {
-          e.printStackTrace();
-          continue;
+          throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         } catch (InvocationTargetException e) {
-          e.printStackTrace();
-          continue;
+          throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         }
         destObject.put(attributeName, attributeValue);
       }
@@ -94,19 +95,5 @@ public class JSONArrayExtractor {
     return destObjects;
   }
   
-  private static Method getMethod(Object pojo, String methodName, Class<?>[] params) {
-    Method method = null;
-    
-    Class<?> cClass = pojo.getClass();
-    while (cClass != null && method == null) {
-      try {
-        method = cClass.getDeclaredMethod(methodName, params);
-      } catch (NoSuchMethodException nsf) {
-        cClass = cClass.getSuperclass();
-      }
-    }
-    
-    return method;
-  }
-
+  private List<String> attributeNames;
 }
