@@ -1,6 +1,5 @@
 var educationTypes = JSDATA["educationTypes"].evalJSON();
 
-var archivedRowIndex;
 
 function addEducationSubtypesTableRow() {
   var table = getIxTableById('educationSubtypesTable');
@@ -89,6 +88,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.educationSubtypes.educationSubtypeArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(educationSubtypeName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

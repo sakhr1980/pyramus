@@ -1,4 +1,3 @@
-var archivedRowIndex;
 var resourceCategories = JSDATA["resourceCategories"].evalJSON();
 
 function addResourceCategoriesTableRow() {
@@ -58,6 +57,7 @@ function onLoad(event) {
                     + "/simpledialog.page?localeId=resources.resourceCategories.resourceCategoryArchiveConfirmDialogContent&localeParams="
                     + encodeURIComponent(resourceCategoryName);
 
+                var archivedRowIndex;
                 archivedRowIndex = event.row;
 
                 var dialog = new IxDialog(

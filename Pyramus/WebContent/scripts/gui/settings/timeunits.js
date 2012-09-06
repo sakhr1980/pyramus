@@ -1,4 +1,3 @@
-var archivedRowIndex;
 var timeUnits = JSDATA["timeUnits"].evalJSON();
 var baseTimeUnit = JSDATA["baseTimeUnit"].evalJSON();
 
@@ -79,6 +78,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.timeUnits.timeUnitArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(timeUnitName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

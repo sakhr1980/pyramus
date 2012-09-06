@@ -1,7 +1,6 @@
 var courseParticipationTypes = JSDATA["courseParticipationTypes"].evalJSON();
 var initialCourseParticipationType = JSDATA["initialCourseParticipationType"].evalJSON();
 
-var archivedRowIndex;
 
 function addCourseParticipationTypesTableRow() {
   var table = getIxTableById('courseParticipationTypesTable');
@@ -71,6 +70,7 @@ function onLoad(event) {
                 + "/simpledialog.page?localeId=settings.courseParticipationTypes.courseParticipationTypeArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(courseParticipationTypeName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

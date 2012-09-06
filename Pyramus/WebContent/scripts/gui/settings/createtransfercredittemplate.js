@@ -1,7 +1,6 @@
 var subjects = JSDATA["subjects"].evalJSON();
 var timeUnits = JSDATA["timeUnits"].evalJSON();
 
-var archivedRowIndex;
 
 function addCoursesTableRow() {
   var table = getIxTableById('coursesTable');

@@ -1,4 +1,3 @@
-var archivedRowIndex;
 var fileTypes = JSDATA["fileTypes"].evalJSON();
 
 function addTableRow() {
@@ -56,6 +55,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.fileTypes.archiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(fileTypeName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({
