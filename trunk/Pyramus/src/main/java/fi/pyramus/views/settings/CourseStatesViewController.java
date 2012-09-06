@@ -37,12 +37,12 @@ public class CourseStatesViewController extends PyramusViewController implements
     
     String jsonCourseStates = new JSONArrayExtractor("name", "id").extractString(courseStates);
     JSONObject joInitialCourseState = new JSONObject();
-    try {
-      joInitialCourseState.put("name", initialCourseState.getName());
-      joInitialCourseState.put("id", initialCourseState.getId());
-    } catch (NullPointerException e) {
+    if (initialCourseState == null) {
       joInitialCourseState.put("name", "");
       joInitialCourseState.put("id", -1);
+    } else {
+      joInitialCourseState.put("name", initialCourseState.getName());
+      joInitialCourseState.put("id", initialCourseState.getId());
     }
     
     this.setJsDataVariable(pageRequestContext, "courseStates", jsonCourseStates);
