@@ -88,7 +88,7 @@ public class PhoneNumber {
   private String number;
 
   @ManyToOne
-  @JoinColumn(name="contactInfo")
+  @JoinColumn(name="contactInfo", insertable=false, updatable=false)
   private ContactInfo contactInfo;
  
   @Version
