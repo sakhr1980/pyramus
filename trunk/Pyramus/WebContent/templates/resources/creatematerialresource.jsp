@@ -18,6 +18,8 @@
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/setuptags.js">
     </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/gui/resources/creatematerialresource.js">
+    </script>
     
   </head>
   <body onload="onLoad(event);" ix:enabledrafting="true">
