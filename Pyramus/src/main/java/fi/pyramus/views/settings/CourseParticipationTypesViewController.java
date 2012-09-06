@@ -46,12 +46,12 @@ public class CourseParticipationTypesViewController extends PyramusViewControlle
     String jsonCourseParticipationTypes = new JSONArrayExtractor("name", "id").extractString(courseParticipationTypes);
     
     JSONObject joInitialCourseParticipationType = new JSONObject();
-    try {
-      joInitialCourseParticipationType.put("name", initialCourseParticipationType.getName());
-      joInitialCourseParticipationType.put("id", initialCourseParticipationType.getId());
-    } catch (NullPointerException e) {
+    if (initialCourseParticipationType == null) {
       joInitialCourseParticipationType.put("name", "");
       joInitialCourseParticipationType.put("id", -1);
+    } else {
+      joInitialCourseParticipationType.put("name", initialCourseParticipationType.getName());
+      joInitialCourseParticipationType.put("id", initialCourseParticipationType.getId());
     }
       
     this.setJsDataVariable(pageRequestContext, "courseParticipationTypes", jsonCourseParticipationTypes);
