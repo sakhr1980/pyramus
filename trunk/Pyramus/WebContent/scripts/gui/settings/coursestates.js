@@ -1,7 +1,6 @@
 var courseStates = JSDATA["courseStates"].evalJSON();
 var initialCourseState = JSDATA["initialCourseState"].evalJSON();
 
-var archivedRowIndex;
 
 function addCourseStatesTableRow() {
   var table = getIxTableById('courseStatesTable');
@@ -70,6 +69,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.courseStates.courseStateArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(courseStateName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

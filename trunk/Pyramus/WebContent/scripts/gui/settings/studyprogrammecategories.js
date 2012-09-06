@@ -1,7 +1,6 @@
 var studyProgrammeCategories = JSDATA["studyProgrammeCategories"].evalJSON();
 var educationTypes = JSDATA["educationTypes"].evalJSON();
 
-var archivedRowIndex;
 
 function addStudyProgrammeCategoriesTableRow() {
   var table = getIxTableById('studyProgrammeCategoriesTable');
@@ -80,6 +79,7 @@ function onLoad(event) {
                 + "/simpledialog.page?localeId=settings.studyProgrammeCategories.studyProgrammeCategoryArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(studyProgrammeCategoryName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

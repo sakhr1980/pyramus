@@ -1,4 +1,3 @@
-var archivedRowIndex;
 
 var descriptionCategories = JSDATA["descriptionCategories"].evalJSON();
 
@@ -58,6 +57,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.courseDescriptionCategories.archiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(categoryName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

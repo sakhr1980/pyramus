@@ -1,4 +1,3 @@
-var archivedRowIndex;
 
 var academicTerms = JSDATA["academicTerms"].evalJSON();
 
@@ -74,6 +73,7 @@ function onLoad(event) {
             var termName = table.getCellValue(event.row, table.getNamedColumnIndex('name'));
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.academicTerms.termArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(termName);
+            var archivedRowIndex;
 
             archivedRowIndex = event.row;
 

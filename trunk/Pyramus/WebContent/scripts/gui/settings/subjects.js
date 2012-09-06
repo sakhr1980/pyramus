@@ -1,7 +1,6 @@
 
 var subjects = JSDATA["subjects"].evalJSON();
 var educationTypes = JSDATA["educationTypes"].evalJSON();
-var archivedRowIndex;
 
 function addSubjectsTableRow() {
   var table = getIxTableById('subjectsTable');
@@ -109,6 +108,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.subjects.subjectArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(subjectName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

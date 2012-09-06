@@ -1,4 +1,3 @@
-var archivedRowIndex;
 var subjects = JSDATA["subjects"].evalJSON();
 var timeUnits = JSDATA["timeUnits"].evalJSON();
 var courses = JSDATA["courses"].evalJSON();

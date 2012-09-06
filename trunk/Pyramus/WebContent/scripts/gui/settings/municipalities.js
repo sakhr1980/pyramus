@@ -1,6 +1,5 @@
 var municipalities = JSDATA["municipalities"].evalJSON();
 
-var archivedRowIndex;
 
 function addMunicipalityTableRow() {
   var table = getIxTableById('municipalitiesTable');
@@ -66,6 +65,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.municipalities.municipalityArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(municipalityName);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({

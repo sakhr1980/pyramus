@@ -1,6 +1,5 @@
 var schoolFields = JSDATA["schoolFields"].evalJSON();
 
-var archivedRowIndex;
 
 function addRow() {
   var table = getIxTableById('schoolFieldsTable');
@@ -57,6 +56,7 @@ function onLoad(event) {
             var url = GLOBAL_contextPath + "/simpledialog.page?localeId=settings.manageSchoolFields.schoolFieldsArchiveConfirmDialogContent&localeParams="
                 + encodeURIComponent(name);
 
+            var archivedRowIndex;
             archivedRowIndex = event.row;
 
             var dialog = new IxDialog({
