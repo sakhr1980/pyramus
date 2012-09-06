@@ -89,7 +89,7 @@ public class Email {
   private String address;
 
   @ManyToOne
-  @JoinColumn(name="contactInfo")
+  @JoinColumn(name="contactInfo", insertable=false, updatable=false)
   private ContactInfo contactInfo;
 
   @Version

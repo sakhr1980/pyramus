@@ -128,7 +128,7 @@ public class Address {
   private String country;
 
   @ManyToOne
-  @JoinColumn(name="contactInfo")
+  @JoinColumn(name="contactInfo", insertable=false, updatable=false)
   private ContactInfo contactInfo;
 
   @Version

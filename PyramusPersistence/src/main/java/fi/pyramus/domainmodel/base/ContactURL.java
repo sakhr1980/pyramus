@@ -75,7 +75,7 @@ public class ContactURL {
   private String url;
 
   @ManyToOne
-  @JoinColumn(name="contactInfo")
+  @JoinColumn(name="contactInfo", insertable=false, updatable=false)
   private ContactInfo contactInfo;
 
   @Version

@@ -13,9 +13,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.TableGenerator;
 import javax.persistence.Version;
-import org.hibernate.annotations.IndexColumn;
+
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -140,25 +141,25 @@ public class ContactInfo {
   private Long id;
 
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
-  @IndexColumn (name = "indexColumn")
+  @OrderColumn (name = "indexColumn")
   @JoinColumn (name="contactInfo")
   @IndexedEmbedded
   private List<Address> addresses = new Vector<Address>();
 
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
-  @IndexColumn (name = "indexColumn")
+  @OrderColumn (name = "indexColumn")
   @JoinColumn (name="contactInfo")
   @IndexedEmbedded
   private List<Email> emails = new Vector<Email>();
 
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
-  @IndexColumn (name = "indexColumn")
+  @OrderColumn (name = "indexColumn")
   @JoinColumn (name="contactInfo")
   @IndexedEmbedded
   private List<PhoneNumber> phoneNumbers = new Vector<PhoneNumber>();
 
   @OneToMany (cascade = CascadeType.ALL, orphanRemoval = true)
-  @IndexColumn (name = "indexColumn")
+  @OrderColumn (name = "indexColumn")
   @JoinColumn (name="contactInfo")
   @IndexedEmbedded
   private List<ContactURL> contactURLs = new Vector<ContactURL>();
