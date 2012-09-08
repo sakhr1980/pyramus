@@ -42,14 +42,14 @@ public class SubjectsViewController extends PyramusViewController implements Bre
     List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
     
-    JSONArray jaSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
-    for (int i=0; i<jaSubjects.size(); i++) {
-      JSONObject joStudyProgrammeCategory = jaSubjects.getJSONObject(i);
-      joStudyProgrammeCategory.put("educationTypeId", subjects.get(i).getEducationType().getId());
+    JSONArray jsonSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
+    for (int i=0; i<jsonSubjects.size(); i++) {
+      JSONObject jsonStudyProgrammeCategory = jsonSubjects.getJSONObject(i);
+      jsonStudyProgrammeCategory.put("educationTypeId", subjects.get(i).getEducationType().getId());
     }
     String jsonEducationTypes = new JSONArrayExtractor("name", "id").extractString(educationTypes);
 
-    this.setJsDataVariable(pageRequestContext, "subjects", jaSubjects.toString());
+    this.setJsDataVariable(pageRequestContext, "subjects", jsonSubjects.toString());
     this.setJsDataVariable(pageRequestContext, "educationTypes", jsonEducationTypes);
     pageRequestContext.setIncludeJSP("/templates/settings/subjects.jsp");
   }

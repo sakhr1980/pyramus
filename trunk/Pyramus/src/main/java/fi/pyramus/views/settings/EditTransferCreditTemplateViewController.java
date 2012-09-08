@@ -54,18 +54,18 @@ public class EditTransferCreditTemplateViewController extends PyramusViewControl
     Collections.sort(schools, new StringAttributeComparator("getName"));
     
     String jsonTimeUnits = new JSONArrayExtractor("name", "id").extractString(timeUnits);
-    JSONArray jaSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
-    for (int i=0; i<jaSubjects.size(); i++) {
-      JSONObject joSubject = jaSubjects.getJSONObject(i);
+    JSONArray jsonSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
+    for (int i=0; i<jsonSubjects.size(); i++) {
+      JSONObject jsonSubject = jsonSubjects.getJSONObject(i);
       if (subjects.get(i).getEducationType() != null) {
-        joSubject.put("educationTypeName", subjects.get(i).getEducationType().getName());
+        jsonSubject.put("educationTypeName", subjects.get(i).getEducationType().getName());
       }
     }
     
     List<TransferCreditTemplateCourse> courses = transferCreditTemplate.getCourses();
-    JSONArray jaCourses = new JSONArrayExtractor("courseName", "optionality", "courseNumber", "id").extract(courses);
-    for (int i=0; i<jaCourses.size(); i++) {
-      JSONObject course = jaCourses.getJSONObject(i);
+    JSONArray jsonCourses = new JSONArrayExtractor("courseName", "optionality", "courseNumber", "id").extract(courses);
+    for (int i=0; i<jsonCourses.size(); i++) {
+      JSONObject course = jsonCourses.getJSONObject(i);
       long courseLengthUnitId = courses.get(i).getCourseLength().getUnit().getId();
       double courseLengthUnits = courses.get(i).getCourseLength().getUnits();
       long subjectId = courses.get(i).getSubject().getId();
@@ -75,8 +75,8 @@ public class EditTransferCreditTemplateViewController extends PyramusViewControl
     }
     
     this.setJsDataVariable(pageRequestContext, "timeUnits", jsonTimeUnits);
-    this.setJsDataVariable(pageRequestContext, "subjects", jaSubjects.toString());
-    this.setJsDataVariable(pageRequestContext, "courses", jaCourses.toString());
+    this.setJsDataVariable(pageRequestContext, "subjects", jsonSubjects.toString());
+    this.setJsDataVariable(pageRequestContext, "courses", jsonCourses.toString());
 
     pageRequestContext.getRequest().setAttribute("transferCreditTemplate", transferCreditTemplate);
     

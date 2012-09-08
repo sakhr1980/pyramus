@@ -40,14 +40,14 @@ public class StudyProgrammeCategoriesViewController extends PyramusViewControlle
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
     
     List<StudyProgrammeCategory> studyProgrammeCategories = studyProgrammeCategoryDAO.listUnarchived();
-    JSONArray jaStudyProgrammeCategories = new JSONArrayExtractor("name", "id").extract(studyProgrammeCategories);
-    for (int i=0; i<jaStudyProgrammeCategories.size(); i++) {
-      JSONObject joStudyProgrammeCategory = jaStudyProgrammeCategories.getJSONObject(i);
-      joStudyProgrammeCategory.put("educationTypeId", studyProgrammeCategories.get(i).getEducationType().getId());
+    JSONArray jsonStudyProgrammeCategories = new JSONArrayExtractor("name", "id").extract(studyProgrammeCategories);
+    for (int i=0; i<jsonStudyProgrammeCategories.size(); i++) {
+      JSONObject jsonStudyProgrammeCategory = jsonStudyProgrammeCategories.getJSONObject(i);
+      jsonStudyProgrammeCategory.put("educationTypeId", studyProgrammeCategories.get(i).getEducationType().getId());
     }
     String jsonEducationTypes = new JSONArrayExtractor("name", "id").extractString(educationTypes);
     
-    this.setJsDataVariable(pageRequestContext, "studyProgrammeCategories", jaStudyProgrammeCategories.toString());
+    this.setJsDataVariable(pageRequestContext, "studyProgrammeCategories", jsonStudyProgrammeCategories.toString());
     this.setJsDataVariable(pageRequestContext, "educationTypes", jsonEducationTypes);
 
     pageRequestContext.setIncludeJSP("/templates/settings/studyprogrammecategories.jsp");
