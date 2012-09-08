@@ -67,6 +67,8 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
               properties.add(propertyBean);
             }
             break;
+          default:
+            break;
           }
         }
 
@@ -89,17 +91,17 @@ public class ManageChangeLogViewController extends PyramusFormViewController {
       }
     });
     
-    JSONArray jaEntities = new JSONArray();
+    JSONArray jsonEntities = new JSONArray();
     for (ManageChangeLogViewEntityBean entityBean : entityBeans) {
-      JSONObject joEntity = new JSONObject();
-      joEntity.put("name", entityBean.getName());
-      joEntity.put("displayName", entityBean.getDisplayName());
-      joEntity.put("properties",
+      JSONObject jsonEntity = new JSONObject();
+      jsonEntity.put("name", entityBean.getName());
+      jsonEntity.put("displayName", entityBean.getDisplayName());
+      jsonEntity.put("properties",
           new JSONArrayExtractor("name", "displayName", "track").extract(entityBean.getProperties()));
-      jaEntities.add(joEntity);
+      jsonEntities.add(jsonEntity);
     }
     
-    this.setJsDataVariable(requestContext, "entities", jaEntities.toString());
+    this.setJsDataVariable(requestContext, "entities", jsonEntities.toString());
 
     requestContext.setIncludeJSP("/templates/settings/managechangelog.jsp");
   }

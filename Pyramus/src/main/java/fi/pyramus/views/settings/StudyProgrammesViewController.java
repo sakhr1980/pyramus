@@ -34,15 +34,15 @@ public class StudyProgrammesViewController extends PyramusViewController impleme
     StudyProgrammeCategoryDAO studyProgrammeCategoryDAO = DAOFactory.getInstance().getStudyProgrammeCategoryDAO();
     
     List<StudyProgramme> studyProgrammes = studyProgrammeDAO.listUnarchived();
-    JSONArray jaStudyProgrammes = new JSONArrayExtractor("name", "code", "id").extract(studyProgrammes);
-    for (int i=0; i<jaStudyProgrammes.size(); i++) {
-      JSONObject joStudyProgrammeCategory = jaStudyProgrammes.getJSONObject(i);
-      joStudyProgrammeCategory.put("categoryId", studyProgrammes.get(i).getCategory().getId());
+    JSONArray jsonStudyProgrammes = new JSONArrayExtractor("name", "code", "id").extract(studyProgrammes);
+    for (int i=0; i<jsonStudyProgrammes.size(); i++) {
+      JSONObject jsonStudyProgrammeCategory = jsonStudyProgrammes.getJSONObject(i);
+      jsonStudyProgrammeCategory.put("categoryId", studyProgrammes.get(i).getCategory().getId());
     }
     
     String jsonCategories = new JSONArrayExtractor("name", "id").extractString(studyProgrammeCategoryDAO.listUnarchived());
     
-    this.setJsDataVariable(pageRequestContext, "studyProgrammes", jaStudyProgrammes.toString());
+    this.setJsDataVariable(pageRequestContext, "studyProgrammes", jsonStudyProgrammes.toString());
     this.setJsDataVariable(pageRequestContext, "categories", jsonCategories);
     pageRequestContext.setIncludeJSP("/templates/settings/studyprogrammes.jsp");
   }

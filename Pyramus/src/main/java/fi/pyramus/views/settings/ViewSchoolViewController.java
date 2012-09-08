@@ -60,49 +60,49 @@ public class ViewSchoolViewController extends PyramusViewController implements B
     }
     
     List<Address> addresses = school.getContactInfo().getAddresses();
-    JSONArray jaAddresses = new JSONArrayExtractor("id",
+    JSONArray jsonAddresses = new JSONArrayExtractor("id",
                                                    "name",
                                                    "streetAddress",
                                                    "postalCode",
                                                    "city",
                                                    "country").extract(addresses);
-    for (int i=0; i<jaAddresses.size(); i++) {
-      JSONObject joAddress = jaAddresses.getJSONObject(i);
+    for (int i=0; i<jsonAddresses.size(); i++) {
+      JSONObject jsonAddress = jsonAddresses.getJSONObject(i);
       if (addresses.get(i).getContactType() != null) {
-        joAddress.put("contactTypeName", addresses.get(i).getContactType().getName());
+        jsonAddress.put("contactTypeName", addresses.get(i).getContactType().getName());
       }
     }
     
     List<Email> emails = school.getContactInfo().getEmails();
-    JSONArray jaEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
-    for (int i=0; i<jaEmails.size(); i++) {
-      JSONObject joEmail = jaEmails.getJSONObject(i);
+    JSONArray jsonEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
+    for (int i=0; i<jsonEmails.size(); i++) {
+      JSONObject jsonEmail = jsonEmails.getJSONObject(i);
       if (emails.get(i).getContactType() != null) {
-        joEmail.put("contactTypeName", emails.get(i).getContactType().getName());
+        jsonEmail.put("contactTypeName", emails.get(i).getContactType().getName());
       }
     }
     
     List<PhoneNumber> phoneNumbers = school.getContactInfo().getPhoneNumbers();
-    JSONArray jaPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
-    for (int i=0; i<jaPhoneNumbers.size(); i++) {
-      JSONObject joPhoneNumber = jaPhoneNumbers.getJSONObject(i);
+    JSONArray jsonPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
+    for (int i=0; i<jsonPhoneNumbers.size(); i++) {
+      JSONObject jsonPhoneNumber = jsonPhoneNumbers.getJSONObject(i);
       if (phoneNumbers.get(i).getContactType() != null) {
-        joPhoneNumber.put("contactTypeName", emails.get(i).getContactType().getName());
+        jsonPhoneNumber.put("contactTypeName", emails.get(i).getContactType().getName());
       }
     }
     
-    JSONArray jaVariableKeys = new JSONArrayExtractor("variableName", "variableKey", "variableType").extract(schoolUserEditableVariableKeys);
+    JSONArray jsonVariableKeys = new JSONArrayExtractor("variableName", "variableKey", "variableType").extract(schoolUserEditableVariableKeys);
     for (int i=0; i<schoolUserEditableVariableKeys.size(); i++) {
-      JSONObject joVariableKey = jaVariableKeys.getJSONObject(i);
+      JSONObject jsonVariableKey = jsonVariableKeys.getJSONObject(i);
       Map<String,String> variables = school.getVariablesAsStringMap();
-      joVariableKey.put("variableValue", variables.get(joVariableKey.getString("variableKey")));
+      jsonVariableKey.put("variableValue", variables.get(jsonVariableKey.getString("variableKey")));
     }
 
 
-    this.setJsDataVariable(pageRequestContext, "addresses", jaAddresses.toString());
-    this.setJsDataVariable(pageRequestContext, "emails", jaEmails.toString());
-    this.setJsDataVariable(pageRequestContext, "phoneNumbers", jaPhoneNumbers.toString());
-    this.setJsDataVariable(pageRequestContext, "variableKeys", jaVariableKeys.toString());
+    this.setJsDataVariable(pageRequestContext, "addresses", jsonAddresses.toString());
+    this.setJsDataVariable(pageRequestContext, "emails", jsonEmails.toString());
+    this.setJsDataVariable(pageRequestContext, "phoneNumbers", jsonPhoneNumbers.toString());
+    this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys.toString());
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString()); // used by jsp
     pageRequestContext.getRequest().setAttribute("school", school);
 

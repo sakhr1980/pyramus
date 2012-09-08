@@ -39,17 +39,17 @@ public class AcademicTermsViewController extends PyramusViewController implement
       }
     });
     
-    JSONArray jaAcademicTerms = new JSONArray();
+    JSONArray jsonAcademicTerms = new JSONArray();
     for (AcademicTerm academicTerm : academicTerms) {
-      JSONObject joAcademicTerm = new JSONObject();
-      joAcademicTerm.put("name", academicTerm.getName());
-      joAcademicTerm.put("startDate", academicTerm.getStartDate().getTime());
-      joAcademicTerm.put("endDate", academicTerm.getEndDate().getTime());
-      joAcademicTerm.put("id", academicTerm.getId());
-      jaAcademicTerms.add(joAcademicTerm);
+      JSONObject jsonAcademicTerm = new JSONObject();
+      jsonAcademicTerm.put("name", academicTerm.getName());
+      jsonAcademicTerm.put("startDate", academicTerm.getStartDate().getTime());
+      jsonAcademicTerm.put("endDate", academicTerm.getEndDate().getTime());
+      jsonAcademicTerm.put("id", academicTerm.getId());
+      jsonAcademicTerms.add(jsonAcademicTerm);
     }
 
-    this.setJsDataVariable(pageRequestContext, "academicTerms", jaAcademicTerms.toString());
+    this.setJsDataVariable(pageRequestContext, "academicTerms", jsonAcademicTerms.toString());
     pageRequestContext.setIncludeJSP("/templates/settings/academicterms.jsp");
   }
 

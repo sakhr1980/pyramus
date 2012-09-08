@@ -30,8 +30,8 @@ public class StudyEndReasonsViewController extends PyramusViewController impleme
     
     List<StudentStudyEndReason> studyEndReasons = studentStudyEndReasonDAO.listAll();
     
-    JSONArray jaStudyEndReasons = new JSONArray();
-    JSONArray jaReasonsInUse = new JSONArray();
+    JSONArray jsonStudyEndReasons = new JSONArray();
+    JSONArray jsonReasonsInUse = new JSONArray();
    
     for (StudentStudyEndReason reason : studyEndReasons) {
       JSONObject jsonReason = new JSONObject();
@@ -41,7 +41,7 @@ public class StudyEndReasonsViewController extends PyramusViewController impleme
       if (reason.getParentReason() != null) {
         jsonReason.put("parentId", reason.getParentReason().getId());
       }
-      jaStudyEndReasons.add(jsonReason);
+      jsonStudyEndReasons.add(jsonReason);
     }
     
     for (StudentStudyEndReason reason : studyEndReasons) {
@@ -49,12 +49,12 @@ public class StudyEndReasonsViewController extends PyramusViewController impleme
         JSONObject jsonReason = new JSONObject();
         jsonReason.put("id", reason.getId());
         
-        jaReasonsInUse.add(jsonReason);
+        jsonReasonsInUse.add(jsonReason);
       }
     }
     
-    this.setJsDataVariable(pageRequestContext, "studyEndReasons", jaStudyEndReasons.toString());
-    this.setJsDataVariable(pageRequestContext, "reasonsInUse", jaReasonsInUse.toString());
+    this.setJsDataVariable(pageRequestContext, "studyEndReasons", jsonStudyEndReasons.toString());
+    this.setJsDataVariable(pageRequestContext, "reasonsInUse", jsonReasonsInUse.toString());
     
     pageRequestContext.setIncludeJSP("/templates/settings/studyendreasons.jsp");
   }

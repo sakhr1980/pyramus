@@ -75,50 +75,49 @@ public class EditSchoolViewController extends PyramusViewController implements B
     String jsonContactTypes = new JSONArrayExtractor("id", "name").extractString(contactTypes);
     
     List<Address> addresses = school.getContactInfo().getAddresses();
-    JSONArray jaAddresses = new JSONArrayExtractor("id",
+    JSONArray jsonAddresses = new JSONArrayExtractor("id",
                                                    "name",
                                                    "streetAddress",
                                                    "postalCode",
                                                    "city",
                                                    "country").extract(addresses);
-    for (int i=0; i<jaAddresses.size(); i++) {
-      JSONObject joAddress = jaAddresses.getJSONObject(i);
+    for (int i=0; i<jsonAddresses.size(); i++) {
+      JSONObject jsonAddress = jsonAddresses.getJSONObject(i);
       if (addresses.get(i).getContactType() != null) {
-        joAddress.put("contactTypeId", addresses.get(i).getContactType().getId());
+        jsonAddress.put("contactTypeId", addresses.get(i).getContactType().getId());
       }
     }
     
     List<Email> emails = school.getContactInfo().getEmails();
-    JSONArray jaEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
-    for (int i=0; i<jaEmails.size(); i++) {
-      JSONObject joEmail = jaEmails.getJSONObject(i);
+    JSONArray jsonEmails = new JSONArrayExtractor("id", "defaultAddress", "address").extract(emails);
+    for (int i=0; i<jsonEmails.size(); i++) {
+      JSONObject jsonEmail = jsonEmails.getJSONObject(i);
       if (emails.get(i).getContactType() != null) {
-        joEmail.put("contactTypeId", emails.get(i).getContactType().getId());
+        jsonEmail.put("contactTypeId", emails.get(i).getContactType().getId());
       }
     }
     
     List<PhoneNumber> phoneNumbers = school.getContactInfo().getPhoneNumbers();
-    JSONArray jaPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
-    for (int i=0; i<jaPhoneNumbers.size(); i++) {
-      JSONObject joPhoneNumber = jaPhoneNumbers.getJSONObject(i);
+    JSONArray jsonPhoneNumbers = new JSONArrayExtractor("id", "defaultNumber", "number").extract(phoneNumbers);
+    for (int i=0; i<jsonPhoneNumbers.size(); i++) {
+      JSONObject jsonPhoneNumber = jsonPhoneNumbers.getJSONObject(i);
       if (phoneNumbers.get(i).getContactType() != null) {
-        joPhoneNumber.put("contactTypeId", emails.get(i).getContactType().getId());
+        jsonPhoneNumber.put("contactTypeId", emails.get(i).getContactType().getId());
       }
     }
     
     String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(schoolUserEditableVariableKeys);
     
-    this.setJsDataVariable(pageRequestContext, "addresses", jaAddresses.toString());
-    this.setJsDataVariable(pageRequestContext, "emails", jaEmails.toString());
-    this.setJsDataVariable(pageRequestContext, "phoneNumbers", jaPhoneNumbers.toString());
+    this.setJsDataVariable(pageRequestContext, "addresses", jsonAddresses.toString());
+    this.setJsDataVariable(pageRequestContext, "emails", jsonEmails.toString());
+    this.setJsDataVariable(pageRequestContext, "phoneNumbers", jsonPhoneNumbers.toString());
     this.setJsDataVariable(pageRequestContext, "contactTypes", jsonContactTypes);
     this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys);
 
-    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString()); // used by jsp
-    pageRequestContext.getRequest().setAttribute("school", school); // used by js AND jsp
-    pageRequestContext.getRequest().setAttribute("contactURLTypes", contactURLTypes); // not used
-    pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys); // used by js
-    pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived()); // used by jsp
+    pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString()); 
+    pageRequestContext.getRequest().setAttribute("school", school);
+    pageRequestContext.getRequest().setAttribute("variableKeys", schoolUserEditableVariableKeys);
+    pageRequestContext.getRequest().setAttribute("schoolFields", schoolFieldDAO.listUnarchived());
 
     pageRequestContext.setIncludeJSP("/templates/settings/editschool.jsp");
   }

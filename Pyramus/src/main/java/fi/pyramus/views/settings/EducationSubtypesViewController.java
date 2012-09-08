@@ -35,14 +35,14 @@ public class EducationSubtypesViewController extends PyramusViewController imple
     List<EducationType> educationTypes = educationTypeDAO.listUnarchived();
     Collections.sort(educationTypes, new StringAttributeComparator("getName"));
     
-    JSONArray jaEducationTypes = new JSONArrayExtractor("name", "id").extract(educationTypes);
+    JSONArray jsonEducationTypes = new JSONArrayExtractor("name", "id").extract(educationTypes);
     for (int i=0; i<educationTypes.size(); i++) {
       List<EducationSubtype> subtypes = educationTypes.get(i).getUnarchivedSubtypes();
-      JSONArray jaSubtypes = new JSONArrayExtractor("id", "name", "code").extract(subtypes);
-      jaEducationTypes.getJSONObject(i).put("subtypes", jaSubtypes);
+      JSONArray jsonSubtypes = new JSONArrayExtractor("id", "name", "code").extract(subtypes);
+      jsonEducationTypes.getJSONObject(i).put("subtypes", jsonSubtypes);
     }
 
-    this.setJsDataVariable(pageRequestContext, "educationTypes", jaEducationTypes.toString());
+    this.setJsDataVariable(pageRequestContext, "educationTypes", jsonEducationTypes.toString());
     pageRequestContext.setIncludeJSP("/templates/settings/educationsubtypes.jsp");
   }
 
