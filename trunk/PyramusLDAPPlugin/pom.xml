@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>ldap-plugin</artifactId>
-  <version>0.6.0</version>
+  <version>0.6.1</version>
 
   <repositories>
     <repository>
@@ -47,13 +47,13 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>plugin-core</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

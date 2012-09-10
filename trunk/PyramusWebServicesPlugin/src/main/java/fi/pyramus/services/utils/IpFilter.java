@@ -26,7 +26,8 @@ public class IpFilter implements Filter {
   }
 
   public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-    if (!allowedIPs.isEmpty() && !allowedIPs.contains(req.getRemoteAddr())) {
+//    if (!allowedIPs.isEmpty() && !allowedIPs.contains(req.getRemoteAddr())) {
+    if (!allowedIPs.contains(req.getRemoteAddr())) {
       ((HttpServletResponse) resp).sendError(HttpServletResponse.SC_FORBIDDEN);
     }
     else {
