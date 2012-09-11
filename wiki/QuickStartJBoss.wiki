@@ -1,5 +1,9 @@
 #summary Quick start guide for installing Pyramus on top of JBoss
- 
+
+==Prerequisites==
+
+  * Pyramus is JavaEE application and thus requires that Java runtime environment is installed on the computer.
+  
 ==Database==
 
   * Get MySQL server up and running.
