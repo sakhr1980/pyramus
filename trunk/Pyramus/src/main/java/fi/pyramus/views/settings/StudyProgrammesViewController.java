@@ -37,7 +37,9 @@ public class StudyProgrammesViewController extends PyramusViewController impleme
     JSONArray jsonStudyProgrammes = new JSONArrayExtractor("name", "code", "id").extract(studyProgrammes);
     for (int i=0; i<jsonStudyProgrammes.size(); i++) {
       JSONObject jsonStudyProgrammeCategory = jsonStudyProgrammes.getJSONObject(i);
-      jsonStudyProgrammeCategory.put("categoryId", studyProgrammes.get(i).getCategory().getId());
+      if (studyProgrammes.get(i).getCategory() != null) {
+        jsonStudyProgrammeCategory.put("categoryId", studyProgrammes.get(i).getCategory().getId());
+      }
     }
     
     String jsonCategories = new JSONArrayExtractor("name", "id").extractString(studyProgrammeCategoryDAO.listUnarchived());

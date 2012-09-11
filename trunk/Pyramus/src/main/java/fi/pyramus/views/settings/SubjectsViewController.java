@@ -45,7 +45,8 @@ public class SubjectsViewController extends PyramusViewController implements Bre
     JSONArray jsonSubjects = new JSONArrayExtractor("name", "code", "id").extract(subjects);
     for (int i=0; i<jsonSubjects.size(); i++) {
       JSONObject jsonStudyProgrammeCategory = jsonSubjects.getJSONObject(i);
-      jsonStudyProgrammeCategory.put("educationTypeId", subjects.get(i).getEducationType().getId());
+      if (subjects.get(i).getEducationType() != null)
+        jsonStudyProgrammeCategory.put("educationTypeId", subjects.get(i).getEducationType().getId());
     }
     String jsonEducationTypes = new JSONArrayExtractor("name", "id").extractString(educationTypes);
 
