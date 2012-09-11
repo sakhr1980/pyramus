@@ -28,6 +28,7 @@ public class IpFilter implements Filter {
   public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 //    if (!allowedIPs.isEmpty() && !allowedIPs.contains(req.getRemoteAddr())) {
     if (!allowedIPs.contains(req.getRemoteAddr())) {
+      System.out.println("SOAP Access denied from: " + req.getRemoteAddr());
       ((HttpServletResponse) resp).sendError(HttpServletResponse.SC_FORBIDDEN);
     }
     else {
@@ -39,5 +40,4 @@ public class IpFilter implements Filter {
   }
   
   private Set<String> allowedIPs = new HashSet<String>();
-
 }
