@@ -12,7 +12,7 @@
   * Extract Xmldb-updater somewhere in your computer
   * Download MySQL Connector (http://dev.mysql.com/downloads/connector/j/)
   * Extract mysql-connector-java-x.x.x-bin.jar from connector zip and copy it to xml-db-updater/drivers folder
-  * Download latest database updates from [Downloads] and extract them to some folder (e.g. /PyramusUpdates/) 
+  * Download latest database updates from http://code.google.com/p/pyramus/downloads/ and extract them to some folder (e.g. /PyramusUpdates/) 
   * Rename preferences.sample as preferences.properties in xml-db-updater folder
   * Edit preferences.properties -file with text editor and set: updates.folder to match your pyramus updates folder (e.g. /PyramusUpdates/) and update database settings to match your configuration.
   * Start updater and run suggested updates.
@@ -41,7 +41,7 @@
   * Change http and https ports into 80 and 443 in socket-binding-group
 
 ==Setup==
-  * Download latest version of Pyramus and Reports from [Downloads]  
+  * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
   * Copy both files into JBoss/standalone/deployments -folder and rename them to ROOT.war and PyramusReports.war
   * Start JBoss 
   * Wait until project is deployed and navigate to http://youraddress/ with your web browser  
