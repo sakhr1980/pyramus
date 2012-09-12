@@ -18,6 +18,7 @@ import fi.pyramus.dao.base.ContactTypeDAO;
 import fi.pyramus.dao.base.ContactURLTypeDAO;
 import fi.pyramus.dao.base.SchoolDAO;
 import fi.pyramus.dao.base.SchoolFieldDAO;
+import fi.pyramus.dao.base.SchoolVariableDAO;
 import fi.pyramus.dao.base.SchoolVariableKeyDAO;
 import fi.pyramus.domainmodel.base.Address;
 import fi.pyramus.domainmodel.base.ContactType;
@@ -25,6 +26,7 @@ import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
+import fi.pyramus.domainmodel.base.SchoolVariable;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.framework.PyramusViewController;
@@ -47,6 +49,7 @@ public class EditSchoolViewController extends PyramusViewController implements B
   public void process(PageRequestContext pageRequestContext) {
     SchoolDAO schoolDAO = DAOFactory.getInstance().getSchoolDAO();
     SchoolFieldDAO schoolFieldDAO = DAOFactory.getInstance().getSchoolFieldDAO();
+    SchoolVariableDAO schoolVariableDAO = DAOFactory.getInstance().getSchoolVariableDAO();
     SchoolVariableKeyDAO schoolVariableKeyDAO = DAOFactory.getInstance().getSchoolVariableKeyDAO();
     ContactTypeDAO contactTypeDAO = DAOFactory.getInstance().getContactTypeDAO();
     ContactURLTypeDAO contactURLTypeDAO = DAOFactory.getInstance().getContactURLTypeDAO();
@@ -106,13 +109,22 @@ public class EditSchoolViewController extends PyramusViewController implements B
       }
     }
     
-    String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(schoolUserEditableVariableKeys);
+    JSONArray jsonVariableKeys = new JSONArrayExtractor("variableKey", "variableName", "variableType").extract(schoolUserEditableVariableKeys);
+    for (int i = 0; i < jsonVariableKeys.size(); i++) {
+      JSONObject jsonVariableKey = jsonVariableKeys.getJSONObject(i);
+      
+      String key = jsonVariableKey.getString("variableKey");
+      String value = schoolVariableDAO.findValueBySchoolAndKey(school, key);
+      
+      if (value != null)
+        jsonVariableKey.put("variableValue", value);
+    }
     
     this.setJsDataVariable(pageRequestContext, "addresses", jsonAddresses.toString());
     this.setJsDataVariable(pageRequestContext, "emails", jsonEmails.toString());
     this.setJsDataVariable(pageRequestContext, "phoneNumbers", jsonPhoneNumbers.toString());
     this.setJsDataVariable(pageRequestContext, "contactTypes", jsonContactTypes);
-    this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys);
+    this.setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys.toString());
 
     pageRequestContext.getRequest().setAttribute("tags", tagsBuilder.toString()); 
     pageRequestContext.getRequest().setAttribute("school", school);

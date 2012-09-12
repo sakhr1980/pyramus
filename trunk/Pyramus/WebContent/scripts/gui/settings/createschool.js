@@ -302,7 +302,7 @@ function onLoad(event) {
         dataType = 'date';
       break;
       case 'BOOLEAN':
-        dataType = 'boolean';
+        dataType = 'checkbox';
       break;
       default:
         dataType = 'text';
