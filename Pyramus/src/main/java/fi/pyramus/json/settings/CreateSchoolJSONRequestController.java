@@ -120,12 +120,14 @@ public class CreateSchoolJSONRequestController extends JSONRequestController {
 
     // Variables
     
-    int rowCount = requestContext.getInteger("variablesTable.rowCount");
-    for (int i = 0; i < rowCount; i++) {
-      String colPrefix = "variablesTable." + i;
-      String key = requestContext.getRequest().getParameter(colPrefix + ".key");
-      String value = requestContext.getRequest().getParameter(colPrefix + ".value");
-      schoolVariableDAO.setVariable(school, key, value);
+    Integer variableCount = requestContext.getInteger("variablesTable.rowCount");
+    if (variableCount != null) {
+      for (int i = 0; i < variableCount; i++) {
+        String colPrefix = "variablesTable." + i;
+        String key = requestContext.getRequest().getParameter(colPrefix + ".key");
+        String value = requestContext.getRequest().getParameter(colPrefix + ".value");
+        schoolVariableDAO.setVariable(school, key, value);
+      }
     }
     
     String redirectURL = requestContext.getRequest().getContextPath() + "/settings/editschool.page?school=" + school.getId();

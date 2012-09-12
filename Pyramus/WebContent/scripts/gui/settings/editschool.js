@@ -326,7 +326,8 @@ function onLoad(event) {
   });
   variablesTable.detachFromDom();
   for ( var i = 0, l = variableKeys.length; i < l; i++) {
-    var rowNumber = variablesTable.addRow([ '', variableKeys[i].key.escapeHTML(), variableKeys[i].name.escapeHTML(), '' ]);
+    var variableValue = variableKeys[i].variableValue != null ? variableKeys[i].variableValue.escapeHTML() : undefined;
+    var rowNumber = variablesTable.addRow([ '', variableKeys[i].variableKey.escapeHTML(), variableKeys[i].variableName.escapeHTML(), variableValue]);
     var dataType;
     switch (variableKeys[i].variableType) {
       case 'NUMBER':
@@ -336,7 +337,7 @@ function onLoad(event) {
         dataType = 'date';
       break;
       case 'BOOLEAN':
-        dataType = 'boolean';
+        dataType = 'checkbox';
       break;
       default:
         dataType = 'text';
