@@ -285,7 +285,7 @@ function onLoad(event) {
   });
 
   for ( var i = 0, l = phoneNumbers.length; i < l; i++) {
-    phoneTable.addRow([ phoneNumbers[i].id, phoneNumbers[i].defaultNumber, phoneNumbers[i].contactTypeId, phoneNumbers[i].number.escapeHTML() ]);
+    phoneTable.addRow([ phoneNumbers[i].id, phoneNumbers[i].defaultNumber, phoneNumbers[i].contactTypeId, phoneNumbers[i].number.escapeHTML(), '', '' ]);
   }
 
   if (phoneTable.getRowCount() == 0) {

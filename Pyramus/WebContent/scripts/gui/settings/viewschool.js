@@ -1,4 +1,6 @@
 var addresses = JSDATA["addresses"].evalJSON();
+var phoneNumbers = JSDATA["phoneNumbers"].evalJSON();
+var emails = JSDATA["emails"].evalJSON();
 var variableKeys = JSDATA["variableKeys"].evalJSON();
 
 function onLoad(event) {
@@ -65,20 +67,66 @@ function onLoad(event) {
   });
   var emailTable = new IxTable($('emailTable'), {
     id : "emailTable",
-    columns : [ {
+    columns : [{
+        left : 0,
+        width : 30,
+        dataType : 'radiobutton',
+        editable : false,
+        paramName : 'defaultAddress'
+      }, {
+        left : 30,
+        width : 150,
+        dataType : 'text',
+        editable : false,
+        paramName : 'contactTypeName'
+      }, {
+        left : 150,
+        width : 150,
+        dataType : 'text',
+        editable : false,
+        paramName : 'email'
+    }]
+  });
+  var phoneTable = new IxTable($('phoneNumbersTable'), {
+    id : "phoneNumbersTable",
+    columns : [{
       left : 0,
+      width : 30,
+      dataType : 'radiobutton',
+      editable : false,
+      paramName : 'defaultNumber'
+    }, {
       width : 150,
-      dataType : 'text',
+      left : 30,
+      dataType : 'select',
       editable : false,
       paramName : 'contactTypeName'
     }, {
-      left : 150,
-      width : 150,
+      left : 188,
+      width : 200,
       dataType : 'text',
       editable : false,
-      paramName : 'email'
+      paramName : 'phone'
     } ]
   });
+  
+  var emailRows = new Array();
+  for (var i = 0, l = emails.length; i < l; i++) {
+		emailRows.push([ emails[i].defaultAddress, emails[i].contactTypeName,
+				emails[i].address ]);
+  }
+  emailTable.addRows(emailRows);
+  
+  var phoneRows = new Array();
+  for (var i = 0, l = phoneNumbers.length; i < l; i++) {
+	phoneRows.push([
+	               phoneNumbers[i].defaultNumber, 
+	               phoneNumbers[i].contactTypeName,
+	               phoneNumbers[i].number
+	               ]);
+  }
+  phoneTable.addRows(phoneRows);
+  
   addressTable.detachFromDom();
   for (var i=0, l=addresses.length; i<l; i++) {
     var address = addresses[i];
@@ -105,13 +153,13 @@ function onLoad(event) {
         dataType = 'date';
       break;
       case 'BOOLEAN':
-        dataType = 'boolean';
+        dataType = 'checkbox';
       break;
       default:
         dataType = 'text';
       break;
     }
-    variablesTable.setCellDataType(rowNumber, 3, dataType);
+    variablesTable.setCellDataType(rowNumber, 2, dataType);
   }
   variablesTable.reattachToDom();
 };
