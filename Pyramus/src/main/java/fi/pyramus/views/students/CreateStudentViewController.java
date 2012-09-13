@@ -76,6 +76,8 @@ public class CreateStudentViewController extends PyramusViewController implement
     String jsonContactTypes = new JSONArrayExtractor("name", "id").extractString(contactTypes);
     String jsonVariableKeys = new JSONArrayExtractor("key", "name", "type").extractString(studentVariableKeys);
     
+   	setJsDataVariable(pageRequestContext, "contactTypes", jsonContactTypes);
+   	setJsDataVariable(pageRequestContext, "variableKeys", jsonVariableKeys);
     
     pageRequestContext.getRequest().setAttribute("schools", schools);
     pageRequestContext.getRequest().setAttribute("activityTypes", studentActivityTypeDAO.listUnarchived());
