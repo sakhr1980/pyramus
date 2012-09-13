@@ -7,6 +7,8 @@ import java.util.Locale;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import fi.internetix.smvc.SmvcRuntimeException;
+import fi.internetix.smvc.StatusCode;
 import fi.internetix.smvc.controllers.PageRequestContext;
 import fi.pyramus.I18N.Messages;
 import fi.pyramus.breadcrumbs.Breadcrumbable;
@@ -66,12 +68,24 @@ public class EditTransferCreditTemplateViewController extends PyramusViewControl
     JSONArray jsonCourses = new JSONArrayExtractor("courseName", "optionality", "courseNumber", "id").extract(courses);
     for (int i=0; i<jsonCourses.size(); i++) {
       JSONObject course = jsonCourses.getJSONObject(i);
-      long courseLengthUnitId = courses.get(i).getCourseLength().getUnit().getId();
-      double courseLengthUnits = courses.get(i).getCourseLength().getUnits();
-      long subjectId = courses.get(i).getSubject().getId();
-      course.put("courseLengthUnitId", courseLengthUnitId);
-      course.put("courseLengthUnits", courseLengthUnits);
-      course.put("subjectId", subjectId);
+      if (courses.get(i).getCourseLength() != null) {
+        long courseLengthUnitId = -1;
+        double courseLengthUnits = 0;
+        courseLengthUnits = courses.get(i).getCourseLength().getUnits();
+        if (courses.get(i).getCourseLength().getUnit() != null) {
+          courseLengthUnitId = courses.get(i).getCourseLength().getUnit().getId();
+        } else {
+          throw new SmvcRuntimeException(StatusCode.UNDEFINED, Messages.getInstance().getText(pageRequestContext.getRequest().getLocale(),
+              "generic.errors.missingValue", new Object[] {"CourseLengthUnit", "TransferCreditTemplateCourse"}));
+        }
+        course.put("courseLengthUnitId", courseLengthUnitId);
+        course.put("courseLengthUnits", courseLengthUnits);
+      }
+      if (courses.get(i).getSubject() != null) {
+        long subjectId = -1;
+        subjectId = courses.get(i).getSubject().getId();
+        course.put("subjectId", subjectId);
+      }
     }
     
     this.setJsDataVariable(pageRequestContext, "timeUnits", jsonTimeUnits);

@@ -43,8 +43,12 @@ public class AcademicTermsViewController extends PyramusViewController implement
     for (AcademicTerm academicTerm : academicTerms) {
       JSONObject jsonAcademicTerm = new JSONObject();
       jsonAcademicTerm.put("name", academicTerm.getName());
-      jsonAcademicTerm.put("startDate", academicTerm.getStartDate().getTime());
-      jsonAcademicTerm.put("endDate", academicTerm.getEndDate().getTime());
+      if (academicTerm.getStartDate() != null) {
+        jsonAcademicTerm.put("startDate", academicTerm.getStartDate().getTime());
+      }
+      if (academicTerm.getEndDate() != null) {
+        jsonAcademicTerm.put("endDate", academicTerm.getEndDate().getTime());
+      }
       jsonAcademicTerm.put("id", academicTerm.getId());
       jsonAcademicTerms.add(jsonAcademicTerm);
     }
