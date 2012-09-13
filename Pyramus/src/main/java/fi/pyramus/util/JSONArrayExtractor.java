@@ -72,14 +72,12 @@ public class JSONArrayExtractor {
       JSONObject destObject = new JSONObject();
       for (String attributeName : attributeNames) {
         Object[] params = new Object[] {};
-        String methodName = "get" + StringUtils.capitalize(attributeName);
-        Method attributeMethod = ReflectionApiUtils.getMethod(sourceObject.getClass(), methodName);
-        Object attributeValue;
+        Object attributeValue = null;
         // Nulls are deliberately skipped so that they are undefined in JS
         try {
-          attributeValue = attributeMethod.invoke(sourceObject, params);
+          attributeValue = ReflectionApiUtils.getObjectFieldValue(sourceObject, attributeName, true);
         } catch (NullPointerException e) {
-          continue;
+          throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         } catch (IllegalAccessException e) {
           throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -87,7 +85,9 @@ public class JSONArrayExtractor {
         } catch (InvocationTargetException e) {
           throw new SmvcRuntimeException(StatusCode.UNDEFINED, e.getMessage());
         }
-        destObject.put(attributeName, attributeValue);
+        if (attributeValue != null) {
+          destObject.put(attributeName, attributeValue);
+        }
       }
       destObjects.add(destObject);
     }
