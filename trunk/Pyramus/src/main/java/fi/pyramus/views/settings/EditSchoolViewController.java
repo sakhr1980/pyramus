@@ -79,11 +79,12 @@ public class EditSchoolViewController extends PyramusViewController implements B
     
     List<Address> addresses = school.getContactInfo().getAddresses();
     JSONArray jsonAddresses = new JSONArrayExtractor("id",
-                                                   "name",
-                                                   "streetAddress",
-                                                   "postalCode",
-                                                   "city",
-                                                   "country").extract(addresses);
+    												"defaultAddress",
+    												"name",
+    												"streetAddress",
+    												"postalCode",
+    												"city",
+                                                   	"country").extract(addresses);
     for (int i=0; i<jsonAddresses.size(); i++) {
       JSONObject jsonAddress = jsonAddresses.getJSONObject(i);
       if (addresses.get(i).getContactType() != null) {
