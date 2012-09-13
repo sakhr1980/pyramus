@@ -314,7 +314,7 @@
         JSONRequest.request("tags/getalltags.json", {
           onSuccess: function (jsonResponse) {
             <c:forEach var="student" items="${students}">
-	            new Autocompleter.Local("tags.${student.id}", "tags_choices", jsonResponse.tags, {
+	            new Autocompleter.Local("tags.${student.id}", "tags_choices.${student.id}", jsonResponse.tags, {
 	              tokens: [',', '\n', ' ']
 	            });
 	          </c:forEach>  
@@ -740,7 +740,7 @@
 	                <jsp:param name="helpLocale" value="students.editStudent.tagsHelp"/>
 	              </jsp:include>
 	              <input type="text" id="tags.${student.id}" name="tags.${student.id}" size="40" value="${fn:escapeXml(tags[student.id])}"/>
-	              <div id="tags_choices" class="autocomplete_choices"></div>
+	              <div id="tags_choices.${student.id}" class="autocomplete_choices"></div>
 	            </div>
             
               <div class="genericFormSection">                
