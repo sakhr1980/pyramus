@@ -1,3 +1,6 @@
+var contactTypes = JSDATA["contactTypes"].evalJSON();
+var variableKeys = JSDATA["variableKeys"].evalJSON();
+
 function addEmailTableRow() {
   getIxTableById('emailTable').addRow([ '', '', '', '', '' ]);
 };
@@ -9,6 +12,16 @@ function addPhoneTableRow() {
 function addAddressTableRow() {
   getIxTableById('addressTable').addRow([ '', '', '', '', '', '', '', '', '' ]);
 };
+
+function setupTags() {
+  JSONRequest.request("tags/getalltags.json", {
+	onSuccess: function (jsonResponse) {
+	  new Autocompleter.Local("tags", "tags_choices", jsonResponse.tags, {
+        tokens: [',', '\n', ' ']
+	  });
+	}
+  });   
+}
 
 function onLoad(event) {
   var tabControl = new IxProtoTabs($('tabs'));
@@ -303,4 +316,6 @@ function onLoad(event) {
     }
     variablesTable.reattachToDom();
   }
+  
+  setupTags();
 };
