@@ -71,7 +71,6 @@ public class JSONArrayExtractor {
     for (Object sourceObject : sourceObjects) {
       JSONObject destObject = new JSONObject();
       for (String attributeName : attributeNames) {
-        Object[] params = new Object[] {};
         Object attributeValue = null;
         // Nulls are deliberately skipped so that they are undefined in JS
         try {
