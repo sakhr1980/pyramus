@@ -27,7 +27,7 @@
   * Navigate to JBoss/bin folder in console (or command prompt in windows)
   * Run ./add-user.sh (or add-user.bat in windows) and add new Management User to ManagementRealm
   * Copy mysql connector jar into JBoss/standalone/deployments -folder
-  * Locate urn:jboss:domain:datasources:1.0 subsystem from JBoss/standalone/configuration/standalone.xml. Add new datasource inside datasources tag. Use following example. Note that you need to change DATABASE from connection-url, VERSION (e.g. 5.1.22) from driver, USER and PASSWORD from security.
+  * Locate urn:jboss:domain:datasources:1.0 subsystem from JBoss/standalone/configuration/standalone.xml. Add new datasource inside datasources tag. Use following example. Note that you need to change DATABASE from connection-url, VERSION (e.g. 5.1.22) from driver and USER and PASSWORD from security.
 {{{
 <datasource jta="true" jndi-name="java:/jdbc/pyramus" pool-name="jdbc/pyramus" enabled="true" use-ccm="false">
   <connection-url>jdbc:mysql://localhost:3306/DATABASE</connection-url>
