@@ -48,6 +48,7 @@
 }}}
   
   * Locate urn:jboss:domain:web:1.1 -subsystem and find virtual-server within it. Change enable-welcome-root attribute into false and change example.com into your domain name in alias tag (e.g. www.pyramus.dev).
+  * Add https sertificate
 
 === Unofficial Sertificate ===
 
