@@ -1,25 +1,5 @@
 #summary Usage of PyramusUpdater
 
-= Introduction =
+== PyramusUpdater has been moved into a new project ==
 
-PyramusUpdater is a tool for updating database from version to another.
-
-= Installation =
-
-Download a precompiled version of PyramusUpdater from http://code.google.com/p/pyramus/downloads/ and extract the package somewhere in your hard drive.
-
-Extracted folder will contain a preference.sample which is the sample of preferences.properties file.
-
-Rename preference.sample file to preferences.properties and specify Pyramus updates directory. If you want you can specify default database connection settings in that same file.  
-
-After that you need to copy jdbc driver inside drivers folder inside installation directory. For example if you are using MySQL just download connector package from http://www.mysql.com/downloads/connector/j/ and extract mysql-connector-java-x.x.xx-bin.jar from the archive and copy it under drivers folder.
-
-= Usage =
-
-You can run PyramusUpdater simply by double clicking the pyramusupdater jar file but if that somehow fails you can run the program from terminal with command: `java -jar pyramusupdater.jar`
-
-note that you need to have java installed into your computer.
-
-= XML Syntax =
-
-If you need to make your own Pyramus updates you should use format from updater schema. Schema can be found from following url: http://www.ofw.fi/xml/2010/pyramus/UpdaterSchema.xsd
+You can find project page from http://code.google.com/p/java-xmldb-updater and usage documentation from http://code.google.com/p/java-xmldb-updater/wiki/Usage
