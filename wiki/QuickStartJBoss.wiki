@@ -27,6 +27,7 @@
   * Navigate to JBoss/bin folder in console (or command prompt in windows)
   * Run ./add-user.sh (or add-user.bat in windows) and add new Management User to ManagementRealm
   * Copy mysql connector jar into JBoss/standalone/deployments -folder
+  * Locate urn:jboss:domain:web:1.1 -subsystem and find virtual-server within it. Change enable-welcome-root attribute into false and change example.com into your domain name in alias tag.
 
 === Unofficial Sertificate ===
 
