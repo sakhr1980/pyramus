@@ -55,7 +55,7 @@ TODO
 ==Setup==
   * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
   * Copy both files into JBoss/standalone/deployments -folder and rename them to ROOT.war and PyramusReports.war
-  * Start JBoss 
+  * Start JBoss by running standalone.sh (Unix) or standalone.bat (Windows) from JBoss/bin folder
   * Wait until project is deployed and navigate to http://youraddress/ with your web browser  
   * If Pyramus loads fine, navigate to http://youraddress/system/initialdata.page with your web browser.
   * Login in with admin / querty
