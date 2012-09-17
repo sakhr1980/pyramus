@@ -27,6 +27,9 @@
   * Navigate to JBoss/bin folder in console (or command prompt in windows)
   * Run ./add-user.sh (or add-user.bat in windows) and add new Management User to ManagementRealm
   * Copy mysql connector jar into JBoss/standalone/deployments -folder
+
+=== Unofficial Sertificate ===
+
   * Create new keystore into JBoss/standalone/configuration -folder
     * keytool -genkey -keysize 2048 -keyalg RSA -keystore jboss.keystore -alias tomcat
     * Use your host name as CN (e.g. dev.pyramus.fi)
@@ -43,6 +46,10 @@
 </connector>
 }}}
   * Change http and https ports into 80 and 443 in socket-binding-group
+
+=== Official Sertificate ===
+
+TODO
 
 ==Setup==
   * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
