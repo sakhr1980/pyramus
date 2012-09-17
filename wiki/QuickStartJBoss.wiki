@@ -89,6 +89,12 @@ TODO
   </authentication>
 </security-domain>  
 }}}
+  * Go to JBoss/bin folder and run add-user.sh (or add-user.bat in Windows)
+    * Type of user = ***Application User***
+    * Realm = ***WebServices***
+    * Username = (user)
+    * Password = (password)
+    * Roles = ***WebServices***
 
 ==Setup==
   * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
