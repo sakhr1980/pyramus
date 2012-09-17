@@ -90,16 +90,16 @@ TODO
 </security-domain>  
 }}}
   * Go to JBoss/bin folder and run add-user.sh (or add-user.bat in Windows)
-    * Type of user = ***Application User***
-    * Realm = ***WebServices***
+    * Type of user = *Application User*
+    * Realm = *WebServices*
     * Username = (user)
     * Password = (password)
-    * Roles = ***WebServices***
-* Edit JBoss standalone/configuration/standalone.xml
-    * Locate subsystem urn:jboss:domain:webservices:1.1 and change wsdl-host to ***jbossws.undefined.host***
-    * Locate interfaces and change the contents of public interface to ***`<any-address/>`***
-    * Locate interfaces and change the contents of unsecure interfacde to ***`<any-address/>`***
-    * Add ***`<property name="PyramusWSAllowedIPs" value="127.0.0.1"/>`***under ***`<system-properties>`*** and set value as needed to allow access from remote computers. Several IP addresses can be entered with comma separator.
+    * Roles = *WebServices*
+  * Edit JBoss standalone/configuration/standalone.xml
+    * Locate subsystem urn:jboss:domain:webservices:1.1 and change wsdl-host to *jbossws.undefined.host*
+    * Locate interfaces and change the contents of public interface to *`<any-address/>`*
+    * Locate interfaces and change the contents of unsecure interfacde to *`<any-address/>`*
+    * Add ***`<property name="PyramusWSAllowedIPs" value="127.0.0.1"/>` *under *`<system-properties>`*** and set value as needed to allow access from remote computers. Several IP addresses can be entered with comma separator.
 
 ==Setup==
   * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
