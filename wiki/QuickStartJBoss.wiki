@@ -73,6 +73,23 @@
 
 TODO
 
+== WebServices ==
+
+  * Locate urn:jboss:domain:security:1.1 subsystem from JBoss/standalone/configuration/standalone.xml
+  * Add new security domain inside security-domains tag:
+{{{ 
+<security-domain name="WebServices" cache-type="default">
+  <authentication>
+    <login-module code="RealmUsersRoles" flag="required">
+      <module-option name="realm" value="WebServices"/>
+      <module-option name="password-stacking" value="useFirstPass"/>
+      <module-option name="rolesProperties" value="${jboss.server.config.dir}/application-roles.properties"/>
+      <module-option name="usersProperties" value="${jboss.server.config.dir}/application-users.properties"/>
+    </login-module>
+  </authentication>
+</security-domain>  
+}}}
+
 ==Setup==
   * Download latest version of Pyramus and Pyramus reports from http://code.google.com/p/pyramus/downloads/  
   * Copy both files into JBoss/standalone/deployments -folder and rename them to ROOT.war and PyramusReports.war
