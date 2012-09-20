@@ -241,7 +241,7 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       
       obj.put("courseName", courseName);
       
-      obj.put("participationType", courseStudent.getParticipationType().getName());
+      obj.put("participationType", courseStudent.getParticipationType() != null ? courseStudent.getParticipationType().getName() : "");
       obj.put("courseBeginDate", courseStudent.getCourse().getBeginDate() != null ? courseStudent.getCourse().getBeginDate().getTime() : "");
       obj.put("courseEndDate", courseStudent.getCourse().getEndDate() != null ? courseStudent.getCourse().getEndDate().getTime() : "");
 
