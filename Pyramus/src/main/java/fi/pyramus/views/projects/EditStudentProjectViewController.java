@@ -241,13 +241,21 @@ public class EditStudentProjectViewController extends PyramusViewController impl
       
       obj.put("courseName", courseName);
       
-      obj.put("participationType", courseStudent.getParticipationType() != null ? courseStudent.getParticipationType().getName() : "");
-      obj.put("courseBeginDate", courseStudent.getCourse().getBeginDate() != null ? courseStudent.getCourse().getBeginDate().getTime() : "");
-      obj.put("courseEndDate", courseStudent.getCourse().getEndDate() != null ? courseStudent.getCourse().getEndDate().getTime() : "");
+      if (courseStudent.getParticipationType() != null) {
+        obj.put("participationType", courseStudent.getParticipationType().getName());
+      }
+      if (courseStudent.getCourse().getBeginDate() != null) {
+        obj.put("courseBeginDate", courseStudent.getCourse().getBeginDate().getTime());
+      }
+      if (courseStudent.getCourse().getEndDate() != null) {
+        obj.put("courseEndDate", courseStudent.getCourse().getEndDate().getTime());
+      }
 
       obj.put("gradeName", grade != null ? grade.getName() : "");
       
-      obj.put("optionality", courseStudent.getOptionality() != null ? courseStudent.getOptionality().toString() : "");
+      if (courseStudent.getOptionality() != null) {
+        obj.put("optionality", courseStudent.getOptionality().toString());
+      }
       obj.put("moduleId", courseStudent.getCourse().getModule().getId().toString());
       obj.put("courseId", courseStudent.getCourse().getId().toString());
       obj.put("courseStudentId", courseStudent.getId().toString());
