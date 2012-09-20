@@ -69,22 +69,16 @@ public class EditTransferCreditTemplateViewController extends PyramusViewControl
     for (int i=0; i<jsonCourses.size(); i++) {
       JSONObject course = jsonCourses.getJSONObject(i);
       if (courses.get(i).getCourseLength() != null) {
-        long courseLengthUnitId = -1;
-        double courseLengthUnits = 0;
-        courseLengthUnits = courses.get(i).getCourseLength().getUnits();
+        course.put("courseLengthUnits", courses.get(i).getCourseLength().getUnits());
         if (courses.get(i).getCourseLength().getUnit() != null) {
-          courseLengthUnitId = courses.get(i).getCourseLength().getUnit().getId();
+          course.put("courseLengthUnitId", courses.get(i).getCourseLength().getUnit().getId());
         } else {
           throw new SmvcRuntimeException(StatusCode.UNDEFINED, Messages.getInstance().getText(pageRequestContext.getRequest().getLocale(),
               "generic.errors.missingValue", new Object[] {"CourseLengthUnit", "TransferCreditTemplateCourse"}));
         }
-        course.put("courseLengthUnitId", courseLengthUnitId);
-        course.put("courseLengthUnits", courseLengthUnits);
       }
       if (courses.get(i).getSubject() != null) {
-        long subjectId = -1;
-        subjectId = courses.get(i).getSubject().getId();
-        course.put("subjectId", subjectId);
+        course.put("subjectId", courses.get(i).getSubject().getId());
       }
     }
     

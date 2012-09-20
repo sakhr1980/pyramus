@@ -163,7 +163,7 @@ function onLoad(event) {
   var rows = new Array();
   for ( var i = 0, l = courses.length; i < l; i++) {
     var course = courses[i];
-    rows.push([ course.courseName.escapeHTML(), course.optionality, course.courseNumber, course.subjectId, course.courseLengthUnits, course.courseLengthUnitId,
+    rows.push([ course.courseName.escapeHTML(), course.optionality, course.courseNumber, course.subjectId, course.courseLengthUnits || '', course.courseLengthUnitId,
         '', course.id ]);
   }
   coursesTable.addRows(rows);
