@@ -9,7 +9,7 @@ function setupRelatedCommandsBasic() {
     iconURL : GLOBAL_contextPath + '/gfx/eye.png',
     text : getLocale().getText("projects.editProject.basicTabRelatedActionViewProjectLabel"),
     onclick : function(event) {
-      redirectTo(GLOBAL_contextPath + '/projects/viewproject.page?project=${project.id}');
+      redirectTo(GLOBAL_contextPath + '/projects/viewproject.page?project=' + projectId);
     }
   }));
 }
