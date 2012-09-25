@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>plugin-core</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.6.3</version>
 	<repositories>
 		<repository>
 			<id>otavanopisto-releases</id>
@@ -24,12 +24,12 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.3-SNAPSHOT</version>
+      <version>0.6.3</version>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>framework</artifactId>
-      <version>0.6.3-SNAPSHOT</version>
+      <version>0.6.3</version>
     </dependency>
   </dependencies>
   <url>http://pyramus.googlecode.com/</url>
