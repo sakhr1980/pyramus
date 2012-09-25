@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>pyramus</artifactId>
-  <version>0.6.3</version>
+  <version>0.6.4-SNAPSHOT</version>
 
   <repositories>
     <repository>
@@ -232,25 +232,25 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>framework</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>plugin-core</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>webservices-plugin</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     
     <dependency>

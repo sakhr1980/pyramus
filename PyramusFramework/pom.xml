@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>framework</artifactId>
-  <version>0.6.3</version>
+  <version>0.6.4-SNAPSHOT</version>
   <name>Pyramus Framework</name>
   <url>http://pyramus.googlecode.com/</url>
   <scm>
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.3</version>
+      <version>0.6.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
   
