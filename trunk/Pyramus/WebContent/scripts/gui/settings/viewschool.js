@@ -142,8 +142,8 @@ function onLoad(event) {
   addressTable.reattachToDom();
   variablesTable.detachFromDom();
   for ( var i = 0, l = variableKeys.length; i < l; i++) {
-    var rowNumber = variablesTable.addRow([ variableKeys[i].variableKey.escapeHTML(), variableKeys[i].variableName.escapeHTML(),
-        variableKeys[i].variableValue.escapeHTML() ]);
+    var rowNumber = variablesTable.addRow([ jsonEscapeHTML(variableKeys[i].variableKey), jsonEscapeHTML(variableKeys[i].variableName),
+                                            jsonEscapeHTML(variableKeys[i].variableValue) ]);
     var dataType;
     switch (variableKeys[i].variableType) {
       case 'NUMBER':

@@ -127,8 +127,16 @@ function onLoad(event) {
   });
 
   for ( var i = 0, l = addresses.length; i < l; i++) {
-    addressTable.addRow([ addresses[i].id, addresses[i].defaultAddress, addresses[i].contactTypeId, addresses[i].name.escapeHTML(),
-        addresses[i].streetAddress.escapeHTML(), addresses[i].postalCode.escapeHTML(), addresses[i].city.escapeHTML(), addresses[i].country.escapeHTML(), '',
+    addressTable.addRow([ 
+        addresses[i].id, 
+        addresses[i].defaultAddress, 
+        addresses[i].contactTypeId, 
+        jsonEscapeHTML(addresses[i].name),
+        jsonEscapeHTML(addresses[i].streetAddress), 
+        jsonEscapeHTML(addresses[i].postalCode), 
+        jsonEscapeHTML(addresses[i].city), 
+        jsonEscapeHTML(addresses[i].country), 
+        '',
         '' ]);
   }
 
@@ -207,7 +215,7 @@ function onLoad(event) {
   });
 
   for ( var i = 0, l = emails.length; i < l; i++) {
-    emailTable.addRow([ emails[i].id, emails[i].defaultAddress, emails[i].contactTypeId, emails[i].address.escapeHTML(), '', '' ]);
+    emailTable.addRow([ emails[i].id, emails[i].defaultAddress, emails[i].contactTypeId, jsonEscapeHTML(emails[i].address), '', '' ]);
   }
 
   if (emailTable.getRowCount() == 0) {
@@ -285,7 +293,7 @@ function onLoad(event) {
   });
 
   for ( var i = 0, l = phoneNumbers.length; i < l; i++) {
-    phoneTable.addRow([ phoneNumbers[i].id, phoneNumbers[i].defaultNumber, phoneNumbers[i].contactTypeId, phoneNumbers[i].number.escapeHTML(), '', '' ]);
+    phoneTable.addRow([ phoneNumbers[i].id, phoneNumbers[i].defaultNumber, phoneNumbers[i].contactTypeId, jsonEscapeHTML(phoneNumbers[i].number), '', '' ]);
   }
 
   if (phoneTable.getRowCount() == 0) {
@@ -326,8 +334,8 @@ function onLoad(event) {
   });
   variablesTable.detachFromDom();
   for ( var i = 0, l = variableKeys.length; i < l; i++) {
-    var variableValue = variableKeys[i].variableValue != null ? variableKeys[i].variableValue.escapeHTML() : undefined;
-    var rowNumber = variablesTable.addRow([ '', variableKeys[i].variableKey.escapeHTML(), variableKeys[i].variableName.escapeHTML(), variableValue]);
+    var variableValue = variableKeys[i].variableValue != null ? variableKeys[i].variableValue.jsonEscapeHTML() : undefined;
+    var rowNumber = variablesTable.addRow([ '', jsonEscapeHTML(variableKeys[i].variableKey), jsonEscapeHTML(variableKeys[i].variableName), variableValue]);
     var dataType;
     switch (variableKeys[i].variableType) {
       case 'NUMBER':

@@ -58,7 +58,7 @@ function onLoad(event) {
             } ];
             for ( var i = 0, l = educationTypes.length; i < l; i++) {
               result.push({
-                text : educationTypes[i].name.escapeHTML(),
+                text : jsonEscapeHTML(educationTypes[i].name),
                 value : educationTypes[i].id
               });
             }
@@ -140,7 +140,7 @@ function onLoad(event) {
   var rows = new Array();
   for ( var i = 0, l = studyProgrammeCategories.length; i < l; i++) {
     var studyProgrammeCategory = studyProgrammeCategories[i];
-    rows.push([ '', studyProgrammeCategory.name.escapeHTML(), studyProgrammeCategory.educationTypeId, '', '', studyProgrammeCategory.id, 0 ]);
+    rows.push([ '', jsonEscapeHTML(studyProgrammeCategory.name), studyProgrammeCategory.educationTypeId, '', '', studyProgrammeCategory.id, 0 ]);
   }
   studyProgrammeCategoriesTable.addRows(rows);
 

@@ -295,8 +295,8 @@ function onLoad(event) {
 
     variablesTable.detachFromDom();
     for ( var i = 0, l = variableKeys.length; i < l; i++) {
-      var rowNumber = variablesTable.addRow([ '', variableKeys[i].variableKey.escapeHTML(),
-          variableKeys[i].variableName.escapeHTML(), '' ]);
+      var rowNumber = variablesTable.addRow([ '', jsonEscapeHTML(variableKeys[i].variableKey),
+                                              jsonEscapeHTML(variableKeys[i].variableName), '' ]);
       var dataType;
       switch (variableKeys[i].variableType) {
         case 'NUMBER':

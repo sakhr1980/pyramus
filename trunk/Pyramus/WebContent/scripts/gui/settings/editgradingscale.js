@@ -93,10 +93,10 @@ function onLoad(event) {
   for ( var i = 0, l = grades.length; i < l; i++) {
     rows.push([ '',
                 grades[i].passingGrade,
-                grades[i].name.escapeHTML(),
-                grades[i].qualification.escapeHTML(),
+                jsonEscapeHTML(grades[i].name),
+                jsonEscapeHTML(grades[i].qualification),
                 grades[i].GPA,
-                grades[i].description.escapeHTML(),
+                jsonEscapeHTML(grades[i].description),
                 grades[i].id,
                 '',
                 0]);

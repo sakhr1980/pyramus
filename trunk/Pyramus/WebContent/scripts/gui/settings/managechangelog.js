@@ -35,12 +35,12 @@ function onLoad(event) {
 
   for ( var i = 0, l = entities.length; i < l; i++) {
     var entity = entities[i];
-    rowIndex = settingsTable.addRow([ false, entity.displayName.escapeHTML(), '', '' ]);
+    rowIndex = settingsTable.addRow([ false, jsonEscapeHTML(entity.displayName), '', '' ]);
     settingsTable.hideCell(rowIndex, trackColumnIndex);
     for ( var j = 0, ll = entity.properties.length; j < ll; j++) {
       var property = entity.properties[j];
-      settingsTable.addRow([ property.track, "&nbsp;&nbsp;&nbsp;&nbsp" + property.displayName.escapeHTML(), entity.name.escapeHTML(),
-          property.name.escapeHTML() ]);
+      settingsTable.addRow([ property.track, "&nbsp;&nbsp;&nbsp;&nbsp" + jsonEscapeHTML(property.displayName), jsonEscapeHTML(entity.name),
+                             jsonEscapeHTML(property.name) ]);
     }
   }
 

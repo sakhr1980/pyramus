@@ -43,7 +43,7 @@ function doSearch(page) {
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
         resultsTable
-            .addRow([ results[i].name.escapeHTML(), results[i].id, results[i].unitCost, results[i].hourlyCost ]);
+            .addRow([ jsonEscapeHTML(results[i].name), results[i].id, results[i].unitCost, results[i].hourlyCost ]);
         var rowIndex = getResourceRowIndex('resourcesTable', results[i].id);
         if (rowIndex != -1) {
           resultsTable.disableRow(resultsTable.getRowCount() - 1);

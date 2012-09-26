@@ -1,25 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>fi.pyramus</groupId>
   <artifactId>reports</artifactId>
-  <version>0.6.4-SNAPSHOT</version>
-  <repositories>
-    <repository>
-    <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-    <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-  </repository>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snaphosts</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-  </repositories> 
+
+  <parent>
+    <groupId>fi.pyramus</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.6.4-SNAPSHOT</version>
+  </parent>
+  
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
@@ -29,7 +21,6 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>4.2.0.Final</version>
     </dependency>
     <dependency>
       <groupId>net.sf.jtidy</groupId>
@@ -39,7 +30,6 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>persistence</artifactId>
-      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>javax</groupId>
@@ -50,7 +40,6 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-      <version>4.0.1.Final</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -62,13 +51,11 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>4.1.0.Final</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate.common</groupId>
       <artifactId>hibernate-commons-annotations</artifactId>
-      <version>4.0.1.Final</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -117,18 +104,4 @@
     </plugins>
   </build>
   
-  <distributionManagement>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </distributionManagement>
 </project>

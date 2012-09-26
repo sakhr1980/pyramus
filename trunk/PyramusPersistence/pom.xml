@@ -1,21 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>fi.pyramus</groupId>
   <artifactId>persistence</artifactId>
-  <version>0.6.4-SNAPSHOT</version>
   <name>Pyramus Persistence</name>
-  
+
+  <parent>
+    <groupId>fi.pyramus</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.6.4-SNAPSHOT</version>
+  </parent>
+
   <repositories>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snaphosts</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
     <repository>
       <id>repository.jboss.org-public</id>
       <name>JBoss repository</name>
@@ -27,12 +21,10 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-      <version>4.0.1.Final</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -44,12 +36,10 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search</artifactId>
-      <version>4.1.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>4.2.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.apache.lucene</groupId>
@@ -59,12 +49,10 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>common</artifactId>
-      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>domainmodelextension</artifactId>
-      <version>0.6.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>javax</groupId>
@@ -75,7 +63,6 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>4.1.0.Final</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -233,18 +220,4 @@
     </plugins>
   </build>
   
-  <distributionManagement>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </distributionManagement>
 </project>

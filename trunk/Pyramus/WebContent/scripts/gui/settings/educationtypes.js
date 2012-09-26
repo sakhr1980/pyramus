@@ -124,7 +124,7 @@ function onLoad(event) {
 
   var rows = new Array();
   for ( var i = 0, l = educationTypes.length; i < l; i++) {
-    rows.push([ '', educationTypes[i].name.escapeHTML(), educationTypes[i].code.escapeHTML(), '', '', educationTypes[i].id, 0 ]);
+    rows.push([ '', jsonEscapeHTML(educationTypes[i].name), jsonEscapeHTML(educationTypes[i].code), '', '', educationTypes[i].id, 0 ]);
   }
 
   educationTypesTable.addRows(rows);

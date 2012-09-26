@@ -79,7 +79,7 @@ function doStudentSearch(page) {
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
         var name = results[i].lastName + ", " + results[i].firstName;
-        resultsTable.addRow([ name.escapeHTML(), results[i].id ]);
+        resultsTable.addRow([ jsonEscapeHTML(name), results[i].id ]);
       }
       resultsTable.reattachToDom();
       getSearchNavigationById('studentSearchResultsNavigation').setTotalPages(jsonResponse.pages);
@@ -112,7 +112,7 @@ function doProjectSearch(page) {
       resultsTable.deleteAllRows();
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
-        resultsTable.addRow([ results[i].name.escapeHTML(), results[i].id ]);
+        resultsTable.addRow([ jsonEscapeHTML(results[i].name), results[i].id ]);
       }
       resultsTable.reattachToDom();
       getSearchNavigationById('projectSearchResultsNavigation').setTotalPages(jsonResponse.pages);

@@ -151,7 +151,7 @@ function onLoad(event) {
     var educationType = educationTypes[i];
     for ( var j = 0; j < educationType.subtypes.length; j++) {
       var educationSubtype = educationType.subtypes[j];
-      rows.push([ '', educationType.id, educationSubtype.name.escapeHTML(), educationSubtype.code.escapeHTML(), '', '', educationSubtype.id, 0 ]);
+      rows.push([ '', educationType.id, jsonEscapeHTML(educationSubtype.name), jsonEscapeHTML(educationSubtype.code), '', '', educationSubtype.id, 0 ]);
     }
   }
   educationSubtypesTable.addRows(rows);

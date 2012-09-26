@@ -174,7 +174,7 @@ function onLoad(event) {
 
   var rows = [];
   for ( var i = 0, l = studyEndReasons.length; i < l; i++) {
-    rows.push([ '', studyEndReasons[i].name.escapeHTML(), studyEndReasons[i].parentId, '', '', studyEndReasons[i].id, 0 ]);
+    rows.push([ '', jsonEscapeHTML(studyEndReasons[i].name), studyEndReasons[i].parentId, '', '', studyEndReasons[i].id, 0 ]);
   }
   studyEndReasonsTable.addRows(rows);
   updateParentDropdownBoxesAndDeleteButtons();

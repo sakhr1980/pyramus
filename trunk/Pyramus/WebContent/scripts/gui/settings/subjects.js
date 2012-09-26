@@ -170,7 +170,7 @@ function onLoad(event) {
   var rows = new Array();
   for ( var i = 0, l = subjects.length; i < l; i++) {
     var subject = subjects[i];
-    rows.push([ '', subject.code.escapeHTML(), subject.name.escapeHTML(), subject.educationTypeId, '', '', subject.id, 0 ]);
+    rows.push([ '', jsonEscapeHTML(subject.code), jsonEscapeHTML(subject.name), subject.educationTypeId, '', '', subject.id, 0 ]);
   }
   subjectsTable.addRows(rows);
 

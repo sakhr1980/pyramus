@@ -69,6 +69,11 @@
       location.assign(url);
     }
   }
+  
+  function jsonEscapeHTML(v) {
+    return v ? v.escapeHTML() : "";
+  }
+  
 </script>
 
 <link href="${pageContext.request.contextPath}/css/theme.css" rel="stylesheet">
