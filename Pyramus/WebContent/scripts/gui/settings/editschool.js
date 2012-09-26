@@ -334,7 +334,7 @@ function onLoad(event) {
   });
   variablesTable.detachFromDom();
   for ( var i = 0, l = variableKeys.length; i < l; i++) {
-    var variableValue = variableKeys[i].variableValue != null ? variableKeys[i].variableValue.jsonEscapeHTML() : undefined;
+    var variableValue = variableKeys[i].variableValue != null ? jsonEscapeHTML(variableKeys[i].variableValue) : undefined;
     var rowNumber = variablesTable.addRow([ '', jsonEscapeHTML(variableKeys[i].variableKey), jsonEscapeHTML(variableKeys[i].variableName), variableValue]);
     var dataType;
     switch (variableKeys[i].variableType) {
