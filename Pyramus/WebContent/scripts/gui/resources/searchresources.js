@@ -16,13 +16,13 @@ function doSearch(page) {
       resultsTable.deleteAllRows();
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
-        var resourceType;
+        var resourceType  = "";
         if (results[i].resourceType == 'MATERIAL_RESOURCE') {
           resourceType = getLocale().getText("resources.searchResources.resourceType_MATERIAL_RESOURCE");
         } else if (results[i].resourceType == 'WORK_RESOURCE') {
           resourceType = getLocale().getText("resources.searchResources.resourceType_WORK_RESOURCE");
         }
-        resultsTable.addRow([ results[i].name.escapeHTML(), resourceType, results[i].resourceCategoryName.escapeHTML(),
+        resultsTable.addRow([ jsonEscapeHTML(results[i].name), resourceType, jsonEscapeHTML(results[i].resourceCategoryName),
             '', '', results[i].resourceType, results[i].id ]);
       }
       resultsTable.reattachToDom();

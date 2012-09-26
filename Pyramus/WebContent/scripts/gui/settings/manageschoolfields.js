@@ -116,7 +116,7 @@ function onLoad(event) {
 
   var rows = new Array();
   for ( var i = 0, l = schoolFields.length; i < l; i++) {
-    rows.push([ '', schoolFields[i].name.escapeHTML(), '', '', schoolFields[i].id, 0 ]);
+    rows.push([ '', jsonEscapeHTML(schoolFields[i].name), '', '', schoolFields[i].id, 0 ]);
   }
 
   table.addRows(rows);

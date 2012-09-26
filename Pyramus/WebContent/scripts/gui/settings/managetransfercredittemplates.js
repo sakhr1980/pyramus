@@ -79,7 +79,7 @@ function onLoad(event) {
 
   var rows = new Array();
   for ( var i = 0, l = transferCreditTemplates.length; i < l; i++) {
-    rows.push([ transferCreditTemplates[i].name.escapeHTML(), null, null, transferCreditTemplates[i].id ]);
+    rows.push([ jsonEscapeHTML(transferCreditTemplates[i].name), null, null, transferCreditTemplates[i].id ]);
   }
   transferCreditTemplatesTable.addRows(rows);
 

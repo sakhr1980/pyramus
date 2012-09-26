@@ -51,7 +51,7 @@ function openSearchModulesDialog() {
           var moduleName = event.results.modules[i].name;
           var index = getModuleRowIndex('modulesTable', moduleId);
           if (index == -1) {
-            modulesTable.addRow([ moduleName.escapeHTML(), 0, '', '', moduleId, -1 ]);
+            modulesTable.addRow([ jsonEscapeHTML(moduleName), 0, '', '', moduleId, -1 ]);
           }
         }
         modulesTable.reattachToDom();
@@ -210,7 +210,7 @@ function onLoad(event) {
       var projectModules = jsonResponse.projectModules;
       var rows = new Array();
       for ( var i = 0; i < projectModules.length; i++) {
-        rows.push([ projectModules[i].name.escapeHTML(), projectModules[i].optionality, '', '',
+        rows.push([ jsonEscapeHTML(projectModules[i].name), projectModules[i].optionality, '', '',
             projectModules[i].moduleId, projectModules[i].id ]);
       }
       modulesTable.addRows(rows);

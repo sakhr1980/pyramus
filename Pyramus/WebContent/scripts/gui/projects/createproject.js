@@ -35,7 +35,7 @@ function openSearchModulesDialog() {
           var moduleName = event.results.modules[i].name;
           var index = getModuleRowIndex('modulesTable', moduleId);
           if (index == -1) {
-            modulesTable.addRow([ moduleName.escapeHTML(), 0, '', moduleId ]);
+            modulesTable.addRow([ jsonEscapeHTML(moduleName), 0, '', moduleId ]);
           }
         }
         modulesTable.reattachToDom();

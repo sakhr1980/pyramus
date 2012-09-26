@@ -26,7 +26,6 @@ import fi.pyramus.domainmodel.base.ContactURLType;
 import fi.pyramus.domainmodel.base.Email;
 import fi.pyramus.domainmodel.base.PhoneNumber;
 import fi.pyramus.domainmodel.base.School;
-import fi.pyramus.domainmodel.base.SchoolVariable;
 import fi.pyramus.domainmodel.base.SchoolVariableKey;
 import fi.pyramus.domainmodel.base.Tag;
 import fi.pyramus.framework.PyramusViewController;

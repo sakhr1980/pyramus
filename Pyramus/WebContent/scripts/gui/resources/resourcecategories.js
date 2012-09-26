@@ -120,7 +120,7 @@ function onLoad(event) {
   var rowIndex;
   for ( var i = 0; i < resourceCategories.length; i++) {
     var r = resourceCategories[i];
-    rowIndex = resourceCategoriesTable.addRow([ '', r.name.escapeHTML(), '', '', r.id, 0 ]);
+    rowIndex = resourceCategoriesTable.addRow([ '', jsonEscapeHTML(r.name), '', '', r.id, 0 ]);
     resourceCategoriesTable.showCell(rowIndex, resourceCategoriesTable.getNamedColumnIndex('archiveButton'));
   }
   if (resourceCategoriesTable.getRowCount() > 0) {

@@ -128,7 +128,7 @@ function onLoad(event) {
         var result = [];
         for ( var i = 0, l = timeUnits.length; i < l; i++) {
           result.push({
-            text : timeUnits[i].name.escapeHTML(),
+            text : jsonEscapeHTML(timeUnits[i].name),
             value : timeUnits[i].id
           });
         }
@@ -163,7 +163,7 @@ function onLoad(event) {
   var rows = new Array();
   for ( var i = 0, l = courses.length; i < l; i++) {
     var course = courses[i];
-    rows.push([ course.courseName.escapeHTML(), course.optionality, course.courseNumber, course.subjectId, course.courseLengthUnits || '', course.courseLengthUnitId,
+    rows.push([ jsonEscapeHTML(course.courseName), course.optionality, course.courseNumber, course.subjectId, course.courseLengthUnits || '', course.courseLengthUnitId,
         '', course.id ]);
   }
   coursesTable.addRows(rows);

@@ -17,7 +17,7 @@ function doSearch(page) {
       resultsTable.deleteAllRows();
       var results = jsonResponse.results;
       for ( var i = 0; i < results.length; i++) {
-        resultsTable.addRow([ results[i].name.escapeHTML(), results[i].fieldName.escapeHTML(), '', '', '', results[i].id ]);
+        resultsTable.addRow([ jsonEscapeHTML(results[i].name), jsonEscapeHTML(results[i].fieldName), '', '', '', results[i].id ]);
       }
       resultsTable.reattachToDom();
       getSearchNavigationById('searchResultsNavigation').setTotalPages(jsonResponse.pages);

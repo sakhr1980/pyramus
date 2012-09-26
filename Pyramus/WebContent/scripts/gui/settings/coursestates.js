@@ -148,7 +148,7 @@ function onLoad(event) {
 
   var rows = new Array();
   for ( var i = 0, l = courseStates.length; i < l; i++) {
-    rows.push([ '', courseStates[i].id == initialCourseState.id, courseStates[i].name.escapeHTML(), '', '', courseStates[i].id ]);
+    rows.push([ '', courseStates[i].id == initialCourseState.id, jsonEscapeHTML(courseStates[i].name), '', '', courseStates[i].id ]);
   }
   courseStatesTable.addRows(rows);
 
