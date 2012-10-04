@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="/ix" prefix="ix"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -14,7 +15,6 @@
     <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
     <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/datefield_support.jsp"></jsp:include>
-    
     <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
     <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
@@ -56,6 +56,16 @@
             openEditStudentImageDialog(studentId);
           }
         }));
+        
+        var extensionHoverMenuLinks = $$('#extensionHoverMenuLinks a');
+        for (var i=0, l=extensionHoverMenuLinks.length; i<l; i++) {
+          var extensionHoverMenuLink = extensionHoverMenuLinks[i].remove();
+          basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+              iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+              text: extensionHoverMenuLink.innerHTML,
+              link: GLOBAL_contextPath + extensionHoverMenuLink.href
+          }));
+        }
 
         var studentReports = JSDATA["studentReports"].evalJSON();
         
@@ -1324,6 +1334,10 @@
         <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
       </fmt:message>
     </h1>
+    
+    <div id="extensionHoverMenuLinks" style="display: none;">
+      <ix:extensionHook name="students.viewStudent.hoverMenuLinks"/>
+    </div>
   
     <div id="viewStudentViewContainer">
       <div class="genericFormContainer">
