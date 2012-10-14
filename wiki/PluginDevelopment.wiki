@@ -51,7 +51,7 @@ Maven repository, and reference it from Pyramus
 
 ==Extending database==
 
-  * TODO: Extending database
+Instead of extending the database, use the variable mechanism. Most important entities have variable keys and variables that can be used for extending the entities.
 
 ==Plugin Localization==
 
@@ -92,7 +92,7 @@ _fi.pyramus.plugin.simple.views.LoggedUserInfoViewController:_
     return new UserRole[] { UserRole.MANAGER, UserRole.ADMINISTRATOR };
   }
 }}}
-_fi.pyramus.plugin.simple.ftl.loggeduserinfo.ftl:_
+_/fi/pyramus/plugin/simple/ftl/loggeduserinfo.ftl:_
 {{{
   <#assign fmt=JspTaglibs["http://java.sun.com/jsp/jstl/fmt"]>
   
@@ -124,6 +124,12 @@ _fi.pyramus.plugin.simple.ftl.loggeduserinfo.ftl:_
 ==Adding binary controllers==
 
   * TODO: Adding binary controllers
+
+==Adding static resources (images, JavaScript etc)==
+
+Plugins can provide external resources by placing them in
+`/fi/pyramus/plugin/static/`_plugin name_. The resources
+can be accessed as `/plugin/static/`_plugin name_`/`resource.
 
 ==Extending views==
 
