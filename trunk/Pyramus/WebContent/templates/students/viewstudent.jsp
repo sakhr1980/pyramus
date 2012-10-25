@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+  pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -6,26 +7,26 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-  <head> 
-    <title>
-      <fmt:message key="students.viewStudent.pageTitle">
-        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
-      </fmt:message>
-    </title>
-    <jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/datefield_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
-    <jsp:include page="/templates/generic/hoverpanel_support.jsp"></jsp:include>
+<head>
+<title><fmt:message key="students.viewStudent.pageTitle">
+    <fmt:param value="${abstractStudent.latestStudent.fullName}" />
+  </fmt:message></title>
+<jsp:include page="/templates/generic/head_generic.jsp"></jsp:include>
+<jsp:include page="/templates/generic/tabs_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/datefield_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/scriptaculous_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/table_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/dialog_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/hovermenu_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/jsonrequest_support.jsp"></jsp:include>
+<jsp:include page="/templates/generic/hoverpanel_support.jsp"></jsp:include>
 
-    <!-- Used to render memo values with line breaks; for some reason this is the only approach that works -->
-    <% pageContext.setAttribute("newLineChar", "\n"); %>
+<!-- Used to render memo values with line breaks; for some reason this is the only approach that works -->
+<%
+  pageContext.setAttribute("newLineChar", "\n");
+%>
 
-    <script type="text/javascript">
+<script type="text/javascript">
       function setupBasicTab(abstractStudentId, studentId, studentFullName) {
         var basicTabRelatedActionsHoverMenu = new IxHoverMenu($('basicTabRelatedActionsHoverMenuContainer.' + studentId), {
           text: '<fmt:message key="students.viewStudent.basicTabRelatedActionsLabel"/>'
@@ -60,11 +61,19 @@
         var extensionHoverMenuLinks = $$('#extensionHoverMenuLinks a');
         for (var i=0, l=extensionHoverMenuLinks.length; i<l; i++) {
           var extensionHoverMenuLink = extensionHoverMenuLinks[i].remove();
-          basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
-              iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
-              text: extensionHoverMenuLink.innerHTML,
-              link: GLOBAL_contextPath + extensionHoverMenuLink.href
-          }));
+          if (extensionHoverMenuLink.href.indexOf('?') == -1) {
+	          basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+	              iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+	              text: extensionHoverMenuLink.innerHTML,
+	              link: GLOBAL_contextPath + extensionHoverMenuLink.href + "?studentId=" + studentId
+	          }));
+          } else {
+	          basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+	              iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+	              text: extensionHoverMenuLink.innerHTML,
+	              link: GLOBAL_contextPath + extensionHoverMenuLink.href + "&studentId=" + studentId
+	          }));
+          }
         }
 
         var studentReports = JSDATA["studentReports"].evalJSON();
@@ -1324,694 +1333,944 @@
       }
       
     </script>
-  </head>
+</head>
 
-  <body onload="onLoad(event);">
-    <jsp:include page="/templates/generic/header.jsp"></jsp:include>
-    
-    <h1 class="genericPageHeader">
-      <fmt:message key="students.viewStudent.pageTitle">
-        <fmt:param value="${abstractStudent.latestStudent.fullName}"/>
-      </fmt:message>
-    </h1>
-    
-    <div id="extensionHoverMenuLinks" style="display: none;">
-      <ix:extensionHook name="students.viewStudent.hoverMenuLinks"/>
-    </div>
-  
-    <div id="viewStudentViewContainer">
-      <div class="genericFormContainer">
-        <div class="tabLabelsContainer containsNestedTabs" id="studentTabs">
-          <c:forEach var="student" items="${students}">
-            <a class="tabLabel" href="#student.${student.id}">
-              <c:choose>
-                <c:when test="${student.studyProgramme == null}">
-                  <fmt:message key="students.viewStudent.noStudyProgrammeTabLabel"/>
-                </c:when>
-                <c:otherwise>
+<body onload="onLoad(event);">
+  <jsp:include page="/templates/generic/header.jsp"></jsp:include>
+
+  <h1 class="genericPageHeader">
+    <fmt:message key="students.viewStudent.pageTitle">
+      <fmt:param value="${abstractStudent.latestStudent.fullName}" />
+    </fmt:message>
+  </h1>
+
+  <div id="extensionHoverMenuLinks" style="display: none;">
+    <ix:extensionHook name="students.viewStudent.hoverMenuLinks" />
+  </div>
+
+  <div id="viewStudentViewContainer">
+    <div class="genericFormContainer">
+      <div class="tabLabelsContainer containsNestedTabs"
+        id="studentTabs">
+        <c:forEach var="student" items="${students}">
+          <a class="tabLabel" href="#student.${student.id}"> <c:choose>
+              <c:when test="${student.studyProgramme == null}">
+                <fmt:message
+                  key="students.viewStudent.noStudyProgrammeTabLabel" />
+              </c:when>
+              <c:otherwise>
                   ${student.studyProgramme.name}
                 </c:otherwise>
-              </c:choose>
-              <c:if test="${student.hasFinishedStudies}">*</c:if>
-            </a>
-          </c:forEach>
-        </div>
+            </c:choose> <c:if test="${student.hasFinishedStudies}">*</c:if>
+          </a>
+        </c:forEach>
+      </div>
 
-        <c:choose>
-          <c:when test="${abstractStudent.secureInfo}">
-            <c:set var="secureInfoTitle"><fmt:message key="students.viewStudent.secureInfoTooltip"/></c:set>
-            <c:set var="secureInfoClass" value="studentSecureInfo"/>
-          </c:when>
-          <c:otherwise>
-            <c:set var="secureInfoTitle" value=""/>
-            <c:set var="secureInfoClass" value=""/>
-          </c:otherwise>
-        </c:choose>
-    
-        <c:forEach var="student" items="${students}">
-          <div id="student.${student.id}" class="tabContent tabContentNestedTabs">    
-  
-            <div id="viewStudentViewContainer"> 
-              <div class="genericFormContainer"> 
-                <div class="tabLabelsContainer" id="tabs.${student.id}">
-                  <a class="tabLabel" href="#basic.${student.id}">
-                    <fmt:message key="students.viewStudent.basicTabLabel"/>
-                  </a>
-                  <a class="tabLabel" href="#courses.${student.id}">
-                    <fmt:message key="students.viewStudent.coursesTabLabel"/>
-                  </a>
-                  <a class="tabLabel" href="#grades.${student.id}">
-                    <fmt:message key="students.viewStudent.gradesTabLabel"/>
-                  </a>
-                  <a class="tabLabel" href="#contactlog.${student.id}">
-                    <fmt:message key="students.viewStudent.contactLogTabLabel"/>
-                  </a>
-                  <a class="tabLabel" href="#studentProject.${student.id}">
-                    <fmt:message key="students.viewStudent.studentProjectTabLabel"/>
-                  </a>
-                  <a class="tabLabel" href="#studentFiles.${student.id}">
-                    <fmt:message key="students.viewStudent.studentFilesTabLabel"/>
-                  </a>
-                </div>
+      <c:choose>
+        <c:when test="${abstractStudent.secureInfo}">
+          <c:set var="secureInfoTitle">
+            <fmt:message key="students.viewStudent.secureInfoTooltip" />
+          </c:set>
+          <c:set var="secureInfoClass" value="studentSecureInfo" />
+        </c:when>
+        <c:otherwise>
+          <c:set var="secureInfoTitle" value="" />
+          <c:set var="secureInfoClass" value="" />
+        </c:otherwise>
+      </c:choose>
 
-                <div id="basic.${student.id}" class="tabContent">
-                  <div id="basicTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-                  
-                    <!--  Student Basic Info Starts -->
-                    <div class="genericViewInfoWapper ${secureInfoClass}" id="studentViewBasicInfoWrapper">
-                    
-                      <div class="genericFormSection" title="${secureInfoTitle}">
-                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                          <jsp:param name="titleLocale" value="students.viewStudent.firstNameTitle"/>
-                          <jsp:param name="helpLocale" value="students.viewStudent.firstNameHelp"/>
-                        </jsp:include>                                        
-                        <div class="genericViewFormDataText">${student.firstName}</div>
+      <c:forEach var="student" items="${students}">
+        <div id="student.${student.id}"
+          class="tabContent tabContentNestedTabs">
+
+          <div id="viewStudentViewContainer">
+            <div class="genericFormContainer">
+              <div class="tabLabelsContainer" id="tabs.${student.id}">
+                <a class="tabLabel" href="#basic.${student.id}"> <fmt:message
+                    key="students.viewStudent.basicTabLabel" />
+                </a> <a class="tabLabel" href="#courses.${student.id}">
+                  <fmt:message
+                    key="students.viewStudent.coursesTabLabel" />
+                </a> <a class="tabLabel" href="#grades.${student.id}"> <fmt:message
+                    key="students.viewStudent.gradesTabLabel" />
+                </a> <a class="tabLabel" href="#contactlog.${student.id}">
+                  <fmt:message
+                    key="students.viewStudent.contactLogTabLabel" />
+                </a> <a class="tabLabel"
+                  href="#studentProject.${student.id}"> <fmt:message
+                    key="students.viewStudent.studentProjectTabLabel" />
+                </a> <a class="tabLabel" href="#studentFiles.${student.id}">
+                  <fmt:message
+                    key="students.viewStudent.studentFilesTabLabel" />
+                </a>
+              </div>
+
+              <div id="basic.${student.id}" class="tabContent">
+                <div
+                  id="basicTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+
+                <!--  Student Basic Info Starts -->
+                <div class="genericViewInfoWapper ${secureInfoClass}"
+                  id="studentViewBasicInfoWrapper">
+
+                  <div class="genericFormSection"
+                    title="${secureInfoTitle}">
+                    <jsp:include
+                      page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale"
+                        value="students.viewStudent.firstNameTitle" />
+                      <jsp:param name="helpLocale"
+                        value="students.viewStudent.firstNameHelp" />
+                    </jsp:include>
+                    <div class="genericViewFormDataText">${student.firstName}</div>
+                  </div>
+
+                  <c:choose>
+                    <c:when test="${studentHasImage[student.id]}">
+                      <span id="studentImage.${student.id}"
+                        style="background-image: url('viewstudentimage.binary?studentId=${student.id}');"
+                        class="viewStudent_studentImage"> </span>
+                    </c:when>
+                    <c:otherwise>
+                      <span id="studentImage.${student.id}"
+                        class="viewStudent_studentImage"> </span>
+                    </c:otherwise>
+                  </c:choose>
+
+                  <div class="genericFormSection"
+                    title="${secureInfoTitle}">
+                    <jsp:include
+                      page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale"
+                        value="students.viewStudent.lastNameTitle" />
+                      <jsp:param name="helpLocale"
+                        value="students.viewStudent.lastNameHelp" />
+                    </jsp:include>
+                    <div class="genericViewFormDataText">${student.lastName}</div>
+                  </div>
+
+                  <c:choose>
+                    <c:when test="${!empty abstractStudent.birthday}">
+                      <div class="genericFormSection"
+                        title="${secureInfoTitle}">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.birthdayTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.birthdayHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">
+                          <fmt:formatDate
+                            value="${abstractStudent.birthday}" />
+                        </div>
                       </div>
+                    </c:when>
+                  </c:choose>
 
+                  <c:choose>
+                    <c:when
+                      test="${!empty abstractStudent.socialSecurityNumber}">
+                      <div class="genericFormSection"
+                        title="${secureInfoTitle}">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.ssecIdTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.ssecIdHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${abstractStudent.socialSecurityNumber}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <div class="genericFormSection"
+                    title="${secureInfoTitle}">
+                    <jsp:include
+                      page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale"
+                        value="students.viewStudent.genderTitle" />
+                      <jsp:param name="helpLocale"
+                        value="students.viewStudent.genderHelp" />
+                    </jsp:include>
+                    <div class="genericViewFormDataText">
                       <c:choose>
-                        <c:when test="${studentHasImage[student.id]}">
-                          <span id="studentImage.${student.id}" style="background-image: url('viewstudentimage.binary?studentId=${student.id}');" class="viewStudent_studentImage"> </span>
+                        <c:when
+                          test="${abstractStudent.sex != 'FEMALE'}">
+                          <fmt:message
+                            key="students.viewStudent.genderMaleTitle" />
                         </c:when>
                         <c:otherwise>
-                          <span id="studentImage.${student.id}" class="viewStudent_studentImage"> </span>
+                          <fmt:message
+                            key="students.viewStudent.genderFemaleTitle" />
                         </c:otherwise>
                       </c:choose>
-                      
-                      <div class="genericFormSection" title="${secureInfoTitle}">
-                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                          <jsp:param name="titleLocale" value="students.viewStudent.lastNameTitle"/>
-                          <jsp:param name="helpLocale" value="students.viewStudent.lastNameHelp"/>
-                        </jsp:include>                                        
-                        <div class="genericViewFormDataText">${student.lastName}</div>
+                    </div>
+                  </div>
+
+                  <c:choose>
+                    <c:when test="${!empty student.nickname}">
+                      <div class="genericFormSection"
+                        title="${secureInfoTitle}">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.nicknameTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.nicknameHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.nickname}</div>
                       </div>
-                    
-                      <c:choose>
-                        <c:when test="${!empty abstractStudent.birthday}">
-                          <div class="genericFormSection" title="${secureInfoTitle}">  
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.birthdayTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.birthdayHelp"/>
-                            </jsp:include>                     
-                            <div class="genericViewFormDataText"><fmt:formatDate value="${abstractStudent.birthday}" /></div>
+                    </c:when>
+                  </c:choose>
+
+                </div>
+                <!--  Student Basic Info Ends -->
+
+                <!--  Student Contact Info Starts -->
+                <div class="genericViewInfoWapper"
+                  id="studentViewContactInfoWrapper">
+
+                  <c:if test="${!empty student.contactInfo.addresses}">
+                    <div class="genericFormSection">
+                      <c:forEach var="address"
+                        items="${student.contactInfo.addresses}">
+                        <div class="genericFormTitle">
+                          <div class="genericFormTitleText">
+                            <div>${address.contactType.name}</div>
                           </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty abstractStudent.socialSecurityNumber}">
-                          <div class="genericFormSection" title="${secureInfoTitle}"> 
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.ssecIdTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.ssecIdHelp"/>
-                            </jsp:include>                                        
-                            <div class="genericViewFormDataText">${abstractStudent.socialSecurityNumber}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                    
-                      <div class="genericFormSection" title="${secureInfoTitle}">
-                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                          <jsp:param name="titleLocale" value="students.viewStudent.genderTitle"/>
-                          <jsp:param name="helpLocale" value="students.viewStudent.genderHelp"/>
-                        </jsp:include> 
+                        </div>
                         <div class="genericViewFormDataText">
+                          <div>${address.name}</div>
+                          <div>${address.streetAddress}</div>
+                          <div>${address.postalCode}
+                            ${address.city}</div>
+                          <div>${address.country}</div>
+                        </div>
+                      </c:forEach>
+                    </div>
+                  </c:if>
+
+                  <div class="genericFormSection">
+                    <jsp:include
+                      page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale"
+                        value="students.viewStudent.emailTitle" />
+                      <jsp:param name="helpLocale"
+                        value="students.viewStudent.emailHelp" />
+                    </jsp:include>
+                    <div class="genericViewFormDataText">
+                      <c:forEach var="email"
+                        items="${student.contactInfo.emails}">
                         <c:choose>
-                          <c:when test="${abstractStudent.sex != 'FEMALE'}">
-                            <fmt:message key="students.viewStudent.genderMaleTitle"/>
+                          <c:when test="${not empty email.contactType}">
+                            <div>
+                              <a href="mailto:${email.address}">${email.address}</a>
+                              (${fn:toLowerCase(email.contactType.name)})
+                            </div>
                           </c:when>
                           <c:otherwise>
-                            <fmt:message key="students.viewStudent.genderFemaleTitle"/>
+                            <div>
+                              <a href="mailto:${email.address}">${email.address}</a>
+                            </div>
                           </c:otherwise>
                         </c:choose>
-                        </div>
-                      </div>
-                    
-                      <c:choose>
-                        <c:when test="${!empty student.nickname}">
-                          <div class="genericFormSection" title="${secureInfoTitle}">
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.nicknameTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.nicknameHelp"/>
-                            </jsp:include>                                        
-                            <div class="genericViewFormDataText">${student.nickname}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                    
+                      </c:forEach>
                     </div>
-                    <!--  Student Basic Info Ends -->
-                    
-                    <!--  Student Contact Info Starts -->
-                    <div class="genericViewInfoWapper" id="studentViewContactInfoWrapper">
-                    
-                      <c:if test="${!empty student.contactInfo.addresses}">
-                        <div class="genericFormSection">  
-                          <c:forEach var="address" items="${student.contactInfo.addresses}">
-                            <div class="genericFormTitle">
-                              <div class="genericFormTitleText">
-                                <div>${address.contactType.name}</div>
-                              </div>
-                            </div>
-                            <div class="genericViewFormDataText">
-                              <div>${address.name}</div>
-                              <div>${address.streetAddress}</div>
-                              <div>${address.postalCode} ${address.city}</div>
-                              <div>${address.country}</div>
-                            </div>
+                  </div>
+
+                  <c:choose>
+                    <c:when
+                      test="${!empty student.contactInfo.phoneNumbers}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.phoneNumberTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.phoneNumberHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">
+                          <c:forEach var="phone"
+                            items="${student.contactInfo.phoneNumbers}">
+                            <c:choose>
+                              <c:when
+                                test="${not empty phone.contactType}">
+                                <div>${phone.number}
+                                  (${fn:toLowerCase(phone.contactType.name)})</div>
+                              </c:when>
+                              <c:otherwise>
+                                <div>${phone.number}</div>
+                              </c:otherwise>
+                            </c:choose>
                           </c:forEach>
                         </div>
-                      </c:if>
-          
-                      <div class="genericFormSection">  
-                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                          <jsp:param name="titleLocale" value="students.viewStudent.emailTitle"/>
-                          <jsp:param name="helpLocale" value="students.viewStudent.emailHelp"/>
-                        </jsp:include>  
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.municipality}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.municipalityTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.municipalityHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.municipality.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                </div>
+                <!--  Student Contact Info Ends -->
+
+                <div class="columnClear"></div>
+
+                <!--  Student Education Info Starts -->
+                <div class="genericViewInfoWapper"
+                  id="studentViewEducationInfoWrapper">
+
+                  <c:choose>
+                    <c:when test="${!empty student.examinationType}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.examinationTypeTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.examinationTypeHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.examinationType.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.educationalLevel}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.educationalLevelTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.educationalLevelHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.educationalLevel.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test=">${!empty student.education}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.educationTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.educationHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.education}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.studyProgramme}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyProgrammeTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyProgrammeHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.studyProgramme.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when
+                      test="${fn:length(studentGroups[student.id]) gt 0}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studentGroupTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studentGroupHelp" />
+                        </jsp:include>
+
                         <div class="genericViewFormDataText">
-                        <c:forEach var="email" items="${student.contactInfo.emails}">
-                          <c:choose>
-                            <c:when test="${not empty email.contactType}">
-                              <div><a href="mailto:${email.address}">${email.address}</a> (${fn:toLowerCase(email.contactType.name)})</div>
-                            </c:when>
-                            <c:otherwise>
-                              <div><a href="mailto:${email.address}">${email.address}</a></div>
-                            </c:otherwise>
-                          </c:choose>
-                        </c:forEach>
+                          <c:forEach var="studentGroup"
+                            items="${studentGroups[student.id]}"
+                            varStatus="sgStat">
+                                ${studentGroup.name}<c:if
+                              test="${!sgStat.last}">, </c:if>
+                          </c:forEach>
                         </div>
                       </div>
-          
-                      <c:choose>
-                        <c:when test="${!empty student.contactInfo.phoneNumbers}">
-                          <div class="genericFormSection">    
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.phoneNumberTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.phoneNumberHelp"/>
-                            </jsp:include>  
-                            <div class="genericViewFormDataText">
-                            <c:forEach var="phone" items="${student.contactInfo.phoneNumbers}">
-                              <c:choose>
-                                <c:when test="${not empty phone.contactType}">
-                                  <div>${phone.number} (${fn:toLowerCase(phone.contactType.name)})</div>
-                                </c:when>
-                                <c:otherwise>
-                                  <div>${phone.number}</div>
-                                </c:otherwise>
-                              </c:choose>
-                            </c:forEach>
-                            </div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.municipality}">
-                          <div class="genericFormSection">      
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.municipalityTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.municipalityHelp"/>
-                            </jsp:include>  
-                            <div class="genericViewFormDataText">${student.municipality.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                    
-                    </div>
-                    <!--  Student Contact Info Ends -->
-                    
-                    <div class="columnClear"></div>
-                    
-                    <!--  Student Education Info Starts -->
-                    <div class="genericViewInfoWapper" id="studentViewEducationInfoWrapper">
-                    
-                      <c:choose>
-                        <c:when test="${!empty student.examinationType}">
-                          <div class="genericFormSection">         
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.examinationTypeTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.examinationTypeHelp"/>
-                            </jsp:include>    
-                            <div class="genericViewFormDataText">${student.examinationType.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.educationalLevel}">
-                          <div class="genericFormSection">         
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.educationalLevelTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.educationalLevelHelp"/>
-                            </jsp:include>      
-                            <div class="genericViewFormDataText">${student.educationalLevel.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-        
-                      <c:choose>
-                        <c:when test=">${!empty student.education}">
-                          <div class="genericFormSection">             
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.educationTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.educationHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${student.education}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.studyProgramme}">
-                          <div class="genericFormSection">             
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyProgrammeTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyProgrammeHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${student.studyProgramme.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-        
-                      <c:choose>
-                        <c:when test="${fn:length(studentGroups[student.id]) gt 0}">
-                          <div class="genericFormSection">             
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studentGroupTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studentGroupHelp"/>
-                            </jsp:include>
-                            
-                            <div class="genericViewFormDataText">
-                              <c:forEach var="studentGroup" items="${studentGroups[student.id]}" varStatus="sgStat">
-                                ${studentGroup.name}<c:if test="${!sgStat.last}">, </c:if>
-                              </c:forEach>
-                            </div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-        
-                      <c:choose>
-                        <c:when test="${!empty student.school}">
-                          <div class="genericFormSection">             
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.schoolTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.schoolHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${student.school.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.previousStudies}">
-                          <div class="genericFormSection">                   
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.previousStudiesTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.previousStudiesHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${student.previousStudies}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.studyTimeEnd}">
-                          <div class="genericFormSection">                     
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyTimeEndTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyTimeEndHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyTimeEnd}"/></div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.studyStartDate}">
-                          <div class="genericFormSection">                       
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyStartDateTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyStartDateHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyStartDate}"/></div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${student.hasFinishedStudies}">
-                          <div class="genericFormSection">                        
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyEndDateTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyEndDateHelp"/>
-                            </jsp:include> 
-                            <div class="genericViewFormDataText"><fmt:formatDate value="${student.studyEndDate}"/></div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.studyEndReason}">
-                          <div class="genericFormSection">                          
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyEndReasonTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyEndReasonHelp"/>
-                            </jsp:include> 
-                            <div class="genericViewFormDataText">${student.studyEndReason.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.studyEndText}">
-                          <div class="genericFormSection">                            
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.studyEndTextTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.studyEndTextHelp"/>
-                            </jsp:include> 
-                            <div class="genericViewFormDataText">${student.studyEndText}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                    
-                    </div>
+                    </c:when>
+                  </c:choose>
 
-                    <!--  Student Education Info Ends -->
-                    
-                    <!--  Student Additional Info Starts -->
-                    <div class="genericViewInfoWapper" id="studentViewAdditionalInfoWrapper">
-                    
-                      <c:choose>
-                        <c:when test="${not empty student.tags}">
-                          <div class="genericFormSection">
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.tagsTitle" />
-                              <jsp:param name="helpLocale" value="students.viewStudent.tagsHelp" />
-                            </jsp:include>
-                            <div class="genericViewFormDataText">
-                            <c:forEach var="tag" items="${student.tags}" varStatus="vs">
-                              <c:out value="${tag.text}"/>
-                              <c:if test="${not vs.last}"><c:out value=" "/></c:if>
-                            </c:forEach>
-                            </div>
-                          </div>
-                        </c:when>
-                      </c:choose> 
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.language}">
-                          <div class="genericFormSection">      
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.languageTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.languageHelp"/>
-                            </jsp:include>    
-                            <div class="genericViewFormDataText">${student.language.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.nationality}">
-                          <div class="genericFormSection">        
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.nationalityTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.nationalityHelp"/>
-                            </jsp:include>    
-                            <div class="genericViewFormDataText">${student.nationality.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-            
-                      <c:choose>
-                        <c:when test="${!empty student.activityType}">
-                          <div class="genericFormSection">          
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.activityTypeTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.activityTypeHelp"/>
-                            </jsp:include>    
-                            <div class="genericViewFormDataText">${student.activityType.name}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.additionalInfo}">
-                          <div class="genericFormSection">               
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.additionalInformationTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.additionalInformationHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${student.additionalInfo}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <c:choose>
-                        <c:when test="${!empty student.contactInfo.additionalInfo}">
-                          <div class="genericFormSection">                 
-                            <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                              <jsp:param name="titleLocale" value="students.viewStudent.additionalContactInfoTitle"/>
-                              <jsp:param name="helpLocale" value="students.viewStudent.additionalContactInfoHelp"/>
-                            </jsp:include>
-                            <div class="genericViewFormDataText">${fn:replace(student.contactInfo.additionalInfo, newLineChar, "<br/>")}</div>
-                          </div>
-                        </c:when>
-                      </c:choose>
-                      
-                      <div class="genericFormSection">                            
-                        <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                          <jsp:param name="titleLocale" value="students.viewStudent.lodgingTitle"/>
-                          <jsp:param name="helpLocale" value="students.viewStudent.lodgingHelp"/>
-                        </jsp:include> 
+                  <c:choose>
+                    <c:when test="${!empty student.school}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.schoolTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.schoolHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.school.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.previousStudies}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.previousStudiesTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.previousStudiesHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.previousStudies}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.studyTimeEnd}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyTimeEndTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyTimeEndHelp" />
+                        </jsp:include>
                         <div class="genericViewFormDataText">
-                          <c:choose>
-                            <c:when test="${student.lodging}">
-                              <fmt:message key="students.viewStudent.lodgingYes"/>
-                            </c:when>
-                            <c:otherwise>
-                              <fmt:message key="students.viewStudent.lodgingNo"/>
-                            </c:otherwise> 
-                          </c:choose>
+                          <fmt:formatDate
+                            value="${student.studyTimeEnd}" />
                         </div>
                       </div>
-                    
-                    </div>
-                    <!--  Student Additional Info Ends -->
-                    
-                    <div class="columnClear"></div>
-                  
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.studyStartDate}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyStartDateTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyStartDateHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">
+                          <fmt:formatDate
+                            value="${student.studyStartDate}" />
+                        </div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${student.hasFinishedStudies}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyEndDateTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyEndDateHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">
+                          <fmt:formatDate
+                            value="${student.studyEndDate}" />
+                        </div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.studyEndReason}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyEndReasonTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyEndReasonHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.studyEndReason.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.studyEndText}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.studyEndTextTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.studyEndTextHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.studyEndText}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
                 </div>
-        
-                <div id="courses.${student.id}" class="tabContent">
-                  <div id="coursesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-                  <div class="genericFormSection">                              
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.coursesTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.coursesHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentStudentCoursesTableContainer"><div id="coursesTableContainer.${student.id}"></div></div>
-                    <div id="viewStudentCoursesTotalContainer.${student.id}" class="viewStudentCoursesTotalContainer">
-                      <fmt:message key="students.viewStudent.coursesTotal"/> <span id="viewStudentCoursesTotalValue.${student.id}"></span>
+
+                <!--  Student Education Info Ends -->
+
+                <!--  Student Additional Info Starts -->
+                <div class="genericViewInfoWapper"
+                  id="studentViewAdditionalInfoWrapper">
+
+                  <c:choose>
+                    <c:when test="${not empty student.tags}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.tagsTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.tagsHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">
+                          <c:forEach var="tag" items="${student.tags}"
+                            varStatus="vs">
+                            <c:out value="${tag.text}" />
+                            <c:if test="${not vs.last}">
+                              <c:out value=" " />
+                            </c:if>
+                          </c:forEach>
+                        </div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.language}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.languageTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.languageHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.language.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.nationality}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.nationalityTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.nationalityHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.nationality.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.activityType}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.activityTypeTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.activityTypeHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.activityType.name}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when test="${!empty student.additionalInfo}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.additionalInformationTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.additionalInformationHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${student.additionalInfo}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <c:choose>
+                    <c:when
+                      test="${!empty student.contactInfo.additionalInfo}">
+                      <div class="genericFormSection">
+                        <jsp:include
+                          page="/templates/generic/fragments/formtitle.jsp">
+                          <jsp:param name="titleLocale"
+                            value="students.viewStudent.additionalContactInfoTitle" />
+                          <jsp:param name="helpLocale"
+                            value="students.viewStudent.additionalContactInfoHelp" />
+                        </jsp:include>
+                        <div class="genericViewFormDataText">${fn:replace(student.contactInfo.additionalInfo,
+                          newLineChar, "<br/>")}</div>
+                      </div>
+                    </c:when>
+                  </c:choose>
+
+                  <div class="genericFormSection">
+                    <jsp:include
+                      page="/templates/generic/fragments/formtitle.jsp">
+                      <jsp:param name="titleLocale"
+                        value="students.viewStudent.lodgingTitle" />
+                      <jsp:param name="helpLocale"
+                        value="students.viewStudent.lodgingHelp" />
+                    </jsp:include>
+                    <div class="genericViewFormDataText">
+                      <c:choose>
+                        <c:when test="${student.lodging}">
+                          <fmt:message
+                            key="students.viewStudent.lodgingYes" />
+                        </c:when>
+                        <c:otherwise>
+                          <fmt:message
+                            key="students.viewStudent.lodgingNo" />
+                        </c:otherwise>
+                      </c:choose>
                     </div>
+                  </div>
+
+                </div>
+                <!--  Student Additional Info Ends -->
+
+                <div class="columnClear"></div>
+
+              </div>
+
+              <div id="courses.${student.id}" class="tabContent">
+                <div
+                  id="coursesTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.coursesTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.coursesHelp" />
+                  </jsp:include>
+                  <div id="viewStudentStudentCoursesTableContainer">
+                    <div id="coursesTableContainer.${student.id}"></div>
+                  </div>
+                  <div
+                    id="viewStudentCoursesTotalContainer.${student.id}"
+                    class="viewStudentCoursesTotalContainer">
+                    <fmt:message key="students.viewStudent.coursesTotal" />
+                    <span
+                      id="viewStudentCoursesTotalValue.${student.id}"></span>
                   </div>
                 </div>
-  
-                <div id="grades.${student.id}" class="tabContent">
-                  <div id="gradesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-                  
-                  <div class="genericFormSection">                                
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.courseAssessmentsTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.courseAssessmentsHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentCourseAssessmentsTableContainer"><div id="courseAssessmentsTableContainer.${student.id}"></div></div>
-                    <div id="viewStudentCourseAssessmentsTotalContainer.${student.id}" class="viewStudentCourseAssessmentsTotalContainer">
-                      <fmt:message key="students.viewStudent.courseAssessmentsTotal"/> <span id="viewStudentCourseAssessmentsTotalValue.${student.id}"></span>
-                    </div>
-                  </div>
-                  
-                  <div class="genericFormSection">                                  
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.transferCreditsTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.transferCreditsHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentTransferCreditsTableContainer"><div id="transferCreditsTableContainer.${student.id}"></div></div>
-                    <div id="viewStudentTransferCreditsTotalContainer.${student.id}" class="viewStudentTransferCreditsTotalContainer">
-                      <fmt:message key="students.viewStudent.transferCreditsTotal"/> <span id="viewStudentTransferCreditsTotalValue.${student.id}"></span>
-                    </div>
-                  </div>
+              </div>
 
-                  <div class="genericFormSection">                                
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.linkedCourseAssessmentsTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.linkedCourseAssessmentsHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentLinkedCourseAssessmentsTableContainer"><div id="linkedCourseAssessmentsTableContainer.${student.id}"></div></div>
-                    <div id="viewStudentLinkedCourseAssessmentsTotalContainer.${student.id}" class="viewStudentLinkedCourseAssessmentsTotalContainer">
-                      <fmt:message key="students.viewStudent.linkedCourseAssessmentsTotal"/> <span id="viewStudentLinkedCourseAssessmentsTotalValue.${student.id}"></span>
-                    </div>
+              <div id="grades.${student.id}" class="tabContent">
+                <div
+                  id="gradesTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.courseAssessmentsTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.courseAssessmentsHelp" />
+                  </jsp:include>
+                  <div id="viewStudentCourseAssessmentsTableContainer">
+                    <div
+                      id="courseAssessmentsTableContainer.${student.id}"></div>
                   </div>
-
-                  <div class="genericFormSection">                                  
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.linkedTransferCreditsTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.linkedTransferCreditsHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentLinkedTransferCreditsTableContainer"><div id="linkedTransferCreditsTableContainer.${student.id}"></div></div>
-                    <div id="viewStudentLinkedTransferCreditsTotalContainer.${student.id}" class="viewStudentLinkedTransferCreditsTotalContainer">
-                      <fmt:message key="students.viewStudent.linkedTransferCreditsTotal"/> <span id="viewStudentLinkedTransferCreditsTotalValue.${student.id}"></span>
-                    </div>
+                  <div
+                    id="viewStudentCourseAssessmentsTotalContainer.${student.id}"
+                    class="viewStudentCourseAssessmentsTotalContainer">
+                    <fmt:message
+                      key="students.viewStudent.courseAssessmentsTotal" />
+                    <span
+                      id="viewStudentCourseAssessmentsTotalValue.${student.id}"></span>
                   </div>
-                </div> 
+                </div>
 
-                <div id="contactlog.${student.id}" class="tabContent">
-                  <div id="contactLogTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.transferCreditsTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.transferCreditsHelp" />
+                  </jsp:include>
+                  <div id="viewStudentTransferCreditsTableContainer">
+                    <div
+                      id="transferCreditsTableContainer.${student.id}"></div>
+                  </div>
+                  <div
+                    id="viewStudentTransferCreditsTotalContainer.${student.id}"
+                    class="viewStudentTransferCreditsTotalContainer">
+                    <fmt:message
+                      key="students.viewStudent.transferCreditsTotal" />
+                    <span
+                      id="viewStudentTransferCreditsTotalValue.${student.id}"></span>
+                  </div>
+                </div>
 
-                  <div id="studentContactEntryList.${student.id}" class="studentContactEntryWrapper">
-                    <c:forEach var="contactEntry" items="${contactEntries[student.id]}">
-                      <div id="studentContactEntryItem" class="studentContactEntryItem">
-                        <div>
-                          <span class="studentContactEntryDate"><fmt:formatDate value="${contactEntry.entryDate}" /></span>
-                          <span class="studentContactEntryType">
-                          <c:choose>
-                            <c:when test="${contactEntry.type eq 'OTHER'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.other"/>
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.linkedCourseAssessmentsTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.linkedCourseAssessmentsHelp" />
+                  </jsp:include>
+                  <div
+                    id="viewStudentLinkedCourseAssessmentsTableContainer">
+                    <div
+                      id="linkedCourseAssessmentsTableContainer.${student.id}"></div>
+                  </div>
+                  <div
+                    id="viewStudentLinkedCourseAssessmentsTotalContainer.${student.id}"
+                    class="viewStudentLinkedCourseAssessmentsTotalContainer">
+                    <fmt:message
+                      key="students.viewStudent.linkedCourseAssessmentsTotal" />
+                    <span
+                      id="viewStudentLinkedCourseAssessmentsTotalValue.${student.id}"></span>
+                  </div>
+                </div>
+
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.linkedTransferCreditsTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.linkedTransferCreditsHelp" />
+                  </jsp:include>
+                  <div
+                    id="viewStudentLinkedTransferCreditsTableContainer">
+                    <div
+                      id="linkedTransferCreditsTableContainer.${student.id}"></div>
+                  </div>
+                  <div
+                    id="viewStudentLinkedTransferCreditsTotalContainer.${student.id}"
+                    class="viewStudentLinkedTransferCreditsTotalContainer">
+                    <fmt:message
+                      key="students.viewStudent.linkedTransferCreditsTotal" />
+                    <span
+                      id="viewStudentLinkedTransferCreditsTotalValue.${student.id}"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="contactlog.${student.id}" class="tabContent">
+                <div
+                  id="contactLogTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+
+                <div id="studentContactEntryList.${student.id}"
+                  class="studentContactEntryWrapper">
+                  <c:forEach var="contactEntry"
+                    items="${contactEntries[student.id]}">
+                    <div id="studentContactEntryItem"
+                      class="studentContactEntryItem">
+                      <div>
+                        <span class="studentContactEntryDate"><fmt:formatDate
+                            value="${contactEntry.entryDate}" /></span> <span
+                          class="studentContactEntryType"> <c:choose>
+                            <c:when
+                              test="${contactEntry.type eq 'OTHER'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.other" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'LETTER'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.letter"/>
+                            <c:when
+                              test="${contactEntry.type eq 'LETTER'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.letter" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'EMAIL'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.email"/>
+                            <c:when
+                              test="${contactEntry.type eq 'EMAIL'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.email" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'PHONE'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.phone"/>
+                            <c:when
+                              test="${contactEntry.type eq 'PHONE'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.phone" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'CHATLOG'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.chatlog"/>
+                            <c:when
+                              test="${contactEntry.type eq 'CHATLOG'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.chatlog" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'SKYPE'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.skype"/>
+                            <c:when
+                              test="${contactEntry.type eq 'SKYPE'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.skype" />
                             </c:when>
-                            <c:when test="${contactEntry.type eq 'FACE2FACE'}">
-                              <fmt:message key="students.viewStudent.contactEntry.types.face2face"/>
+                            <c:when
+                              test="${contactEntry.type eq 'FACE2FACE'}">
+                              <fmt:message
+                                key="students.viewStudent.contactEntry.types.face2face" />
                             </c:when>
                           </c:choose>
-                          </span>
-                          <span class="studentContactEntryCreator">${contactEntry.creatorName}</span> 
-                        </div>              
-                        <div>
-                          ${contactEntry.text}
-                        </div>
+                        </span> <span class="studentContactEntryCreator">${contactEntry.creatorName}</span>
+                      </div>
+                      <div>${contactEntry.text}</div>
 
-                        <div class="contactEntryCommentsWrapper">
-                        <c:forEach var="comment" items="${contactEntryComments[contactEntry.id]}">
+                      <div class="contactEntryCommentsWrapper">
+                        <c:forEach var="comment"
+                          items="${contactEntryComments[contactEntry.id]}">
                           <div class="studentContactCommentEntryItem">
-                            <div class="studentContactCommentEntryCaption">
-                              <span class="studentContactCommentEntryDate"><fmt:formatDate value="${comment.commentDate}"/></span>
-                              <span class="studentContactCommentEntryCreator">${comment.creatorName}</span>
+                            <div
+                              class="studentContactCommentEntryCaption">
+                              <span
+                                class="studentContactCommentEntryDate"><fmt:formatDate
+                                  value="${comment.commentDate}" /></span> <span
+                                class="studentContactCommentEntryCreator">${comment.creatorName}</span>
                             </div>
                             <div>${comment.text}</div>
                           </div>
                         </c:forEach>
-                        </div>
-                      </div>
-                    </c:forEach>
-                  </div>
-                </div>
-
-                <div id="studentProject.${student.id}" class="tabContent">
-                  <div id="projectsTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-
-                  <div class="genericFormSection">
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.projectsTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.coursesHelp"/>
-                    </jsp:include>
-                  </div> 
-
-                  <c:forEach var="sp" items="${studentProjects[student.id]}">
-                    <div class="viewStudentProject">
-                      <div class="viewStudentProjectHeader">
-                        <div>
-                          <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
-                          <span class="viewStudentProjectHeaderOptionality">
-                            <c:choose>
-                              <c:when test="${sp.studentProject.optionality eq 'MANDATORY'}">
-                                <fmt:message key="students.viewStudent.projectOptionalityMandatory"/>
-                              </c:when>
-                              <c:when test="${sp.studentProject.optionality eq 'OPTIONAL'}">
-                                <fmt:message key="students.viewStudent.projectOptionalityOptional"/>
-                              </c:when>
-                            </c:choose>
-                          </span>
-    
-                          <c:forEach var="assessment" items="${sp.assessments}">
-                            <span class="viewStudentProjectHeaderAssessment">
-                              <span class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate value="${assessment.date}"/></span>
-                              <span class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
-                            </span>
-                          </c:forEach>
-                          
-                          <span class="viewStudentProjectHeaderEditButton">
-<%--                             <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/> --%>
-                            <img src="../gfx/accessories-text-editor.png" class="iconButton"/>
-                            <input type="hidden" name="viewStudentProjectHeaderEditButtonProjectId" class="viewStudentProjectHeaderEditButtonProjectId" value="${sp.studentProject.id}"/>
-                          </span>
-                        </div>
-                        <div>
-                          <span class="viewStudentProjectHeaderMandatory"><fmt:message key="students.viewStudent.projectHeaderMandatoryCourseCount"/> ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span> 
-                          <span class="viewStudentProjectHeaderOptional"><fmt:message key="students.viewStudent.projectHeaderOptionalCourseCount"/> ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
-                        </div>
-                      </div>
-  
-                      <div class="viewStudentStudentProjectTableContainer" style="display: none;">                    
-                        <div id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>
                       </div>
                     </div>
                   </c:forEach>
                 </div>
-
-                <div id="studentFiles.${student.id}" class="tabContent">
-                  <div id="filesTabRelatedActionsHoverMenuContainer.${student.id}" class="tabRelatedActionsContainer"></div>
-
-                  <div class="genericFormSection">                              
-                    <jsp:include page="/templates/generic/fragments/formtitle.jsp">
-                      <jsp:param name="titleLocale" value="students.viewStudent.filesTitle"/>
-                      <jsp:param name="helpLocale" value="students.viewStudent.filesHelp"/>
-                    </jsp:include> 
-                    <div id="viewStudentStudentFilesTableContainer"><div id="filesTableContainer.${student.id}"></div></div>
-<%--                     <div id="viewStudentFilesTotalContainer.${student.id}" class="viewStudentFilesTotalContainer"> --%>
-<%--                       <fmt:message key="students.viewStudent.filesTotal"/> <span id="viewStudentFilesTotalValue.${student.id}"></span> --%>
-<!--                     </div> -->
-                  </div>
-                </div>
-                
               </div>
-            </div>  
-          </div>
-        </c:forEach>
-      </div>
-    </div>  
 
-    <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
-  </body>
+              <div id="studentProject.${student.id}" class="tabContent">
+                <div
+                  id="projectsTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.projectsTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.coursesHelp" />
+                  </jsp:include>
+                </div>
+
+                <c:forEach var="sp"
+                  items="${studentProjects[student.id]}">
+                  <div class="viewStudentProject">
+                    <div class="viewStudentProjectHeader">
+                      <div>
+                        <span class="viewStudentProjectHeaderName">${sp.studentProject.name}</span>
+                        <span
+                          class="viewStudentProjectHeaderOptionality">
+                          <c:choose>
+                            <c:when
+                              test="${sp.studentProject.optionality eq 'MANDATORY'}">
+                              <fmt:message
+                                key="students.viewStudent.projectOptionalityMandatory" />
+                            </c:when>
+                            <c:when
+                              test="${sp.studentProject.optionality eq 'OPTIONAL'}">
+                              <fmt:message
+                                key="students.viewStudent.projectOptionalityOptional" />
+                            </c:when>
+                          </c:choose>
+                        </span>
+
+                        <c:forEach var="assessment"
+                          items="${sp.assessments}">
+                          <span
+                            class="viewStudentProjectHeaderAssessment">
+                            <span
+                            class="viewStudentProjectHeaderAssessmentDate"><fmt:formatDate
+                                value="${assessment.date}" /></span> <span
+                            class="viewStudentProjectHeaderAssessmentGrade">${assessment.grade.name}</span>
+                          </span>
+                        </c:forEach>
+
+                        <span class="viewStudentProjectHeaderEditButton">
+                          <%--                             <img src="../gfx/accessories-text-editor.png" class="iconButton" onclick="openEditStudentProject(${sp.studentProject.id});"/> --%>
+                          <img src="../gfx/accessories-text-editor.png"
+                          class="iconButton" /> <input type="hidden"
+                          name="viewStudentProjectHeaderEditButtonProjectId"
+                          class="viewStudentProjectHeaderEditButtonProjectId"
+                          value="${sp.studentProject.id}" />
+                        </span>
+                      </div>
+                      <div>
+                        <span class="viewStudentProjectHeaderMandatory"><fmt:message
+                            key="students.viewStudent.projectHeaderMandatoryCourseCount" />
+                          ${sp.passedMandatoryModuleCount}/${sp.mandatoryModuleCount}</span>
+                        <span class="viewStudentProjectHeaderOptional"><fmt:message
+                            key="students.viewStudent.projectHeaderOptionalCourseCount" />
+                          ${sp.passedOptionalModuleCount}/${sp.optionalModuleCount}</span>
+                      </div>
+                    </div>
+
+                    <div class="viewStudentStudentProjectTableContainer"
+                      style="display: none;">
+                      <div
+                        id="studentProjectModulesTable.${student.id}.${sp.studentProject.id}"></div>
+                    </div>
+                  </div>
+                </c:forEach>
+              </div>
+
+              <div id="studentFiles.${student.id}" class="tabContent">
+                <div
+                  id="filesTabRelatedActionsHoverMenuContainer.${student.id}"
+                  class="tabRelatedActionsContainer"></div>
+
+                <div class="genericFormSection">
+                  <jsp:include
+                    page="/templates/generic/fragments/formtitle.jsp">
+                    <jsp:param name="titleLocale"
+                      value="students.viewStudent.filesTitle" />
+                    <jsp:param name="helpLocale"
+                      value="students.viewStudent.filesHelp" />
+                  </jsp:include>
+                  <div id="viewStudentStudentFilesTableContainer">
+                    <div id="filesTableContainer.${student.id}"></div>
+                  </div>
+                  <%--                     <div id="viewStudentFilesTotalContainer.${student.id}" class="viewStudentFilesTotalContainer"> --%>
+                  <%--                       <fmt:message key="students.viewStudent.filesTotal"/> <span id="viewStudentFilesTotalValue.${student.id}"></span> --%>
+                  <!--                     </div> -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </c:forEach>
+    </div>
+  </div>
+
+  <jsp:include page="/templates/generic/footer.jsp"></jsp:include>
+</body>
 </html>
