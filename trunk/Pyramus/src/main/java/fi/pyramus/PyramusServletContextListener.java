@@ -208,7 +208,7 @@ public class PyramusServletContextListener implements ServletContextListener {
         Map<String, Class<?>> jsonRequestControllers = plugin.getJSONRequestControllers();
         if (jsonRequestControllers != null) {
           for (String key : jsonRequestControllers.keySet()) {
-            String className = pageRequestControllers.get(key).getName();
+            String className = jsonRequestControllers.get(key).getName();
             Class<? extends RequestController> pageController = (Class<? extends RequestController>) Class.forName(className, false, pluginManager.getPluginsClassLoader());
             RequestControllerMapper.mapController(key, ".json", pageController.newInstance());
           }
@@ -217,7 +217,7 @@ public class PyramusServletContextListener implements ServletContextListener {
         Map<String, Class<?>> binaryRequestControllers = plugin.getBinaryRequestControllers();
         if (binaryRequestControllers != null) {
           for (String key : binaryRequestControllers.keySet()) {
-            String className = pageRequestControllers.get(key).getName();
+            String className = binaryRequestControllers.get(key).getName();
             Class<? extends RequestController> pageController = (Class<? extends RequestController>) Class.forName(className, false, pluginManager.getPluginsClassLoader());
             RequestControllerMapper.mapController(key, ".binary", pageController.newInstance());
           }
