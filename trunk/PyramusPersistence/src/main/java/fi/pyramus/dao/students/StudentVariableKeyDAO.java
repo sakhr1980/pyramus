@@ -9,12 +9,26 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.pyramus.dao.PyramusEntityDAO;
+import fi.pyramus.domainmodel.base.VariableType;
 import fi.pyramus.domainmodel.students.StudentVariableKey;
 import fi.pyramus.domainmodel.students.StudentVariableKey_;
 
 @Stateless
 public class StudentVariableKeyDAO extends PyramusEntityDAO<StudentVariableKey> {
 
+  public StudentVariableKey create(boolean userEditable, String variableKey, String variableName, VariableType variableType)
+  {
+    EntityManager entityManager = getEntityManager();
+      
+    StudentVariableKey studentVariableKey = new StudentVariableKey();
+    studentVariableKey.setUserEditable(userEditable);
+    studentVariableKey.setVariableKey(variableKey);
+    studentVariableKey.setVariableName(variableName);
+    studentVariableKey.setVariableType(variableType);
+    entityManager.persist(studentVariableKey);
+    return studentVariableKey;
+  }
+  
   public StudentVariableKey findByKey(String key) {
     EntityManager entityManager = getEntityManager(); 
     
