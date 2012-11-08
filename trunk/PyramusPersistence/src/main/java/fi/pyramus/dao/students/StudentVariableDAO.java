@@ -90,5 +90,9 @@ public class StudentVariableDAO extends PyramusEntityDAO<StudentVariable> {
       throw new PersistenceException("Unknown VariableKey");
     }
   }
-  
+
+  @Override
+  public void delete(StudentVariable studentVariable) {
+    super.delete(studentVariable);
+  }
 }
