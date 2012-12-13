@@ -15,6 +15,5 @@
   </createTables>
 
   <sql>insert into ReportContext (id, report, context) select id, id, 'Common' from Report</sql> 
-  <sql>insert into hibernate_sequences (sequence_name, sequence_next_hi_value) select 'ReportContext', max(id) + 1 from ReportContext</sql>
-
+  <sql>insert into hibernate_sequences (sequence_name, sequence_next_hi_value) select 'ReportContext', coalesce(max(id) + 1, 1) from ReportContext</sql>
 </update>
