@@ -2394,6 +2394,7 @@ _IxTable_TABLESTRINGFILTER = Class.create(_IxTable_FILTER, {
       var rowValue = table.getCellValue(i, this.getColumn());
       var match = this._inclusive ? rowValue != this._filterValue : rowValue == this._filterValue; 
 
+      // TODO: ???
       if (match) {
         if ((!hasFilterFunc) || (filterFunc(table, i) === true))
           hideArray.push(i);
@@ -2419,6 +2420,47 @@ IxTable_ROWSTRINGFILTER = Class.create({
     var column = event.column;
     var filterValue = table.getCellValue(row, column);
     var filter = new _IxTable_TABLESTRINGFILTER(column, filterValue, this._rowFilterableFunc, this._inclusive);
+
+    table.addFilter(filter);
+  }
+});
+
+_IxTable_TABLEEMPTYFILTER = Class.create(_IxTable_FILTER, {
+  initialize : function($super, column, inclusive) {
+    $super(column);
+    this._inclusive = inclusive;
+  },
+  execute: function ($super, event) {
+    var table = event.tableComponent;
+    var hideArray = new Array();
+    
+    for (var i = table.getRowCount() - 1; i >= 0; i--) {
+      var rowValue = table.getCellValue(i, this.getColumn());
+      var match = this._inclusive ? 
+          ((rowValue != "") && (rowValue != undefined)) : 
+            ((rowValue == "") || (rowValue == undefined)); 
+
+      if (match) {
+        hideArray.push(i);
+      }
+    }
+
+    if (hideArray.size() > 0)
+      table.hideRows(hideArray.toArray());
+  }  
+});
+
+IxTable_ROWEMPTYFILTER = Class.create({
+  initialize : function(inclusive) {
+    if (inclusive != undefined)
+      this._inclusive = inclusive === false ? false : true;
+    else
+      this._inclusive = true;
+  },
+  execute: function (event) {
+    var table = event.tableComponent;
+    var column = event.column;
+    var filter = new _IxTable_TABLEEMPTYFILTER(column, this._inclusive);
 
     table.addFilter(filter);
   }
