@@ -104,7 +104,7 @@
         <field name="tag" type="java.lang.Long" nullable="false"/>
       </fields>
       <foreignKeys>
-        <key columns="user" referencedColumns="id" referencedTable="Sser"/>
+        <key columns="user" referencedColumns="id" referencedTable="User"/>
         <key columns="tag" referencedColumns="id" referencedTable="Tag"/>
       </foreignKeys>
     </table>

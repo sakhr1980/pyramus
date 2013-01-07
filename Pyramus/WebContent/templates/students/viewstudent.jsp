@@ -263,6 +263,16 @@
             dataType: 'date',
             editable: false,
             paramName: 'courseAssessmentRequest',
+            sortAttributes: {
+              sortAscending: {
+                toolTip: '<fmt:message key="generic.sort.ascending"/>',
+                sortAction: IxTable_ROWSTRINGSORT 
+              },
+              sortDescending: {
+                toolTip: '<fmt:message key="generic.sort.descending"/>',
+                sortAction: IxTable_ROWSTRINGSORT
+              }
+            },
             contextMenu: [
               {
                 text: '<fmt:message key="students.viewStudent.viewStudentCourseAssessmentRequestsTitle"/>',
@@ -276,6 +286,18 @@
                     openStudentCourseAssessmentRequestsPopupOnElement(cell, courseStudentId);
                   }
                 }
+              },
+              {
+                text: '<fmt:message key="generic.filter.empty"/>',
+                onclick: new IxTable_ROWEMPTYFILTER(false)
+              },
+              {
+                text: '<fmt:message key="generic.filter.nonEmpty"/>',
+                onclick: new IxTable_ROWEMPTYFILTER(true)
+              },
+              {
+                text: '<fmt:message key="generic.filter.clear"/>',
+                onclick: new IxTable_ROWCLEARFILTER()
               }
             ]            
           }, {
