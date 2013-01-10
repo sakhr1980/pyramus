@@ -10,18 +10,24 @@ import fi.pyramus.framework.UserRole;
 public class SimpleDialogViewController extends PyramusViewController {
 
   public void process(PageRequestContext requestContext) {
-    String localeId = requestContext.getString("localeId");
-    String localeParamsParameter = requestContext.getString("localeParams");
-    String[] localeParams = null;
-    
-    if (!StringUtils.isBlank(localeParamsParameter)) {
-      localeParams = localeParamsParameter.split(",");
+    String nonlocalizedMessage = requestContext.getString("message");
+    if (nonlocalizedMessage == null) {
+      String localeId = requestContext.getString("localeId");
+      String localeParamsParameter = requestContext.getString("localeParams");
+      String[] localeParams = null;
+      
+      if (!StringUtils.isBlank(localeParamsParameter)) {
+        localeParams = localeParamsParameter.split(",");
+      }
+      
+      String message = Messages.getInstance().getText(requestContext.getRequest().getLocale(), localeId, localeParams);
+      
+      requestContext.getRequest().setAttribute("message", message);
+      requestContext.setIncludeJSP("/templates/generic/simpledialog.jsp");
+    } else {
+      requestContext.getRequest().setAttribute("message", nonlocalizedMessage);
+      requestContext.setIncludeJSP("/templates/generic/simpledialog.jsp");
     }
-    
-    String message = Messages.getInstance().getText(requestContext.getRequest().getLocale(), localeId, localeParams);
-    
-    requestContext.getRequest().setAttribute("message", message);
-    requestContext.setIncludeJSP("/templates/generic/simpledialog.jsp");
   }
 
   public UserRole[] getAllowedRoles() {
