@@ -66,6 +66,8 @@ import fi.pyramus.dao.grading.CourseAssessmentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
 import fi.pyramus.dao.grading.CreditDAO;
 import fi.pyramus.dao.grading.CreditLinkDAO;
+import fi.pyramus.dao.grading.CreditVariableDAO;
+import fi.pyramus.dao.grading.CreditVariableKeyDAO;
 import fi.pyramus.dao.grading.GradeDAO;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.ProjectAssessmentDAO;
@@ -427,6 +429,14 @@ public class DAOFactory {
     return (TransferCreditTemplateDAO) findByClass(TransferCreditTemplateDAO.class);
   }
   
+  public CreditVariableDAO getCreditVariableDAO() {
+    return (CreditVariableDAO) findByClass(CreditVariableDAO.class);
+  }
+
+  public CreditVariableKeyDAO getCreditVariableKeyDAO() {
+    return (CreditVariableKeyDAO) findByClass(CreditVariableKeyDAO.class);
+  }
+
   /* Base */
   
   public AcademicTermDAO getAcademicTermDAO() {
