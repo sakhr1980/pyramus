@@ -18,6 +18,8 @@ import fi.pyramus.dao.courses.CourseDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentDAO;
 import fi.pyramus.dao.grading.CourseAssessmentRequestDAO;
+import fi.pyramus.dao.grading.CreditDAO;
+import fi.pyramus.dao.grading.CreditVariableDAO;
 import fi.pyramus.dao.grading.GradeDAO;
 import fi.pyramus.dao.grading.GradingScaleDAO;
 import fi.pyramus.dao.grading.TransferCreditDAO;
@@ -31,6 +33,7 @@ import fi.pyramus.domainmodel.courses.Course;
 import fi.pyramus.domainmodel.courses.CourseStudent;
 import fi.pyramus.domainmodel.grading.CourseAssessment;
 import fi.pyramus.domainmodel.grading.CourseAssessmentRequest;
+import fi.pyramus.domainmodel.grading.Credit;
 import fi.pyramus.domainmodel.grading.Grade;
 import fi.pyramus.domainmodel.grading.GradingScale;
 import fi.pyramus.domainmodel.grading.TransferCredit;
@@ -221,4 +224,19 @@ public class GradingService extends PyramusService {
     return (CourseAssessmentRequestEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentRequestDAO.listByCourseStudent(courseStudent));
   }
   
+  public void setCreditVariable(@WebParam (name="studentId") Long creditId, @WebParam (name="key") String key, @WebParam (name="value") String value) {
+    CreditDAO creditDAO = DAOFactory.getInstance().getCreditDAO();
+    CreditVariableDAO creditVariableDAO = DAOFactory.getInstance().getCreditVariableDAO();
+    Credit credit = creditDAO.findById(creditId);
+    creditVariableDAO.setCreditVariable(credit, key, value);
+  }
+
+  public String getCreditVariable(@WebParam (name="studentId") Long creditId, @WebParam (name="key") String key) {
+    CreditDAO creditDAO = DAOFactory.getInstance().getCreditDAO();
+    CreditVariableDAO creditVariableDAO = DAOFactory.getInstance().getCreditVariableDAO();
+
+    Credit credit = creditDAO.findById(creditId);
+    return creditVariableDAO.findByCreditAndKey(credit, key);
+  }
+
 }
