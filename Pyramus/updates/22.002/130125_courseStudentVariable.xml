@@ -2,20 +2,20 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <createTables>
-    <table name="CreditVariable" primaryKeys="id">
+    <table name="CourseStudentVariable" primaryKeys="id">
       <fields>
-        <field name="credit" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="courseStudent" type="java.lang.Long" nullable="true" unique="false" />
         <field name="id" type="java.lang.Long" nullable="false" unique="false" />
         <field name="value" type="java.lang.String" nullable="true" unique="false" />
         <field name="variableKey" type="java.lang.Long" nullable="true" unique="false" />
         <field name="version" type="java.lang.Long" nullable="false" unique="false" />
       </fields>
       <foreignKeys>
-        <key columns="credit" referencedColumns="id" referencedTable="Credit" />
-        <key columns="variableKey" referencedColumns="id" referencedTable="CreditVariableKey" />
+        <key columns="courseStudent" referencedColumns="id" referencedTable="CourseStudent" />
+        <key columns="variableKey" referencedColumns="id" referencedTable="CourseStudentVariableKey" />
       </foreignKeys>
     </table>
-    <table name="CreditVariableKey" primaryKeys="id">
+    <table name="CourseStudentVariableKey" primaryKeys="id">
       <fields>
         <field name="variableName" type="java.lang.String" nullable="false" unique="false" />
         <field name="id" type="java.lang.Long" nullable="false" unique="false" />
