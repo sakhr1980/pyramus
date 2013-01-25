@@ -224,14 +224,14 @@ public class GradingService extends PyramusService {
     return (CourseAssessmentRequestEntity[]) EntityFactoryVault.buildFromDomainObjects(courseAssessmentRequestDAO.listByCourseStudent(courseStudent));
   }
   
-  public void setCreditVariable(@WebParam (name="studentId") Long creditId, @WebParam (name="key") String key, @WebParam (name="value") String value) {
+  public void setCreditVariable(@WebParam (name="creditId") Long creditId, @WebParam (name="key") String key, @WebParam (name="value") String value) {
     CreditDAO creditDAO = DAOFactory.getInstance().getCreditDAO();
     CreditVariableDAO creditVariableDAO = DAOFactory.getInstance().getCreditVariableDAO();
     Credit credit = creditDAO.findById(creditId);
     creditVariableDAO.setCreditVariable(credit, key, value);
   }
 
-  public String getCreditVariable(@WebParam (name="studentId") Long creditId, @WebParam (name="key") String key) {
+  public String getCreditVariable(@WebParam (name="creditId") Long creditId, @WebParam (name="key") String key) {
     CreditDAO creditDAO = DAOFactory.getInstance().getCreditDAO();
     CreditVariableDAO creditVariableDAO = DAOFactory.getInstance().getCreditVariableDAO();
 
