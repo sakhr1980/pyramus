@@ -30,6 +30,7 @@ import fi.pyramus.dao.courses.CourseEnrolmentTypeDAO;
 import fi.pyramus.dao.courses.CourseParticipationTypeDAO;
 import fi.pyramus.dao.courses.CourseStateDAO;
 import fi.pyramus.dao.courses.CourseStudentDAO;
+import fi.pyramus.dao.courses.CourseStudentVariableDAO;
 import fi.pyramus.dao.courses.CourseUserDAO;
 import fi.pyramus.dao.courses.CourseUserRoleDAO;
 import fi.pyramus.dao.modules.ModuleDAO;
@@ -499,4 +500,19 @@ public class CoursesService extends PyramusService {
     return (CourseDescriptionEntity) EntityFactoryVault.buildFromDomainObject(descriptionDAO.findByCourseAndCategory(courseBase, category));
   }
   
+  public void setCourseStudentVariable(@WebParam (name="courseStudentId") Long courseStudentId, @WebParam (name="key") String key, @WebParam (name="value") String value) {
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseStudentVariableDAO courseStudentVariableDAO = DAOFactory.getInstance().getCourseStudentVariableDAO();
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+    courseStudentVariableDAO.setCourseStudentVariable(courseStudent, key, value);
+  }
+
+  public String getCourseStudentVariable(@WebParam (name="courseStudentId") Long courseStudentId, @WebParam (name="key") String key) {
+    CourseStudentDAO courseStudentDAO = DAOFactory.getInstance().getCourseStudentDAO();
+    CourseStudentVariableDAO courseStudentVariableDAO = DAOFactory.getInstance().getCourseStudentVariableDAO();
+
+    CourseStudent courseStudent = courseStudentDAO.findById(courseStudentId);
+    return courseStudentVariableDAO.findByCourseStudentAndKey(courseStudent, key);
+  }
+
 }
