@@ -151,7 +151,7 @@
           columns : [ {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableStudentNameHeader"/>',
             left : 8,
-            right: 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8 + 110 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8 + 110 + 8 + 150 + 8,
             dataType: 'text',
             editable: false,
             paramName: 'name',
@@ -167,7 +167,7 @@
             }
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableStudyProgrammeNameHeader"/>',
-            right: 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8 + 110 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8 + 110 + 8,
             width: 150,
             dataType: 'text',
             editable: false,
@@ -198,7 +198,7 @@
             ]
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableOptionalityHeader"/>',
-            right: 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8 + 110 + 8 + 150 + 8 + 150 + 8,
             width : 110,
             dataType : 'select',
             paramName: 'optionality',
@@ -229,7 +229,7 @@
             ]
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableAssessmentDateHeader"/>',
-            right: 8 + 110 + 8 + 110 + 8 + 150 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8 + 110 + 8 + 150 + 8,
             width: 150,
             dataType: 'text',
             editable: false,
@@ -246,7 +246,7 @@
             }
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableAssessmentGradeHeader"/>',
-            right: 8 + 110 + 8 + 110 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8 + 110 + 8,
             width: 150,
             dataType: 'text',
             editable: false,
@@ -264,7 +264,7 @@
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableMandatoryCoursesHeader"><fmt:param value="${projectMandatoryModuleCount}"/></fmt:message>',
             headerTooltip: '<fmt:message key="projects.viewProject.studentProjectsTableMandatoryCoursesHeaderTooltip"/>',
-            right: 8 + 110 + 8,
+            right: 8 + 22 + 8 + 22 + 8 + 110 + 8,
             width: 110,
             dataType: 'text',
             editable: false,
@@ -296,7 +296,7 @@
           }, {
             header : '<fmt:message key="projects.viewProject.studentProjectsTableOptionalCoursesHeader"><fmt:param value="${projectOptionalModuleCount}"/></fmt:message>',
             headerTooltip: '<fmt:message key="projects.viewProject.studentProjectsTableOptionalCoursesHeaderTooltip"/>',
-            right: 8,
+            right: 8 + 22 + 8 + 22 + 8,
             width: 110,
             dataType: 'text',
             editable: false,
@@ -325,6 +325,34 @@
                 onclick: new IxTable_ROWCLEARFILTER()
               }
             ]
+          }, {
+            width: 22,
+            right: 8 + 22 + 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/eye.png',
+            tooltip: '<fmt:message key="projects.viewProject.studentProjectsTableViewStudentTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var abstractStudentId = table.getCellValue(event.row, table.getNamedColumnIndex('abstractStudentId'));
+              redirectTo(GLOBAL_contextPath + '/students/viewstudent.page?abstractStudent=' + abstractStudentId);
+            }
+          }, {
+            width: 22,
+            right: 8,
+            dataType: 'button',
+            imgsrc: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+            tooltip: '<fmt:message key="projects.viewProject.studentProjectsTableEditStudentProjectTooltip"/>',
+            onclick: function (event) {
+              var table = event.tableComponent;
+              var studentProjectId = table.getCellValue(event.row, table.getNamedColumnIndex('studentProjectId'));
+              redirectTo(GLOBAL_contextPath + '/projects/editstudentproject.page?studentproject=' + studentProjectId);
+            }
+          }, {
+            dataType: 'hidden',
+            paramName: 'abstractStudentId'
+          }, {
+            dataType: 'hidden',
+            paramName: 'studentProjectId'
           }]
         });
         
@@ -355,7 +383,11 @@
             '${stuPDateText}',
             '${stuPGradeText}',
             '${stuP.passedMandatoryModuleCount}' + '/' + '${stuP.mandatoryModuleCount}',
-            '${stuP.passedOptionalModuleCount}' + '/' + '${stuP.optionalModuleCount}'
+            '${stuP.passedOptionalModuleCount}' + '/' + '${stuP.optionalModuleCount}',
+            '',
+            '',
+            '${stuP.studentProject.student.abstractStudent.id}',
+            '${stuP.studentProject.id}'
           ]);
         </c:forEach>
         studentProjectsTable.addRows(studentProjectsArr);
