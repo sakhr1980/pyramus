@@ -72,7 +72,7 @@ public class TransferCreditCourseNameAutoCompleteBinaryRequestController extends
       .append(StringEscapeUtils.escapeHtml(course.getCourseName()))
       .append("</span>");
     
-    addHiddenValue(resultBuilder, "id", course.getId());
+    addHiddenValue(resultBuilder, "courseId", course.getId());
     addHiddenValue(resultBuilder, "subjectId", course.getSubject() != null ? course.getSubject().getId() : null);
     addHiddenValue(resultBuilder, "subjectName", getSubjectText(course.getSubject(), locale));
     addHiddenValue(resultBuilder, "courseLength", course.getCourseLength() != null ? course.getCourseLength().getUnits() : null);

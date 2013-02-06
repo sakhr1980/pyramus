@@ -71,7 +71,7 @@ public class StudentGroupsAutoCompleteBinaryRequestController extends BinaryRequ
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(studentGroup.getName()))
       .append("</span>")
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
+      .append("<input type=\"hidden\" name=\"studentGroupId\" value=\"")
       .append(studentGroup.getId())
       .append("\"/>")
       .append("</li>");

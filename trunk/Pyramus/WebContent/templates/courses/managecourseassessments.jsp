@@ -289,6 +289,7 @@
             width : 150,
             right: 8 + 22 + 8 + 100 + 8 + 145 + 8,
             dataType: 'autoCompleteSelect',
+            autoCompleteParamName: 'userId',
             required: true,
             editable: false,
             paramName: 'assessingUserId',
