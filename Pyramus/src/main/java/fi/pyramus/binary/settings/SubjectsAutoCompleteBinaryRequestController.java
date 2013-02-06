@@ -68,7 +68,7 @@ public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestCo
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(getSubjectText(subject, locale)))
       .append("</span>")
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
+      .append("<input type=\"hidden\" name=\"subjectId\" value=\"")
       .append(subject.getId())
       .append("\"/>")
       .append("</li>");

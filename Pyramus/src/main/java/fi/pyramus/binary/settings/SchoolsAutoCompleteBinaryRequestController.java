@@ -71,7 +71,7 @@ public class SchoolsAutoCompleteBinaryRequestController extends BinaryRequestCon
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(school.getName()))
       .append("</span>")
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
+      .append("<input type=\"hidden\" name=\"schoolId\" value=\"")
       .append(school.getId())
       .append("\"/>")
       .append("</li>");

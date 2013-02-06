@@ -326,19 +326,19 @@ fi.internetix.validation.FieldValidatorVault =
             this._field.removeClassName('valid');
           else 
             this._field.removeClassName('invalid');
-          __formValidationHook(this._field.form, this.isMandatory());          
+          __formValidationHook($(this._field.form), this.isMandatory());          
         break;
         case fi.internetix.validation.FieldValidator.STATUS_INVALID:
           if (oldStatus == fi.internetix.validation.FieldValidator.STATUS_VALID)
             this._field.removeClassName('valid');
           this._field.addClassName('invalid');
-          __formValidationHook(this._field.form, true);
+          __formValidationHook($(this._field.form), true);
         break;
         case fi.internetix.validation.FieldValidator.STATUS_VALID:
           if (oldStatus != fi.internetix.validation.FieldValidator.STATUS_VALID)
             this._field.removeClassName('invalid');
           this._field.addClassName('valid');
-          __formValidationHook(this._field.form, false);
+          __formValidationHook($(this._field.form), false);
         break;
       }
     } 

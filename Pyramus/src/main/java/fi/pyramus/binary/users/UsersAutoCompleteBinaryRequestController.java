@@ -71,7 +71,7 @@ public class UsersAutoCompleteBinaryRequestController extends BinaryRequestContr
       .append("<span>")
       .append(StringEscapeUtils.escapeHtml(user.getFullName()))
       .append("</span>")
-      .append("<input type=\"hidden\" name=\"id\" value=\"")
+      .append("<input type=\"hidden\" name=\"userId\" value=\"")
       .append(user.getId())
       .append("\"/>")
       .append("</li>");

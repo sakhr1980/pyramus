@@ -42,13 +42,12 @@
        * @param page The results page to be shown after the search
        */
       function doSearch(page) {
-        var searchStudentsForm = $("searchStudentsForm");
         JSONRequest.request("students/searchstudentsdialog.json", {
           parameters: {
-            query: searchStudentsForm.name.value,
-            studyProgrammeId: searchStudentsForm.studyProgrammeId.value,
-            studentGroupId: searchStudentsForm.studentGroupId.value,
-            studentFilter: searchStudentsForm.studentFilter.value,
+            query: $('searchStudentsDialogStudentName').value,
+            studyProgrammeId: $('searchStudentsDialogStudyProgrammeId').value,
+            studentGroupId: $('searchStudentsDialogStudentGroupId').value,
+            studentFilter: $('searchStudentsDialogStudentFilter').value,
             page: page
           },
           onSuccess: function (jsonResponse) {
@@ -111,7 +110,7 @@
 
       function initializeAutoCompleter() {
         var inputElement = $('studentGroup_input'); 
-        var idElement = $('studentGroup_id');
+        var idElement = $('searchStudentsDialogStudentGroupId');
         var indicatorElement = $('studentGroup_indicator');
         var choicesElement = $('studentGroup_choices');
         
@@ -121,14 +120,13 @@
           minChars: 1, 
           indicator: indicatorElement,
           afterUpdateElement : function getSelectionId(text, li) {
-            var li = $(li);
-            var idValue = li.down('input[name="id"]').value;
+            var idValue = $(li).down('input[name="studentGroupId"]').value;
             idElement.value = idValue;
           }
         });
         
         Event.observe(inputElement, "change", function() {
-          var idElement = $('studentGroup_id');
+          var idElement = $('searchStudentsDialogStudentGroupId');
           idElement.value = -1;
         });
       }
@@ -248,7 +246,7 @@
                   <jsp:param name="titleLocale" value="students.searchStudentsDialog.nameTitle"/>
                   <jsp:param name="helpLocale" value="students.searchStudentsDialog.nameHelp"/>
                 </jsp:include>            
-	            <input type="text" name="name" size="40"/>
+	            <input type="text" id="searchStudentsDialogStudentName" name="name" size="40"/>
 	          </div>
 	          
             <div class="genericFormSection">
@@ -256,7 +254,7 @@
                 <jsp:param name="titleLocale" value="students.searchStudentsDialog.studyProgrammeTitle"/>
                 <jsp:param name="helpLocale" value="students.searchStudentsDialog.studyProgrammeHelp"/>
               </jsp:include>
-              <select name="studyProgrammeId">
+              <select name="studyProgrammeId" id="searchStudentsDialogStudyProgrammeId">
                 <option value="-1"></option>
                 <c:forEach var="studyProgramme" items="${studyProgrammes}">
                   <option value="${studyProgramme.id}">${studyProgramme.name}</option>
@@ -270,7 +268,7 @@
                 <jsp:param name="helpLocale" value="students.searchStudentsDialog.studentGroupHelp"/>
               </jsp:include>            
               <input type="text" id="studentGroup_input" name="studentGroup.text" size="40"/>
-              <input type="hidden" id="studentGroup_id" name="studentGroupId" size="40" value="-1"/>
+              <input type="hidden" id="searchStudentsDialogStudentGroupId" name="studentGroupId" size="40" value="-1"/>
               <span id="studentGroup_indicator" class="autocomplete_progress_indicator" style="display: none"><img src="${pageContext.request.contextPath}/gfx/progress_small.gif"/></span>
               <div id="studentGroup_choices" class="autocomplete_choices"></div>  
             </div>
@@ -280,7 +278,7 @@
 		            <jsp:param name="titleLocale" value="students.searchStudentsDialog.studentFilterTitle"/>
 		            <jsp:param name="helpLocale" value="students.searchStudentsDialog.studentFilterHelp"/>
 		          </jsp:include>                                     
-		          <select name="studentFilter">
+		          <select name="studentFilter" id="searchStudentsDialogStudentFilter">
 		            <option value="SKIP_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterSkipInactiveOption"/></option>
 		            <option value="INCLUDE_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterIncludeInactiveOption"/></option>
 		            <option value="ONLY_INACTIVE"><fmt:message key="students.searchStudentsDialog.studentFilterOnlyInactiveOption"/></option>
