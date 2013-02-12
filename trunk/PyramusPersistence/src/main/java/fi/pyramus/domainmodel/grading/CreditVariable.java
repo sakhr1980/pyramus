@@ -2,6 +2,8 @@ package fi.pyramus.domainmodel.grading;
 
 import java.lang.Long;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -66,6 +68,9 @@ public class CreditVariable {
   private CreditVariableKey key;
 	
 	@NotEmpty
+  @Column (nullable = false)
+  @NotNull
+	@Lob
 	private String value;
 
   @Version

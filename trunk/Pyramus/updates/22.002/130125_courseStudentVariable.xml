@@ -5,8 +5,8 @@
     <table name="CourseStudentVariable" primaryKeys="id">
       <fields>
         <field name="courseStudent" type="java.lang.Long" nullable="true" unique="false" />
-        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
-        <field name="value" type="java.lang.String" nullable="true" unique="false" />
+        <field name="id" type="java.lang.Long" nullable="false" unique="true" />
+        <field name="value" type="java.lang.String" length="1073741824" nullable="true" unique="false" />
         <field name="variableKey" type="java.lang.Long" nullable="true" unique="false" />
         <field name="version" type="java.lang.Long" nullable="false" unique="false" />
       </fields>
@@ -18,7 +18,7 @@
     <table name="CourseStudentVariableKey" primaryKeys="id">
       <fields>
         <field name="variableName" type="java.lang.String" nullable="false" unique="false" />
-        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="id" type="java.lang.Long" nullable="false" unique="true" />
         <field name="variableType" type="java.lang.String" nullable="true" unique="false" />
         <field name="userEditable" type="java.lang.Boolean" nullable="false" unique="false" />
         <field name="variableKey" type="java.lang.String" nullable="false" unique="false" />

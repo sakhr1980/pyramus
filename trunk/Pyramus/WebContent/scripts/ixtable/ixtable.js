@@ -2079,7 +2079,7 @@ IxAutoCompleteSelectTableEditorController = Class.create(IxTableEditorController
         var column = _this.getEditorColumn(cellEditor);
         var table = _this.getTableComponent(cellEditor);
 
-        idElement.value = $(li).down('input[name="' + columnDefinition.autoCompleteParamName + '"]').value;
+        idElement.value = $(li).down('input[name="' + (columnDefinition.autoCompleteParamName || 'id') + '"]').value;
         inputElement.validate(true, true);
 
         table.fire("cellValueChange", {
