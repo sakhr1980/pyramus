@@ -151,7 +151,7 @@ public class PyramusServletContextListener implements ServletContextListener {
   private void loadPropertiesFile(ServletContext servletContext, Properties properties, String filename)
       throws FileNotFoundException, IOException {
     String webappPath = servletContext.getRealPath("/");
-    File settingsFile = new File(webappPath + filename);
+    File settingsFile = new File(webappPath + "WEB-INF/" + filename);
     if (settingsFile.canRead()) {
       properties.load(new FileReader(settingsFile));
     }
