@@ -2,12 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fi.pyramus</groupId>
   <artifactId>bom</artifactId>
-  <version>0.6.4-SNAPSHOT</version>
+  <version>0.6.4</version>
   <packaging>pom</packaging>
   <name>Pyramus BOM</name>
   
   <properties>
-    <pyramus.version>0.6.4-SNAPSHOT</pyramus.version>
+    <pyramus.version>0.6.4</pyramus.version>
     <hibernate.version>4.0.1.Final</hibernate.version>
     <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
     <jboss-ejb-api_3.1_spec.version>1.0.1.Final</jboss-ejb-api_3.1_spec.version>
