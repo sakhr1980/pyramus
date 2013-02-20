@@ -495,10 +495,36 @@
           transferCreditsTable.hideCell(rowIndex, removeButtonColumnIndex);
           transferCreditsTable.showCell(rowIndex, archiveButtonColumnIndex);
           
-          <c:set var="subjectName">${transferCredit.subject.name}</c:set>
-          <c:if test="${transferCredit.subject.educationType ne null}">
-            <c:set var="subjectName">${subjectName} (${transferCredit.subject.educationType.name})</c:set>
-          </c:if>
+          <c:choose>
+            <c:when test="${transferCredit.subject.educationType ne null and not empty transferCredit.subject.code}">
+              <c:set var="subjectName">
+                <fmt:message key="generic.subjectFormatterWithEducationType">
+                  <fmt:param value="${transferCredit.subject.code}"/>
+                  <fmt:param value="${transferCredit.subject.name}"/>
+                  <fmt:param value="${transferCredit.subject.educationType.name}"/>
+                </fmt:message>
+              </c:set>
+            </c:when>
+            <c:when test="${transferCredit.subject.educationType ne null and empty transferCredit.subject.code}">
+              <c:set var="subjectName">
+                <fmt:message key="generic.subjectFormatterNoSubjectCode">
+                  <fmt:param value="${transferCredit.subject.name}"/>
+                  <fmt:param value="${transferCredit.subject.educationType.name}"/>
+                </fmt:message>
+              </c:set>
+            </c:when>
+            <c:when test="${transferCredit.subject.educationType eq null and not empty transferCredit.subject.code}">
+              <c:set var="subjectName">
+                <fmt:message key="generic.subjectFormatterNoEducationType">
+                  <fmt:param value="${transferCredit.subject.code}"/>
+                  <fmt:param value="${transferCredit.subject.name}"/>
+                </fmt:message>
+              </c:set>
+            </c:when>
+            <c:otherwise>
+              <c:set var="subjectName">${transferCredit.subject.name}</c:set>
+            </c:otherwise>
+          </c:choose>
           
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, subjectColumnIndex), '${fn:escapeXml(subjectName)}');
           IxTableControllers.getController('autoCompleteSelect').setDisplayValue(transferCreditsTable.getCellEditor(rowIndex, schoolColumnIndex), '${fn:escapeXml(transferCredit.school.name)}');

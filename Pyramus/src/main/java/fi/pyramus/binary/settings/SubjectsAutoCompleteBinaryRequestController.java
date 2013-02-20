@@ -83,21 +83,21 @@ public class SubjectsAutoCompleteBinaryRequestController extends BinaryRequestCo
     String subjectEducationType = subject.getEducationType() != null ? subject.getEducationType().getName() : null;
     
     String localizedSubject = subjectName;
-    
-    if ((subjectCode != null) && (subjectEducationType != null)) {
+
+    if (!StringUtils.isEmpty(subjectCode) && !StringUtils.isEmpty(subjectEducationType)) {
       localizedSubject = Messages.getInstance().getText(locale, 
           "generic.subjectFormatterWithEducationType", new Object[] {
         subjectCode,
         subjectName,
         subjectEducationType
       });
-    } else if (subjectEducationType != null) {
+    } else if (!StringUtils.isEmpty(subjectEducationType)) {
       localizedSubject = Messages.getInstance().getText(locale, 
           "generic.subjectFormatterNoSubjectCode", new Object[] {
         subjectName,
         subjectEducationType
       });
-    } else if (subjectCode != null) {
+    } else if (!StringUtils.isEmpty(subjectCode)) {
       localizedSubject = Messages.getInstance().getText(locale, 
           "generic.subjectFormatterNoEducationType", new Object[] {
         subjectCode,
