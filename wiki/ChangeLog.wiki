@@ -1,6 +1,27 @@
 #summary ChangeLog of Pyramus
 #labels Featured
 
+*Version 0.6.4 (Feb 20, 2013)
+
+  * Forced SSL connection in web.xml for Pyramus and PyramusReports
+  * Fixed Subjects AutoComplete when some fields are empty
+  * Moved properties files to web-inf
+  * Moved initialdata.xml to updates
+  * Fixed issues in Chrome with input fields named "id" which collide with form id property in JavaScript
+  * Added link buttons from view project to edit student project and view student
+  * Added CourseStudentVariable
+  * Added GradingService methods for CreditVariables
+  * Added credit variables
+  * Added dialog support for nonlocalized messages (produced by plugins)
+  * Added sorting and filtering to student course assessment requests in viewstudent courses tab
+  * Added more support for plugins
+  * BOMified project POMs
+  * Changed .escapeHTML calls to external function to check for undefined objects
+
+
+...
+
+
 *Version 0.521 (110922.21)
 
   * Fixed a bug preventing creating and editing projects containing mandatory modules
