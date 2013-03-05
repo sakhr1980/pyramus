@@ -83,3 +83,29 @@ Add datasource for Pyramus before drivers -tag.
   </statement>
 </datasource>
 }}}
+
+==Database==
+
+Install MySQL
+{{{
+sudo apt-get install mysql-server
+}}}
+Login to MySQL as root and create new database and user for it.
+{{{
+# mysql -p -u root
+> create database pyramus default charset utf8;  
+> create user 'pyramus'@'localhost' identified by 'password';
+> grant all privileges on pyramus.* to 'pyramus'@'localhost';
+> flush privileges;
+}}}
+
+
+
+  * Download Xmldb-updater from (http://code.google.com/p/java-xmldb-updater/downloads/list)
+  * Extract Xmldb-updater somewhere in your computer
+  * Download MySQL Connector (http://dev.mysql.com/downloads/connector/j/)
+  * Extract mysql-connector-java-x.x.x-bin.jar from connector zip and copy it to xml-db-updater/drivers folder
+  * Download latest database updates from http://code.google.com/p/pyramus/downloads/ and extract them to some folder (e.g. /PyramusUpdates/) 
+  * Rename preferences.sample as preferences.properties in xml-db-updater folder
+  * Edit preferences.properties -file with text editor and set: updates.folder to match your pyramus updates folder (e.g. /PyramusUpdates/) and update database settings to match your configuration.
+  * Start updater and run suggested updates.
