@@ -4,7 +4,6 @@
 
 This guide assumes that you have a fresh Ubuntu Server 12.04 LTS running in your computer.  
 
-
 ==JBossAS 7==
 
 We are installing Pyramus on top of JBossAS 7.1.1-final so first we need to get it running.
@@ -52,17 +51,28 @@ Extract driver into JBoss
 }}}
 
 
+Edit /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml with your favourite text editor
 
+{{{
+# sudo -u jboss vi /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml 
+}}}
 
-  * Locate urn:jboss:domain:datasources:1.0 subsystem from JBoss/standalone/configuration/standalone.xml. Add new datasource inside datasources tag. Use following example. Note that you need to change DATABASE from connection-url, VERSION (e.g. 5.1.22) from driver and USER and PASSWORD from security.
+Locate "urn:jboss:domain:datasources:1.0" -subsystem. Find drivers inside in and add mysql driver inside that. 
+
+{{{
+<driver name="mysql" module="com.mysql.jdbc">
+  <driver-class>com.mysql.jdbc.Driver</driver-class>
+</driver>
+}}}
+
+Add datasource for Pyramus before drivers -tag.
 {{{
 <datasource jta="true" jndi-name="java:/jdbc/pyramus" pool-name="jdbc/pyramus" enabled="true" use-ccm="false">
-  <connection-url>jdbc:mysql://localhost:3306/DATABASE</connection-url>
-  <driver-class>com.mysql.jdbc.Driver</driver-class>
-  <driver>mysql-connector-java-VERSION-bin.jar</driver>
+  <connection-url>jdbc:mysql://localhost:3306/pyramus</connection-url>
+  <driver>mysql</driver>
   <security>
-    <user-name>USER</user-name>
-    <password>PASSWORD</password>
+    <user-name>user</user-name>
+    <password>password</password>
   </security>
   <validation>
     <validate-on-match>false</validate-on-match>
