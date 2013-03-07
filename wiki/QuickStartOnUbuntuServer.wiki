@@ -10,7 +10,7 @@ We are installing Pyramus on top of JBossAS 7.1.1-final so first we need to get 
 
 Install OpenJDK and unzip packages
 {{{
-# sudo apt-get install openjdk-7-jre unzip
+# sudo apt-get install openjdk-7-jdk unzip
 }}}
 
 Fetch JBoss tar ball
@@ -97,15 +97,19 @@ Login to MySQL as root and create new database and user for it.
 > create user 'pyramus'@'localhost' identified by 'password';
 > grant all privileges on pyramus.* to 'pyramus'@'localhost';
 > flush privileges;
+> exit;
 }}}
 
+TODO: Write how to install xmldb-updater
 
-
-  * Download Xmldb-updater from (http://code.google.com/p/java-xmldb-updater/downloads/list)
-  * Extract Xmldb-updater somewhere in your computer
-  * Download MySQL Connector (http://dev.mysql.com/downloads/connector/j/)
-  * Extract mysql-connector-java-x.x.x-bin.jar from connector zip and copy it to xml-db-updater/drivers folder
-  * Download latest database updates from http://code.google.com/p/pyramus/downloads/ and extract them to some folder (e.g. /PyramusUpdates/) 
-  * Rename preferences.sample as preferences.properties in xml-db-updater folder
-  * Edit preferences.properties -file with text editor and set: updates.folder to match your pyramus updates folder (e.g. /PyramusUpdates/) and update database settings to match your configuration.
-  * Start updater and run suggested updates.
+Download latest database updates from http://code.google.com/p/pyramus/downloads/ and extract them to /opt/pyramus-updates 
+{{{
+# cd /tmp
+# wget https://pyramus.googlecode.com/files/updates-0.6.3.zip
+# sudo mkdir /opt/pyramus-updates
+# sudo unzip /tmp/updates-0.6.3.zip -d /opt/pyramus-updates
+}}}
+Run updater to create database
+{{{
+# sudo java -jar /opt/pyramus-updater/xmldb-updater-2.0.0.jar --databaseDriversFolder /opt/jboss-as-7.1.1.Final/modules/com/mysql/jdbc/main/ --databaseUrl jdbc:mysql://localhost:3306/pyramus --databaseUsername pyramus --databasePassword pyramus --databaseVendor MySQL --force /opt/pyramus-updates/updates/
+}}}
