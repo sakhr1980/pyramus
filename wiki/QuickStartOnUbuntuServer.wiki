@@ -141,3 +141,9 @@ Locate "urn:jboss:domain:web:1.1" -subsystem. Add redirect-port="443" attribute 
 </connector>
 }}}
 Locate "socket-binding-group" and change socket bindings for http and https 80 and 443
+==Pyramus==
+Download pyramus war from Maven repository.
+{{{
+# cd /tmp
+# http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases/fi/pyramus/pyramus/0.6.4/pyramus-0.6.4.war
+}}}
