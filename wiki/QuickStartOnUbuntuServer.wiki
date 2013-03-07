@@ -113,3 +113,28 @@ Run updater to create database
 {{{
 # sudo java -jar /opt/pyramus-updater/xmldb-updater-2.0.0.jar --databaseDriversFolder /opt/jboss-as-7.1.1.Final/modules/com/mysql/jdbc/main/ --databaseUrl jdbc:mysql://localhost:3306/pyramus --databaseUsername pyramus --databasePassword pyramus --databaseVendor MySQL --force /opt/pyramus-updates/updates/
 }}}
+=== Sertificate ===
+Create new keystore into /opt/jboss-as-7.1.1.Final/standalone/configuration/. 
+*Use your host name as CN (e.g. www.pyramus.dev)*
+{{{
+# sudo keytool -genkey -keysize 2048 -keyalg RSA -keystore /opt/jboss-as-7.1.1.Final/standalone/configuration/jboss.keystore -alias tomcat
+}}}
+
+
+
+  * Create new keystore into JBoss/standalone/configuration -folder
+    * keytool -genkey -keysize 2048 -keyalg RSA -keystore jboss.keystore -alias tomcat
+    * Use your host name as CN (e.g. www.pyramus.dev)
+  * Open keystore with Portecle (http://sourceforge.net/projects/portecle/)
+  * Export tomcat alias in PEM format to hard drive
+  * Import exported sertificate as trusted back to keystore with name root
+  * Edit JBoss/standalone/configuration/standalone.xml file
+  * Locate urn:jboss:domain:web:1.1 -subsystem
+  * Add redirect-port="443" attribute into http connector
+  * Add https connector:
+{{{
+<connector name="https" protocol="HTTP/1.1" scheme="https" socket-binding="https" secure="true">
+  <ssl name="ssl" key-alias="tomcat" password="password" certificate-key-file="../standalone/configuration/jboss.keystore" protocol="TLS" verify-client="false"/>
+</connector>
+}}}
+  * Change http and https ports into 80 and 443 in socket-binding-group
