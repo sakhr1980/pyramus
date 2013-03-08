@@ -136,12 +136,25 @@ Locate "urn:jboss:domain:security:1.1" -subsystem and add new security domain in
 </security-domain> 
 }}}
 
+Locate "urn:jboss:domain:webservices:1.1" -subsystem and change wsdl-host to `jbossws.undefined.host`. 
+
+Locate "extensions" -tag and add system-properties tag below it:
+{{{
+<system-properties>
+  <property name="PyramusWSAllowedIPs" value="127.0.0.1"/>
+</system-properties>
+}}}
+If webservices should be accessible from other locations more IP addresses can be added. Values should be separated by comma. 
+
+Save and close the file.
+
 Add new user with following settings:
   * Type of user = Application User
   * Realm = WebServices
   * Username = (user)
   * Password = (password)
   * Roles = WebServices
+
 {{{
   sudo -u jboss /opt/jboss-as-7.1.1.Final/bin/add-user.sh
 }}}
