@@ -264,3 +264,5 @@ Open Pyramus in your browser (e.g. http://test.pyramus.fi). It should redirect y
 If you are using unsigned sertificate your browser will warn you about it and you need to confirm security exception before proceeding.
 
 If Pyramus loads fine, navigate to https://youraddress/system/initialdata.page with your web browser (e.g. https://test.pyramus.fi/system/initialdata.page). 
+
+Login in with admin / querty. This should trigger an entity indexing task. When indexing is complete your Pyramus is installed but does not have any settings so proceed set them up next. 
