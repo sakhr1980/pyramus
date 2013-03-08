@@ -113,6 +113,39 @@ Run updater to create database
 {{{
 # sudo java -jar /opt/pyramus-updater/xmldb-updater-2.0.0.jar --databaseDriversFolder /opt/jboss-as-7.1.1.Final/modules/com/mysql/jdbc/main/ --databaseUrl jdbc:mysql://localhost:3306/pyramus --databaseUsername pyramus --databasePassword pyramus --databaseVendor MySQL --force /opt/pyramus-updates/updates/
 }}}
+==WebServices==
+
+Edit /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml with your favourite text editor
+
+{{{
+# sudo -u jboss vi /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml 
+}}}
+
+Locate "urn:jboss:domain:security:1.1" -subsystem and add new security domain inside security-domains tag: 
+
+{{{
+<security-domain name="WebServices" cache-type="default">
+  <authentication>
+    <login-module code="RealmUsersRoles" flag="required">
+      <module-option name="realm" value="WebServices"/>
+      <module-option name="password-stacking" value="useFirstPass"/>
+      <module-option name="rolesProperties" value="${jboss.server.config.dir}/application-roles.properties"/>
+      <module-option name="usersProperties" value="${jboss.server.config.dir}/application-users.properties"/>
+    </login-module>
+  </authentication>
+</security-domain> 
+}}}
+
+Add new user with following settings:
+  * Type of user = Application User
+  * Realm = WebServices
+  * Username = (user)
+  * Password = (password)
+  * Roles = WebServices
+{{{
+  sudo -u jboss /opt/jboss-as-7.1.1.Final/bin/add-user.sh
+}}}
+
 === Sertificate ===
 Create new keystore into /opt/jboss-as-7.1.1.Final/standalone/configuration/. 
 *Use your host name as CN (e.g. www.pyramus.dev)*
