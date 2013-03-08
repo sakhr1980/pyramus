@@ -84,6 +84,15 @@ Add datasource for Pyramus before drivers -tag.
 </datasource>
 }}}
 
+Locate "urn:jboss:domain:web:1.1"" -subsystem and change enable-welcome-root to false in virtual-server and change alias example.com to match your address.
+
+{{{
+<virtual-server name="default-host" enable-welcome-root="false">
+  <alias name="localhost"/>
+  <alias name="test.pyramus.fi"/>
+</virtual-server>  
+}}}
+
 Locate interfaces and change the contents of public interface to `<any-address/>`
 
 {{{
