@@ -2,7 +2,7 @@
 
 ==Prerequisites==
 
-This guide assumes that you have a fresh Ubuntu Server 12.04 LTS running in your computer.  
+This guide assumes that you have a fresh Ubuntu Server 12.04 LTS running in your computer and domain name pointing to it.
 
 ==JBossAS 7==
 
@@ -252,4 +252,14 @@ Add execute permission to that file and set JBoss to start in Linux start up and
 # sudo ln -s ../init.d/jboss ./S99jboss
 # cd /etc/rc1.d/
 # sudo ln -s ../init.d/jboss ./K99jboss
+# cd /etc/rc0.d/
+# sudo ln -s ../init.d/jboss ./K99jboss
 }}}
+
+Test by rebooting computer.
+
+==Setup==
+Open Pyramus in your browser (e.g. http://test.pyramus.fi). It should redirect you to https. If it does not there is something wrong in your configuration.
+
+If you are using unsigned sertificate your browser will warn you about it. 
+
