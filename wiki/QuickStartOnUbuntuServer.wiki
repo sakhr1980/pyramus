@@ -221,6 +221,35 @@ Copy wars into deployments -folder as ROOT.war and PyramusReports.war.
 
 ==Running JBoss as service==
 
+Create new file /etc/init.d/jboss with following contents:
+
 {{{
-sudo chmod a+x /etc/init.d/jboss
+#!/bin/sh
+
+JBOSS_HOME=/opt/jboss-as-7.1.1.Final/
+JBOSS_USER=root
+
+case "$1" in
+  start)
+    echo "Starting JBoss AS 7.1.1" 
+    su -c "${JBOSS_HOME}/bin/standalone.sh >& /dev/null &" ${JBOSS_USER}
+    ;;
+  stop)
+    echo "Stopping JBoss AS 7.1.1" 
+    su -c "${JBOSS_HOME}/bin/jboss-cli.sh --connect command=:shutdown" ${JBOSS_USER}
+    ;;
+  *)
+  echo "Usage: /etc/init.d/jboss {start|stop}"
+    exit 1
+  ;;
+esac  
+}}}
+
+Add execute permission to that file and set JBoss to start in Linux start up and shutdown in Linux shutdown
+{{{
+# sudo chmod a+x /etc/init.d/jboss
+# cd /etc/rc2.d/
+# sudo ln -s ../init.d/jboss ./S99jboss
+# cd /etc/rc1.d/
+# sudo ln -s ../init.d/jboss ./K99jboss
 }}}
