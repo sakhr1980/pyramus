@@ -84,6 +84,8 @@ Add datasource for Pyramus before drivers -tag.
 </datasource>
 }}}
 
+Locate interfaces and change the contents of public and unsecure interfaces to <any-address/>
+
 ==Database==
 
 Install MySQL
