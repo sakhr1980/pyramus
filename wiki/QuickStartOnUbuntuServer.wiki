@@ -200,7 +200,7 @@ Edit /opt/jboss-as-7.1.1.Final/standalone/configuration/standalone.xml with your
 Locate "urn:jboss:domain:web:1.1" -subsystem. Add redirect-port="443" attribute into http connector and add https connector:
 {{{
 <connector name="https" protocol="HTTP/1.1" scheme="https" socket-binding="https" secure="true">
-  <ssl name="ssl" key-alias="tomcat" password="password" certificate-key-file="../standalone/configuration/jboss.keystore" protocol="TLS" verify-client="false"/>
+  <ssl name="ssl" key-alias="tomcat" password="password" certificate-key-file="${jboss.server.config.dir}/jboss.keystore" protocol="TLS" verify-client="false"/>
 </connector>
 }}}
 Locate "socket-binding-group" and change socket bindings for http and https 80 and 443
@@ -213,4 +213,10 @@ Download pyramus war from Maven repository.
 Copy war into deployments -folder.
 {{{
 # sudo -u jboss cp pyramus-0.6.4.war /opt/jboss-as-7.1.1.Final/standalone/deployments/ROOT.war
+}}}
+
+==Running JBoss as service==
+
+{{{
+sudo chmod a+x /etc/init.d/jboss
 }}}
