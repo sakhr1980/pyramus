@@ -60,6 +60,7 @@
         
         var extensionHoverMenuLinks = $$('#extensionHoverMenuLinks a');
         for (var i=0, l=extensionHoverMenuLinks.length; i<l; i++) {
+          var extensionHoverMenuLink = extensionHoverMenuLinks[i];
           if (extensionHoverMenuLink.href.indexOf('?') == -1) {
 	          basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
 	              iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
