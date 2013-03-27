@@ -117,6 +117,22 @@ _/fi/pyramus/plugin/simple/ftl/loggeduserinfo.ftl:_
   </html>
 }}}
 
+==Extending view controllers==
+
+To extend existing views, define a new view controller with the
+same address than an existing view (e.g. `projects/editstudentproject`).
+The new controller masks the old one, but the old one is saved with
+a `.masked` suffix, e.g. `projects/editstudentproject.page.masked`.
+Call the masked controller from your new one:
+
+{{{
+@Override
+  public void process(PageRequestContext pageRequestContext) {
+    ((PageController) RequestControllerMapper.getRequestController("projects/editstudentproject.page.masked")).process(pageRequestContext);
+    setJsDataVariable(pageRequestContext, "hasFoobar", "true");
+  }
+}}}
+
 ==Adding JSON controllers==
 
   * TODO: Adding JSON controllers
