@@ -24,6 +24,13 @@ IxDateField = Class.create({
     Event.observe(this._monthInput, "change", this._monthFieldValueChangeListener);
     Event.observe(this._yearInput, "change", this._yearFieldValueChangeListener);
 
+    // Fixes Chrome bugs
+    if (Prototype.Browser.WebKit) {
+      Event.observe(this._dayInput, "mouseup", function (e) { Event.stop(e); }.bindAsEventListener(this));
+      Event.observe(this._monthInput, "mouseup", function (e) { Event.stop(e); }.bindAsEventListener(this));
+      Event.observe(this._yearInput, "mouseup", function (e) { Event.stop(e); }.bindAsEventListener(this));
+    }
+    
     this._updatingTimestamp = false;
     
     this._domNode = new Element("div", {className: 'ixDateField'});
