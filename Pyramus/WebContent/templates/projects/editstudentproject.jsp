@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="/ix" prefix="ix"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
@@ -803,6 +804,25 @@
           link: GLOBAL_contextPath + '/students/editstudent.page?abstractStudent=${studentProject.student.abstractStudent.id}'  
         }));
         
+        var extensionHoverMenuLinks = $$('#extensionHoverMenuLinks a');
+        for (var i=0, l=extensionHoverMenuLinks.length; i<l; i++) {
+          var extensionHoverMenuLink = extensionHoverMenuLinks[i].remove();
+          if (extensionHoverMenuLink.href.indexOf('?') == -1) {
+              basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+                  iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+                  text: extensionHoverMenuLink.innerHTML,
+                  link: GLOBAL_contextPath + extensionHoverMenuLink.href + "?creditId=${studentProject.id}"
+              }));
+          } else {
+              basicTabRelatedActionsHoverMenu.addItem(new IxHoverMenuLinkItem({
+                  iconURL: GLOBAL_contextPath + '/gfx/accessories-text-editor.png',
+                  text: extensionHoverMenuLink.innerHTML,
+                  link: GLOBAL_contextPath + extensionHoverMenuLink.href + "&creditId=${studentProject.id}"
+              }));
+          }
+        }
+
+        
         
         var moduleFilter = $('moduleFilter');
         
@@ -875,6 +895,7 @@
       }
       
     </script>
+    <ix:extensionHook name="projects.editStudentProject.scripts" />
   </head>
   <body onLoad="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
@@ -885,6 +906,11 @@
         <fmt:param value="${studentProject.name}"/>
       </fmt:message>
     </h1>
+    
+    <div id="extensionHoverMenuLinks" style="display: none;">
+      <ix:extensionHook name="projects.editStudentProject.hoverMenuLinks" />
+    </div>
+    
     
     <form id="studentProjectForm" action="editstudentproject.json" method="post" ix:jsonform="true" ix:useglasspane="true">
       <input type="hidden" name="version" value="${studentProject.version}"/>
