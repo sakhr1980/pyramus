@@ -895,7 +895,7 @@
       }
       
     </script>
-    <ix:extensionHook name="projects.editStudentProject.scripts" />
+    <ix:extensionHook name="projects.editStudentProject.head" />
   </head>
   <body onLoad="onLoad(event);" ix:enabledrafting="true">
     <jsp:include page="/templates/generic/header.jsp"></jsp:include>
